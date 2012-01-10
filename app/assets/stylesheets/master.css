@@ -342,7 +342,6 @@ border: 1px solid transparent; border-width: 1px 1px 0 1px; }
 
 #content {
   margin: 0 auto; padding: 20px 20px 60px 20px; min-width: 940px; max-width: 1100px;
-  background: url('../images/infinite2060columns.png');
 }
 
 /*=== Float Containment and Bug Fixes (Do Not Alter These!) ===*/
