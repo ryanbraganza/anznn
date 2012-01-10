@@ -17,9 +17,15 @@ class Ability
     alias_action :reject_as_spam, :to => :reject
 
     return unless user.role
-    user.role.permissions.each do |permission|
-      action = permission.action.to_sym
-      can action, permission.entity.constantize
+
+    if Role.superuser_roles.include? user.role
+      can :read, User
+      can :admin, User
+      can :access_requests, User
+      can :update_role, User
+      can :activate_deactivate, User
+      can :reject, User
+      can :approve, User
     end
 
     # Define abilities for the passed in user here. For example:

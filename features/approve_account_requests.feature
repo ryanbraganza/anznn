@@ -5,15 +5,9 @@ Feature: Approve access requests
 
   Background:
     Given I have roles
-      | name       |
+      | name           |
       | Administrator  |
-      | Researcher |
-    And I have permissions
-      | entity | action          | roles  |
-      | User   | read            | Administrator |
-      | User   | admin           | Administrator |
-      | User   | reject          | Administrator |
-      | User   | approve         | Administrator |
+      | Data Provider  |
     And I have a user "georgina@intersect.org.au" with role "Administrator"
     And I have access requests
       | email                  | first_name | last_name        |

@@ -5,14 +5,9 @@ Feature: Logging In
 
   Background:
     Given I have roles
-      | name       |
-      | Administrator  |
-      | Researcher |
-    And I have permissions
-      | entity | action          | roles     |
-      | User   | read            | Administrator |
-      | User   | admin           | Administrator |
-      | User   | access_requests | Administrator |
+      | name          |
+      | Administrator |
+      | Data Provider |
     And I have a user "georgina@intersect.org.au"
     And "georgina@intersect.org.au" has role "Administrator"
 
