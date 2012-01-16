@@ -1,0 +1,499 @@
+@charset "UTF-8"
+
+/*/ VARIABLES /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*/
+
+// VARIABLES - COLOURS
+///*///////////////////////////////////////////////////////////////////////////////////////////////*/
+
+$dark0: black
+$dark1: #333333
+$dark2: #333333
+$dark3: #666666
+$dark4: #999999
+
+$light0: white
+$light1: #f8f8f8
+$light2: #f5f5f5
+$light3: #f1f1f1
+
+$blue1: #4d90fe
+$blue2: #4787ed
+$blue3: #357ae8
+$blue4: #3079ed
+$blue5: #2f5bb7
+$blue6: #e5f6fd
+
+$red1: #ff5742
+$red2: #dd4c39
+$red3: #db3d2b
+$red4: #dd4c39
+$red5: #b0281a
+
+// MIXINS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+
+
+// MIXINS - MARGIN + PADDING + WIDTH + HEIGHT + POSITION + TOP + BOTTOM + LEFT + RIGHT + FLOAT
+/*///////////////////////////////////////////////////////////////////////////////////////////////*/
+
+=m-p-w-h-p-t-b-l-r-f($margin: "", $padding: "", $width: "", $height: "", $position: "", $top: "", $bottom: "", $left: "", $right: "", $float: "")
+  @if $margin != ""
+    margin: $margin
+  @if $padding != ""
+    padding: $padding
+  @if $width != ""
+    width: $width
+  @if $height != ""
+    height: $height
+  @if $position != ""
+    position: $position
+  @if $top != ""
+    top: $top
+  @if $bottom != ""
+    bottom: $bottom
+  @if $left != ""
+    left: $left
+  @if $right != ""
+    right: $right
+  @if $float != ""
+    float: $float
+
+// MIXINS - WIDTH - NORMAL + MIN + MAX
+/*///////////////////////////////////////////////////////////////////////////////////////////////*/
+
+=width($width: "", $minwidth: "", $maxwidth: "")
+  @if $width != ""
+    width: $width
+  @if $minwidth != ""
+    min-width: $minwidth
+  @if $maxwidth != ""
+    max-width: $maxwidth
+
+// MIXINS - BORDER CONTROLL
+/*///////////////////////////////////////////////////////////////////////////////////////////////*/
+
+=borderradius($corner: "")
+  border-radius: $corner
+  -moz-border-radius: $corner
+  -webkit-border-radius: $corner
+
+=border($borderwidth: "", $borderstyle: "", $bordercolor: "", $allborderwidth: "", $borderradius: "", $topborderwidth: "", $topborderstyle: "", $topbordercolor: "", $bottomborderwidth: "", $bottomborderstyle: "", $bottombordercolor: "", $leftborderwidth: "", $leftborderstyle: "", $leftbordercolor: "", $rightborderwidth: "", $rightborderstyle: "", $rightbordercolor: "")
+  border: $borderwidth $borderstyle $bordercolor
+  border-width: $allborderwidth
+  +borderradius($borderradius)
+  border-top: $topborderwidth $topborderstyle $topbordercolor
+  border-bottom: $bottomborderwidth $bottomborderstyle $bottombordercolor
+  border-left: $leftborderwidth $leftborderstyle $leftbordercolor
+  border-right: $rightborderwidth $rightborderstyle $rightbordercolor
+
+// MIXINS - OPACITY
+/*///////////////////////////////////////////////////////////////////////////////////////////////*/
+
+=opacity($opacity: "", $filteropacity: "")
+  filter: alpha(opacity = $filteropacity)
+  -khtml-opacity: $opacity
+  -moz-opacity: $opacity
+  opacity: $opacity
+
+=opacity-25
+  +opacity(0.25, 25)
+=opacity-50
+  +opacity(0.50, 50)
+=opacity-75
+  +opacity(0.75, 75)
+=opacity-100
+  +opacity(1, 100)
+
+// MIXINS - CROSS-BROWSER INLINEBLOCK
+/*///////////////////////////////////////////////////////////////////////////////////////////////*/
+
+=inlineblock
+  display: -moz-inline-stack
+  display: inline-block
+  zoom: 1
+  *display: inline
+  vertical-align: top
+
+// MIXINS - CROSS-BROWSER INLINEBLOCK
+/*///////////////////////////////////////////////////////////////////////////////////////////////*/
+
+=truncate
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+
+// MIXINS - BOX SHADOW
+/*///////////////////////////////////////////////////////////////////////////////////////////////*/
+
+=boxshadow($offsetx: "", $offsety: "", $blur: "")
+  box-shadow: $offsetx $offsety $blur rgba(0, 0, 0, 0.1)
+  -moz-box-shadow: $offsetx $offsety $blur rgba(0, 0, 0, 0.1)
+  -webkit-box-shadow: $offsetx $offsety $blur rgba(0, 0, 0, 0.1)
+
+=boxshadow-2-inset
+  box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.1)
+  -moz-box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.1)
+  -webkit-box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.1)
+
+=boxshadow-2
+  +boxshadow(0px, 1px, 2px)
+
+// MIXINS - FONT CONTROLL
+/*///////////////////////////////////////////////////////////////////////////////////////////////*/
+
+=font($style: "", $weight: "", $size: "", $leading: "", $color: "", $decoration: "", $align: "")
+  @if $style != ""
+    font-style: $style
+  @if $weight != ""
+    font-weight: $weight
+  @if $size != ""
+    font-size: $size
+  @if $leading != ""
+    line-height: $leading
+  @if $color != ""
+    color: $color
+  @if $decoration != ""
+    text-decoration: $decoration
+  @if $align != ""
+    text-align: $align
+  font-family: Helvetica, Arial, sans-serif
+
+=textshadow-2
+  text-shadow: #EEE 0px 2px 0px
+
+
+// MIXINS - GRADIENTS
+/*///////////////////////////////////////////////////////////////////////////////////////////////*/
+
+=gradient($color1: "", $color2: "")
+  background-color: $color1
+  text-shadow: 0 1px rgba(0, 0, 0, 0.1)
+  background-image: -webkit-gradient(linear, left top, left bottom, from($color1), to($light2))
+  background-image: -webkit-linear-gradient(top, $color1, $color2)
+  background-image: -moz-linear-gradient(top, $color1, $color2)
+  background-image: -ms-linear-gradient(top, $color1, $color2)
+  background-image: -o-linear-gradient(top, $color1, $color2)
+  background-image: linear-gradient(top, $color1, $color2)
+
+=gradient-light-1
+  +gradient($light1, $light2)
+=gradient-light-2
+  +gradient($light1, $light3)
+
+=gradient-blue-1
+  +gradient($blue1, $blue2)
+=gradient-blue-2
+  +gradient($blue1, $blue3)
+
+=gradient-red-1
+  +gradient($red1, $red2)
+=gradient-red-2
+  +gradient($red1, $red3)
+
+// MIXINS - CLEARFIX
+/*///////////////////////////////////////////////////////////////////////////////////////////////*/
+
+/* Include this Mixin on things that will contain floats. These rules will cause the space to be filled.
+=clearfix
+  zoom: 1
+  &:before
+    content: "\0020"
+    display: block
+    height: 0
+    overflow: hidden
+  &:after
+    content: "\0020"
+    display: block
+    height: 0
+    overflow: hidden
+    clear: both
+
+// BASE STYLES ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+
+html, body
+
+body
+  background-color: #ffffff
+  margin: 0
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif
+  font-size: 13px
+  font-weight: normal
+  line-height: 18px
+  color: #404040
+
+
+h1, h2, h3, h4, h5, h6
+  +font("", "", 1em, 1em, $dark2)
+
+/* Base heading styles
+h1
+  +font("", normal, 1.5em, 40px)
+
+h2
+  +font("", bold, 1.25em, 30px)
+
+h3
+  +font("", bold, 1em, 30px, $dark2)
+  padding: 0 0 10px 0
+
+h4
+  +font("", bold, 0.813em, 18px, $dark2)
+  padding: 0 0 10px 0
+
+
+p
+
+/* Paragraph style. Use for text, or for a libe break. </br> is for pebs, and you're not a pleb right?
+span
+
+/* Use as a default container for text that requires a Class or ID
+a, a:visited
+
+a:hover
+
+/* Basic link feedback for user
+
+ul
+
+li
+
+label
+
+input[type=textarea], input[type=text], input[type=password], input[type=search], textarea
+
+input[type=password]
+
+// NOTIFICATIONS /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+
+/* Base notification container for users
+
+.formerror
+  +m-p-w-h-p-t-b-l-r-f(0 0 20px 0)
+  color: $red4
+
+.field_with_errors
+  +m-p-w-h-p-t-b-l-r-f("", "", 160px)
+  +inlineblock
+
+.field_with_errors input
+  +border(1px, solid, $red4)
+
+// MODULES ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+
+// BASE STYLES - STRUCTURE MODULES
+/*///////////////////////////////////////////////////////////////////////////////////////////////*/
+
+/* Apply these class modules to elements. Any more than 3 modules per element is overkill and you should probably have a specific container.
+
+.floatleft
+  float: left
+
+/* Float an element to the left
+.floatright
+  float: right
+
+/* Float an element to the right
+
+/* Basic row container
+.rowform
+  margin: 0 0 18px 0
+
+/* Basic row / horizontal container with 1 paragraph return equiv.
+.fields
+  margin: 0 0 18px 0
+  +inlineblock
+
+.actions
+  margin: 36px 0 0 0
+
+// BASE STYLES - TEXT MODULES
+/*///////////////////////////////////////////////////////////////////////////////////////////////*/
+
+/* Apply these to specific font containers. Any more than 2 text modules is overkill and a specific style / container should be used
+
+.details
+  +font("", "", 0.75em, 18px, $dark3)
+
+.required
+  color: #E25358
+
+.bold
+  font-weight: bold
+
+.textalignleft
+  text-align: left
+
+/* Align text to the left
+.textalignright
+  text-align: right
+
+/* Align text to the right
+.textaligncenter
+  text-align: center
+
+/* Align text to the center
+
+.truncate
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+
+// ICONS /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+
+.options
+  cursor: pointer
+  span
+    +m-p-w-h-p-t-b-l-r-f("", 0 0 0 16px)
+    background: url("../images/icon_options_light.png") left center no-repeat
+    -moz-background-size: 16px
+    background-size: 16px
+  &:hover
+    span
+      color: $dark1
+      background: url("../images/icon_options_dark.png") left center no-repeat
+      -moz-background-size: 16px
+
+.close
+  cursor: pointer
+  position: relative
+  overflow: hidden
+  z-index: 0
+  span
+    +m-p-w-h-p-t-b-l-r-f("", "", 16px)
+    +font("", bold, 1.75em, 14px, #404040)
+    text-shadow: 0 1px 0 $light0
+    +opacity-25
+    cursor: pointer
+  &:hover
+    span
+      +opacity-50
+
+.search.whitebutton 
+  cursor: pointer
+  label, span
+    +m-p-w-h-p-t-b-l-r-f("", 0 0 0 25px, 85px)
+    font-weight: normal
+    background: url("../images/icon_search_light.png") left center no-repeat
+  &:hover
+    label, span
+      background: url("../images/icon_search_dark.png") left center no-repeat
+
+input.search.bluebutton[type=submit] 
+  +m-p-w-h-p-t-b-l-r-f(0 0 0 -10px, "", 80px, 32px)
+  +border("", "", "", "", 0 2px 2px 0)
+  cursor: pointer
+
+  label, span
+    +m-p-w-h-p-t-b-l-r-f("", 0 0 0 25px, 16px)
+    background: url("../images/icon_search_white.png") left center no-repeat
+
+a.view, a.edit
+  +m-p-w-h-p-t-b-l-r-f(1px auto, "", 100%, 16px)
+  display: block
+a.view
+  background: url("../images/icon_view_light.png") center center no-repeat
+  &:hover
+    background: url("../images/icon_view_dark.png") center center no-repeat
+a.edit
+  background: url("../images/icon_edit_light.png") center center no-repeat
+  &:hover
+    background: url("../images/icon_edit_dark.png") center center no-repeat
+
+.download.whitebutton
+  cursor: pointer
+  label, span
+    +m-p-w-h-p-t-b-l-r-f("", 0 0 0 25px, 85px)
+    font-weight: normal
+    background: url("../images/icon_download_light.png") left top no-repeat
+  &:hover
+    label, span
+      background: url("../images/icon_download_dark.png") left top no-repeat
+
+.facility.new.whitebutton
+  cursor: pointer
+  label, span, a
+    +m-p-w-h-p-t-b-l-r-f("", 0 0 0 25px, 85px)
+    font-weight: normal
+    background: url("../images/icon_facility_new_light.png") left center no-repeat
+  &:hover
+    label, span, a
+      background: url("../images/icon_facility_new_dark.png") left center no-repeat
+
+
+// BUTTONS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+
+
+// TABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+
+/* Note: Table Data cells will stretch to fill 100% of a table's width. If the width specified on individual cells 
+ * dosen't add up to the total width, they  will expand to fit.
+
+
+// HEADER ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+
+
+// FOOTER ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+
+#footer
+  +m-p-w-h-p-t-b-l-r-f(0 auto, "", "", "", relative)
+  +font("", normal, 0.813em, "", $dark3, none, center)
+
+  .footerwrapper
+    +m-p-w-h-p-t-b-l-r-f("", 10px 0 0 0, "", 26px, "", 0, 0, "", 0)
+    min-width: 600px
+    background: #F5F5F5
+    +border(1px, solid, #dfdfdf)
+    p
+      +inlineblock
+
+  .logo
+    +m-p-w-h-p-t-b-l-r-f(3px 6px 0 0, "", 14px, 14px)
+    +inlineblock
+    background: url(/images/intersect_logo.png) center
+    
+  #dev
+    cursor: pointer
+    +inlineblock
+
+// FOOTER - DEV INFO
+/*///////////////////////////////////////////////////////////////////////////////////////////////*/
+
