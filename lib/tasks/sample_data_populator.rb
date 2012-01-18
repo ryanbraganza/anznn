@@ -42,7 +42,7 @@ def create_unapproved_user(attrs)
 end
 
 def load_password
-  password_file = "#{Rails.root}/../../shared/env_config/sample_password.yml"
+  password_file = "#{Rails.root}/tmp/env_config/sample_password.yml"
   if File.exists? password_file
     puts "Using sample user password from #{password_file}"
     password = YAML::load_file(password_file)
@@ -55,7 +55,7 @@ def load_password
          "Set sample user password:"
           input = STDIN.gets.chomp
           buffer = Hash[:password => input]
-          Dir.mkdir("#{Rails.root}/tmp/env_config", 755) unless Dir.exists?("#{Rails.root}/tmp/env_config")
+          Dir.mkdir("#{Rails.root}/tmp/env_config", 0755) unless Dir.exists?("#{Rails.root}/tmp/env_config")
           File.open(password_file, 'w') do |out|
             YAML::dump(buffer, out)
           end

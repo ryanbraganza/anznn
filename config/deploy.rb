@@ -79,6 +79,7 @@ after 'deploy:update' do
   server_setup.logging.rotation
   server_setup.config.apache
   deploy.restart
+  deploy.additional_symlinks
 end
 
 after 'deploy:finalize_update' do
@@ -107,6 +108,12 @@ namespace :deploy do
   task :bundle_update do
     run "cd #{current_path} && bundle update"
     restart
+  end
+
+  desc "Additional Symlinks to shared_path"
+  task :additional_symlinks do
+    run "rm -rf #{release_path}/tmp/shared_config"
+    run "ln -nfs #{shared_path}/env_config #{release_path}/tmp/env_config"
   end
 
   # Load the schema
