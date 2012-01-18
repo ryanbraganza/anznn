@@ -7,7 +7,7 @@ require 'rvm/capistrano'
 set :application, 'anznn'
 set :stages, %w(qa staging production)
 set :default_stage, "qa"
-set :rpms, "openssl openssl-devel curl-devel httpd-devel apr-devel apr-util-devel zlib zlib-devel libxml2 libxml2-devel libxslt libxslt-devel libffi mod_ssl mod_xsendfile"
+set :rpms, "openssl openssl-devel curl-devel httpd-devel apr-devel apr-util-devel zlib zlib-devel libxml2 libxml2-devel libxslt libxslt-devel libffi mod_ssl mod_xsendfile postgresql84-server postgresql84 postgresql84-devel"
 set :shared_children, shared_children + %w(log_archive)
 set :shell, '/bin/bash'
 set :rvm_ruby_string, 'ruby-1.9.3-p0@anznn'
