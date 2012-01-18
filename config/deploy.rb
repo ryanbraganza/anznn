@@ -81,6 +81,10 @@ after 'deploy:update' do
   deploy.restart
 end
 
+after 'deploy:finalize_update' do
+  generate_database_yml
+end
+
 namespace :deploy do
 
   # Passenger specifics: restart by touching the restart.txt file
