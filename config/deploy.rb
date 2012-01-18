@@ -171,6 +171,7 @@ desc "Helper method that actually sets the sample user password"
 task :do_set_password, :roles => :app do
   set :custom_sample_password, proc { Capistrano::CLI.password_prompt("Sample User password: ") }
   buffer = Hash[:password => custom_sample_password]
+  run "mkdir -p #{shared_path}/env_config"
   put YAML::dump(buffer), "#{shared_path}/env_config/sample_password.yml", :mode => 0664
 end
 

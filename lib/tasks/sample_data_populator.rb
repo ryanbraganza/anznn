@@ -42,7 +42,7 @@ def create_unapproved_user(attrs)
 end
 
 def load_password
-  password_file = File.expand_path("#{Rails.root}/tmp/env_config/sample_password.yml", __FILE__)
+  password_file = "#{Rails.root}/../../shared/env_config/sample_password.yml"
   if File.exists? password_file
     puts "Using sample user password from #{password_file}"
     password = YAML::load_file(password_file)
