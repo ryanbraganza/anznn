@@ -7,4 +7,8 @@ class Role < ActiveRecord::Base
   scope :by_name, order('name')
   scope :superuser_roles, where(:name => 'Administrator')
 
+  def is_data_provider?
+    self.name == 'Data Provider'
+  end
+
 end

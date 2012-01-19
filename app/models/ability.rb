@@ -26,6 +26,11 @@ class Ability
       can :activate_deactivate, User
       can :reject, User
       can :approve, User
+      can :manage, Response
+    end
+
+    if user.role.is_data_provider?
+      can :manage, Response
     end
 
     # Define abilities for the passed in user here. For example:

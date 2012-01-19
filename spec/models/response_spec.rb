@@ -6,4 +6,7 @@ describe Response do
     it { should belong_to :user }
     it { should have_many :answers }
   end
+  describe "Validations" do
+    it { should validate_presence_of :baby_code }
+  end
 end
