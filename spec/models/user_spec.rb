@@ -3,6 +3,7 @@ require 'spec_helper'
 describe User do
   describe "Associations" do
     it { should belong_to(:role) }
+    it { should have_many(:responses) }
   end
 
   describe "Named Scopes" do
