@@ -52,6 +52,7 @@ end
 
 group :development do
   gem "rails3-generators"
+  gem 'thin'
 end
 gem "haml"
 gem "haml-rails"
@@ -65,3 +66,4 @@ gem "capistrano_colors"
 gem "colorize"
 gem "metrical"
 gem "simplecov", ">=0.3.8", :require => false, :group => :test
+
