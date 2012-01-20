@@ -4,4 +4,6 @@ class Response < ActiveRecord::Base
   has_many :answers
 
   validates_presence_of :baby_code
+  validates_presence_of :user
+  validates_presence_of :survey
 end

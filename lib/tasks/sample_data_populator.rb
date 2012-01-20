@@ -3,6 +3,13 @@ def populate_data
 
   User.delete_all
   create_test_users
+  create_basic_survey
+end
+
+def create_basic_survey
+  survey = Survey.create!
+  section = Section.create!(survey: survey)
+  q = Question.create!(question: 'What is the answer?', type: 'text', section: section, order: 0)
 end
 
 def create_test_users
