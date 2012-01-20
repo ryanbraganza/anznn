@@ -28,9 +28,12 @@ Anznn::Application.routes.draw do
 
   resources :responses, :only => [:new, :create, :show]
 
-  root :to => "pages#home"
+  resource :pages do
+    get :home
+    get :test
+  end
 
-  get "pages/home"
+  root :to => "pages#home"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

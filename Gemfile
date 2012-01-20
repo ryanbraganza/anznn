@@ -48,12 +48,15 @@ group :development, :test do
   #gem "spork"
   gem "launchy"    # So you can do Then show me the page
   gem "minitest"  # currently breaks without this
+  gem "minitest-reporters"
 end
 
 group :development do
   gem "rails3-generators"
   gem 'thin'
+  gem 'cheat'
 end
+
 gem "haml"
 gem "haml-rails"
 gem "tabs_on_rails"

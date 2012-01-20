@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  def home
+  def test
   end
 
 end
