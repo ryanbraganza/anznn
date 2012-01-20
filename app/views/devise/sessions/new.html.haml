@@ -1,2 +1,4 @@
 = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
   = render(partial: 'form', locals: { f: f })
+= link_to "Sign Up", new_user_registration_path, class: "button"
+= link_to "Forgot your password?", new_user_password_path, class: "button"
