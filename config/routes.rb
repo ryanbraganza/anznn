@@ -27,6 +27,7 @@ Anznn::Application.routes.draw do
   end
 
   resources :responses, :only => [:new, :create, :show]
+  resources :surveys, :only => [:new, :create, :show, :index]
 
   resource :pages do
     get :home
