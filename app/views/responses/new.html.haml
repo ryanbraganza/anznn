@@ -7,11 +7,11 @@
 %h1 New Survey
 .row
   = form_for @response do |f|
-    .formerror= render "shared/error_messages", :target => @response
+    .formerror= render "shared/error_messages", target: @response
     .rowform
       = f.label :baby_code
       = f.text_field :baby_code
       = required
     .actions
-      = f.submit "Save Response", :class => "btn primary"
-      = link_to 'Cancel', root_path, :class => "btn"
+      = f.submit "Save Response", class: "btn primary"
+      = link_to 'Cancel', root_path, class: "btn"

@@ -1,7 +1,7 @@
 - title "Forgot Your Password?"
 
-= form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => {:method => :post}) do |f|
-  = render "shared/error_messages", :target => @user
+= form_for(resource, as: resource_name, url: password_path(resource_name), html: {method: :post}) do |f|
+  = render "shared/error_messages", target: @user
   .field
     = f.label :email
     = f.text_field :email

@@ -1,15 +1,15 @@
 .topbar
   .topbar-inner
     .container
-      %a.brand{:href => "#"} Logo
-      = tabs_tag(:builder => MenuTabBuilder) do |tab|
+      %a.brand{href: "#"} Logo
+      = tabs_tag(builder: MenuTabBuilder) do |tab|
         %ul.nav
           = tab.home 'Home', root_url
           = tab.about 'Forms', root_url
         %ul.nav.secondary-nav
           - if user_signed_in?
             = tab.admin 'Admin', admin_users_path
-            = tab.editaccount current_user.email, users_profile_path, :class => "user"
-            = tab.logout "Logout", destroy_user_session_path, :class => "logout"
+            = tab.editaccount current_user.email, users_profile_path, class: "user"
+            = tab.logout "Logout", destroy_user_session_path, class: "logout"
           - else
-            = tab.signup "Sign Up", new_user_registration_path, :class => "signup"
+            = tab.signup "Sign Up", new_user_registration_path, class: "signup"

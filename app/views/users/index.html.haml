@@ -9,7 +9,7 @@
     %th Last signed in
     %th Actions
   - @users.each do |user|
-    %tr{:class => cycle('field_bg', 'field_nobg')}
+    %tr{class: cycle('field_bg', 'field_nobg')}
       %td= user.first_name
       %td= user.last_name
       %td= user.email
@@ -25,6 +25,6 @@
         - else
           = user.last_sign_in_at.localtime.strftime("%d/%m/%Y %I:%M%p")
       %td
-        = link_to "View Details", user, :id => "view_#{user.id}"
+        = link_to "View Details", user, id: "view_#{user.id}"
         - if can?(:update_role, User)
-          = link_to 'Edit role', edit_role_user_path(user), :id => "edit_role_#{user.id}"
+          = link_to 'Edit role', edit_role_user_path(user), id: "edit_role_#{user.id}"

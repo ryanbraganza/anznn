@@ -3,18 +3,18 @@ class Ability
 
   def initialize(user)
     # alias edit_role to update_role so that they don't have to be declared separately
-    alias_action :edit_role, :to => :update_role
-    alias_action :edit_approval, :to => :approve
+    alias_action :edit_role, to: :update_role
+    alias_action :edit_approval, to: :approve
 
     # alias activate and deactivate to "activate_deactivate" so its just a single permission
-    alias_action :deactivate, :to => :activate_deactivate
-    alias_action :activate, :to => :activate_deactivate
+    alias_action :deactivate, to: :activate_deactivate
+    alias_action :activate, to: :activate_deactivate
 
     # alias access_requests to view_access_requests so the permission name is more meaningful
-    alias_action :access_requests, :to => :admin
+    alias_action :access_requests, to: :admin
 
     # alias reject_as_spam to reject so they are considered the same
-    alias_action :reject_as_spam, :to => :reject
+    alias_action :reject_as_spam, to: :reject
 
     return unless user.role
 
@@ -52,7 +52,7 @@ class Ability
     # The third argument is an optional hash of conditions to further filter the objects.
     # For example, here the user can only update published articles.
     #
-    #   can :update, Article, :published => true
+    #   can :update, Article, published: true
     #
     # See the wiki for details: https://github.com/ryanb/cancan/wiki/Defining-Abilities
   end

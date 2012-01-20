@@ -12,18 +12,18 @@ class User < ActiveRecord::Base
   validates_presence_of :last_name
   validates_presence_of :status
 
-  validates_length_of :first_name, :maximum => 255
-  validates_length_of :last_name, :maximum => 255
-  validates_length_of :email, :maximum => 255
+  validates_length_of :first_name, maximum: 255
+  validates_length_of :last_name, maximum: 255
+  validates_length_of :email, maximum: 255
 
-  with_options :if => :password_required? do |v|
-    v.validates :password, :password_format => true
+  with_options if: :password_required? do |v|
+    v.validates :password, password_format: true
   end
 
   before_validation :initialize_status
 
-  scope :pending_approval, where(:status => 'U').order(:email)
-  scope :approved, where(:status => 'A').order(:email)
+  scope :pending_approval, where(status: 'U').order(:email)
+  scope :approved, where(status: 'A').order(:email)
   scope :deactivated_or_approved, where("status = 'D' or status = 'A' ").order(:email)
   scope :approved_superusers, joins(:role).merge(User.approved).merge(Role.superuser_roles)
 
@@ -98,17 +98,17 @@ class User < ActiveRecord::Base
 
   def deactivate
     self.status = 'D'
-    save!(:validate => false)
+    save!(validate: false)
   end
 
   def activate
     self.status = 'A'
-    save!(:validate => false)
+    save!(validate: false)
   end
 
   def approve_access_request
     self.status = 'A'
-    save!(:validate => false)
+    save!(validate: false)
 
     # send an email to the user
     Notifier.notify_user_of_approved_request(self).deliver
@@ -116,7 +116,7 @@ class User < ActiveRecord::Base
 
   def reject_access_request
     self.status = 'R'
-    save!(:validate => false)
+    save!(validate: false)
 
     # send an email to the user
     Notifier.notify_user_of_rejected_request(self).deliver
