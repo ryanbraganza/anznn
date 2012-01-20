@@ -3,9 +3,9 @@
   = render partial: "shared/head"
   %body
     #content_wrapper
-      = render partial: "shared/alert_bar"
       = render partial: "shared/topbar"
       .container
+        = render partial: "shared/alert_bar"
         %h1= yield :title
         = yield
     = render partial: "shared/footer"

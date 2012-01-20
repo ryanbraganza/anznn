@@ -1,0 +1,13 @@
+<atlassian-ide-plugin>
+  <project-configuration>
+    <servers>
+      <jira>
+        <server-id>1441164d-7f9c-4dd9-ad74-be07dec6f720</server-id>
+        <name>Intersect</name>
+        <url>http://jira.intersect.org.au</url>
+        <shared>false</shared>
+      </jira>
+    </servers>
+    <default-jira-server>1441164d-7f9c-4dd9-ad74-be07dec6f720</default-jira-server>
+  </project-configuration>
+</atlassian-ide-plugin>
