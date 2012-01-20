@@ -45,7 +45,7 @@ group :development, :test do
   gem "cucumber-rails"
   gem "capybara"
   gem "database_cleaner"
-  gem "spork"
+  gem "spork", '~> 0.9.0.rc'
   gem "launchy"    # So you can do Then show me the page
   gem "minitest"  # currently breaks without this
   gem "minitest-reporters"
