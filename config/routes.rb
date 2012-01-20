@@ -27,11 +27,15 @@ Anznn::Application.routes.draw do
   end
 
   resources :responses, :only => [:new, :create, :show]
-  resources :surveys, :only => [:new, :create, :show, :index]
+
 
   resource :pages do
     get :home
     get :test
+  end
+
+  namespace :admin do
+    resources :surveys, :only => [:show, :index]
   end
 
   root :to => "pages#home"
