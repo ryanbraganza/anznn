@@ -2,5 +2,8 @@
 
 FactoryGirl.define do
   factory :question do
-    end
+    sequence :order
+    question "What?"
+    association :section
+  end
 end
