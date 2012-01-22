@@ -1,18 +1,25 @@
 - content_for :title do
   = "Home"
 
-%h2 Messages from ANZNN Administrators
+- if !user_signed_in?
+  #content_container
+    .container_home
+      = form_for("user", url: user_session_path) do |f|
+        = render(partial: 'devise/sessions/form', locals: { f: f })
 
-%h3
-  Greetings, Executor.
-  %small Sent at 2012-01-20 15:20
+- else
+  %h2 Messages from ANZNN Administrators
 
-%p Though we all grieve for the loss of mighty Tassadar, we must find the resolve to carry on. He sacrificed himself to destroy the Overmind, but many Zerg still rage across our ruined homeworld.
-%p Without the Conclave to lead us, or the protection of our great fleets, it seems we must fend for ourselves.
+  %h3
+    Greetings, Executor.
+    %small Sent at 2012-01-20 15:20
 
-%h2 New Survey Response
-=link_to "New", new_response_path
+  %p Though we all grieve for the loss of mighty Tassadar, we must find the resolve to carry on. He sacrificed himself to destroy the Overmind, but many Zerg still rage across our ruined homeworld.
+  %p Without the Conclave to lead us, or the protection of our great fleets, it seems we must fend for ourselves.
 
-%h2 Incomplete Surveys you have started
-%p This one
-%p That one
+  %h2 New Survey Response
+  =link_to "New", new_response_path
+
+  %h2 Incomplete Surveys you have started
+  %p This one
+  %p That one
