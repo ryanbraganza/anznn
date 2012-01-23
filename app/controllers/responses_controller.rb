@@ -10,7 +10,7 @@ class ResponsesController < ApplicationController
     @response.survey = Survey.first  # TODO support multiple surveys
     @response.user = current_user
     if @response.save
-      redirect_to response_path(@response), :notice => 'Survey created'
+      redirect_to response_path(@response), notice: 'Survey created'
     else
       render :new
     end
@@ -18,5 +18,9 @@ class ResponsesController < ApplicationController
 
   def show
     @questions = @response.survey.sections.first.questions
+  end
+
+  def update
+    redirect_to response_path(@response), notice: 'Saved page'
   end
 end
