@@ -12,4 +12,12 @@ class Question < ActiveRecord::Base
   validates_uniqueness_of :order, scope: :section_id
 
   validates_inclusion_of :question_type, in: %w(Text Date Time Choice Decimal Integer)
+
+  validates_numericality_of :number_min, allow_blank: true, only_integer: true
+  validates_numericality_of :number_max, allow_blank: true, only_integer: true
+  validates_numericality_of :number_unknown, allow_blank: true, only_integer: true
+
+  def validate_number_range?
+    !number_min.nil? || !number_max.nil?
+  end
 end
