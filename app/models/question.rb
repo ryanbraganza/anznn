@@ -1,7 +1,7 @@
 class Question < ActiveRecord::Base
   belongs_to :section
-  has_many :answers
-  has_many :question_options
+  has_many :answers, dependent: :destroy
+  has_many :question_options, dependent: :destroy
 
   validates_presence_of :order
   validates_presence_of :section

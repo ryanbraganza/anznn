@@ -6,5 +6,6 @@ class PagesController < ApplicationController
   end
 
   def home
+    set_tab :home
   end
 end
