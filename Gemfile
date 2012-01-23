@@ -42,7 +42,6 @@ group :development, :test do
 
   # cucumber gems
   gem "cucumber"
-  gem "cucumber-rails"
   gem "capybara"
   gem "database_cleaner"
   gem "spork", '~> 0.9.0.rc'
@@ -55,6 +54,10 @@ group :development do
   gem "rails3-generators"
   gem 'thin'
   gem 'cheat'
+end
+
+group :test do
+  gem "cucumber-rails"
 end
 
 gem "haml"
