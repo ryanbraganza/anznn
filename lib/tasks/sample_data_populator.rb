@@ -35,12 +35,8 @@ def create_basic_survey
 
   question_options = read_hashes_from_csv(Rails.root.join("lib/tasks/main_survey_question_options.csv"))
   question_options.each do |qo|
-    section_order = qo.delete("section")
-    question_order = qo.delete("order")
-
-    section = Section.find_by_order(section_order)
-    question = Question.where(section_id: section.id, order: question_order).first
-
+    code = qo.delete("code")
+    question = Question.find_by_code(code)
     question.question_options.create!(qo)
   end
 
