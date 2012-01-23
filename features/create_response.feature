@@ -15,7 +15,6 @@ Feature: Create Response
     And I press "Save Survey"
     Then I should see "Survey created"
 
-  @wip
   Scenario: Saving a response
     Given I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to a simple survey

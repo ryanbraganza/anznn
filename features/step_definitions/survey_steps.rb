@@ -28,5 +28,5 @@ end
 
 Then /^I should see the simple questions with my previous answers$/ do
   question_field = find_field("question_#{simple_question.id}")
-  question_field.value.should =~ /^something$/
+  question_field.value.should eq "something"
 end
