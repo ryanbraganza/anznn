@@ -2,5 +2,6 @@
 
 FactoryGirl.define do
   factory :survey do
+    name "mysurvey"
   end
 end
