@@ -11,6 +11,9 @@ describe QuestionOption do
       first = Factory(:question_option)
       second = Factory.build(:question_option, question: first.question, option_order: first.option_order)
       second.should_not be_valid
+
+      under_different_question = Factory.build(:question_option, question: Factory(:question), option_order: first.option_order)
+      under_different_question.should be_valid
     end
   end
 end

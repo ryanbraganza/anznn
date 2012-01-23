@@ -1,3 +1,5 @@
+require 'csv'
+
 def populate_data
   load_password
 
@@ -7,9 +9,40 @@ def populate_data
 end
 
 def create_basic_survey
-  survey = Survey.create!
-  section = Section.create!(survey: survey)
-  q = Question.create!(question: 'What is the answer?', type: 'text', section: section, order: 0)
+  Survey.delete_all
+  Section.delete_all
+  Question.delete_all
+  QuestionOption.delete_all
+
+  survey = Survey.create!(name: "Main Survey")
+  sec1 = survey.sections.create!(order: 0)
+  sec2 = survey.sections.create!(order: 1)
+  sec3 = survey.sections.create!(order: 2)
+  sec4 = survey.sections.create!(order: 3)
+
+  questions = read_hashes_from_csv(Rails.root.join("lib/tasks/main_survey_questions.csv"))
+
+  questions.each do |hash|
+    section_order = hash['section']
+    order = hash['order']
+    question = hash['question']
+    type = hash['question_type']
+    section = survey.sections.find_by_order(section_order)
+
+    Question.create!(section_id: section.id, question: question, question_type: type, order: order)
+  end
+
+  question_options = read_hashes_from_csv(Rails.root.join("lib/tasks/main_survey_question_options.csv"))
+  question_options.each do |qo|
+    section_order = qo.delete("section")
+    question_order = qo.delete("order")
+
+    section = Section.find_by_order(section_order)
+    question = Question.where(section_id: section.id, order: question_order).first
+
+    question.question_options.create!(qo)
+  end
+
 end
 
 def create_test_users
@@ -31,8 +64,8 @@ def create_test_users
 end
 
 def set_role(email, role)
-  user      = User.where(email: email).first
-  role      = Role.where(name: role).first
+  user = User.where(email: email).first
+  role = Role.where(name: role).first
   user.role = role
   user.save!
 end
@@ -59,14 +92,14 @@ def load_password
 
   if Rails.env.development?
     puts "#{password_file} missing.\n" +
-         "Set sample user password:"
-          input = STDIN.gets.chomp
-          buffer = Hash[password: input]
-          Dir.mkdir("#{Rails.root}/tmp", 0755) unless Dir.exists?("#{Rails.root}/tmp")
-          Dir.mkdir("#{Rails.root}/tmp/env_config", 0755) unless Dir.exists?("#{Rails.root}/tmp/env_config")
-          File.open(password_file, 'w') do |out|
-            YAML::dump(buffer, out)
-          end
+             "Set sample user password:"
+    input = STDIN.gets.chomp
+    buffer = Hash[password: input]
+    Dir.mkdir("#{Rails.root}/tmp", 0755) unless Dir.exists?("#{Rails.root}/tmp")
+    Dir.mkdir("#{Rails.root}/tmp/env_config", 0755) unless Dir.exists?("#{Rails.root}/tmp/env_config")
+    File.open(password_file, 'w') do |out|
+      YAML::dump(buffer, out)
+    end
     @password = input
   else
     raise "No sample password file provided, and it is required for any environment that isn't development\n" +
@@ -74,3 +107,11 @@ def load_password
   end
 
 end
+
+def read_hashes_from_csv(file_name)
+  csv_data = CSV.read(file_name)
+  headers = csv_data.shift.map { |i| i.to_s }
+  string_data = csv_data.map { |row| row.map { |cell| cell.to_s } }
+  string_data.map { |row| Hash[*headers.zip(row).flatten] }
+end
+
