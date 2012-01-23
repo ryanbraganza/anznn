@@ -1,4 +1,4 @@
-section,order,ItemNameDB,question,question_type,ItemTypeName,MinValue,MaxValue,MissingValue,ValidValues
+section,order,code,question,question_type,ItemTypeName,MinValue,MaxValue,MissingValue,ValidValues
 0,0,Hospital,Registration hospital,Text,Text,,,,Not null
 0,1,MoAge,Maternal age,Integer,Integer,10,60,0,
 0,2,Prevprem,Previous preterm birth,Choice,Integer,-1,0,99,

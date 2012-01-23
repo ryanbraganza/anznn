@@ -27,9 +27,10 @@ def create_basic_survey
     order = hash['order']
     question = hash['question']
     type = hash['question_type']
+    code = hash['code']
     section = survey.sections.find_by_order(section_order)
 
-    Question.create!(section_id: section.id, question: question, question_type: type, order: order)
+    Question.create!(section_id: section.id, question: question, question_type: type, order: order, code: code)
   end
 
   question_options = read_hashes_from_csv(Rails.root.join("lib/tasks/main_survey_question_options.csv"))

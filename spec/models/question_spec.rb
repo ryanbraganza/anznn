@@ -22,6 +22,7 @@ describe Question do
     
     it { should validate_presence_of :section }
     it { should validate_presence_of :question }
+    it { should validate_presence_of :code }
     it { should validate_presence_of :question_type }
 
     it "should validate that question type is one of the allowed types" do
@@ -30,5 +31,6 @@ describe Question do
       end
       Factory.build(:question, question_type: "Blah").should_not be_valid
     end
+
   end
 end

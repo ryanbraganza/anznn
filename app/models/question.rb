@@ -7,6 +7,7 @@ class Question < ActiveRecord::Base
   validates_presence_of :section
   validates_presence_of :question
   validates_presence_of :question_type
+  validates_presence_of :code
 
   validates_uniqueness_of :order, scope: :section_id
 

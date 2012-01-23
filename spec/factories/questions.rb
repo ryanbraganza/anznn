@@ -6,5 +6,6 @@ FactoryGirl.define do
     question "What?"
     association :section
     question_type "Text"
+    code "What"
   end
 end
