@@ -17,3 +17,6 @@
 .sass-cache/
 coverage/
 rerun.txt
+
+# Ignore .idea directory
+/.idea
