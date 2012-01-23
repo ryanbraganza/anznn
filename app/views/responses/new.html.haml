@@ -1,13 +1,13 @@
-- title 'New Survey'
-%br
-%br
-%br
-%br
-%br
-%h1 New Survey
+- content_for :title do
+  = "New Survey"
+
 .row
   = form_for @response do |f|
     .formerror= render "shared/error_messages", target: @response
+    .rowform
+      = f.label :survey_id
+      = f.select :survey_id, options_from_collection_for_select(Survey.active, :id, :name)
+      = required
     .rowform
       = f.label :baby_code
       = f.text_field :baby_code
