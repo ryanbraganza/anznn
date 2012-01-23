@@ -5,5 +5,6 @@ FactoryGirl.define do
     sequence :order
     question "What?"
     association :section
+    question_type "Text"
   end
 end
