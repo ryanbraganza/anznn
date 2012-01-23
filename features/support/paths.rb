@@ -28,20 +28,20 @@ module NavigationHelpers
       edit_user_registration_path
 
     when /^the user details page for (.*)$/
-      user_path(User.where(:email => $1).first)
+      admin_user_path(User.where(:email => $1).first)
 
     when /^the edit role page for (.*)$/
-      edit_role_user_path(User.where(:email => $1).first)
+      edit_role_admin_user_path(User.where(:email => $1).first)
 
     when /^the reset password page$/
       edit_user_password_path
 
     # Users paths
     when /the access requests page/
-      access_requests_users_path
+      access_requests_admin_users_path
 
     when /the list users page/
-      users_path
+      admin_users_path
 
 # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:

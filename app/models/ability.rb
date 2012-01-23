@@ -27,11 +27,15 @@ class Ability
       can :reject, User
       can :approve, User
       can :manage, Response
+      can :update, Survey
     end
 
     if user.role.is_data_provider?
       can :manage, Response
     end
+
+    #All users can see all available surveys
+    can :read, Survey
 
     # Define abilities for the passed in user here. For example:
     #

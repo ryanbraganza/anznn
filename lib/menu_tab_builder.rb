@@ -1,0 +1,2 @@
+class MenuTabBuilder < GenericTabBuilder
+end

@@ -25,6 +25,6 @@
         - else
           = user.last_sign_in_at.localtime.strftime("%d/%m/%Y %I:%M%p")
       %td
-        = link_to "View Details", user, id: "view_#{user.id}"
+        = link_to "View Details", admin_user_path(user), id: "view_#{user.id}"
         - if can?(:update_role, User)
-          = link_to 'Edit role', edit_role_user_path(user), id: "edit_role_#{user.id}"
+          = link_to 'Edit role', edit_role_admin_user_path(user), id: "edit_role_#{user.id}"

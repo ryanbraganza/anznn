@@ -5,27 +5,6 @@ Anznn::Application.routes.draw do
     put "/users/update_password", :to => "user_registers#update_password" #allow users to edit their own password
   end
 
-  resources :users, :only => [:show] do
-
-    collection do
-      get :access_requests
-      get :index
-      get :admin
-    end
-
-    member do
-      put :reject
-      put :reject_as_spam
-      put :deactivate
-      put :activate
-      get :edit_role
-      put :update_role
-      get :edit_approval
-      put :approve
-
-    end
-  end
-
   resources :responses, :only => [:new, :create, :show]
 
 
@@ -35,7 +14,29 @@ Anznn::Application.routes.draw do
   end
 
   namespace :admin do
-    resources :surveys, :only => [:show, :index]
+    resources :surveys, :only => [:show, :index, :edit, :update]
+
+    resources :users, :only => [:show] do
+
+        collection do
+          get :access_requests
+          get :index
+          get :admin
+        end
+
+        member do
+          put :reject
+          put :reject_as_spam
+          put :deactivate
+          put :activate
+          get :edit_role
+          put :update_role
+          get :edit_approval
+          put :approve
+
+        end
+      end
+
   end
 
   root :to => "pages#home"

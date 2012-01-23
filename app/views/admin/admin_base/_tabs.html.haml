@@ -1,0 +1,4 @@
+= tabs_tag(builder: MenuTabBuilder, namespace: :admin_navigation) do |tab|
+  %ul.tabs
+    = tab.surveys 'Surveys', admin_surveys_path
+    = tab.users 'Users', admin_admin_users_path

@@ -6,10 +6,10 @@
       = tabs_tag(builder: MenuTabBuilder) do |tab|
         %ul.nav
           = tab.home 'Home', root_url
-          = tab.about 'Surveys', root_url
+          = tab.about 'About', "#"
         %ul.nav.secondary-nav
           - if user_signed_in?
-            = tab.admin 'Admin', admin_users_path
+            = tab.admin 'Admin', admin_surveys_path
             = tab.editaccount current_user.email, users_profile_path, class: "user"
             = tab.logout "Logout", destroy_user_session_path, class: "logout"
           - else
