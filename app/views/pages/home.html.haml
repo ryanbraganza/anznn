@@ -20,6 +20,9 @@
   %h2 New Survey Response
   =link_to "New", new_response_path
 
-  %h2 Incomplete Surveys you have started
-  %p This one
-  %p That one
+  - unless @user_started_responses.blank?
+    %h2 Incomplete Surveys you have started
+    - @user_started_responses.each do |r|
+      %p
+        = link_to r.baby_code, edit_response_path(r)
+        %small (#{r.survey.name}, Started #{distance_of_time_in_words_to_now(r.created_at)} ago)
