@@ -11,12 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120123043733) do
+ActiveRecord::Schema.define(:version => 20120124021535) do
 
   create_table "answers", :force => true do |t|
     t.integer "response_id"
     t.integer "question_id"
     t.text    "text_answer"
+    t.date    "date_answer"
+    t.time    "time_answer"
+    t.float   "decimal_answer"
+    t.integer "integer_answer"
   end
 
   create_table "question_options", :force => true do |t|
