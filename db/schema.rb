@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120123043733) do
+ActiveRecord::Schema.define(:version => 20120124002922) do
 
   create_table "answers", :force => true do |t|
     t.integer "response_id"
@@ -39,9 +39,11 @@ ActiveRecord::Schema.define(:version => 20120123043733) do
     t.string  "code"
     t.text    "description"
     t.text    "guide_for_use"
-    t.integer "number_min"
-    t.integer "number_max"
+    t.decimal "number_min"
+    t.decimal "number_max"
     t.integer "number_unknown"
+    t.integer "string_min"
+    t.integer "string_max"
   end
 
   create_table "responses", :force => true do |t|

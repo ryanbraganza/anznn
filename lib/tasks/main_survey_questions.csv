@@ -1,23 +1,22 @@
-section,order,code,question,question_type,ItemTypeName,MinValue,MaxValue,MissingValue,ValidValues
-0,0,Hospital,Registration hospital,Text,Text,,,,Not null
-0,1,MoAge,Maternal age,Integer,Integer,10,60,0,
-0,2,Prevprem,Previous preterm birth,Choice,Integer,-1,0,99,
-0,3,PrevPnd,Previous perinatal death,Choice,Integer,-1,0,99,
-0,4,AssistConc,Assisted conception in this pregnancy,Choice,Integer,1,4,0,
-0,5,Ethnicity,Ethnicity of mother,Choice,Integer,1,6,0,
-1,0,PROMDATE,Date of Rupture of membranes,Date,Date,,,,
-1,1,PROMTIME,Time of Rupture of membranes,Time,Time,,,,
-1,2,MomAntib,Systemic antibiotics given to mother within 48 hours of birth,Choice,Integer,-1,0,99,
-2,0,DOB,Date of birth,Date,Date,,,,
-2,1,DOBTime,Time of birth,Time,Time,,,,
-2,2,DOA,Admission date,Date,Date,,,,
-2,3,DOATime,Time of Admission,Time,Time,,,,
-2,4,SEX,Sex,Choice,Integer,1,3,0,
-2,5,Wght,Infant Birth weight - neonate,Integer,Long Integer,500,5000,9999,
-3,0,Gest,Gestational age,Integer,Single,20,45,99
-3,1,PlBrth,Place of birth,Choice,Integer,1,4,0
-3,2,PBTH,Hospital of birth,Text,Text,,,
-3,3,Anomdesc,"Congenital malformations, specify",Text,Text,,,
-3,4,Temp,Temperature on admission,Decimal,Single,33,38.5,0
-3,5,Worst_BE,Worst base excess,Decimal,Single,-70,70,99
-3,6,Wght,Infant Birth weight - neonate,Integer,Long Integer,500,5000,9999
+section,order,code,question,question_type,number_min,number_max,number_unknown,string_min,string_max
+0,0,Hospital,Registration hospital,Text,,,,8,8
+0,1,MoAge,Maternal age,Integer,10,60,0,,
+0,2,Prevprem,Previous preterm birth,Choice,-1,0,99,,
+0,3,PrevPnd,Previous perinatal death,Choice,-1,0,99,,
+0,4,AssistConc,Assisted conception in this pregnancy,Choice,1,4,0,,
+0,5,Ethnicity,Ethnicity of mother,Choice,1,6,0,,
+1,0,PROMDATE,Date of Rupture of membranes,Date,,,,,
+1,1,PROMTIME,Time of Rupture of membranes,Time,,,,,
+1,2,MomAntib,Systemic antibiotics given to mother within 48 hours of birth,Choice,-1,0,99,,
+2,0,DOB,Date of birth,Date,,,,,
+2,1,DOBTime,Time of birth,Time,,,,,
+2,2,DOA,Admission date,Date,,,,,
+2,3,DOATime,Time of Admission,Time,,,,,
+2,4,SEX,Sex,Choice,1,3,0,,
+2,5,Wght,Infant Birth weight - neonate,Integer,500,5000,9999,,
+3,0,Gest,Gestational age,Integer,20,45,99,,
+3,1,PlBrth,Place of birth,Choice,1,4,0,,
+3,2,PBTH,Hospital of birth,Text,,,,8,8
+3,3,Anomdesc,"Congenital malformations, specify",Text,,,,3,7
+3,4,Temp,Temperature on admission,Decimal,33,38.5,0,,
+3,5,Worst_BE,Worst base excess,Decimal,-70,70,99,,
