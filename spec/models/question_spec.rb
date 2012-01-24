@@ -27,7 +27,8 @@ describe Question do
     it { should validate_numericality_of(:number_min) }
     it { should validate_numericality_of(:number_max) }
     it { should validate_numericality_of(:number_unknown) }
-
+    it { should validate_numericality_of(:string_min) }
+    it { should validate_numericality_of(:string_max) }
 
     it "should validate that question type is one of the allowed types" do
       %w(Text Date Time Choice Decimal Integer).each do |value|
@@ -48,6 +49,20 @@ describe Question do
       Factory(:question, number_min: nil, number_max: 99, number_unknown: nil).validate_number_range?.should be_true
       Factory(:question, number_min: 1, number_max: 99, number_unknown: nil).validate_number_range?.should be_true
       Factory(:question, number_min: 1, number_max: 99, number_unknown: 2).validate_number_range?.should be_true
+    end
+  end
+
+  describe "Validate string length method" do
+    it "should return false if both min and max are nil" do
+      Factory(:question, string_min: nil, string_max: nil).validate_string_length?.should be_false
+      Factory(:question, string_min: nil, string_max: nil).validate_string_length?.should be_false
+    end
+
+    it "should return true if either min or max is set" do
+      Factory(:question, string_min: 1, string_max: nil).validate_string_length?.should be_true
+      Factory(:question, string_min: nil, string_max: 99).validate_string_length?.should be_true
+      Factory(:question, string_min: 1, string_max: 99).validate_string_length?.should be_true
+      Factory(:question, string_min: 1, string_max: 99).validate_string_length?.should be_true
     end
   end
 end

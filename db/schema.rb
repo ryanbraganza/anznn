@@ -43,9 +43,12 @@ ActiveRecord::Schema.define(:version => 20120124021535) do
     t.string  "code"
     t.text    "description"
     t.text    "guide_for_use"
-    t.integer "number_min"
-    t.integer "number_max"
+    t.decimal "number_min"
+    t.decimal "number_max"
     t.integer "number_unknown"
+    t.integer "string_min"
+    t.integer "string_max"
+    t.text    "data_domain"
   end
 
   create_table "responses", :force => true do |t|
