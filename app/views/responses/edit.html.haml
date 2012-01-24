@@ -21,9 +21,10 @@
             .input
               = text_field_tag "answers[#{q.id}]", @question_id_to_answers[q.id], id: field_id, class: 'xxlarge', placeholder: 'something'
               %span.help-block= HelpTextGenerator.new(q).help_text
+              = text_field_tag "answers[#{q.id}]", @question_id_to_answers[q.id], id: field_id, class: 'xxlarge field_trigger', placeholder: 'something', data: {fieldinfo: q.guide_for_use}
         .actions
           = submit_tag 'Save page', class: "btn primary"
           %a.btn Cancel
   .span4
     %h2 Field Information
-    %p dwaib aw abdaoubuah  wajd aho auuho awdb uhaaw ba haw  aob huoa oua b ahu douh bad buoawjb  daod ahdhua iud akdk amld jlawd jawbda wbhd boa bdahw duaw dbau dauha hbuawdauwhdbu awdahhb dahdjawb a oudbaw dkbad biad oaufoua yfawuo dabudb haua owad baj dajdb  abjdjbahj dawj da
+    %p#field_info Select a field to view its information.
