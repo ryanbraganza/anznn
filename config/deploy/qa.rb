@@ -1,7 +1,7 @@
 # Your HTTP server, Apache/etc
-role :web, 'qaserver.intersect.org.au'
+role :web, 'gsw1-anznn-qa.intersect.org.au'
 # This may be the same as your Web server
-role :app, 'qaserver.intersect.org.au'
+role :app, 'gsw1-anznn-qa.intersect.org.au'
 # This is where Rails migrations will run
-role :db,  'qaserver.intersect.org.au', :primary => true
+role :db,  'gsw1-anznn-qa.intersect.org.au', :primary => true
 
