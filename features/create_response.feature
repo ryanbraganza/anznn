@@ -18,7 +18,7 @@ Feature: Create Response
   Scenario: Saving a response
     Given I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to a simple survey
-    And I am on the first response page
+    And I am on the edit first response page
     Then I should see the simple questions
     When I answer the simple questions
     And press "Save page"

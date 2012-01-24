@@ -1,0 +1,28 @@
+%h1= "Editing form #{@response.survey.name}"
+.pagination
+  %ul
+    %li.prev.disabled
+      %a &larr; Previous
+    - 1.upto(10) do |i|
+      - is_active = i == 7
+      %li{class: ('active' if is_active)}
+        %a= i
+    %li.next.disabled
+      %a Next &rarr;
+.row
+  .span12
+    = form_tag response_path(@response), method: :put do
+      %fieldset
+        %legend Section x
+        - @questions.each do |q|
+          - field_id = "question_#{q.id}"
+          .clearfix
+            = label_tag field_id, q.question
+            .input
+              = text_field_tag "answers[#{q.id}]", @question_id_to_answers[q.id], id: field_id, class: 'xxlarge', placeholder: 'something'
+        .actions
+          = submit_tag 'Save page', class: "btn primary"
+          %a.btn Cancel
+  .span4
+    %h2 Field Information
+    %p dwaib aw abdaoubuah  wajd aho auuho awdb uhaaw ba haw  aob huoa oua b ahu douh bad buoawjb  daod ahdhua iud akdk amld jlawd jawbda wbhd boa bdahw duaw dbau dauha hbuawdauwhdbu awdahhb dahdjawb a oudbaw dkbad biad oaufoua yfawuo dabudb haua owad baj dajdb  abjdjbahj dawj da

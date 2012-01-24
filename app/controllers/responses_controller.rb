@@ -10,13 +10,13 @@ class ResponsesController < ApplicationController
     @response.survey = Survey.first  # TODO support multiple surveys
     @response.user = current_user
     if @response.save
-      redirect_to response_path(@response), notice: 'Survey created'
+      redirect_to edit_response_path(@response), notice: 'Survey created'
     else
       render :new
     end
   end
 
-  def show
+  def edit 
     @questions = @response.survey.sections.first.questions
     answers = @response.answers
     @question_id_to_answers = answers.reduce({}){|hash, answer| hash[answer.question_id] = answer.text_answer; hash}
@@ -31,6 +31,6 @@ class ResponsesController < ApplicationController
         answer.save!
       end
     end
-    redirect_to response_path(@response), notice: 'Saved page'
+    redirect_to edit_response_path(@response), notice: 'Saved page'
   end
 end

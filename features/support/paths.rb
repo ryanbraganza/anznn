@@ -43,8 +43,8 @@ module NavigationHelpers
     when /the list users page/
       admin_users_path
 
-    when /the first response page$/
-      response_path Response.first
+    when /the edit first response page$/
+      edit_response_path Response.first
 
 # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
