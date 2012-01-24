@@ -2,16 +2,24 @@
 
 !function($){
   $(document).ready(function(){
+
     var $field_trigger = $('.field_trigger');
     var $field_info = $('#field_info');
     var initial_text = $field_info.text();
 
     $field_trigger.focus(function(){
-      var field_info = $(this).data('fieldinfo');
-      $field_info.text(field_info);
+      var guide_for_use = $(this).data('guide');
+      var description = $(this).data('description');
+
+      var formatted = $('<div><h2 class="desc""></h2><p class="desc-body"><p class="guide-body"> </div>');
+      formatted.find('.desc-body').text(description);
+      formatted.find('.guide-body').text(guide_for_use);
+      $field_info.html(formatted);
     });
+
     $field_trigger.blur(function(){
       $field_info.text(initial_text);
     });
+
   });
 }(jQuery);
