@@ -9,11 +9,11 @@ class HelpTextGenerator
 
   def help_text
     if question.type_text?
-      format_hint_for_text_type
+      help_text_for_text_type
     elsif question.type_integer?
-      format_hint_for_number_type("Number")
+      help_text_for_number_type("Number")
     elsif question.type_decimal?
-      format_hint_for_number_type("Decimal number")
+      help_text_for_number_type("Decimal number")
     else
       nil
     end
@@ -22,12 +22,16 @@ class HelpTextGenerator
 
   private
 
-  def format_hint_for_text_type
+  def help_text_for_text_type
     if question.validate_string_length?
       min = question.string_min
       max = question.string_max
       if min && max
-        "Text between #{min} and #{max} characters long"
+        if min == max
+          "Text #{min} characters long"
+        else
+          "Text between #{min} and #{max} characters long"
+        end
       elsif min
         "Text at least #{min} characters long"
       else
@@ -38,7 +42,7 @@ class HelpTextGenerator
     end
   end
 
-  def format_hint_for_number_type(prefix)
+  def help_text_for_number_type(prefix)
     if question.validate_number_range?
       min = question.number_min
       max = question.number_max

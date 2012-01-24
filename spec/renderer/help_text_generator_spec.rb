@@ -16,6 +16,9 @@ describe HelpTextGenerator do
       it "should return hint with size details for question with range limits (both min and max)" do
         help_text(question_type: Question::TYPE_TEXT, string_min: 10, string_max: 25).should eq("Text between 10 and 25 characters long")
       end
+      it "should return hint with size details for question with range limits (both min and max the same)" do
+        help_text(question_type: Question::TYPE_TEXT, string_min: 10, string_max: 10).should eq("Text 10 characters long")
+      end
       it "should return hint with size details for question with range limits (min only)" do
         help_text(question_type: Question::TYPE_TEXT, string_min: 10, string_max: nil).should eq("Text at least 10 characters long")
       end
