@@ -17,9 +17,12 @@
         - @questions.each do |q|
           - field_id = "question_#{q.id}"
           .clearfix{id: "container_#{q.id}"}
-            = label_tag field_id, q.question
+            = label_tag field_id, q.question, class: 'domain', title: q.data_domain.gsub(/\n/m, '<br>')
             .input
-              = text_field_tag "answers[#{q.id}]", @question_id_to_answers[q.id], id: field_id, class: 'xxlarge field_trigger', placeholder: 'something', data: {description: q.description, guide: q.guide_for_use}
+              = text_field_tag "answers[#{q.id}]", @question_id_to_answers[q.id],
+                id: field_id,
+                class: 'xxlarge field_trigger',
+                data: {description: q.description, guide: q.guide_for_use}
               %span.help-block= HelpTextGenerator.new(q).help_text
         .actions
           = submit_tag 'Save page', class: "btn primary"

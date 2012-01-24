@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120124002922) do
+ActiveRecord::Schema.define(:version => 20120124043439) do
 
   create_table "answers", :force => true do |t|
     t.integer "response_id"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(:version => 20120124002922) do
     t.integer "number_unknown"
     t.integer "string_min"
     t.integer "string_max"
+    t.text    "data_domain"
   end
 
   create_table "responses", :force => true do |t|

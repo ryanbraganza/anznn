@@ -11,7 +11,7 @@
       var guide_for_use = $(this).data('guide');
       var description = $(this).data('description');
 
-      var formatted = $('<div><h2 class="desc""></h2><p class="desc-body"><p class="guide-body"> </div>');
+      var formatted = $('<div><h3>Definition</h3><p class="desc-body"><h3>Guide For Use</h3><p class="guide-body"> </div>');
       formatted.find('.desc-body').text(description);
       formatted.find('.guide-body').text(guide_for_use);
       $field_info.html(formatted);
@@ -20,6 +20,7 @@
     $field_trigger.blur(function(){
       $field_info.text(initial_text);
     });
+    $('label.domain').tooltip();
 
   });
 }(jQuery);
