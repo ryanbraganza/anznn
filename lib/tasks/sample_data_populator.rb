@@ -45,6 +45,7 @@ def create_test_users
   create_user(email: "alexb@intersect.org.au", first_name: "Alex", last_name: "Bradner")
   create_user(email: "diego@intersect.org.au", first_name: "Diego", last_name: "Alonso de Marcos")
   create_user(email: "shuqian@intersect.org.au", first_name: "Shuqian", last_name: "Hon")
+  create_user(email: "dataprovider@intersect.org.au", first_name: "Data", last_name: "Provider")
   create_unapproved_user(email: "unapproved1@intersect.org.au", first_name: "Unapproved", last_name: "One")
   create_unapproved_user(email: "unapproved2@intersect.org.au", first_name: "Unapproved", last_name: "Two")
   set_role("sean@intersect.org.au", "Administrator")
@@ -53,6 +54,7 @@ def create_test_users
   set_role("alexb@intersect.org.au", "Administrator")
   set_role("diego@intersect.org.au", "Administrator")
   set_role("shuqian@intersect.org.au", "Administrator")
+  set_role("dataprovider@intersect.org.au", "Data Provider")
 
 end
 
