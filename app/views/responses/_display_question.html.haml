@@ -1,33 +1,37 @@
 - field_id = "question_#{q.id}"
 - answer = @question_id_to_answers[q.id]
 
-.clearfix
-  = label_tag field_id, q.question
+.clearfix{id: "container_#{q.id}"}
+  = label_tag field_id, q.question, class: 'domain', title: q.data_domain.gsub(/\n/m, '<br>')
   .input
     - case q.question_type
       - when 'Text'
         = text_field_tag "answers[#{q.id}]", answer, id: field_id, class: 'xxlarge', placeholder: 'Text Response'
       - when 'Date'
-        -#- Rails.logger.debug "Answer: #{answer.class}"
-        -#- default = Date.new(answer) if answer
-        -#= date_select "answers[#{q.id}]", "", id: field_id, use_month_numbers: true, order: [:day, :month, :year], include_blank: true, :default => answer
-        .input
-          %select.small{name: "Day", placeholder: "Day"}
-            %option{value: "", disabled: "disabled"} Day
-            - 31.times do |i|
-              %option= i
-          <span>/</span>
-          %select.small{name: "Month"}
-            %option{value: "", disabled: "disabled"} Month
-            %option 1
-            %option 2
-          <span>/</span>
-          %select.small{name: "Year"}
-            %option{value: "", disabled: "disabled"} Year
-            %option 2001
-            %option 2002
+        %select.small{name: "answers[#{q.id}][day]", placeholder: "Day"}
+          %option{value: "", disabled: "disabled"} Day
+          - 31.times do |i|
+            %option= i+1
+        %span
+        %select.small{name: "answers[#{q.id}][month]"}
+          %option{value: "", disabled: "disabled"} Month
+          - 12.times do |i|
+            %option= i+1
+        %span
+        %select.small{name: "answers[#{q.id}][year]"}
+          %option{value: "", disabled: "disabled"} Year
+          - for i in (Time.now.year - 10)..(Time.now.year)
+            %option= i
       - when 'Time'
-        (Time Questions not implemented)
+        %select.small{name: "answers[#{q.id}][hour]", placeholder: "Hour"}
+          %option{value: "", disabled: "disabled"} Hour
+          - 24.times do |i|
+            %option= i
+        %span
+        %select.small{name: "answers[#{q.id}][min]"}
+          %option{value: "", disabled: "disabled"} Min
+          - 60.times do |i|
+            %option= i
       - when 'Choice'
         (Choice Questions not implemented)
       - when 'Decimal'
@@ -36,5 +40,10 @@
         (Integer Questions not implemented)
       - else
         Question type not recognised!
+    %span.help-block= HelpTextGenerator.new(q).help_text
 
 
+-#= text_field_tag "answers[#{q.id}]", @question_id_to_answers[q.id],
+-#  id: field_id,
+-#  class: 'xxlarge field_trigger',
+-#  data: {description: q.description, guide: q.guide_for_use}

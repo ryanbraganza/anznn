@@ -16,18 +16,23 @@ class ResponsesController < ApplicationController
     end
   end
 
-  def edit 
-    @questions = @response.survey.sections.first.questions
-    answers = @response.answers
-    @question_id_to_answers = answers.reduce({}){|hash, answer| hash[answer.question_id] = answer.text_answer; hash}
+  def edit
+      @questions = []
+    @response.survey.sections.each do |sect|
+      sect.questions.each do |qn|
+        @questions << qn
+      end
+    end
+    @question_id_to_answers = @response.question_id_to_answers
   end
 
   def update
     answers_to_update = params[:answers].map{|id, val| [id.to_i, val]}
     Answer.transaction do
+      
       answers_to_update.each do |q_id, answer_value|
         answer = Answer.find_or_create_by_response_id_and_question_id(@response.id, q_id)
-        answer.text_answer = answer_value
+        answer.sanitise_input(answer_value, Question.find(q_id).question_type)
         answer.save!
       end
     end
