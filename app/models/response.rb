@@ -16,7 +16,7 @@ class Response < ActiveRecord::Base
           rescue NoMethodError
             nil
           end
-      Rails.logger.debug "Qn #{answer.question_id}: #{hash[answer.question_id]}"
+      #Rails.logger.debug "Qn #{answer.question_id}: #{hash[answer.question_id]}"
       hash
     end
   end

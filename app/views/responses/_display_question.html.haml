@@ -8,30 +8,17 @@
       - when 'Text'
         = text_field_tag "answers[#{q.id}]", answer, id: field_id, class: 'xxlarge', placeholder: 'Text Response'
       - when 'Date'
-        %select.small{name: "answers[#{q.id}][day]", placeholder: "Day"}
-          %option{value: "", disabled: "disabled"} Day
-          - 31.times do |i|
-            %option= i+1
-        %span
-        %select.small{name: "answers[#{q.id}][month]"}
-          %option{value: "", disabled: "disabled"} Month
-          - 12.times do |i|
-            %option= i+1
-        %span
-        %select.small{name: "answers[#{q.id}][year]"}
-          %option{value: "", disabled: "disabled"} Year
-          - for i in (Time.now.year - 10)..(Time.now.year)
-            %option= i
+        - day = answer.nil? ? nil : answer.day
+        - month = answer.nil? ? nil : answer.month
+        - year = answer.nil? ? nil : answer.year
+        = select_day(day, field_name: "#{q.id}][day", class: "small", id: field_id, prompt: true, prefix: "answers")
+        = select_month(month, field_name: "#{q.id}][month", class: "small", id: field_id, prompt: true, prefix: "answers", use_month_numbers: true)
+        = select_year(year, field_name: "#{q.id}][year", class: "small", id: field_id, prompt: true, prefix: "answers")
       - when 'Time'
-        %select.small{name: "answers[#{q.id}][hour]", placeholder: "Hour"}
-          %option{value: "", disabled: "disabled"} Hour
-          - 24.times do |i|
-            %option= i
-        %span
-        %select.small{name: "answers[#{q.id}][min]"}
-          %option{value: "", disabled: "disabled"} Min
-          - 60.times do |i|
-            %option= i
+        - hour = answer.nil? ? nil : answer.hour
+        - min = answer.nil? ? nil : answer.min
+        = select_hour(hour, field_name: "#{q.id}][hour", class: "small", id: field_id, prompt: true, prefix: "answers")
+        = select_minute(min, field_name: "#{q.id}][min", class: "small", id: field_id, prompt: true, prefix: "answers")
       - when 'Choice'
         (Choice Questions not implemented)
       - when 'Decimal'
@@ -46,4 +33,4 @@
 -#= text_field_tag "answers[#{q.id}]", @question_id_to_answers[q.id],
 -#  id: field_id,
 -#  class: 'xxlarge field_trigger',
--#  data: {description: q.description, guide: q.guide_for_use}
+-#

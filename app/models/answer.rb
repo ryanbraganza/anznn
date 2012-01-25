@@ -11,14 +11,23 @@ class Answer < ActiveRecord::Base
         when 'Text'
           self.text_answer = answer_value
         when 'Date'
-          begin
-            date = Date.civil answer_value["(1i)"].to_i, answer_value["(2i)"].to_i, answer_value["(3i)"].to_i
-          rescue ArgumentError
-            date = nil
-          end
-          self.date_answer = date
+          self.date_answer =
+            begin
+              Date.civil answer_value["year"].to_i, answer_value["month"].to_i, answer_value["day"].to_i
+            rescue ArgumentError
+              nil #TODO this is a validation failure (or blank?)
+            end
         when 'Time'
-          self.time_answer = assign_multiparameter_attributes(answer_value)
+          self.time_answer =
+            begin
+              if answer_value["hour"].blank? || answer_value["min"].blank?
+                nil
+              else
+                Time.utc 2000,1,1, answer_value["hour"].to_i, answer_value["min"].to_i
+              end
+            rescue ArgumentError
+              nil #TODO this is a validation failure (or blank?)
+            end
         when 'Choice'
           raise "Choice qn type Not Implemented"
         when 'Decimal'

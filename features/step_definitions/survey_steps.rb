@@ -21,7 +21,7 @@ end
 def create_simple_survey
   survey = Survey.create!(name: 'simple')
   section = Section.create!(survey: survey, order: 1)
-  q = Question.create!(question: 'What is the answer?', section: section, order: 1, question_type: "Text", code: "What")
+  q = Question.create!(question: 'What is the answer?', section: section, order: 1, question_type: "Text", code: "What", data_domain: "")
   $simple_survey = survey
 end
 
