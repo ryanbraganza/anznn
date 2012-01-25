@@ -9,6 +9,8 @@ def populate_data
 end
 
 def create_basic_survey
+  include CsvOperations
+
   Survey.delete_all
   Section.delete_all
   Question.delete_all
@@ -40,11 +42,12 @@ end
 
 def create_test_users
   create_user(email: "sean@intersect.org.au", first_name: "Sean", last_name: "McCarthy")
-  create_user(email: "georgina@intersect.org.au", first_name: "Georgina", last_name: "Edwards")
-  create_user(email: "veronica@intersect.org.au", first_name: "Veronica", last_name: "Luke")
-  create_user(email: "alexb@intersect.org.au", first_name: "Alex", last_name: "Bradner")
-  create_user(email: "diego@intersect.org.au", first_name: "Diego", last_name: "Alonso de Marcos")
-  create_user(email: "shuqian@intersect.org.au", first_name: "Shuqian", last_name: "Hon")
+    create_user(email: "georgina@intersect.org.au", first_name: "Georgina", last_name: "Edwards")
+    create_user(email: "veronica@intersect.org.au", first_name: "Veronica", last_name: "Luke")
+    create_user(email: "alexb@intersect.org.au", first_name: "Alex", last_name: "Bradner")
+    create_user(email: "kali@intersect.org.au", first_name: "Kali", last_name: "Waterford")
+    create_user(email: "diego@intersect.org.au", first_name: "Diego", last_name: "Alonso de Marcos")
+    create_user(email: "shuqian@intersect.org.au", first_name: "Shuqian", last_name: "Hon")
   create_user(email: "dataprovider@intersect.org.au", first_name: "Data", last_name: "Provider")
   create_unapproved_user(email: "unapproved1@intersect.org.au", first_name: "Unapproved", last_name: "One")
   create_unapproved_user(email: "unapproved2@intersect.org.au", first_name: "Unapproved", last_name: "Two")
@@ -52,6 +55,7 @@ def create_test_users
   set_role("georgina@intersect.org.au", "Administrator")
   set_role("veronica@intersect.org.au", "Administrator")
   set_role("alexb@intersect.org.au", "Administrator")
+  set_role("kali@intersect.org.au", "Administrator")
   set_role("diego@intersect.org.au", "Administrator")
   set_role("shuqian@intersect.org.au", "Administrator")
   set_role("dataprovider@intersect.org.au", "Data Provider")
@@ -103,10 +107,4 @@ def load_password
 
 end
 
-def read_hashes_from_csv(file_name)
-  csv_data = CSV.read(file_name)
-  headers = csv_data.shift.map { |i| i.to_s }
-  string_data = csv_data.map { |row| row.map { |cell| cell.to_s } }
-  string_data.map { |row| Hash[*headers.zip(row).flatten] }
-end
 

@@ -25,4 +25,4 @@
     - @user_started_responses.each do |r|
       %p
         = link_to r.baby_code, edit_response_path(r)
-        %small (#{r.survey.name}, Started #{distance_of_time_in_words_to_now(r.created_at)} ago)
+        %small #{r.survey.name}, Started #{distance_of_time_in_words_to_now(r.created_at)} ago
