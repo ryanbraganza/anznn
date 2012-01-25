@@ -2,5 +2,8 @@
 
 FactoryGirl.define do
   factory :response do
-    end
+    association :survey
+    association :user
+    baby_code "Blah"
+  end
 end

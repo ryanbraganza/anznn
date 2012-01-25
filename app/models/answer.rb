@@ -38,6 +38,14 @@ class Answer < ActiveRecord::Base
           raise "Question type not recognised!"
       end
     end
+  end
 
+  attr_accessor :warning
+
+  def compute_warnings
+    if question.type_text?
+      passed, message = StringLengthValidator.validate(question, self.text_answer)
+      self.warning = message unless passed
+    end
   end
 end

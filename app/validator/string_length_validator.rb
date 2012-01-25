@@ -1,17 +1,21 @@
 class StringLengthValidator
+
   #TODO: this may end up elsewhere, just putting it here for now so we can get started on the story
   def self.validate(question, answer_value)
-    return true unless question.validate_string_length?
-    return true if answer_value.blank?
+    return [true, nil] unless question.validate_string_length?
+    return [true, nil] if answer_value.blank?
 
     if question.string_min
-      return false if answer_value.length < question.string_min
+      return [false, message(question)] if answer_value.length < question.string_min
     end
     if question.string_max
-      return false if answer_value.length > question.string_max
+      return [false, message(question)] if answer_value.length > question.string_max
     end
-    return true
+    return [true, nil]
   end
 
-  
+  private
+  def self.message(question)
+    StringLengthFormatter.new(question).range_text("Answer should be")
+  end
 end

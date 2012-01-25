@@ -2,5 +2,6 @@
 
 FactoryGirl.define do
   factory :answer do
-    end
+    association :response
+  end
 end

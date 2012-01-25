@@ -16,6 +16,6 @@ Feature: Show hints to user on survey page
     Given I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
     And I am on the edit first response page
-    Then I should see help text "Text between 5 and 10 characters long" for question "Text Q"
+    Then I should see help text "Text between 5 and 10 characters" for question "Text Q"
     Then I should see help text "Number between -100 and 500" for question "Integer Q"
-    Then I should see help text "Decimal number up to 10 or 99 for unknown" for question "Decimal Q"
+    Then I should see help text "Decimal number a maximum of 10 or 99 for unknown" for question "Decimal Q"
