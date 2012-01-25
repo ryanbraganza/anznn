@@ -6,4 +6,6 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.tooltip.js
+//= require help_text.js
 //= require_tree .

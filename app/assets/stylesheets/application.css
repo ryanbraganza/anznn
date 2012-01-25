@@ -6,4 +6,5 @@
  *= require bootstrap
  *= require bootstrap-overrides
  *= require master
+ *= require jquery.tooltip
 */
