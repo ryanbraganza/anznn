@@ -20,7 +20,7 @@
     $field_trigger.blur(function(){
       $field_info.text(initial_text);
     });
-    $('label.domain').tooltip();
+    $('label.data-domain').tooltip();
 
   });
 }(jQuery);

@@ -2,23 +2,35 @@
 - answer = @question_id_to_answers[q.id]
 
 .clearfix{id: "container_#{q.id}"}
-  = label_tag field_id, q.question, class: 'domain', title: (q.data_domain ? q.data_domain.gsub(/\n/m, '<br>') : "")
+  = label_tag field_id, q.question, class: 'data-domain', title: (q.data_domain ? q.data_domain.gsub(/\n/m, '<br>') : "")
   .input
     - case q.question_type
       - when 'Text'
-        = text_field_tag "answers[#{q.id}]", answer, id: field_id, class: 'xxlarge', placeholder: 'Text Response'
+        = text_field_tag "answers[#{q.id}]", answer, id: field_id, placeholder: 'Text Response',
+          class: 'xxlarge field_trigger',
+          data: {description: q.description, guide: q.guide_for_use}
       - when 'Date'
         - day = answer.nil? ? nil : answer.day
         - month = answer.nil? ? nil : answer.month
         - year = answer.nil? ? nil : answer.year
-        = select_day(day, field_name: "#{q.id}][day", class: "small", id: field_id, prompt: true, prefix: "answers")
-        = select_month(month, field_name: "#{q.id}][month", class: "small", id: field_id, prompt: true, prefix: "answers", use_month_numbers: true)
-        = select_year(year, field_name: "#{q.id}][year", class: "small", id: field_id, prompt: true, prefix: "answers")
+        = select_day(day, {field_name: "#{q.id}][day", prompt: true, prefix: "answers"},
+          class: "small field_trigger",
+          data: {description: q.description, guide: q.guide_for_use})
+        = select_month(month, {field_name: "#{q.id}][month", prompt: true, prefix: "answers", use_month_numbers: true},
+          class: "small field_trigger",
+          data: {description: q.description, guide: q.guide_for_use})
+        = select_year(year, {field_name: "#{q.id}][year", prompt: true, prefix: "answers"},
+          class: "small field_trigger",
+          data: {description: q.description, guide: q.guide_for_use})
       - when 'Time'
         - hour = answer.nil? ? nil : answer.hour
         - min = answer.nil? ? nil : answer.min
-        = select_hour(hour, field_name: "#{q.id}][hour", class: "small", id: field_id, prompt: true, prefix: "answers")
-        = select_minute(min, field_name: "#{q.id}][min", class: "small", id: field_id, prompt: true, prefix: "answers")
+        = select_hour(hour, {field_name: "#{q.id}][hour", prompt: true, prefix: "answers"},
+          class: "small field_trigger",
+          data: {description: q.description, guide: q.guide_for_use})
+        = select_minute(min, {field_name: "#{q.id}][min", prompt: true, prefix: "answers"},
+          class: "small field_trigger",
+          data: {description: q.description, guide: q.guide_for_use})
       - when 'Choice'
         (Choice Questions not implemented)
       - when 'Decimal'
@@ -28,9 +40,3 @@
       - else
         Question type not recognised!
     %span.help-block= HelpTextGenerator.new(q).help_text
-
-
--#= text_field_tag "answers[#{q.id}]", @question_id_to_answers[q.id],
--#  id: field_id,
--#  class: 'xxlarge field_trigger',
--#
