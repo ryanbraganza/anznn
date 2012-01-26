@@ -2,7 +2,7 @@
 - answer = @question_id_to_answers[q.id]
 - answer = @response.answers.build(question: q) unless answer
 
-.clearfix{id: "container_#{q.id}"}
+%div{id: "container_#{q.id}", class: answer.has_warning? ? "clearfix warning" : "clearfix"}
   = label_tag field_id, q.question, class: 'data-domain', title: (q.data_domain ? q.data_domain.gsub(/\n/m, '<br>') : "")
   .input
     - case q.question_type
@@ -40,4 +40,8 @@
         (Integer Questions not implemented)
       - else
         Question type not recognised!
-    %span.help-block= HelpTextGenerator.new(q).help_text
+    %span.help-block
+      - if answer.has_warning?
+        = answer.warning
+      - else
+        = HelpTextGenerator.new(q).help_text

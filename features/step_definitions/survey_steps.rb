@@ -10,7 +10,7 @@ Given /^I have a survey with name "([^"]*)" and questions$/ do |name, table|
   end
 end
 
-Given /^"(.*)" created a response to a simple survey$/ do | email |
+Given /^"(.*)" created a response to a simple survey$/ do |email|
   create_response($simple_survey, email)
 end
 
@@ -47,9 +47,43 @@ Then /^I should see the simple questions with my previous answers$/ do
   question_field.value.should eq "something"
 end
 
+When /^I answer "([^"]*)" with "([^"]*)"$/ do |q, a|
+  question = Question.find_by_question(q)
+  fill_in "question_#{question.id}", :with => a
+end
+
 Then /^I should see help text "([^"]*)" for question "([^"]*)"$/ do |text, question_label|
+  question = question_div(question_label)
+
+  classes = question[:class].split(" ")
+  classes.include?("warning").should be_false
+
+  help_text = question.find(".help-block")
+  help_text.text.gsub("\n", "").should eq(text)
+end
+
+Then /^I should see warning "([^"]*)" for question "([^"]*)"$/ do |warning, question_label|
+  question = question_div(question_label)
+
+  classes = question[:class].split(" ")
+  classes.include?("warning").should be_true
+
+  warning_text = question.find(".help-block")
+  warning_text.text.gsub("\n", "").should eq(warning)
+end
+
+Then /^I should see no warnings$/ do
+  page.should_not have_css(".warning")
+end
+
+Then /^"([^"]*)" should have no warning$/ do |question_label|
+  question = question_div(question_label)
+
+  classes = question[:class].split(" ")
+  classes.include?("warning").should be_false
+end
+
+def question_div(question_label)
   question = Question.find_by_question(question_label)
-  containing_div = find("#container_#{question.id}")
-  help_text = containing_div.find(".help-block")
-  help_text.should have_content(text)
+  find("#container_#{question.id}")
 end

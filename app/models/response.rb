@@ -10,4 +10,8 @@ class Response < ActiveRecord::Base
   def question_id_to_answers
     answers.reduce({}) { |hash, answer| hash[answer.question_id] = answer; hash }
   end
+
+  def compute_warnings
+    answers.each { |a| a.compute_warnings }
+  end
 end

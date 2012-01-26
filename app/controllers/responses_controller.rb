@@ -7,7 +7,7 @@ class ResponsesController < ApplicationController
   end
 
   def create
-    @response.survey = Survey.first  # TODO support multiple surveys
+    @response.survey = Survey.first # TODO support multiple surveys
     @response.user = current_user
     if @response.save
       redirect_to edit_response_path(@response), notice: 'Survey created'
@@ -17,19 +17,20 @@ class ResponsesController < ApplicationController
   end
 
   def edit
-      @questions = []
+    @questions = []
     @response.survey.sections.each do |sect|
       sect.questions.each do |qn|
         @questions << qn
       end
     end
+    @response.compute_warnings
     @question_id_to_answers = @response.question_id_to_answers
   end
 
   def update
-    answers_to_update = params[:answers].map{|id, val| [id.to_i, val]}
+    answers_to_update = params[:answers].map { |id, val| [id.to_i, val] }
     Answer.transaction do
-      
+
       answers_to_update.each do |q_id, answer_value|
         answer = Answer.find_or_create_by_response_id_and_question_id(@response.id, q_id)
         answer.sanitise_input(answer_value, Question.find(q_id).question_type)

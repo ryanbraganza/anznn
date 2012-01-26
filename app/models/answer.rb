@@ -48,4 +48,8 @@ class Answer < ActiveRecord::Base
       self.warning = message unless passed
     end
   end
+
+  def has_warning?
+    !self.warning.blank?
+  end
 end
