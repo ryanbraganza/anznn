@@ -1,6 +1,7 @@
 - if target.errors.any?
-  %h3.error_header The record could not be saved
-  %p.notification{id: "*.errors"}
-    - target.errors.full_messages.each do |msg|
-      = msg
-      %br/
+  #form_errors.alert-message.block-message.error
+    %h3.error_header Please correct the following before continuing
+    %p.notification{id: "*.errors"}
+      - target.errors.full_messages.each do |msg|
+        = msg
+        %br/

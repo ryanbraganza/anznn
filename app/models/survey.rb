@@ -4,7 +4,7 @@ class Survey < ActiveRecord::Base
   
   #TODO - this will be used to select 'active' surveys if that is required.
   # It is used in the 'new reponse' form, so currently it just returns all of them
-  scope :active, all
+  scope :active, order(:name)
 
   validates :name, presence: true
 

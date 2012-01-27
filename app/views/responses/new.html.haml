@@ -1,17 +1,19 @@
 - content_for :title do
-  = "New Survey"
+  = "New Survey Response"
 
-.row
-  = form_for @response do |f|
-    .formerror= render "shared/error_messages", target: @response
-    .rowform
+= form_for @response do |f|
+  %fieldset
+    = render "shared/error_messages", target: @response
+    .clearfix
       = f.label :survey_id
-      = f.select :survey_id, options_from_collection_for_select(Survey.active, :id, :name)
-      = required
-    .rowform
+      .input
+        = f.collection_select :survey_id, Survey.active, :id, :name, {:include_blank => "Please select"}, {:class => "large"}
+        = required
+    .clearfix
       = f.label :baby_code
-      = f.text_field :baby_code
-      = required
+      .input
+        = f.text_field :baby_code
+        = required
     .actions
-      = f.submit "Save Survey", class: "btn primary"
+      = f.submit "Save", class: "btn primary"
       = link_to 'Cancel', root_path, class: "btn"

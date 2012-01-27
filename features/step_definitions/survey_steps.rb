@@ -4,7 +4,7 @@ end
 
 Given /^I have a survey with name "([^"]*)" and questions$/ do |name, table|
   survey = Survey.create!(:name => name)
-  section = Section.create!(survey: survey, order: 1)
+  section = Factory(:section, survey: survey)
   table.hashes.each do |q_attrs|
     Factory(:question, q_attrs.merge(section: section))
   end
@@ -81,6 +81,13 @@ Then /^"([^"]*)" should have no warning$/ do |question_label|
 
   classes = question[:class].split(" ")
   classes.include?("warning").should be_false
+end
+
+When /^I create a response for "([^"]*)" with baby code "([^"]*)"$/ do |survey, baby_code|
+  visit path_to("the new response page")
+  fill_in "Baby code", :with => baby_code
+  select survey, :from => "Survey"
+  click_button "Save"
 end
 
 def question_div(question_label)

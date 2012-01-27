@@ -5,7 +5,7 @@ class Response < ActiveRecord::Base
 
   validates_presence_of :baby_code
   validates_presence_of :user
-  validates_presence_of :survey
+  validates_presence_of :survey_id
 
   def question_id_to_answers
     answers.reduce({}) { |hash, answer| hash[answer.question_id] = answer; hash }

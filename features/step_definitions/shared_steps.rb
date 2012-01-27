@@ -101,3 +101,11 @@ Then /^pause$/ do
   puts "Press Enter to continue"
   STDIN.getc
 end
+
+Then /^the "([^"]*)" select should contain$/ do |label, table|
+  field = find_field(label)
+  options = field.all("option")
+  actual_options = options.collect(&:text)
+  expected_options = table.raw.collect { |row| row[0] }
+  actual_options.should eq(expected_options)
+end

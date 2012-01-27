@@ -7,7 +7,6 @@ class ResponsesController < ApplicationController
   end
 
   def create
-    @response.survey = Survey.first # TODO support multiple surveys
     @response.user = current_user
     if @response.save
       redirect_to edit_response_path(@response), notice: 'Survey created'

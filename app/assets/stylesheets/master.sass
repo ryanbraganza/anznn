@@ -288,9 +288,12 @@ input[type=password]
 
 .field_with_errors
   +m-p-w-h-p-t-b-l-r-f("", "", 160px)
-  +inlineblock
+  display: inline
 
 .field_with_errors input
+  +border(1px, solid, $red4)
+
+.field_with_errors select
   +border(1px, solid, $red4)
 
 // MODULES ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

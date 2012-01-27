@@ -9,6 +9,6 @@ describe Response do
   describe "Validations" do
     it { should validate_presence_of :baby_code }
     it { should validate_presence_of :user }
-    it { should validate_presence_of :survey }
+    it { should validate_presence_of :survey_id }
   end
 end
