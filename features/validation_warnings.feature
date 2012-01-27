@@ -21,12 +21,12 @@ Feature: Show warnings on survey pages
     Then I should see no warnings
     When I answer "Text Q1" with "areallylongstring"
     When I answer "Text Q2" with "iam9chars"
-  #    And I answer "Integer Q1" with "1000"
-  #    And I answer "Decimal Q" with "20.5"
-  #    And I answer "Integer Q2" with "3"
+    And I answer "Integer Q1" with "1000"
+    And I answer "Decimal Q" with "20.5"
+    And I answer "Integer Q2" with "3"
     And I press "Save"
     Then I should see warning "Answer should be between 5 and 10 characters" for question "Text Q1"
-  #    Then I should see warning "Blah" for question "Integer Q1"
-  #    Then I should see warning "Blah" for question "Decimal Q"
-  #    And "Integer Q2" should have no warning
+    Then I should see warning "Answer should be between -100 and 500" for question "Integer Q1"
+    Then I should see warning "Answer should be a maximum of 10 or 99 for unknown" for question "Decimal Q"
+    And "Integer Q2" should have no warning
     And "Text Q2" should have no warning

@@ -56,6 +56,12 @@ class Answer < ActiveRecord::Base
     if question.type_text?
       passed, message = StringLengthValidator.validate(question, self.text_answer)
       self.warning = message unless passed
+    elsif question.type_decimal?
+      passed, message = NumberRangeValidator.validate(question, self.decimal_answer)
+      self.warning = message unless passed
+    elsif question.type_integer?
+      passed, message = NumberRangeValidator.validate(question, self.integer_answer)
+      self.warning = message unless passed
     end
   end
 

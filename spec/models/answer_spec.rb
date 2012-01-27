@@ -11,21 +11,37 @@ describe Answer do
   end
 
   describe "Validating for warnings" do
-    let(:question) { Factory(:question, question_type: Question::TYPE_TEXT) }
-    let(:answer) { Factory(:answer, question: question, text_answer: "blah") }
+    let(:text_question) { Factory(:question, question_type: Question::TYPE_TEXT) }
+    let(:integer_question) { Factory(:question, question_type: Question::TYPE_INTEGER) }
+    let(:decimal_question) { Factory(:question, question_type: Question::TYPE_DECIMAL) }
+    let(:text_answer) { Factory(:answer, question: text_question, text_answer: "blah") }
+    let(:integer_answer) { Factory(:answer, question: integer_question, integer_answer: 34) }
+    let(:decimal_answer) { Factory(:answer, question: decimal_question, decimal_answer: 1.13) }
 
     describe "Should call the string length validator if question type is text" do
       it "should record the warning if validation fails" do
-        StringLengthValidator.should_receive(:validate).with(question, "blah").and_return([false, "My string warning"])
-        answer.warning.should be_nil
-        answer.compute_warnings
-        answer.warning.should eq("My string warning")
+        StringLengthValidator.should_receive(:validate).with(text_question, "blah").and_return([false, "My string warning"])
+        text_answer.warning.should be_nil
+        text_answer.compute_warnings
+        text_answer.warning.should eq("My string warning")
       end
-      it "should record no warning if validation passes" do
-        StringLengthValidator.should_receive(:validate).with(question, "blah").and_return([true, "I don't belong here'"])
-        answer.warning.should be_nil
-        answer.compute_warnings
-        answer.warning.should be_nil
+    end
+
+    describe "Should call the number validator if question type is integer" do
+      it "should record the warning if validation fails" do
+        NumberRangeValidator.should_receive(:validate).with(integer_question, 34).and_return([false, "My integer warning"])
+        integer_answer.warning.should be_nil
+        integer_answer.compute_warnings
+        integer_answer.warning.should eq("My integer warning")
+      end
+    end
+
+    describe "Should call the number validator if question type is decimal" do
+      it "should record the warning if validation fails" do
+        NumberRangeValidator.should_receive(:validate).with(decimal_question, 1.13).and_return([false, "My decimal warning"])
+        decimal_answer.warning.should be_nil
+        decimal_answer.compute_warnings
+        decimal_answer.warning.should eq("My decimal warning")
       end
     end
   end
