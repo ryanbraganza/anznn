@@ -14,8 +14,7 @@
     = form_tag response_path(@response), method: :put do
       %fieldset
         %legend Section x
-        - @questions.each do |q|
-          = render partial: "display_question", locals: {q: q}
+        = render partial: 'display_question', collection: @questions, as: :q
         .actions
           = submit_tag 'Save page', class: "btn primary"
           %a.btn Cancel
