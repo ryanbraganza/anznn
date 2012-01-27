@@ -98,7 +98,7 @@ end
 Given /^I answer as follows$/ do |table|
   questions_to_answer_values = table_to_questions_and_answers(table)
   questions_to_answer_values.each do |question, answer_value|
-    fill_in "question_#{question.id}", :with => answer_value  # TODO support more question types
+    fill_in "question_#{question.id}", :with => answer_value.to_s  # TODO support more question types
   end
 end
 
