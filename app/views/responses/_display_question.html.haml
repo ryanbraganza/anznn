@@ -7,7 +7,7 @@
   .input
     - case q.question_type
       - when 'Text'
-        = text_field_tag "answers[#{q.id}]", answer.text_answer, id: field_id, placeholder: 'Text Response',
+        = text_field_tag "answers[#{q.id}]", answer.text_answer, id: field_id, placeholder: 'Text Response', maxlength: 255,
           class: 'xxlarge field_trigger',
           data: {description: q.description, guide: q.guide_for_use}
       - when 'Date'
@@ -35,12 +35,12 @@
       - when 'Choice'
         (Choice Questions not implemented)
       - when 'Decimal'
-        = text_field_tag "answers[#{q.id}]", answer.decimal_answer, id: field_id, placeholder: 'Decimal Response',
-          class: 'xxlarge field_trigger',
+        = text_field_tag "answers[#{q.id}]", answer.decimal_answer, id: field_id, placeholder: 'Decimal Response', maxlength: 15,
+          class: 'medium field_trigger',
           data: {description: q.description, guide: q.guide_for_use}
       - when 'Integer'
-        = text_field_tag "answers[#{q.id}]", answer.integer_answer, id: field_id, placeholder: 'Integer Response',
-          class: 'xxlarge field_trigger',
+        = text_field_tag "answers[#{q.id}]", answer.integer_answer, id: field_id, placeholder: 'Integer Response', maxlength: 15,
+          class: 'medium field_trigger',
           data: {description: q.description, guide: q.guide_for_use}
       - else
         Question type not recognised!
