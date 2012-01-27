@@ -53,6 +53,11 @@ describe Answer do
         a.sanitise_input('1.23', 'Decimal')
         a.decimal_answer.should eq 1.23
       end
+      it "saves an integer as a decimal" do
+        a = Answer.new
+        a.sanitise_input('123', 'Decimal')
+        a.decimal_answer.should eq 123
+      end
       it "does not save an invalid input" do
         a = Answer.new
         a.sanitise_input('1.23f', 'Decimal')
