@@ -17,6 +17,7 @@ Feature: Create Response
     Given I am logged in as "data.provider@intersect.org.au"
     When I create a response for "Survey A" with baby code "ABC123"
     Then I should see "Survey created"
+    And I should see "Survey A - Baby Code ABC123"
     And I should see "Question A"
     And I should not see "Question B"
 
