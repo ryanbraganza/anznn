@@ -214,4 +214,39 @@ def create_questions(survey, table)
     section = Factory(:section, survey: survey, order: section_num) unless section
     Factory(:question, q_attrs.merge(section: section))
   end
+When /^I focus on question "(.*)"$/ do |question_question|
+  question = Question.find_by_question!(question_question)
+  page.execute_script <<-endscript
+    /*
+     * FIXME: THIS IS A HACK
+     * There are timing issues involved with when focus and blur are called.
+     * We should only have to call focus once.
+     */
+    jQuery('#question_#{question.id}').focus();
+    jQuery('#question_#{question.id}').focus();
+  endscript
+end
+
+Then /^I should see the sidebar help for "([^"]*)"$/ do |question_question|
+  question = Question.find_by_question!(question_question)
+  page.should have_content question.description
+  page.should have_content question.guide_for_use
+end
+
+And /^I should not see the sidebar help for "(.*)"$/ do |question_question|
+  question = Question.find_by_question!(question_question)
+  page.should_not have_content question.description
+  page.should_not have_content question.guide_for_use
+end
+
+When /^I hover on question label for "(.*)"$/ do |question_question|
+  question = Question.find_by_question!(question_question)
+  page.execute_script <<-endscript
+    jQuery('#container_#{question.id}').find('label').mouseenter();
+  endscript
+end
+
+Then /^I should see the help tooltip for "(.*)"$/ do |question_question|
+  question = Question.find_by_question!(question_question)
+  page.should have_content question.data_domain
 end
