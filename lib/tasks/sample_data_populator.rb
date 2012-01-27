@@ -5,36 +5,40 @@ def populate_data
 
   User.delete_all
   create_test_users
-  create_basic_survey
+
+  create_surveys
 end
 
-def create_basic_survey
-  include CsvOperations
-
+def create_surveys
   Survey.delete_all
   Section.delete_all
   Question.delete_all
   QuestionOption.delete_all
+  create_survey("Main Survey", "main_survey_questions.csv", "main_survey_question_options.csv")
+  create_survey("Followup Survey", "followup_survey_questions.csv", "followup_survey_question_options.csv")
 
-  survey = Survey.create!(name: "Main Survey")
-  sec1 = survey.sections.create!(order: 0)
-  sec2 = survey.sections.create!(order: 1)
-  sec3 = survey.sections.create!(order: 2)
-  sec4 = survey.sections.create!(order: 3)
+end
 
-  questions = read_hashes_from_csv(Rails.root.join("lib/tasks/main_survey_questions.csv"))
+def create_survey(name, question_file, options_file)
+  include CsvOperations
+
+  survey = Survey.create!(name: name)
+
+  questions = read_hashes_from_csv(Rails.root.join("lib/tasks", question_file))
 
   questions.each do |hash|
     section_order = hash.delete('section')
+
     section = survey.sections.find_by_order(section_order)
+    section = survey.sections.create!(order: section_order) if section.nil?
 
     Question.create!(hash.merge(section_id: section.id))
   end
 
-  question_options = read_hashes_from_csv(Rails.root.join("lib/tasks/main_survey_question_options.csv"))
+  question_options = read_hashes_from_csv(Rails.root.join("lib/tasks", options_file))
   question_options.each do |qo|
     code = qo.delete("code")
-    question = Question.find_by_code(code)
+    question = survey.questions.find_by_code(code)
     question.question_options.create!(qo)
   end
 

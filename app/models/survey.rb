@@ -1,6 +1,7 @@
 class Survey < ActiveRecord::Base
   has_many :responses, dependent: :destroy
   has_many :sections, dependent: :destroy
+  has_many :questions, through: :sections
   
   #TODO - this will be used to select 'active' surveys if that is required.
   # It is used in the 'new reponse' form, so currently it just returns all of them

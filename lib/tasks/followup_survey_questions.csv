@@ -1,0 +1,12 @@
+section,order,code,question,question_type,number_min,number_max,number_unknown,string_min,string_max,guide_for_use,description,data_domain0,0,Hospital,Registration hospital,Text,,,,8,8,"Babies who received their entire care in a level II hospital or who were not transferred to a level III neonatal intensive care unit during the first 28 days are registered to the first level II centre that they remained in for 4 or more hours.  _x000d_
+_x000d_
+If baby is transferred, she/he is considered to be in the next hospital from the time that the specialist retrieval team (NETS) arrives to collect her/him. _x000d_
+_x000d_
+If a baby is transferred from one level III hospital to another level III hospital and NETS arrives at or before 4 hours, then the baby belongs to the second level III hospital. Both hospitals should not provide data to the ANZNN. If there is any uncertainty, audit officers should contact the other hospital to clarify the situation._x000d_
+_x000d_
+If the baby dies within four hours, she/he is registered to unit where she/he dies.
+",The hospital of registration for a baby is the first level III neonatal intensive care unit that the baby remained in for four or more hours during the first 28 days of life,Characters representing the registration hospital code.0,1,DOB,Date of birth,Date,,,,,,If the date of birth is not known provision should be made to collect age (in years) and a date of birth derived from age.,Date of birth of the baby,Valid date0,2,SEX,Sex,Choice,,,,,,An indeterminate sex category may be necessary for situations such as the classification of perinatal statistics when it is not possible for the sex to be determined.,The sex of the person,"1.   Male_x000d_
+2.   Female_x000d_
+3.   Ambiguous − or indeterminate._x000d_
+0.   Unknown − Information not available.
+"1,0,Outcm2or3,Outcome for children at 2 or 3 years,Choice,,,,,,Only one outcome to be used.,"Survival of the child at two to three years corrected age, as represented by a code.",1,1,Wght,Weight,Decimal,0,50,99,,,"In order to ensure consistency in measurement, the measurement protocol described under collection methods should be used.",The weight (body mass) of a child measured in kilograms.,1,2,Hearage,Date of most recent hearing test,Date,,,,,,The date of the assessment will often be provided by parents.,The date of the most recent hearing test performed by an audiologist.,

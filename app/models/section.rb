@@ -3,6 +3,6 @@ class Section < ActiveRecord::Base
   has_many :questions, dependent: :destroy
 
   validates_presence_of :order
-  validates_uniqueness_of :order, scoped_to: :survey_id
+  validates_uniqueness_of :order, scope: :survey_id
 
 end
