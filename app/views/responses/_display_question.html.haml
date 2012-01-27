@@ -35,9 +35,13 @@
       - when 'Choice'
         (Choice Questions not implemented)
       - when 'Decimal'
-        (Decimal Questions not implemented)
+        = text_field_tag "answers[#{q.id}]", answer.decimal_answer, id: field_id, placeholder: 'Decimal Response',
+          class: 'xxlarge field_trigger',
+          data: {description: q.description, guide: q.guide_for_use}
       - when 'Integer'
-        (Integer Questions not implemented)
+        = text_field_tag "answers[#{q.id}]", answer.integer_answer, id: field_id, placeholder: 'Integer Response',
+          class: 'xxlarge field_trigger',
+          data: {description: q.description, guide: q.guide_for_use}
       - else
         Question type not recognised!
     %span.help-block

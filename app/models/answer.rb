@@ -31,9 +31,19 @@ class Answer < ActiveRecord::Base
         when 'Choice'
           raise "Choice qn type Not Implemented"
         when 'Decimal'
-          raise "Decimal qn type Not Implemented"
+          float = answer_value.to_f
+          if float.to_s == answer_value
+            self.decimal_answer = float
+          elsif answer_value.empty?
+            self.decimal_answer = nil
+          end
         when 'Integer'
-          raise "Integer qn type Not Implemented"
+          int = answer_value.to_i
+          if int.to_s == answer_value
+            self.integer_answer = int
+          elsif answer_value.empty?
+            self.integer_answer = nil
+          end
         else
           raise "Question type not recognised!"
       end

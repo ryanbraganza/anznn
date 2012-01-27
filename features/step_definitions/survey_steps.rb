@@ -94,3 +94,44 @@ def question_div(question_label)
   question = Question.find_by_question(question_label)
   find("#container_#{question.id}")
 end
+
+Given /^I answer as follows$/ do |table|
+  questions_to_answer_values = table_to_questions_and_answers(table)
+  questions_to_answer_values.each do |question, answer_value|
+    fill_in "question_#{question.id}", :with => answer_value  # TODO support more question types
+  end
+end
+
+Then /^I should see the following answers$/ do |table|
+  questions_to_answer_values = table_to_questions_and_answers(table)
+  questions_to_answer_values.each do |question, answer_value|
+    field = find_field("question_#{question.id}")  # TODO support more question types
+    field.value.should eq answer_value.to_s
+  end
+end
+
+def table_to_questions_and_answers(table)
+  table.hashes.reduce([]) do |arr, row|
+    question_question = row[:question]
+    answer_value = row[:answer]
+    question = Question.find_by_question!(question_question)
+    case question.question_type
+      when 'Text'
+        'no op'
+      when 'Date'
+        raise 'not implemented'
+      when 'Time'
+        raise 'not implemented'
+      when 'Choice'
+        raise 'not implemented'
+      when 'Decimal'
+        answer_value = answer_value.to_f
+      when 'Integer'
+        answer_value = answer_value.to_i
+      else
+        raise 'no such question type'
+    end
+    arr.push [question, answer_value]
+    arr
+  end
+end

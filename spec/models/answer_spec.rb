@@ -29,4 +29,66 @@ describe Answer do
       end
     end
   end
+
+  describe "sanitise_input" do
+    describe "Decimal" do
+      it "saves a decimal as a decimal" do
+        a = Answer.new
+        a.sanitise_input('1.23', 'Decimal')
+        a.decimal_answer.should eq 1.23
+      end
+      it "does not save an invalid input" do
+        a = Answer.new
+        a.sanitise_input('1.23f', 'Decimal')
+        a.decimal_answer.should_not be
+      end
+      it "nils out on empty string" do
+        a = Factory(:answer, decimal_answer: 1.23)
+        a.decimal_answer.should eq 1.23
+
+        a.sanitise_input('', 'Decimal')
+
+        a.decimal_answer.should_not be
+      end
+      it "does not nil out on invalid input" do
+        a = Factory(:answer, decimal_answer: 1.23)
+        a.decimal_answer.should eq 1.23
+
+        a.sanitise_input('garbage', 'Decimal')
+
+        a.decimal_answer.should eq 1.23
+      end
+    end
+    describe "Integer" do
+      it "saves an integer as an integer" do
+        a = Answer.new
+        a.sanitise_input('1234', 'Integer')
+        a.integer_answer.should eq 1234
+      end
+      it "does not save an invalid integer" do
+        a = Answer.new
+        a.sanitise_input('1234d', 'Integer')
+        a.integer_answer.should_not be
+      end
+      it "nils out on empty string" do
+        a = Factory(:answer, integer_answer: 123)
+        a.integer_answer.should eq 123
+
+        a.sanitise_input('', 'Integer')
+
+        a.integer_answer.should_not be
+      end
+      it "does not nil out on invalid input" do
+        a = Factory(:answer, integer_answer: 123)
+        a.integer_answer.should eq 123
+
+        a.sanitise_input('garbage', 'Integer')
+
+        a.integer_answer.should eq 123
+      end
+    end
+    describe "other question types" do
+      pending
+    end
+  end
 end
