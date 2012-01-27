@@ -20,28 +20,15 @@ def create_surveys
 end
 
 def create_survey(name, question_file, options_file)
-  include CsvOperations
+  include CsvSurveyOperations
 
   survey = Survey.create!(name: name)
 
   questions = read_hashes_from_csv(Rails.root.join("lib/tasks", question_file))
-
-  questions.each do |hash|
-    section_order = hash.delete('section')
-
-    section = survey.sections.find_by_order(section_order)
-    section = survey.sections.create!(order: section_order) if section.nil?
-
-    Question.create!(hash.merge(section_id: section.id))
-  end
-
   question_options = read_hashes_from_csv(Rails.root.join("lib/tasks", options_file))
-  question_options.each do |qo|
-    code = qo.delete("code")
-    question = survey.questions.find_by_code(code)
-    question.question_options.create!(qo)
-  end
-
+ 
+  import_questions(survey, questions)
+  import_question_options(survey, question_options)
 end
 
 def create_test_users
