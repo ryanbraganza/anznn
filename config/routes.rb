@@ -9,12 +9,9 @@ Anznn::Application.routes.draw do
 
   resource :pages do
     get :home
-    get :test
   end
 
   namespace :admin do
-    resources :surveys, :only => [:show, :index, :edit, :update]
-
     resources :users, :only => [:show] do
 
         collection do

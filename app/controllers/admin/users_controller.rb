@@ -1,20 +1,17 @@
 class Admin::UsersController < Admin::AdminBaseController
 
   load_and_authorize_resource
-  set_tab :users, :admin_navigation
 
   def index
+    set_tab :users, :admin_navigation
     @users = User.deactivated_or_approved
   end
 
   def show
   end
 
-  def admin
-
-  end
-
   def access_requests
+    set_tab :access_requests, :admin_navigation
     @users = User.pending_approval
   end
 
