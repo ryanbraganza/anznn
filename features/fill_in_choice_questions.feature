@@ -1,7 +1,7 @@
-Feature: Number Questions
+Feature: Single-Choice Questions
   In order to enter data
   As a data provider
-  I want to save answers to number questions
+  I want to save answers to single-choice questions
 
   Background:
     Given I have the usual roles
