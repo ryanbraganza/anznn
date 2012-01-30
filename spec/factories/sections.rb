@@ -2,6 +2,7 @@
 
 FactoryGirl.define do
   factory :section do
+    name "Section 1"
     sequence :order
     association :survey
   end

@@ -4,10 +4,23 @@ end
 
 Given /^I have a survey with name "([^"]*)" and questions$/ do |name, table|
   survey = Survey.create!(:name => name)
-  section = Factory(:section, survey: survey)
-  table.hashes.each do |q_attrs|
-    Factory(:question, q_attrs.merge(section: section))
+  create_questions(survey, table)
+end
+
+Given /^I have a survey with name "([^"]*)"$/ do |name|
+  Survey.create!(:name => name)
+end
+
+Given /^"([^"]*)" has sections$/ do |survey_name, table|
+  survey = Survey.find_by_name(survey_name)
+  table.hashes.each do |sec_attrs|
+    Factory(:section, sec_attrs.merge(survey: survey))
   end
+end
+
+Given /^"([^"]*)" has questions$/ do |survey_name, table|
+  survey = Survey.find_by_name(survey_name)
+  create_questions(survey, table)
 end
 
 Given /^"(.*)" created a response to a simple survey$/ do |email|
@@ -20,7 +33,7 @@ end
 
 def create_simple_survey
   survey = Survey.create!(name: 'simple')
-  section = Section.create!(survey: survey, order: 1)
+  section = Section.create!(survey: survey, order: 1, name: 'Section1')
   q = Question.create!(question: 'What is the answer?', section: section, order: 1, question_type: "Text", code: "What", data_domain: "")
   $simple_survey = survey
 end
@@ -168,9 +181,10 @@ Then /^the answer to "([^"]*)" should be "([^"]*)"$/ do |question_name, expected
   question = Question.find_by_question!(question_name)
   response = Response.last
   answer = response.answers.find_by_question_id(question.id)
+  raise "Didn't find any answer for question '#{question_name}'" unless answer
   case question.question_type
     when 'Text'
-      raise 'Not implemented'
+      answer.text_answer.should eq(expected_answer)
     when 'Date'
       raise 'Not implemented'
     when 'Time'
@@ -180,8 +194,24 @@ Then /^the answer to "([^"]*)" should be "([^"]*)"$/ do |question_name, expected
     when 'Decimal'
       raise 'Not implemented'
     when 'Integer'
-      raise 'Not implemented'
+      answer.integer_answer.should eq(expected_answer.to_i)
     else
       raise 'no such question type'
+  end
+end
+
+Then /^I should see questions$/ do |table|
+  expected = table.raw.collect { |r| r[0] }
+  actual = all("form .clearfix label").collect { |element| element.text }
+  actual.should eq(expected)
+end
+
+def create_questions(survey, table)
+  table.hashes.each do |q_attrs|
+    section_num = q_attrs.delete("section")
+    section_num ||= 0
+    section = survey.sections.find_by_order(section_num)
+    section = Factory(:section, survey: survey, order: section_num) unless section
+    Factory(:question, q_attrs.merge(section: section))
   end
 end

@@ -1,6 +1,6 @@
 class Survey < ActiveRecord::Base
   has_many :responses, dependent: :destroy
-  has_many :sections, dependent: :destroy
+  has_many :sections, dependent: :destroy, order: '"order"'
   has_many :questions, through: :sections
   
   #TODO - this will be used to select 'active' surveys if that is required.

@@ -6,6 +6,7 @@ describe Section do
     it { should have_many :questions }
   end
   describe "Validations" do
+    it { should validate_presence_of(:name) }
     describe "order" do
       it { should validate_presence_of :order }
       it "is unique within a survey" do

@@ -1,19 +1,11 @@
-%h1= "#{@response.survey.name} - Baby Code #{@response.baby_code}"
-.pagination
-  %ul
-    %li.prev.disabled
-      %a &larr; Previous
-    - 1.upto(10) do |i|
-      - is_active = i == 7
-      %li{class: ('active' if is_active)}
-        %a= i
-    %li.next.disabled
-      %a Next &rarr;
+- title "#{@response.survey.name} - Baby Code #{@response.baby_code}"
+= render 'section_navigation'
 .row
   .span12
-    = form_tag response_path(@response), method: :put do
+    = form_tag response_path(@response), method: :put, id: :response_form do
+      = hidden_field_tag :go_to_section, @section.id, id: "go_to_section_field"
       %fieldset
-        %legend Section x
+        %legend= @section.name
         = render partial: 'display_question', collection: @questions, as: :q
         .actions
           = submit_tag 'Save page', class: "btn primary"
@@ -21,3 +13,4 @@
   .span4
     %h2 Field Information
     %p#field_info Select a field to view its information.
+= render 'section_navigation'

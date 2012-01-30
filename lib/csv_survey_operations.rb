@@ -15,6 +15,10 @@ module CsvSurveyOperations
     questions.each do |hash|
       section_order = hash.delete('section')
       section = survey.sections.find_or_create_by_order(section_order)
+      if section.name.blank?
+        section.name = "Section #{section_order}"
+      end
+      section.save!
       Question.create!(hash.merge(section_id: section.id))
     end
   end

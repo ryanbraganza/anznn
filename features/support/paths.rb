@@ -44,7 +44,8 @@ module NavigationHelpers
       admin_users_path
 
     when /the edit first response page$/
-      edit_response_path Response.first
+      section = Response.first.survey.sections.first.id
+      edit_response_path Response.first, section: section
 
 # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:

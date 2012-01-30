@@ -9,24 +9,23 @@ class ResponsesController < ApplicationController
   def create
     @response.user = current_user
     if @response.save
-      redirect_to edit_response_path(@response), notice: 'Survey created'
+      redirect_to edit_response_path(@response, section: @response.survey.sections.first.id), notice: 'Survey created'
     else
       render :new
     end
   end
 
   def edit
-    @questions = []
-    @response.survey.sections.each do |sect|
-      sect.questions.each do |qn|
-        @questions << qn
-      end
-    end
+    section_id = params[:section]
+    @section = @response.survey.sections.find(section_id)
+    @questions = @section.questions
+
     @response.compute_warnings
     @question_id_to_answers = @response.question_id_to_answers
   end
 
   def update
+    go_to_section = params[:go_to_section]
     answers_to_update = params[:answers].map { |id, val| [id.to_i, val] }
     Answer.transaction do
 
@@ -36,6 +35,6 @@ class ResponsesController < ApplicationController
         answer.save!
       end
     end
-    redirect_to edit_response_path(@response), notice: 'Saved page'
+    redirect_to edit_response_path(@response, section: go_to_section), notice: 'Saved page'
   end
 end
