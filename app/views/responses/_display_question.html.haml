@@ -33,7 +33,13 @@
           class: "small field_trigger",
           data: {description: q.description, guide: q.guide_for_use})
       - when 'Choice'
-        (Choice Questions not implemented)
+        %ul.inputs-list
+          - q.question_options.each do |qo|
+            %li
+              %label
+                = radio_button_tag "answers[#{q.id}]", qo.option_value, (answer.choice_answer == qo.option_value)
+                %span.radio-label= "(#{qo.option_value}) #{qo.label}"
+                %span.help-block=  qo.hint_text
       - when 'Decimal'
         = text_field_tag "answers[#{q.id}]", answer.decimal_answer, id: field_id, placeholder: 'Decimal Response', maxlength: 15,
           class: 'medium field_trigger',

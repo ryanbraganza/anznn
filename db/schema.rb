@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120124043439) do
+ActiveRecord::Schema.define(:version => 20120129234654) do
 
   create_table "answers", :force => true do |t|
     t.integer "response_id"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(:version => 20120124043439) do
     t.time    "time_answer"
     t.float   "decimal_answer"
     t.integer "integer_answer"
+    t.string  "choice_answer"
   end
 
   create_table "question_options", :force => true do |t|

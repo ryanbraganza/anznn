@@ -98,14 +98,21 @@ end
 Given /^I answer as follows$/ do |table|
   questions_to_answer_values = table_to_questions_and_answers(table)
   questions_to_answer_values.each do |question, answer_value|
-    fill_in "question_#{question.id}", :with => answer_value.to_s  # TODO support more question types
+    case question.question_type
+      when 'Choice'
+        within(question_div(question.question)) { choose(answer_value) }
+      else
+        fill_in "question_#{question.id}", :with => answer_value.to_s # TODO support more question types
+
+    end
+
   end
 end
 
 Then /^I should see the following answers$/ do |table|
   questions_to_answer_values = table_to_questions_and_answers(table)
   questions_to_answer_values.each do |question, answer_value|
-    field = find_field("question_#{question.id}")  # TODO support more question types
+    field = find_field("question_#{question.id}") # TODO support more question types
     field.value.should eq answer_value.to_s
   end
 end
@@ -123,7 +130,7 @@ def table_to_questions_and_answers(table)
       when 'Time'
         raise 'not implemented'
       when 'Choice'
-        raise 'not implemented'
+        'no op'
       when 'Decimal'
         answer_value = answer_value.to_f
       when 'Integer'
@@ -133,5 +140,48 @@ def table_to_questions_and_answers(table)
     end
     arr.push [question, answer_value]
     arr
+  end
+end
+
+Given /^question "([^"]*)" has question options$/ do |question_name, table|
+  question = Question.find_by_question(question_name)
+  table.hashes.each do |qo_attrs|
+    question.question_options.create!(qo_attrs)
+  end
+end
+
+Then /^I should see choice question "([^"]*)" with options$/ do |question_name, table|
+  question_div = question_div(question_name)
+
+  labels = question_div.all("ul.inputs-list li label")
+  options_on_page = []
+  labels.each do |label_item|
+    label_text = label_item.find("span.radio-label").text
+    hint_text = label_item.find("span.help-block").text
+    checked = label_item.has_selector?("input[type=radio]", :checked => true)
+    options_on_page << {"label" => label_text, "hint" => hint_text, "checked" => checked.to_s}
+  end
+  options_on_page.should eq(table.hashes)
+end
+
+Then /^the answer to "([^"]*)" should be "([^"]*)"$/ do |question_name, expected_answer|
+  question = Question.find_by_question!(question_name)
+  response = Response.last
+  answer = response.answers.find_by_question_id(question.id)
+  case question.question_type
+    when 'Text'
+      raise 'Not implemented'
+    when 'Date'
+      raise 'Not implemented'
+    when 'Time'
+      raise 'Not implemented'
+    when 'Choice'
+      answer.choice_answer.should eq(expected_answer)
+    when 'Decimal'
+      raise 'Not implemented'
+    when 'Integer'
+      raise 'Not implemented'
+    else
+      raise 'no such question type'
   end
 end

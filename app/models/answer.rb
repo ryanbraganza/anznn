@@ -29,7 +29,7 @@ class Answer < ActiveRecord::Base
               nil #TODO this is a validation failure (or blank?)
             end
         when 'Choice'
-          raise "Choice qn type Not Implemented"
+          self.choice_answer = answer_value
         when 'Decimal'
           begin
             if answer_value.empty?
