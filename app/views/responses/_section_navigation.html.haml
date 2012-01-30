@@ -1,4 +1,4 @@
-.pagination
+.section-nav
   %ul
     - @response.survey.sections.each do |section|
       %li{class: ('active' if section.id == @section.id)}
