@@ -221,6 +221,10 @@ When /^I focus on question "(.*)"$/ do |question_question|
   if question.type_choice?
     first_option = question.question_options.first
     focusable_selector = "#answers_#{question.id}_#{first_option.option_value}"
+  elsif question.type_date?
+    focusable_selector = "#answers_#{question.id}_day"
+  elsif question.type_time?
+    focusable_selector = "#answers_#{question.id}_hour"
   else
     focusable_selector = "#question_#{question.id}"
   end

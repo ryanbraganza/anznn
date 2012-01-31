@@ -33,6 +33,8 @@ Feature: Dynamic Help
     | Integer Q |
     | Decimal Q |
     | Choice Q  |
+    | Date Q    |
+    | Time Q    |
 
   Scenario Outline: Viewing and hiding the help text for a question
     When I focus on question "<question>"
@@ -45,6 +47,8 @@ Feature: Dynamic Help
     | Integer Q | Decimal Q  |
     | Decimal Q | Choice Q   |
     | Choice Q  | Text Q     |
+    | Date Q    | Time Q     |
+    | Time Q    | Date Q     |
 
   Scenario Outline: Viewing tooltips
     When I hover on question label for "<question>"
@@ -55,3 +59,5 @@ Feature: Dynamic Help
     | Integer Q |
     | Decimal Q |
     | Choice Q  |
+    | Date Q    |
+    | Time Q    |

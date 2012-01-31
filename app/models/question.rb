@@ -52,4 +52,12 @@ class Question < ActiveRecord::Base
     question_type == TYPE_CHOICE
   end
 
+  def type_date?
+    question_type == TYPE_DATE
+  end
+
+  def type_time?
+    question_type == TYPE_TIME
+  end
+
 end
