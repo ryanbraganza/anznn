@@ -33,7 +33,7 @@ end
 
 def create_simple_survey
   survey = Survey.create!(name: 'simple')
-  section = Section.create!(survey: survey, order: 1)
+  section = Section.create!(survey: survey, order: 1, name: 'Section1')
   q = Question.create!(question: 'What is the answer?', section: section, order: 1, question_type: "Text", code: "What", data_domain: "")
   $simple_survey = survey
 end
@@ -43,7 +43,6 @@ def simple_question
 end
 
 def create_response(survey, email)
-  require 'Date'
   user = User.find_by_email(email)
   Response.create!(survey: survey, baby_code: 'babycode123', user: user)
 end
@@ -112,7 +111,14 @@ end
 Given /^I answer as follows$/ do |table|
   questions_to_answer_values = table_to_questions_and_answers(table)
   questions_to_answer_values.each do |question, answer_value|
-    fill_in "question_#{question.id}", :with => answer_value.to_s  # TODO support more question types
+    case question.question_type
+      when 'Choice'
+        within(question_div(question.question)) { choose(answer_value) }
+      else
+        fill_in "question_#{question.id}", :with => answer_value.to_s # TODO support more question types
+
+    end
+
   end
 end
 
