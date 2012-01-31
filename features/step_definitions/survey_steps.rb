@@ -114,9 +114,14 @@ Given /^I answer as follows$/ do |table|
     case question.question_type
       when 'Choice'
         within(question_div(question.question)) { choose(answer_value) }
+      when 'Date'
+        y, m, d = answer_value.split '/'
+        select y, from: "answers_#{question.id}_year"
+        select m, from: "answers_#{question.id}_month"
+        select d, from: "answers_#{question.id}_day"
       else
-        fill_in "question_#{question.id}", :with => answer_value.to_s # TODO support more question types
-
+        fill_in "question_#{question.id}", with: answer_value.to_s
+     # TODO support more question types
     end
 
   end
@@ -125,8 +130,19 @@ end
 Then /^I should see the following answers$/ do |table|
   questions_to_answer_values = table_to_questions_and_answers(table)
   questions_to_answer_values.each do |question, answer_value|
-    field = find_field("question_#{question.id}") # TODO support more question types
-    field.value.should eq answer_value.to_s
+    case question.question_type
+      when 'Choice', 'Decimal', 'Integer'
+        field = find_field("question_#{question.id}")
+        field_value = field.value
+      when 'Date'
+        y = find("#answers_#{question.id}_year").value
+        m = find("#answers_#{question.id}_month").value
+        d = find("#answers_#{question.id}_day").value
+        field_value = "#{y}/#{m}/#{d}"
+      else
+        raise "Not Implemented"
+    end
+    field_value.should eq answer_value.to_s
   end
 end
 
@@ -136,14 +152,10 @@ def table_to_questions_and_answers(table)
     answer_value = row[:answer]
     question = Question.find_by_question!(question_question)
     case question.question_type
-      when 'Text'
+      when 'Text', 'Choice', 'Date'
         'no op'
-      when 'Date'
-        raise 'not implemented'
       when 'Time'
         raise 'not implemented'
-      when 'Choice'
-        'no op'
       when 'Decimal'
         answer_value = answer_value.to_f
       when 'Integer'
