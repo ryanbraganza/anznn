@@ -19,4 +19,20 @@ describe Section do
       end
     end
   end
+
+  describe "Am I the last section method" do
+    it "should return true only for the section with highest index" do
+      survey1 = Factory(:survey)
+      survey2 = Factory(:survey)
+      sec2 = Factory(:section, survey: survey1, order: 2)
+      sec3 = Factory(:section, survey: survey1, order: 3)
+      sec4 = Factory(:section, survey: survey2, order: 4)
+      sec1 = Factory(:section, survey: survey1, order: 1)
+
+      sec1.last?.should be_false
+      sec2.last?.should be_false
+      sec3.last?.should be_true
+      sec4.last?.should be_true
+    end
+  end
 end

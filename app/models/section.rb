@@ -6,4 +6,9 @@ class Section < ActiveRecord::Base
   validates_presence_of :order
   validates_uniqueness_of :order, scope: :survey_id
 
+  def last?
+    section_orders = survey.sections.collect(&:order).sort
+    self.order == section_orders.last
+  end
+
 end

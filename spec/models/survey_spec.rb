@@ -21,4 +21,33 @@ describe Survey do
       expected.should eq actual
     end
   end
+
+  describe "Finding the next section after a given section" do
+    it "should find the next one based on order" do
+      survey1 = Factory(:survey)
+      sec2 = Factory(:section, survey: survey1, order: 2)
+      sec3 = Factory(:section, survey: survey1, order: 3)
+      sec1 = Factory(:section, survey: survey1, order: 1)
+
+      survey1.section_id_after(sec1.id).should eq(sec2.id)
+      survey1.section_id_after(sec2.id).should eq(sec3.id)
+    end
+
+    it "should raise error on last section" do
+      survey1 = Factory(:survey)
+      sec2 = Factory(:section, survey: survey1, order: 2)
+      sec3 = Factory(:section, survey: survey1, order: 3)
+      sec1 = Factory(:section, survey: survey1, order: 1)
+
+      lambda {survey1.section_id_after(sec3.id)}.should raise_error("Tried to call section_id_after on last section")
+    end
+
+    it "should raise error when section not found" do
+      survey1 = Factory(:survey)
+      sec2 = Factory(:section, survey: survey1, order: 2)
+      sec1 = Factory(:section, survey: survey1, order: 1)
+
+      lambda{survey1.section_id_after(123434)}.should raise_error("Didn't find any section with id 123434 in this survey")
+    end
+  end
 end

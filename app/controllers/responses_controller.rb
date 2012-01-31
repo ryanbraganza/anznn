@@ -5,8 +5,11 @@ class ResponsesController < ApplicationController
 
   set_tab :responses
 
-  def index; end
-  def new; end
+  def index;
+  end
+
+  def new;
+  end
 
   def create
     @response.user = current_user
@@ -28,7 +31,7 @@ class ResponsesController < ApplicationController
   end
 
   def update
-    go_to_section = params[:go_to_section]
+
     answers_to_update = params[:answers].map { |id, val| [id.to_i, val] }
     Answer.transaction do
 
@@ -38,6 +41,22 @@ class ResponsesController < ApplicationController
         answer.save!
       end
     end
-    redirect_to edit_response_path(@response, section: go_to_section), notice: 'Saved page'
+    redirect_after_update(params)
+  end
+
+  private
+
+  def redirect_after_update(params)
+    clicked = params[:commit]
+
+    if clicked =~ /Save and return to home/
+      redirect_to root_path
+    else
+      go_to_section = params[:go_to_section]
+      if clicked =~ /Save and go to next section/
+        go_to_section = @response.survey.section_id_after(go_to_section.to_i)
+      end
+      redirect_to edit_response_path(@response, section: go_to_section), notice: 'Your answers have been saved'
+    end
   end
 end
