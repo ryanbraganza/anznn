@@ -48,5 +48,8 @@ class Question < ActiveRecord::Base
     question_type == TYPE_DECIMAL
   end
 
+  def type_choice?
+    question_type == TYPE_CHOICE
+  end
 
 end

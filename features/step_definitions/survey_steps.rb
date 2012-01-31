@@ -214,16 +214,23 @@ def create_questions(survey, table)
     section = Factory(:section, survey: survey, order: section_num) unless section
     Factory(:question, q_attrs.merge(section: section))
   end
+end
+
 When /^I focus on question "(.*)"$/ do |question_question|
   question = Question.find_by_question!(question_question)
+  if question.type_choice?
+    first_option = question.question_options.first
+    focusable_selector = "#answers_#{question.id}_#{first_option.option_value}"
+  else
+    focusable_selector = "#question_#{question.id}"
+  end
   page.execute_script <<-endscript
     /*
      * FIXME: THIS IS A HACK
      * There are timing issues involved with when focus and blur are called.
      * We should only have to call focus once.
      */
-    jQuery('#question_#{question.id}').focus();
-    jQuery('#question_#{question.id}').focus();
+    jQuery('#{focusable_selector}').focus().focus();
   endscript
 end
 

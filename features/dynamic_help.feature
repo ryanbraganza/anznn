@@ -15,6 +15,11 @@ Feature: Dynamic Help
       | Choice Q  | Choice        | desc_choice  | guide_choice  | choice_domain  |
       | Decimal Q | Decimal       | desc_decimal | guide_decimal | decimal_domain |
       | Integer Q | Integer       | desc_integer | guide_integer | integer_domain |
+    And question "Choice Q" has question options
+      | option_value | label | hint_text    | option_order |
+      | 99           | Dunno |              | 2            |
+      | 0            | Yes   | this is true | 0            |
+      | 1            | No    | not true     | 1            |
     And I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
     And I am on the edit first response page

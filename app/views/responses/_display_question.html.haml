@@ -36,8 +36,10 @@
         %ul.inputs-list
           - q.question_options.each do |qo|
             %li
-              %label
-                = radio_button_tag "answers[#{q.id}]", qo.option_value, (answer.choice_answer == qo.option_value)
+              %label.field_trigger
+                = radio_button_tag "answers[#{q.id}]", qo.option_value, (answer.choice_answer == qo.option_value),
+                  class: 'field_trigger',
+                  data: {description: q.description, guide: q.guide_for_use}
                 %span.radio-label= "(#{qo.option_value}) #{qo.label}"
                 %span.help-block=  qo.hint_text
       - when 'Decimal'
