@@ -1,6 +1,9 @@
 - field_id = "question_#{q.id}"
 - answer = @question_id_to_answers[q.id]
-- answer = @response.answers.build(question: q) unless answer
+- not_answered = answer.nil?
+- answer = @response.answers.build(question: q) if not_answered
+- if not_answered && section_started && q.mandatory
+  - answer.warning = "This question is mandatory"
 
 %div{id: "container_#{q.id}", class: answer.has_warning? ? "clearfix warning" : "clearfix"}
   = label_tag field_id, q.question, class: 'data-domain', title: (q.data_domain ? q.data_domain.gsub(/\n/m, '<br>') : "")
@@ -41,7 +44,7 @@
                   class: 'field_trigger',
                   data: {description: q.description, guide: q.guide_for_use}
                 %span.radio-label= "(#{qo.option_value}) #{qo.label}"
-                %span.help-block=  qo.hint_text
+                %span.help-block.radio-description=  qo.hint_text
       - when 'Decimal'
         = text_field_tag "answers[#{q.id}]", answer.answer_value, id: field_id, placeholder: 'Decimal Response', maxlength: 15,
           class: 'medium field_trigger',

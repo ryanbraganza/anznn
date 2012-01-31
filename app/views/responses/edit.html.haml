@@ -6,7 +6,8 @@
       = hidden_field_tag :go_to_section, @section.id, id: "go_to_section_field"
       %fieldset
         %legend= @section.name
-        = render partial: 'display_question', collection: @questions, as: :q
+        - section_started = @response.section_started?(@section)
+        = render partial: 'display_question', collection: @questions, as: :q, locals: {section_started: section_started}
         .actions
           = submit_tag 'Save page', class: "btn primary"
           - if @section.last?

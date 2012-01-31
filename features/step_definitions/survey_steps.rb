@@ -79,7 +79,7 @@ Then /^I should see warning "([^"]*)" for question "([^"]*)"$/ do |warning, ques
   question = question_div(question_label)
 
   classes = question[:class].split(" ")
-  classes.include?("warning").should be_true
+  classes.include?("warning").should be_true, "Expected question div to have class=warning, but found only #{classes}"
 
   warning_text = question.find(".help-block")
   warning_text.text.gsub("\n", "").should eq(warning)

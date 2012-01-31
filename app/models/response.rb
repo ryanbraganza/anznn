@@ -14,4 +14,14 @@ class Response < ActiveRecord::Base
   def compute_warnings
     answers.each { |a| a.compute_warnings }
   end
+
+  def section_started?(section)
+    !answers_to_section(section).empty?
+  end
+
+  private
+
+  def answers_to_section(section)
+    answers.joins(:question).merge(Question.for_section(section))
+  end
 end
