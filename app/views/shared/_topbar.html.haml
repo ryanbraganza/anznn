@@ -6,6 +6,7 @@
       = tabs_tag(builder: MenuTabBuilder) do |tab|
         %ul.nav
           = tab.home 'Home', root_url
+          = tab.responses 'Surveys', responses_path
         %ul.nav.secondary-nav
           - if user_signed_in?
             = tab.admin 'Admin', admin_users_path

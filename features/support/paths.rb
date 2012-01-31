@@ -44,8 +44,14 @@ module NavigationHelpers
       admin_users_path
 
     when /the edit first response page$/
-      section = Response.first.survey.sections.first.id
-      edit_response_path Response.first, section: section
+      edit_response_path Response.first
+
+    when /the response page for (.*)$/
+      response = Response.find_by_baby_code($1)
+      edit_response_path response
+
+    when /the list of responses page/
+      responses_path
 
 # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:

@@ -5,7 +5,7 @@ Anznn::Application.routes.draw do
     put "/users/update_password", :to => "user_registers#update_password" #allow users to edit their own password
   end
 
-  resources :responses, :only => [:new, :create, :edit, :update]
+  resources :responses, :only => [:new, :create, :edit, :update, :index]
 
   resource :pages do
     get :home

@@ -1,0 +1,34 @@
+- content_for :title do
+  = "Survey Responses"
+
+  %h2 New Survey Response
+  =link_to "New", new_response_path
+
+%h2 Incomplete Surveys you have started
+- if @responses.blank?
+  %p There are no incomplete survey responses. To start a new one, click the 'new' link above.
+- else
+  %table#responses
+    %tr
+      %th Baby Code
+      %th Survey Type
+      %th Created By
+      %th Date Last Edited
+      %th Date Started
+    - @responses.each do |r|
+      %tr{class: cycle('field_bg', 'field_nobg')}
+
+        %td= link_to r.baby_code, edit_response_path(r)
+        %td= r.survey.name
+        %td= r.user.full_name
+        %td
+          %p
+            = time_tag r.updated_at
+            %small (#{distance_of_time_in_words_to_now(r.updated_at)} ago)
+        %td
+          %p
+            = time_tag r.created_at
+            %small (#{distance_of_time_in_words_to_now(r.created_at)} ago)
+
+
+

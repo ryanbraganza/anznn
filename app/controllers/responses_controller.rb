@@ -3,8 +3,10 @@ class ResponsesController < ApplicationController
 
   load_and_authorize_resource
 
-  def new
-  end
+  set_tab :responses
+
+  def index; end
+  def new; end
 
   def create
     @response.user = current_user
@@ -17,7 +19,8 @@ class ResponsesController < ApplicationController
 
   def edit
     section_id = params[:section]
-    @section = @response.survey.sections.find(section_id)
+    @section = section_id.blank? ? @response.survey.sections.first : @response.survey.sections.find(section_id)
+
     @questions = @section.questions
 
     @response.compute_warnings
