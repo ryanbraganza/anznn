@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(:version => 20120131061959) do
     t.integer "string_min"
     t.integer "string_max"
     t.text    "data_domain"
+    t.boolean "mandatory"
   end
 
   create_table "responses", :force => true do |t|
