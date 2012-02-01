@@ -1,5 +1,6 @@
 .section-nav
   %ul
+    %li= link_to "Summary", @response
     - @response.survey.sections.each do |section|
       %li{class: ('active' if section.id == @section.id)}
         = link_to section.name, edit_response_path(@response, section: section.id), {class: "section-navigation", section_id: section.id}

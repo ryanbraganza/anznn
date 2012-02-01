@@ -22,7 +22,6 @@ Feature: Show warnings on survey pages
       | Sect1 QTime     | Time          | 0       | true      |
       | Sect1 QChoice   | Choice        | 0       | true      |
       | Sect1 QOptional | Text          | 0       | true      |
-      | Sect1 Q3        | Integer       | 0       | true      |
       | Sect2 Q1        | Text          | 1       | true      |
       | Sect2 Q2        | Integer       | 1       | false     |
       | Sect3 Q1        | Text          | 2       | true      |

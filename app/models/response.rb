@@ -19,6 +19,14 @@ class Response < ActiveRecord::Base
     !answers_to_section(section).empty?
   end
 
+  def status_of_section(section)
+    if section_started?(section)
+      "Incomplete"
+    else
+      "Not started"
+    end
+  end
+
   private
 
   def answers_to_section(section)
