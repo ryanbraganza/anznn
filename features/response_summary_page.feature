@@ -1,3 +1,4 @@
+@javascript
 Feature: View a summary page for a survey response
   In order to see where I'm up to
   As a data provider
@@ -29,6 +30,7 @@ Feature: View a summary page for a survey response
     And I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
 
+  @wip
   Scenario: Navigate from summary to section
     Given I am on the edit first response page
     When I follow "Summary"
@@ -39,6 +41,7 @@ Feature: View a summary page for a survey response
     When I follow "Edit" for section "Sec2"
     Then I should see "Sec2"
 
+  @wip
   Scenario: Initially everything is "Not Started"
     Given I am on the edit first response page
     When I follow "Summary"
@@ -64,9 +67,9 @@ Feature: View a summary page for a survey response
       | Sect1 QText2   | def        |
       | Sect1 QInteger | 5          |
       | Sect1 QDecimal | 1          |
-      | Sect1 QDate    | 12/12/2011 |
+      | Sect1 QDate    | 2011/12/31 |
       | Sect1 QTime    | 11:30      |
-      | Sect1 QChoice  | a          |
+      | Sect1 QChoice  | (A) Apple  |
     And I follow "Summary"
     Then I should see "summary" table with
       | Sec1 | Incomplete  |
@@ -81,9 +84,9 @@ Feature: View a summary page for a survey response
       | Sect1 QText2   | def        |
       | Sect1 QInteger | 11         |
       | Sect1 QDecimal | 1          |
-      | Sect1 QDate    | 12/12/2011 |
+      | Sect1 QDate    | 2011/12/31 |
       | Sect1 QTime    | 11:30      |
-      | Sect1 QChoice  | a          |
+      | Sect1 QChoice  | (A) Apple  |
     And I follow "Summary"
     Then I should see "summary" table with
       | Sec1 | Complete    |

@@ -119,11 +119,14 @@ Given /^I answer as follows$/ do |table|
         select y, from: "answers_#{question.id}_year"
         select m, from: "answers_#{question.id}_month"
         select d, from: "answers_#{question.id}_day"
+      when 'Time'
+        h, m = answer_value.split ':'
+        select h, from: "answers_#{question.id}_hour"
+        select m, from: "answers_#{question.id}_min"
+        select m, from: "answers_#{question.id}_min"
       else
         fill_in "question_#{question.id}", with: answer_value.to_s
-     # TODO support more question types
     end
-
   end
 end
 
@@ -152,10 +155,8 @@ def table_to_questions_and_answers(table)
     answer_value = row[:answer]
     question = Question.find_by_question!(question_question)
     case question.question_type
-      when 'Text', 'Choice', 'Date'
+      when 'Text', 'Choice', 'Date', 'Time'
         'no op'
-      when 'Time'
-        raise 'not implemented'
       when 'Decimal'
         answer_value = answer_value.to_f
       when 'Integer'
@@ -170,6 +171,7 @@ end
 
 Given /^question "([^"]*)" has question options$/ do |question_name, table|
   question = Question.find_by_question(question_name)
+  question.question_options.delete_all
   table.hashes.each do |qo_attrs|
     question.question_options.create!(qo_attrs)
   end
@@ -224,7 +226,12 @@ def create_questions(survey, table)
     section_num ||= 0
     section = survey.sections.find_by_order(section_num)
     section = Factory(:section, survey: survey, order: section_num) unless section
-    Factory(:question, q_attrs.merge(section: section))
+    question = Factory(:question, q_attrs.merge(section: section))
+    if question.type_choice?
+      Factory(:question_option, question: question, label: "Apple", option_value: "A")
+      Factory(:question_option, question: question, label: "Bike", option_value: "B")
+      Factory(:question_option, question: question, label: "Cat", option_value: "C")
+    end
   end
 end
 
@@ -272,4 +279,8 @@ end
 Then /^I should see the help tooltip for "(.*)"$/ do |question_question|
   question = Question.find_by_question!(question_question)
   page.should have_content question.data_domain
+end
+
+When /^I follow "([^"]*)" for section "([^"]*)"$/ do |arg1, arg2|
+  pending # express the regexp above with the code you wish you had
 end

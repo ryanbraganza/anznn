@@ -84,6 +84,12 @@ class ResponsesController < ApplicationController
       redirect_to root_path
     else
       go_to_section = params[:go_to_section]
+
+      if go_to_section == "summary"
+        redirect_to @response, notice: 'Your answers have been saved'
+        return
+      end
+
       if clicked =~ /Save and go to next section/
         go_to_section = @response.survey.section_id_after(go_to_section.to_i)
       end

@@ -21,7 +21,14 @@ class Response < ActiveRecord::Base
 
   def status_of_section(section)
     if section_started?(section)
-      "Incomplete"
+      answers_to_section = answers_to_section(section)
+      required_question_ids = section.questions.where(:mandatory => true).collect(&:id)
+      answered_question_ids = answers_to_section.collect(&:question_id)
+      all_mandatory_questions_answered = (required_question_ids - answered_question_ids).empty?
+      return "Incomplete" unless all_mandatory_questions_answered
+      any_warnings = answers_to_section.collect(&:has_warning?).include?(true)
+      return "Incomplete" if any_warnings
+      "Complete"
     else
       "Not started"
     end
