@@ -32,19 +32,33 @@ class ResponsesController < ApplicationController
 
   def update
 
-    answers_to_update = params[:answers].map { |id, val| [id.to_i, val] }
+
+    # Collect all of the answers
+    answers_to_update_with_blanks = params[:answers].map { |id, val| [id.to_i, val] }
+
+    # Remove any empty values or hashes from the list
+    answers_to_update = answers_to_update_with_blanks.delete_if do |key, value|
+      value.is_a?(Hash) ? !hash_values_present?(value) : value.blank?
+    end
+
     Answer.transaction do
 
       answers_to_update.each do |q_id, answer_value|
-        Answer.find_or_create_by_response_id_and_question_id(@response.id, q_id) do |answer|
+        answer = Answer.find_or_create_by_response_id_and_question_id(@response.id, q_id) do |answer|
           answer.answer_value = answer_value
         end
+        answer.answer_value = answer_value
+        answer.save!
       end
     end
     redirect_after_update(params)
   end
 
   private
+
+  def hash_values_present?(hash)
+    hash.values.any? &:present?
+  end
 
   def redirect_after_update(params)
     clicked = params[:commit]
