@@ -41,8 +41,16 @@ class ResponsesController < ApplicationController
       value.is_a?(Hash) ? !hash_values_present?(value) : value.blank?
     end
 
+    ## Answers that have now been cleared should be removed from the DB
+    #blank_answers = answers_to_update_with_blanks - answers_to_update
+    #
+    #Rails.logger.debug answers_to_update_with_blanks.inspect
+    #Rails.logger.debug answers_to_update.inspect
+    #Rails.logger.debug blank_answers.inspect
+
     Answer.transaction do
 
+      # In with the new
       answers_to_update.each do |q_id, answer_value|
         answer = Answer.find_or_create_by_response_id_and_question_id(@response.id, q_id) do |answer|
           answer.answer_value = answer_value
@@ -50,6 +58,12 @@ class ResponsesController < ApplicationController
         answer.answer_value = answer_value
         answer.save!
       end
+
+      ## Out with the old
+      #old_answers = Answer.find_all_by_response_id_and_question_id(@response.id, blank_answers.keys)
+      #old_answers.destroy!
+
+
     end
     redirect_after_update(params)
   end
