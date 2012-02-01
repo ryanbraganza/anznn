@@ -7,13 +7,13 @@
   .input
     - case q.question_type
       - when 'Text'
-        = text_field_tag "answers[#{q.id}]", answer.text_answer, id: field_id, placeholder: 'Text Response', maxlength: 255,
+        = text_field_tag "answers[#{q.id}]", answer.answer_value, id: field_id, placeholder: 'Text Response', maxlength: 255,
           class: 'xxlarge field_trigger',
           data: {description: q.description, guide: q.guide_for_use}
       - when 'Date'
-        - day = answer.date_answer ? answer.date_answer.day : nil
-        - month = answer.date_answer ? answer.date_answer.month : nil
-        - year = answer.date_answer ? answer.date_answer.year : nil
+        - day = answer.answer_value ? answer.answer_value.day : nil
+        - month = answer.answer_value ? answer.answer_value.month : nil
+        - year = answer.answer_value ? answer.answer_value.year : nil
         = select_day(day, {field_name: "#{q.id}][day", prompt: true, prefix: "answers"},
           class: "small field_trigger",
           data: {description: q.description, guide: q.guide_for_use})
@@ -24,8 +24,8 @@
           class: "small field_trigger",
           data: {description: q.description, guide: q.guide_for_use})
       - when 'Time'
-        - hour = answer.time_answer ? answer.time_answer.hour : nil
-        - min = answer.time_answer ? answer.time_answer.min : nil
+        - hour = answer.answer_value ? answer.answer_value.hour : nil
+        - min = answer.answer_value ? answer.answer_value.min : nil
         = select_hour(hour, {field_name: "#{q.id}][hour", prompt: true, prefix: "answers"},
           class: "small field_trigger",
           data: {description: q.description, guide: q.guide_for_use})
@@ -37,17 +37,17 @@
           - q.question_options.each do |qo|
             %li
               %label.field_trigger
-                = radio_button_tag "answers[#{q.id}]", qo.option_value, (answer.choice_answer == qo.option_value),
+                = radio_button_tag "answers[#{q.id}]", qo.option_value, (answer.answer_value == qo.option_value),
                   class: 'field_trigger',
                   data: {description: q.description, guide: q.guide_for_use}
                 %span.radio-label= "(#{qo.option_value}) #{qo.label}"
                 %span.help-block=  qo.hint_text
       - when 'Decimal'
-        = text_field_tag "answers[#{q.id}]", answer.decimal_answer, id: field_id, placeholder: 'Decimal Response', maxlength: 15,
+        = text_field_tag "answers[#{q.id}]", answer.answer_value, id: field_id, placeholder: 'Decimal Response', maxlength: 15,
           class: 'medium field_trigger',
           data: {description: q.description, guide: q.guide_for_use}
       - when 'Integer'
-        = text_field_tag "answers[#{q.id}]", answer.integer_answer, id: field_id, placeholder: 'Integer Response', maxlength: 15,
+        = text_field_tag "answers[#{q.id}]", answer.answer_value, id: field_id, placeholder: 'Integer Response', maxlength: 15,
           class: 'medium field_trigger',
           data: {description: q.description, guide: q.guide_for_use}
       - else

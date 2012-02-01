@@ -26,7 +26,7 @@ class ResponsesController < ApplicationController
 
     @questions = @section.questions
 
-    @response.compute_warnings
+    #@response.compute_warnings
     @question_id_to_answers = @response.question_id_to_answers
   end
 
@@ -36,9 +36,9 @@ class ResponsesController < ApplicationController
     Answer.transaction do
 
       answers_to_update.each do |q_id, answer_value|
-        answer = Answer.find_or_create_by_response_id_and_question_id(@response.id, q_id)
-        answer.sanitise_input(answer_value, Question.find(q_id).question_type)
-        answer.save!
+        Answer.find_or_create_by_response_id_and_question_id(@response.id, q_id) do |answer|
+          answer.answer_value = answer_value
+        end
       end
     end
     redirect_after_update(params)
