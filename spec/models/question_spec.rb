@@ -5,6 +5,7 @@ describe Question do
     it { should belong_to :section }
     it { should have_many :answers }
     it { should have_many :question_options }
+    it { should have_many :cross_question_validations }
   end
 
   describe "Validations" do

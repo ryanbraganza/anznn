@@ -25,6 +25,13 @@ ActiveRecord::Schema.define(:version => 20120131061959) do
     t.string  "raw_answer"
   end
 
+  create_table "cross_question_validations", :force => true do |t|
+    t.integer "question_id"
+    t.integer "related_question_id"
+    t.string  "rule"
+    t.string  "error_message"
+  end
+
   create_table "question_options", :force => true do |t|
     t.integer  "question_id"
     t.string   "option_value"

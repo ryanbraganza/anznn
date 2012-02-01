@@ -120,7 +120,7 @@ class Answer < ActiveRecord::Base
   def compute_warnings
     # At this stage, we're only taking the highest priority warning.
     # This behaviour would be fairly easy to change however
-    self.warning = warn_on_invalid_data || warn_on_range
+    self.warning = warn_on_invalid_data || warn_on_range || warn_on_cross_questions
   end
 
   def warn_on_invalid_data
@@ -144,6 +144,11 @@ class Answer < ActiveRecord::Base
     else
       nil
     end
+  end
+
+  def warn_on_cross_questions
+    warnings = CrossQuestionValidation.check self
+    warnings.first if warnings
   end
 
   def warn_on_range
@@ -171,12 +176,16 @@ class Answer < ActiveRecord::Base
         when TYPE_TEXT
           self.text_answer = input
         when TYPE_DATE
-          self.date_answer =
+          if input.is_a? Date
+            self.date_answer = input
+          else
+            self.date_answer =
               if input[:day].blank? || input[:month].blank? || input[:year].blank?
                 raise ArgumentError
               else
                 Date.civil input[:year].to_i, input[:month].to_i, input[:day].to_i
               end
+          end
         when TYPE_TIME
           self.time_answer =
               if input[:hour].blank? || input[:min].blank?
