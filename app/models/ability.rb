@@ -10,8 +10,7 @@ class Ability
     alias_action :deactivate, to: :activate_deactivate
     alias_action :activate, to: :activate_deactivate
 
-    # alias access_requests to view_access_requests so the permission name is more meaningful
-    alias_action :access_requests, to: :admin
+    alias_action :access_requests, to: :read
 
     # alias reject_as_spam to reject so they are considered the same
     alias_action :reject_as_spam, to: :reject
@@ -20,14 +19,13 @@ class Ability
 
     if Role.superuser_roles.include? user.role
       can :read, User
-      can :admin, User
-      can :access_requests, User
       can :update_role, User
       can :activate_deactivate, User
       can :reject, User
       can :approve, User
+
       can :manage, Response
-      can :update, Survey
+      can :manage, Survey
     end
 
     if user.role.is_data_provider?
@@ -37,27 +35,5 @@ class Ability
     #All users can see all available surveys
     can :read, Survey
 
-    # Define abilities for the passed in user here. For example:
-    #
-    #   user ||= User.new # guest user (not logged in)
-    #   if user.admin?
-    #     can :manage, :all
-    #   else
-    #     can :read, :all
-    #   end
-    #
-    # The first argument to `can` is the action you are giving the user permission to do.
-    # If you pass :manage it will apply to every action. Other common actions here are
-    # :read, :create, :update and :destroy.
-    #
-    # The second argument is the resource the user can perform the action on. If you pass
-    # :all it will apply to every resource. Otherwise pass a Ruby class of the resource.
-    #
-    # The third argument is an optional hash of conditions to further filter the objects.
-    # For example, here the user can only update published articles.
-    #
-    #   can :update, Article, published: true
-    #
-    # See the wiki for details: https://github.com/ryanb/cancan/wiki/Defining-Abilities
   end
 end

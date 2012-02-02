@@ -5,4 +5,4 @@
     %tr
       %td= section.name
       %td= @response.status_of_section(section)
-      %td= link_to "Edit", edit_response_path(@response, section: section.id), id: "edit_#{section.id}"
+      %td= link_to "Edit", edit_response_path(@response, section: section.id), id: "edit_#{section.id}", class: 'btn'

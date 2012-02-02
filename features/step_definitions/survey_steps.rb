@@ -84,7 +84,8 @@ Then /^"([^"]*)" should have no warning$/ do |question_label|
 end
 
 When /^I create a response for "([^"]*)" with baby code "([^"]*)"$/ do |survey, baby_code|
-  visit path_to("the new response page")
+  visit path_to("the home page")
+  click_link "Start New Survey Response"
   fill_in "Baby code", :with => baby_code
   select survey, :from => "Survey"
   click_button "Save"

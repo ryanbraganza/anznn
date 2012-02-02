@@ -50,6 +50,10 @@ module NavigationHelpers
       response = Response.find_by_baby_code($1)
       edit_response_path response
 
+    when /the response summary page for (.*)$/
+      response = Response.find_by_baby_code($1)
+      response_path response
+
     when /the list of responses page/
       responses_path
 

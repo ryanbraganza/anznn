@@ -3,8 +3,6 @@ class ResponsesController < ApplicationController
 
   load_and_authorize_resource
 
-  set_tab :responses
-
   def index;
   end
 

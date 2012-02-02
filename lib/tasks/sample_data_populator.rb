@@ -10,6 +10,7 @@ def populate_data
 end
 
 def create_surveys
+  Response.delete_all
   Survey.delete_all
   Section.delete_all
   Question.delete_all

@@ -3,13 +3,15 @@
 = form_for(resource, as: resource_name, url: password_path(resource_name), html: {method: :put}) do |f|
   = f.hidden_field :reset_password_token
   = render "shared/error_messages", target: @user
-  .field
+  .clearfix
     = f.label :password
-    = f.password_field :password
-    = required
-  .field
+    .input
+      = f.password_field :password
+      = required
+  .clearfix
     = f.label :password_confirmation
-    = f.password_field :password_confirmation
-    = required
+    .input
+      = f.password_field :password_confirmation
+      = required
   .actions
-    = f.submit "Change Your Password"
+    = f.submit "Change Your Password", class: 'btn primary'

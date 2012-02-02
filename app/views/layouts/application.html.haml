@@ -8,7 +8,7 @@
         = render partial: "shared/alert_bar"
         %h1= yield :title
 
-        - # This render call will render the first view it finds from the *controller* then any *inherited controller* or the *ApplicationController*
-        = render partial: "tabs"
+        = yield :tabs
+
         = yield
     = render partial: "shared/footer"

@@ -1,16 +1,14 @@
 .topbar
   .topbar-inner
     .container
-      .brand
-        = link_to image_tag("logo.png"), root_url, title: "Logo"
+      .brand ANZNN
       = tabs_tag(builder: MenuTabBuilder) do |tab|
         %ul.nav
-          = tab.home 'Home', root_url
-          = tab.responses 'Surveys', responses_path
+          = tab.home 'Home', user_signed_in? ? responses_path : root_path
         %ul.nav.secondary-nav
           - if user_signed_in?
-            = tab.admin 'Admin', admin_users_path
+            = (tab.admin 'Admin', admin_users_path) if can?(:read, User)
             = tab.editaccount current_user.email, users_profile_path, class: "user"
             = tab.logout "Logout", destroy_user_session_path, class: "logout"
           - else
-            = tab.signup "Sign Up", new_user_registration_path, class: "signup"
+            = tab.signup "Request An Account", new_user_registration_path, class: "signup"

@@ -40,7 +40,7 @@ Feature: Administer users
     Given "raul@intersect.org.au" has role "Data Provider"
     And I am on the list users page
     When I follow "View Details" for "raul@intersect.org.au"
-    And I follow "Edit role"
+    And I follow "Edit Role"
     And I select "Administrator" from "Role"
     And I press "Save"
     Then I should be on the user details page for raul@intersect.org.au
@@ -50,7 +50,7 @@ Feature: Administer users
   Scenario: Edit role from list page
     Given "raul@intersect.org.au" has role "Data Provider"
     And I am on the list users page
-    When I follow "Edit role" for "raul@intersect.org.au"
+    When I follow "Edit Role" for "raul@intersect.org.au"
     And I select "Administrator" from "Role"
     And I press "Save"
     Then I should be on the user details page for raul@intersect.org.au
@@ -61,7 +61,7 @@ Feature: Administer users
     Given "raul@intersect.org.au" has role "Data Provider"
     And I am on the list users page
     When I follow "View Details" for "raul@intersect.org.au"
-    And I follow "Edit role"
+    And I follow "Edit Role"
     And I select "Administrator" from "Role"
     And I follow "Back"
     Then I should be on the user details page for raul@intersect.org.au
@@ -70,7 +70,7 @@ Feature: Administer users
   Scenario: Role should be mandatory when editing Role
     And I am on the list users page
     When I follow "View Details" for "raul@intersect.org.au"
-    And I follow "Edit role"
+    And I follow "Edit Role"
     And I select "" from "Role"
     And I press "Save"
     Then I should see "Please select a role for the user."
@@ -100,7 +100,7 @@ Feature: Administer users
   Scenario: Editing own role has alert
     Given I am on the list users page
     When I follow "View Details" for "georgina@intersect.org.au"
-    And I follow "Edit role"
+    And I follow "Edit Role"
     Then I should see "You are changing the role of the user you are logged in as."
 
   Scenario: Should not be able to edit role of rejected user by direct URL entry
