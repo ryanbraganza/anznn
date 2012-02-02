@@ -1,9 +1,5 @@
 - field_id = "question_#{q.id}"
 - answer = @question_id_to_answers[q.id]
-- not_answered = answer.nil?
-- answer = @response.answers.build(question: q) if not_answered
-- if not_answered && section_started && q.mandatory
-  - answer.warning = "This question is mandatory"
 
 %div{id: "container_#{q.id}", class: answer.has_warning? ? "clearfix warning" : "clearfix"}
   = label_tag field_id, q.question, class: 'data-domain', title: (q.data_domain ? q.data_domain.gsub(/\n/m, '<br>') : "")

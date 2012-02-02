@@ -28,9 +28,7 @@ class ResponsesController < ApplicationController
     @section = section_id.blank? ? @response.survey.sections.first : @response.survey.sections.find(section_id)
 
     @questions = @section.questions
-
-    #@response.compute_warnings
-    @question_id_to_answers = @response.question_id_to_answers
+    @question_id_to_answers = @response.prepare_answers_to_section_for_editing(@section)
   end
 
   def update

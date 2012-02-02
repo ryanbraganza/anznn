@@ -7,8 +7,22 @@ class Response < ActiveRecord::Base
   validates_presence_of :user
   validates_presence_of :survey_id
 
-  def question_id_to_answers
-    answers.reduce({}) { |hash, answer| hash[answer.question_id] = answer; hash }
+  def prepare_answers_to_section_for_editing(section)
+    existing_answers = answers_to_section(section).reduce({}) { |hash, answer| hash[answer.question_id] = answer; hash }
+    section_started = section_started?(section)
+
+    section.questions.each do |question|
+      #if there's no answer object already, build an empty one
+      if existing_answers[question.id].nil?
+        answer = self.answers.build(question: question)
+        # if the section is started and the question is mandatory, add a mandatory field warning
+        if section_started && question.mandatory
+          answer.warning = "This question is mandatory"
+        end
+        existing_answers[question.id] = answer
+      end
+    end
+    existing_answers
   end
 
   def compute_warnings
