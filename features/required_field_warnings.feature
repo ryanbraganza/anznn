@@ -1,3 +1,4 @@
+@javascript
 Feature: Show warnings on survey pages
   In order to fill in the survey correctly and quickly
   As a data provider
@@ -21,7 +22,7 @@ Feature: Show warnings on survey pages
       | Sect1 QDate     | Date          | 0       | true      |
       | Sect1 QTime     | Time          | 0       | true      |
       | Sect1 QChoice   | Choice        | 0       | true      |
-      | Sect1 QOptional | Text          | 0       | true      |
+      | Sect1 QOptional | Text          | 0       | false     |
       | Sect2 Q1        | Text          | 1       | true      |
       | Sect2 Q2        | Integer       | 1       | false     |
       | Sect3 Q1        | Text          | 2       | true      |
@@ -41,7 +42,6 @@ Feature: Show warnings on survey pages
     When I follow "Sec1"
     Then I should see no warnings
 
-  @wip
   Scenario: As soon as I've answered a question in a section, I start seeing required field errors on that section
     Given I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
@@ -59,7 +59,6 @@ Feature: Show warnings on survey pages
     When I follow "Sec2"
     Then I should see no warnings
 
-  @wip
   Scenario: Once I've answered, the required field error goes away
     Given I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
@@ -72,8 +71,8 @@ Feature: Show warnings on survey pages
       | Sect1 QText1   | txt        |
       | Sect1 QInteger | 1          |
       | Sect1 QDecimal | 1          |
-      | Sect1 QDate    | 12/12/2011 |
+      | Sect1 QDate    | 2011/12/12 |
       | Sect1 QTime    | 10:53      |
-      | Sect1 QChoice  | choice 1   |
+      | Sect1 QChoice  | (A) Apple  |
     And I press "Save page"
     Then I should see no warnings

@@ -22,7 +22,7 @@ Feature: View a summary page for a survey response
       | Sect1 QDate     | Date          | 0       | true      |            |
       | Sect1 QTime     | Time          | 0       | true      |            |
       | Sect1 QChoice   | Choice        | 0       | true      |            |
-      | Sect1 QOptional | Text          | 0       | true      |            |
+      | Sect1 QOptional | Text          | 0       | false     |            |
       | Sect2 Q1        | Text          | 1       | true      |            |
       | Sect2 Q2        | Integer       | 1       | false     |            |
       | Sect3 Q1        | Text          | 2       | true      |            |
@@ -30,7 +30,6 @@ Feature: View a summary page for a survey response
     And I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
 
-  @wip
   Scenario: Navigate from summary to section
     Given I am on the edit first response page
     When I follow "Summary"
@@ -41,7 +40,6 @@ Feature: View a summary page for a survey response
     When I follow "Edit" for section "Sec2"
     Then I should see "Sec2"
 
-  @wip
   Scenario: Initially everything is "Not Started"
     Given I am on the edit first response page
     When I follow "Summary"

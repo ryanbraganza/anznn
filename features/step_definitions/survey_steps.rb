@@ -285,7 +285,7 @@ Then /^I should have no answers$/ do
   Answer.count.should eq(0)
 end
 
-Then /^I should have (\d+) answers$/ do |count|
+Then /^I should have (\d+) answers?$/ do |count|
   Answer.count.should eq(count.to_i)
 end
 
@@ -300,6 +300,7 @@ def get_choices_for_question(question_name)
     checked = label_item.has_selector?("input[type=radio]", :checked => true)
     options_on_page << {"label" => label_text, "hint" => hint_text, "checked" => checked.to_s}
   end
+  options_on_page
 end
 
 def get_checked_radio(question_name)
