@@ -1,9 +1,10 @@
 - title "Select Role For #{@user.email}"
 = form_for(@user, url: approve_admin_user_path(@specimen)) do |f|
   = render "shared/error_messages", target: @user
-  .field
+  .clearfix
     = f.label :role_id, "Role"
-    = f.collection_select(:role_id, @roles, :id, :name, {include_blank: ""})
+    .input
+      = f.collection_select :role_id, @roles, :id, :name, {include_blank: ""}, {class: 'large'}
   .actions
-    = f.submit("Approve")
-    = link_to 'Back', access_requests_admin_users_path
+    = f.submit "Approve", class: 'btn primary'
+    = link_to 'Back', access_requests_admin_users_path, class: 'btn'

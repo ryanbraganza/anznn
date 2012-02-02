@@ -1,7 +1,6 @@
 - if target.errors.any?
   #form_errors.alert-message.block-message.error
     %h3.error_header Please correct the following before continuing
-    %p.notification{id: "*.errors"}
+    %ul
       - target.errors.full_messages.each do |msg|
-        = msg
-        %br/
+        %li= msg

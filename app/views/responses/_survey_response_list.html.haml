@@ -1,0 +1,35 @@
+- title "Survey Responses"
+
+%h2 New Survey Response
+=link_to "Start New Survey Response", new_response_path, class: 'btn'
+
+%br/
+%br/
+
+%h2 Surveys In Progress
+- if @responses.blank?
+  %p There are no surveys in progress. To start a new one, click the 'Start New Survey Response' link above.
+- else
+  %table#responses.bordered-table
+    %tr
+      %th Baby Code
+      %th Survey Type
+      %th Created By
+      %th Date Started
+      %th
+    - @responses.each do |r|
+      %tr
+
+        %td= r.baby_code
+        %td= r.survey.name
+        %td= r.user.full_name
+        %td
+          %p
+            = time_tag r.created_at
+            %small (#{distance_of_time_in_words_to_now(r.created_at)} ago)
+        %td
+          = link_to "Edit", edit_response_path(r), class: 'btn'
+          = link_to "View Summary", r, class: 'btn'
+
+
+

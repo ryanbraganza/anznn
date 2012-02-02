@@ -1,8 +1,10 @@
-.field
+.clearfix
   = f.label :first_name , "First Name:"
-  = f.text_field :first_name
-  = required
-.field
+  .input
+    = f.text_field :first_name
+    = required
+.clearfix
   = f.label :last_name  , "Last Name:"
-  = f.text_field :last_name
-  = required
+  .input
+    = f.text_field :last_name
+    = required

@@ -1,8 +1,5 @@
 class UserRegistersController < Devise::RegistrationsController
 
-  set_tab :signup, only: %w(sign_up)
-  set_tab :editaccount, only: %w(profile edit)
-
   prepend_before_filter :authenticate_scope!, only: [:edit, :update, :destroy, :edit_password, :update_password, :profile]
 
   def profile

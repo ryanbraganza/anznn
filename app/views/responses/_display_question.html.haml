@@ -6,7 +6,7 @@
   .input
     - case q.question_type
       - when 'Text'
-        = text_field_tag "answers[#{q.id}]", answer.answer_value, id: field_id, placeholder: 'Text Response', maxlength: 255,
+        = text_field_tag "answers[#{q.id}]", answer.answer_value, id: field_id, maxlength: 255,
           class: 'xxlarge field_trigger',
           data: {description: q.description, guide: q.guide_for_use}
       - when 'Date'
@@ -42,11 +42,11 @@
                 %span.radio-label= "(#{qo.option_value}) #{qo.label}"
                 %span.help-block.radio-description=  qo.hint_text
       - when 'Decimal'
-        = text_field_tag "answers[#{q.id}]", answer.answer_value, id: field_id, placeholder: 'Decimal Response', maxlength: 15,
+        = text_field_tag "answers[#{q.id}]", answer.answer_value, id: field_id, maxlength: 15,
           class: 'medium field_trigger',
           data: {description: q.description, guide: q.guide_for_use}
       - when 'Integer'
-        = text_field_tag "answers[#{q.id}]", answer.answer_value, id: field_id, placeholder: 'Integer Response', maxlength: 15,
+        = text_field_tag "answers[#{q.id}]", answer.answer_value, id: field_id, maxlength: 15,
           class: 'medium field_trigger',
           data: {description: q.description, guide: q.guide_for_use}
       - else
