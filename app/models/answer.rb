@@ -24,7 +24,7 @@ class Answer < ActiveRecord::Base
   after_find :set_answer_value
   before_validation :sanitise_input
 
-  attr_reader :warning
+  attr_accessor :warning
   attr_accessor :answer_value
 
   serialize :raw_answer
@@ -34,8 +34,6 @@ class Answer < ActiveRecord::Base
   end
 
   private
-
-  attr_writer :warning
 
   def mutually_exclusive_columns_are_blank
     # A lazy way to work out if more than one of the data columns are set.

@@ -23,17 +23,18 @@ Given /^I have a user "([^"]*)" with an expired lock$/ do |email|
 end
 
 Given /^I have a user "([^"]*)" with role "([^"]*)"$/ do |email, role|
-  user            = Factory(:user, :email => email, :password => "Pas$w0rd", :status => 'A')
-  role         = Role.where(:name => role).first
-  user.role_id = role.id
-  user.save!
+  create_user_with_role(email, role)
+end
+
+Given /^I am logged in as "([^"]*)" and have role "([^"]*)"$/ do |email, role|
+  # convenience to avoid writing 3 lines to log in each time
+  create_usual_roles
+  create_user_with_role(email, role) unless User.find_by_email(email)
+  log_in(email)
 end
 
 Given /^I am logged in as "([^"]*)"$/ do |email|
-  visit path_to("the login page")
-  fill_in("user_email", :with => email)
-  fill_in("user_password", :with => "Pas$w0rd")
-  click_button("Log in")
+  log_in(email)
 end
 
 Given /^I have no users$/ do
@@ -69,3 +70,25 @@ And /^I request a reset for "([^"]*)"$/ do |email|
   click_button "Send me reset password instructions"
 end
 
+Given /^I have the usual roles$/ do
+  create_usual_roles
+end
+
+def create_usual_roles
+  Role.create!(:name => 'Administrator') unless Role.find_by_name('Administrator')
+  Role.create!(:name => "Data Provider") unless Role.find_by_name('Data Provider')
+end
+
+def create_user_with_role(email, role)
+  user = Factory(:user, :email => email, :password => "Pas$w0rd", :status => 'A')
+  role = Role.where(:name => role).first
+  user.role_id = role.id
+  user.save!
+end
+
+def log_in(email)
+  visit path_to("the login page")
+  fill_in("user_email", :with => email)
+  fill_in("user_password", :with => "Pas$w0rd")
+  click_button("Log in")
+end

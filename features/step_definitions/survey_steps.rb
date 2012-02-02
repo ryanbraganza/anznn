@@ -47,19 +47,6 @@ def create_response(survey, email)
   Response.create!(survey: survey, baby_code: 'babycode123', user: user)
 end
 
-Then /^I should see the simple questions$/ do
-  page.should have_content simple_question.question
-end
-
-When /^I answer the simple questions$/ do
-  fill_in "question_#{simple_question.id}", :with => 'something'
-end
-
-Then /^I should see the simple questions with my previous answers$/ do
-  question_field = find_field("question_#{simple_question.id}")
-  question_field.value.should eq "something"
-end
-
 When /^I answer "([^"]*)" with "([^"]*)"$/ do |q, a|
   question = Question.find_by_question(q)
   fill_in "question_#{question.id}", :with => a
@@ -109,20 +96,31 @@ def question_div(question_label)
 end
 
 Given /^I answer as follows$/ do |table|
-  questions_to_answer_values = table_to_questions_and_answers(table)
-  questions_to_answer_values.each do |question, answer_value|
+  table.hashes.each do |attrs|
+    question = Question.find_by_question!(attrs["question"])
+    answer_value = attrs["answer"]
     case question.question_type
       when 'Choice'
         within(question_div(question.question)) { choose(answer_value) }
       when 'Date'
-        y, m, d = answer_value.split '/'
+        if answer_value.blank?
+          y = "Year"
+          m = "Month"
+          d = "Day"
+        else
+          y, m, d = answer_value.split '/'
+        end
         select y, from: "answers_#{question.id}_year"
         select m, from: "answers_#{question.id}_month"
         select d, from: "answers_#{question.id}_day"
       when 'Time'
-        h, m = answer_value.split ':'
+        if answer_value.blank?
+          h = "Hour"
+          m = "Minute"
+        else
+          h, m = answer_value.split ':'
+        end
         select h, from: "answers_#{question.id}_hour"
-        select m, from: "answers_#{question.id}_min"
         select m, from: "answers_#{question.id}_min"
       else
         fill_in "question_#{question.id}", with: answer_value.to_s
@@ -134,7 +132,7 @@ Then /^I should see the following answers$/ do |table|
   questions_to_answer_values = table_to_questions_and_answers(table)
   questions_to_answer_values.each do |question, answer_value|
     case question.question_type
-      when 'Choice', 'Decimal', 'Integer'
+      when 'Decimal', 'Integer', 'Text'
         field = find_field("question_#{question.id}")
         field_value = field.value
       when 'Date'
@@ -142,6 +140,12 @@ Then /^I should see the following answers$/ do |table|
         m = find("#answers_#{question.id}_month").value
         d = find("#answers_#{question.id}_day").value
         field_value = "#{y}/#{m}/#{d}"
+      when 'Time'
+        m = find("#answers_#{question.id}_min").value
+        h = find("#answers_#{question.id}_hour").value
+        field_value = "#{h}:#{m}"
+      when 'Choice'
+        field_value = get_checked_radio(question.question)
       else
         raise "Not Implemented"
     end
@@ -178,16 +182,7 @@ Given /^question "([^"]*)" has question options$/ do |question_name, table|
 end
 
 Then /^I should see choice question "([^"]*)" with options$/ do |question_name, table|
-  question_div = question_div(question_name)
-
-  labels = question_div.all("ul.inputs-list li label")
-  options_on_page = []
-  labels.each do |label_item|
-    label_text = label_item.find("span.radio-label").text
-    hint_text = label_item.find("span.help-block").text
-    checked = label_item.has_selector?("input[type=radio]", :checked => true)
-    options_on_page << {"label" => label_text, "hint" => hint_text, "checked" => checked.to_s}
-  end
+  options_on_page = get_choices_for_question(question_name)
   options_on_page.should eq(table.hashes)
 end
 
@@ -281,6 +276,40 @@ Then /^I should see the help tooltip for "(.*)"$/ do |question_question|
   page.should have_content question.data_domain
 end
 
-When /^I follow "([^"]*)" for section "([^"]*)"$/ do |arg1, arg2|
-  pending # express the regexp above with the code you wish you had
+When /^I follow "([^"]*)" for section "([^"]*)"$/ do |link, section|
+  section_id = Section.find_by_name(section).id
+  click_link "#{link.downcase}_#{section_id}"
+end
+
+Then /^I should have no answers$/ do
+  Answer.count.should eq(0)
+end
+
+Then /^I should have (\d+) answers$/ do |count|
+  Answer.count.should eq(count.to_i)
+end
+
+def get_choices_for_question(question_name)
+  question_div = question_div(question_name)
+
+  labels = question_div.all("ul.inputs-list li label")
+  options_on_page = []
+  labels.each do |label_item|
+    label_text = label_item.find("span.radio-label").text
+    hint_text = label_item.find("span.help-block").text
+    checked = label_item.has_selector?("input[type=radio]", :checked => true)
+    options_on_page << {"label" => label_text, "hint" => hint_text, "checked" => checked.to_s}
+  end
+end
+
+def get_checked_radio(question_name)
+  question_div = question_div(question_name)
+
+  labels = question_div.all("ul.inputs-list li label")
+  labels.each do |label_item|
+    if label_item.has_selector?("input[type=radio]", :checked => true)
+      return label_item.find("span.radio-label").text
+    end
+  end
+
 end

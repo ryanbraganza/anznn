@@ -16,9 +16,3 @@ Then /^I should get the following security outcomes$/ do |table|
   end
 end
 
-Given /^I have the usual roles$/ do
-  # TODO: adjust roles here
-  Role.create!(:name => 'Administrator')
-  Role.create!(:name => "Data Provider")
-end
-

@@ -34,44 +34,29 @@ class ResponsesController < ApplicationController
   end
 
   def update
-
-
-    # Collect all of the answers
-    answers_to_update_with_blanks = params[:answers].map { |id, val| [id.to_i, val] }
-
-    # Remove any empty values or hashes from the list
-    answers_to_update = answers_to_update_with_blanks.delete_if do |key, value|
-      value.is_a?(Hash) ? !hash_values_present?(value) : value.blank?
-    end
-
-    ## Answers that have now been cleared should be removed from the DB
-    #blank_answers = answers_to_update_with_blanks - answers_to_update
-    #
-    #Rails.logger.debug answers_to_update_with_blanks.inspect
-    #Rails.logger.debug answers_to_update.inspect
-    #Rails.logger.debug blank_answers.inspect
+    submitted_answers = params[:answers].map { |id, val| [id.to_i, val] }
 
     Answer.transaction do
-
-      # In with the new
-      answers_to_update.each do |q_id, answer_value|
-        answer = Answer.find_or_create_by_response_id_and_question_id(@response.id, q_id) do |answer|
+      submitted_answers.each do |q_id, answer_value|
+        answer = Answer.find_by_response_id_and_question_id(@response.id, q_id)
+        if blank_answer?(answer_value)
+          answer.destroy if answer
+        else
+          answer = @response.answers.build(question_id: q_id) unless answer
           answer.answer_value = answer_value
+          answer.save!
         end
-        answer.answer_value = answer_value
-        answer.save!
       end
-
-      ## Out with the old
-      #old_answers = Answer.find_all_by_response_id_and_question_id(@response.id, blank_answers.keys)
-      #old_answers.destroy!
-
-
     end
+
     redirect_after_update(params)
   end
 
   private
+
+  def blank_answer?(value)
+    value.is_a?(Hash) ? !hash_values_present?(value) : value.blank?
+  end
 
   def hash_values_present?(hash)
     hash.values.any? &:present?

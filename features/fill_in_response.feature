@@ -1,12 +1,10 @@
-@wip
 Feature: Fill in a survey response
   In order to enter data
   As a data provider
   I want my answers to a survey to be stored correctly
 
   Background:
-    Given I have the usual roles
-    And I have a user "data.provider@intersect.org.au" with role "Data Provider"
+    And I am logged in as "data.provider@intersect.org.au" and have role "Data Provider"
     And I have a survey with name "survey" and questions
       | question   | question_type |
       | Text Qn    | Text          |
@@ -25,13 +23,49 @@ Feature: Fill in a survey response
   Scenario: Saving a simple response
     Given I am on the edit first response page
     When I answer as follows
-      | question   | answer |
-      | Text Qn    | Text   |
-      | Decimal Qn | 1.5    |
-      | Integer Qn | 1      |
-      | Date Qn    | *****  |
-      | Time Qn    | ****** |
-      | Choice Qn  | (1) No |
+      | question   | answer     |
+      | Text Qn    | Text       |
+      | Decimal Qn | 1.5        |
+      | Integer Qn | 1          |
+      | Date Qn    | 2011/12/25 |
+      | Time Qn    | 14:52      |
+      | Choice Qn  | (1) No     |
     And press "Save page"
-    Then I should see "Saved page"
-    And I should see the simple questions with my previous answers
+    Then I should see "Your answers have been saved"
+    And I should see the following answers
+      | question   | answer     |
+      | Text Qn    | Text       |
+      | Decimal Qn | 1.5        |
+      | Integer Qn | 1          |
+      | Date Qn    | 2011/12/25 |
+      | Time Qn    | 14:52      |
+      | Choice Qn  | (1) No     |
+    And I should have 6 answers
+
+  Scenario: Empty answers should not be saved to a record
+    Given I am on the edit first response page
+    And I press "Save page"
+    Then I should have no answers
+
+  Scenario: Blanking out previously entered responses should delete any existing answer
+    Given I am on the edit first response page
+    When I answer as follows
+      | question   | answer     |
+      | Text Qn    | Text       |
+      | Decimal Qn | 1.5        |
+      | Integer Qn | 1          |
+      | Date Qn    | 2011/12/25 |
+      | Time Qn    | 14:52      |
+      | Choice Qn  | (1) No     |
+    And press "Save page"
+    Then I should have 6 answers
+    When I answer as follows
+      | question   | answer |
+      | Text Qn    |        |
+      | Decimal Qn |        |
+      | Integer Qn |        |
+      | Date Qn    |        |
+      | Time Qn    |        |
+    And I press "Save page"
+  # its not possible to blank out choices
+    Then I should have 1 answer
