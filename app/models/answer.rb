@@ -12,6 +12,8 @@ class Answer < ActiveRecord::Base
   TYPE_INTEGER = 'Integer'
   TYPE_TEXT = 'Text'
   TYPE_TIME = 'Time'
+  #Used for invalid / unset question types
+  TYPE_ERROR = nil
 
   belongs_to :question
   belongs_to :response
@@ -21,16 +23,57 @@ class Answer < ActiveRecord::Base
   validate :mutually_exclusive_columns_are_blank
 
   after_find :compute_warnings
-  after_find :set_answer_value
-  before_validation :sanitise_input
+  #after_find :set_answer_value
+  #before_validation :sanitise_input
 
   attr_accessor :warning
-  attr_accessor :answer_value
 
   serialize :raw_answer
 
   def has_warning?
     !self.warning.blank?
+  end
+
+  def answer_value=(val)
+    question_type = self.question.present? ? self.question.question_type : TYPE_ERROR
+    sanitise_and_write_input val, question_type
+    compute_warnings
+  end
+
+  def answer_value
+    #If there is a value in raw_answer we can just use that and ignore everything else
+    unless self.raw_answer.blank?
+      ans_val = self.raw_answer
+      if ans_val.is_a?(Hash)
+        #By Convert the hash to a PartialDateTimeHash so we get the helper methods
+        ans_val = PartialDateTimeHash.new(ans_val)
+      end
+      return ans_val
+    end
+    #alias_method :get_answer_value, :answer_value
+
+    #If not then lets assign the correct value
+    qn_type = self.question.question_type
+    return case qn_type
+             when TYPE_TEXT
+               self.text_answer
+             when TYPE_DATE
+               #The only reason why this is converted to a PDTH rather than left as a Date object is because
+               #The object that goes in to this model should be of the same type as the one that comes out - ie you
+               # shouldn't put in a hash and get out a date.
+               PartialDateTimeHash.new self.date_answer
+             when TYPE_TIME
+               # See above
+               PartialDateTimeHash.new self.time_answer
+             when TYPE_CHOICE
+               self.choice_answer
+             when TYPE_DECIMAL
+               self.decimal_answer
+             when TYPE_INTEGER
+               self.integer_answer
+             else
+               nil
+           end
   end
 
   private
@@ -79,78 +122,51 @@ class Answer < ActiveRecord::Base
     nil
   end
 
-  def set_answer_value
-    unless self.raw_answer.blank?
-      self.answer_value = self.raw_answer
-      if self.answer_value.is_a?(Hash)
-        #By Convert the hash to a PartialDateTimeHash so we get the helper methods
-        self.answer_value = PartialDateTimeHash.new(self.answer_value)
-      end
-      return
-    end
-
-    qn_type = self.question.question_type
-    self.answer_value =
-        case qn_type
-          when TYPE_TEXT
-            self.text_answer
-          when TYPE_DATE
-            self.date_answer
-          when TYPE_TIME
-            self.time_answer
-          when TYPE_CHOICE
-            self.choice_answer
-          when TYPE_DECIMAL
-            self.decimal_answer
-          when TYPE_INTEGER
-            self.integer_answer
-          else
-            nil
-        end
-  end
-
-  def sanitise_input
+  def sanitise_and_write_input (input, question_type)
     clear_fields
 
     begin
-      case self.question.question_type
+      if input.nil? then raise InputError end
+      case question_type
         when TYPE_TEXT
-          self.text_answer = self.answer_value
+          self.text_answer = input
         when TYPE_DATE
           self.date_answer =
-              if self.answer_value[:day].blank? || self.answer_value[:month].blank? || self.answer_value[:year].blank?
+              if input[:day].blank? || input[:month].blank? || input[:year].blank?
                 raise ArgumentError
               else
-                Date.civil self.answer_value[:year].to_i, self.answer_value[:month].to_i, self.answer_value[:day].to_i
+                Date.civil input[:year].to_i, input[:month].to_i, input[:day].to_i
               end
         when TYPE_TIME
           self.time_answer =
-              if self.answer_value[:hour].blank? || self.answer_value[:min].blank?
+              if input[:hour].blank? || input[:min].blank?
                 raise ArgumentError
               else
-                Time.utc 2000, 1, 1, self.answer_value[:hour].to_i, self.answer_value[:min].to_i
+                Time.utc 2000, 1, 1, input[:hour].to_i, input[:min].to_i
               end
         when TYPE_CHOICE
-          self.choice_answer = self.answer_value
+          self.choice_answer = input
         when TYPE_DECIMAL
-          if self.answer_value.empty?
+          if input.blank?
             self.decimal_answer = nil
           else
-            float = Float(self.answer_value)
+            float = Float(input)
             self.decimal_answer = float
           end
         when TYPE_INTEGER
-          if self.answer_value.empty?
+          if input.blank?
             self.integer_answer = nil
           else
-            int = Integer(self.answer_value)
+            int = Integer(input)
             self.integer_answer = int
           end
+        when TYPE_ERROR
+          raise InputError
         else
           raise "Question type not recognised!"
       end
     rescue ArgumentError
-      self.raw_answer = self.answer_value
+      self.raw_answer = input
 
     end
   end

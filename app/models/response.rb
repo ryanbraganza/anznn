@@ -25,10 +25,6 @@ class Response < ActiveRecord::Base
     existing_answers
   end
 
-  def compute_warnings
-    answers.each { |a| a.compute_warnings }
-  end
-
   def section_started?(section)
     !answers_to_section(section).empty?
   end

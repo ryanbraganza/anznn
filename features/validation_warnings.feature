@@ -13,11 +13,13 @@ Feature: Show warnings on survey pages
       | Integer Q1 | Integer       | -100       | 500        |                |            |            |
       | Integer Q2 | Integer       | 0          | 5          |                |            |            |
       | Decimal Q  | Decimal       |            | 10         | 99             |            |            |
-
-  Scenario: Viewing warnings after saving
-    Given I am logged in as "data.provider@intersect.org.au"
+      | Date Q     | Date          |            |            |                |            |            |
+      | Time Q     | Time          |            |            |                |            |            |
+    And I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
-    And I am on the edit first response page
+
+  Scenario: Viewing warnings for valid (but out-of-range) data after saving
+    Given I am on the edit first response page
     Then I should see no warnings
     When I answer "Text Q1" with "areallylongstring"
     When I answer "Text Q2" with "iam9chars"
@@ -30,3 +32,28 @@ Feature: Show warnings on survey pages
     Then I should see warning "Answer should be a maximum of 10 or 99 for unknown" for question "Decimal Q"
     And "Integer Q2" should have no warning
     And "Text Q2" should have no warning
+
+
+  Scenario Outline: View warnings for invalid data after saving (Incomplete dates/times, invalid dates)
+    Given I am on the edit first response page
+    Then I should see no warnings
+    And I answer "<question>" with "<value>"
+    And I press "Save"
+    Then I should see warning "<warning>" for question "<question>"
+
+  @wip
+  Scenarios: View warnings for invalid data after saving (Strings in int/decimal fields)
+    | question   | value | warning                                               |
+    | Integer Q1 | abcd  | Answer is the wrong format (Expected an integer)      |
+    | Decimal Q  | abcd  | Answer is the wrong format (Expected a decimal value) |
+
+  @wip
+  Scenarios:  View warnings for invalid data after saving (Incomplete dates/times, invalid dates)
+    | question | value | warning                                          |
+    | Date Q   | abcd  | Answer is incomplete (Day field blank)           |
+    | Date Q   | abcd  | Answer is incomplete (Month field blank)         |
+    | Date Q   | abcd  | Answer is incomplete (Year field blank)          |
+    | Date Q   | abcd  | Answer is invalid (Provided date does not exist) |
+    | Time Q   | abcd  | Answer is incomplete (Hour field blank)          |
+    | Time Q   | abcd  | Answer is incomplete (Minute field blank)        |
+
