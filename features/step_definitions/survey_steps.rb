@@ -292,7 +292,7 @@ end
 
 When /^I follow "([^"]*)" for section "([^"]*)"$/ do |link, section|
   section_id = Section.find_by_name(section).id
-  click_link "#{link.downcase}_#{section_id}"
+  click_link "#{link.downcase.gsub(" ", "_")}_#{section_id}"
 end
 
 Then /^I should have no answers$/ do

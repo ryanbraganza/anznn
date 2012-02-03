@@ -48,6 +48,10 @@ class ResponsesController < ApplicationController
     redirect_after_update(params)
   end
 
+  def review_answers
+    
+  end
+
   private
 
   def blank_answer?(value)

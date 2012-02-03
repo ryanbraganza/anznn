@@ -54,6 +54,10 @@ module NavigationHelpers
       response = Response.find_by_baby_code($1)
       response_path response
 
+    when /the review answers page for (.*)$/
+      response = Response.find_by_baby_code($1)
+      review_answers_response_path response
+
     when /the list of responses page/
       responses_path
 
