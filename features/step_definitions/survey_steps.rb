@@ -72,6 +72,19 @@ Then /^I should see warning "([^"]*)" for question "([^"]*)"$/ do |warning, ques
   warning_text.text.gsub("\n", "").should eq(warning)
 end
 
+Then /^I should see warnings as follows$/ do |table|
+  table.hashes.each do |attrs|
+
+    question = question_div(attrs[:question])
+
+    classes = question[:class].split(" ")
+    classes.include?("warning").should be_true, "Expected question div to have class=warning, but found only #{classes}"
+
+    warning_text = question.find(".help-block")
+    warning_text.text.gsub("\n", "").should eq(attrs[:warning])
+  end
+end
+
 Then /^I should see no warnings$/ do
   page.should_not have_css(".warning")
 end

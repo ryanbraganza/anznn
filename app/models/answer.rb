@@ -61,6 +61,8 @@ class Answer < ActiveRecord::Base
                #The only reason why this is converted to a PDTH rather than left as a Date object is because
                #The object that goes in to this model should be of the same type as the one that comes out - ie you
                # shouldn't put in a hash and get out a date.
+               # If for some reason the PDTH doesn't meet requirements and can't be extended, then you should be
+               # able to revert back to a Date without breaking too much. Good luck!
                PartialDateTimeHash.new self.date_answer
              when TYPE_TIME
                # See above
@@ -105,7 +107,26 @@ class Answer < ActiveRecord::Base
   end
 
   def warn_on_invalid_data
-    nil
+    if raw_answer.present?
+      case self.question.question_type
+        when TYPE_DATE
+          if raw_answer[:day].present? && raw_answer[:month].present? && raw_answer[:year].present?
+            "Answer is invalid (Provided date does not exist)"
+          else
+            "Answer is incomplete (one or more fields left blank)"
+          end
+        when TYPE_TIME
+          "Answer is incomplete (a field was left blank)"
+        when TYPE_DECIMAL
+          "Answer is the wrong format (Expected a decimal value)"
+        when TYPE_INTEGER
+          "Answer is the wrong format (Expected an integer)"
+        else
+          "Answer contains invalid data"
+      end
+    else
+      nil
+    end
   end
 
   def warn_on_range
@@ -126,7 +147,9 @@ class Answer < ActiveRecord::Base
     clear_fields
 
     begin
-      if input.nil? then raise InputError end
+      if input.nil? then
+        raise InputError
+      end
       case question_type
         when TYPE_TEXT
           self.text_answer = input

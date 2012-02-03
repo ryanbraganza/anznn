@@ -1,4 +1,8 @@
 class PartialDateTimeHash < HashWithIndifferentAccess
+  #So rails' black magic with dates and times sucks. Fortunately, if you give the helper methods something that looks
+  # like a Date or Time and quacks like one then it will work like one.
+
+  #This hash can be built by passing it a Date, Time, DateTime or regular hash
   #Warning - this will IGNORE the day/month/year for a Time object. use DateTime instead!!!
 
   fields = [:day, :month, :year, :hour, :min]

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Answer do
-  let(:response) {Factory(:response)}
+  let(:response) { Factory(:response) }
   let(:text_question) { Factory(:question, question_type: Question::TYPE_TEXT) }
   let(:integer_question) { Factory(:question, question_type: Question::TYPE_INTEGER) }
   let(:decimal_question) { Factory(:question, question_type: Question::TYPE_DECIMAL) }
@@ -48,7 +48,87 @@ describe Answer do
     end
   end
 
-  describe "answer_value should contain the correct data on load" do
+  describe "accept and sanitise all input (via assignment of answer_value), and have a warning if invalid" do
+
+
+    describe "Decimal" do
+      it "saves a decimal as a decimal" do
+        a = Answer.new(question: decimal_question)
+        a.answer_value = '1.23'
+        a.decimal_answer.should eq 1.23
+      end
+      it "saves an integer as a decimal" do
+        a = Answer.new(question: decimal_question)
+        a.answer_value = '123'
+        a.decimal_answer.should eq 123
+      end
+      it "saves invalid input as 'raw input' and has a warning" do
+        a = Answer.new(question: decimal_question)
+        a.answer_value = '1.23f'
+        a.decimal_answer.should_not be
+        a.raw_answer.should eq '1.23f'
+        a.has_warning?.should be_true
+
+      end
+      # The answer record should be culled if it becomes empty, but if it gets left behind it should be blank.
+      it "nils out on empty string" do
+        a = Factory(:answer, question: decimal_question, decimal_answer: 1.23)
+        a.decimal_answer.should eq 1.23
+
+        a.answer_value = ''
+        a.decimal_answer.should_not be
+        a.raw_answer.should_not be
+      end
+      it "does not nil out on invalid input, and has a warning" do
+        a = Factory(:answer, question: decimal_question, decimal_answer: 1.23)
+        a.decimal_answer.should eq 1.23
+
+        a.answer_value = 'garbage'
+        a.decimal_answer.should_not be
+        a.raw_answer.should eq 'garbage'
+        a.has_warning?.should be_true
+
+      end
+    end
+    describe "Integer" do
+
+      it "saves an integer as an integer" do
+        a = Answer.new(question: integer_question)
+        a.answer_value = '1234'
+        a.integer_answer.should eq 1234
+      end
+      it "saves invalid input as 'raw input' and has a warning" do
+        a = Answer.new(question: integer_question)
+        a.answer_value = '1234d'
+        a.raw_answer.should eq '1234d'
+        a.has_warning?.should be_true
+
+      end
+      it "nils out on empty string" do
+        a = Factory(:answer, question: integer_question, integer_answer: 123)
+        a.integer_answer.should eq 123
+
+        a.answer_value = ''
+        a.integer_answer.should_not be
+        a.raw_answer.should_not be
+      end
+      # The answer record should be culled if it becomes empty, but if it gets left behind it should be blank.
+      it "does not nil out on invalid input and shows a warning" do
+        a = Factory(:answer, question: integer_question, integer_answer: 123)
+        a.integer_answer.should eq 123
+
+        a.answer_value = 'garbage'
+        a.integer_answer.should_not be
+        a.raw_answer.should eq 'garbage'
+        a.has_warning?.should be_true
+
+      end
+    end
+    describe "other question types" do
+      pending
+    end
+  end
+  describe "answer_value should contain the correct data on load with valid data" do
     it "Valid text" do
       a = Answer.new(response: response, question: text_question, answer_value: "abc")
       a.save!; a.answer_value = nil; a.reload
@@ -86,88 +166,64 @@ describe Answer do
       a.answer_value.should eq("abc")
     end
 
-    it "invalid text" do
-      pending
-    end
+  end
+
+  describe "answer_value should contain the inputted data on load with invalid data, and a warning should be present" do
+
     it "invalid date" do
-      pending
+      date_a_s_hash = ActiveSupport::HashWithIndifferentAccess.new ({day: 31, month: 2, year: 2000})
+      date_hash = PartialDateTimeHash.new date_a_s_hash
+      a = Answer.new(response: response, question: date_question, answer_value: date_a_s_hash)
+
+      a.save!; b = Answer.find(a.id); a = b
+
+      a.answer_value.should eq(date_hash)
+      a.has_warning?.should be_true
+
     end
+
+    it "partial date" do
+      date_a_s_hash = ActiveSupport::HashWithIndifferentAccess.new ({day: 1, year: 2000})
+      date_hash = PartialDateTimeHash.new date_a_s_hash
+      a = Answer.new(response: response, question: date_question, answer_value: date_a_s_hash)
+
+      a.save!; b = Answer.find(a.id); a = b
+      a.answer_value.should eq(date_hash)
+      a.has_warning?.should be_true
+    end
+
     it "invalid time" do
-      pending
+      time_a_s_hash = ActiveSupport::HashWithIndifferentAccess.new ({hour: 20, min: 61})
+      time_hash = PartialDateTimeHash.new time_a_s_hash
+      a = Answer.new(response: response, question: time_question, answer_value: time_a_s_hash)
+
+      a.save!; b = Answer.find(a.id); a = b
+      a.answer_value.should eq(time_hash)
+      a.has_warning?.should be_true
+    end
+
+    it "partial time" do
+      time_a_s_hash = ActiveSupport::HashWithIndifferentAccess.new ({hour: 20})
+      time_hash = PartialDateTimeHash.new time_a_s_hash
+      a = Answer.new(response: response, question: time_question, answer_value: time_a_s_hash)
+      a.save!; b = Answer.find(a.id); a = b
+      a.answer_value.should eq(time_hash)
+    end
+    it "invalid integer" do
+      input = "4.5"
+      a = Answer.new(response: response, question: integer_question, answer_value: input)
+      a.save!; b = Answer.find(a.id); a = b
+      a.answer_value.should eq(input)
+      a.has_warning?.should be_true
+    end
+    it "invalid decimal" do
+      input = "abc"
+      a = Answer.new(response: response, question: decimal_question, answer_value: input)
+      a.save!; b = Answer.find(a.id); a = b
+      a.answer_value.should eq(input)
+      a.has_warning?.should be_true
     end
 
   end
 
-  describe "sanitise input (via assignment of answer_value)" do
-
-
-    describe "Decimal" do
-      it "saves a decimal as a decimal" do
-        a = Answer.new(question: decimal_question)
-        a.answer_value = '1.23'
-        a.decimal_answer.should eq 1.23
-      end
-      it "saves an integer as a decimal" do
-        a = Answer.new(question: decimal_question)
-        a.answer_value = '123'
-        a.decimal_answer.should eq 123
-      end
-      it "saves invalid input as 'raw input'" do
-        a = Answer.new(question: decimal_question)
-        a.answer_value = '1.23f'
-        a.decimal_answer.should_not be
-        a.raw_answer.should eq '1.23f'
-      end
-      # The answer record should be culled if it becomes empty, but if it gets left behind it should be blank.
-      it "nils out on empty string" do
-        a = Factory(:answer, question: decimal_question, decimal_answer: 1.23)
-        a.decimal_answer.should eq 1.23
-
-        a.answer_value = ''
-        a.decimal_answer.should_not be
-        a.raw_answer.should_not be
-      end
-      it "does not nil out on invalid input" do
-        a = Factory(:answer, question: decimal_question, decimal_answer: 1.23)
-        a.decimal_answer.should eq 1.23
-
-        a.answer_value = 'garbage'
-        a.decimal_answer.should_not be
-        a.raw_answer.should eq 'garbage'
-      end
-    end
-    describe "Integer" do
-
-      it "saves an integer as an integer" do
-        a = Answer.new(question: integer_question)
-        a.answer_value = '1234'
-        a.integer_answer.should eq 1234
-      end
-      it "saves invalid input as 'raw input'" do
-        a = Answer.new(question: integer_question)
-        a.answer_value = '1234d'
-        a.raw_answer.should eq '1234d'
-      end
-      it "nils out on empty string" do
-        a = Factory(:answer, question: integer_question, integer_answer: 123)
-        a.integer_answer.should eq 123
-
-        a.answer_value = ''
-        a.integer_answer.should_not be
-        a.raw_answer.should_not be
-      end
-      # The answer record should be culled if it becomes empty, but if it gets left behind it should be blank.
-      it "does not nil out on invalid input" do
-        a = Factory(:answer, question: integer_question, integer_answer: 123)
-        a.integer_answer.should eq 123
-
-        a.answer_value = 'garbage'
-        a.integer_answer.should_not be
-        a.raw_answer.should eq 'garbage'
-      end
-    end
-    describe "other question types" do
-      pending
-    end
-  end
 end

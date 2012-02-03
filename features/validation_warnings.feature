@@ -13,8 +13,12 @@ Feature: Show warnings on survey pages
       | Integer Q1 | Integer       | -100       | 500        |                |            |            |
       | Integer Q2 | Integer       | 0          | 5          |                |            |            |
       | Decimal Q  | Decimal       |            | 10         | 99             |            |            |
-      | Date Q     | Date          |            |            |                |            |            |
-      | Time Q     | Time          |            |            |                |            |            |
+      | Date Q1    | Date          |            |            |                |            |            |
+      | Date Q2    | Date          |            |            |                |            |            |
+      | Date Q3    | Date          |            |            |                |            |            |
+      | Date Q4    | Date          |            |            |                |            |            |
+      | Time Q1    | Time          |            |            |                |            |            |
+      | Time Q2    | Time          |            |            |                |            |            |
     And I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
 
@@ -34,26 +38,34 @@ Feature: Show warnings on survey pages
     And "Text Q2" should have no warning
 
 
-  Scenario Outline: View warnings for invalid data after saving (Incomplete dates/times, invalid dates)
+  Scenario: View warnings for invalid data after saving (Strings in int/decimal fields)
     Given I am on the edit first response page
     Then I should see no warnings
-    And I answer "<question>" with "<value>"
+    And I answer as follows
+      | question   | answer       |
+      | Decimal Q  | abcd         |
+      | Integer Q1 | abcd         |
+      | Integer Q2 | 1.5          |
+      | Date Q1    | 2011/12/Day  |
+      | Date Q2    | 2011/Month/1 |
+      | Date Q3    | Year/12/1    |
+      | Date Q4    | 2011/2/31   |
+      | Time Q1    | 14:Minute    |
+      | Time Q2    | Hour:05      |
     And I press "Save"
-    Then I should see warning "<warning>" for question "<question>"
+    Then I should see warnings as follows
+      | question   | warning                                               |
+      | Decimal Q  | Answer is the wrong format (Expected a decimal value) |
+      | Integer Q1 | Answer is the wrong format (Expected an integer)      |
+      | Integer Q2 | Answer is the wrong format (Expected an integer)      |
+      | Date Q1    | Answer is incomplete (one or more fields left blank)  |
+      | Date Q2    | Answer is incomplete (one or more fields left blank)  |
+      | Date Q3    | Answer is incomplete (one or more fields left blank)  |
+      | Date Q4    | Answer is invalid (Provided date does not exist)      |
+      | Time Q1    | Answer is incomplete (a field was left blank)         |
+      | Time Q2    | Answer is incomplete (a field was left blank)         |
 
-  @wip
-  Scenarios: View warnings for invalid data after saving (Strings in int/decimal fields)
-    | question   | value | warning                                               |
-    | Integer Q1 | abcd  | Answer is the wrong format (Expected an integer)      |
-    | Decimal Q  | abcd  | Answer is the wrong format (Expected a decimal value) |
-
-  @wip
-  Scenarios:  View warnings for invalid data after saving (Incomplete dates/times, invalid dates)
-    | question | value | warning                                          |
-    | Date Q   | abcd  | Answer is incomplete (Day field blank)           |
-    | Date Q   | abcd  | Answer is incomplete (Month field blank)         |
-    | Date Q   | abcd  | Answer is incomplete (Year field blank)          |
-    | Date Q   | abcd  | Answer is invalid (Provided date does not exist) |
-    | Time Q   | abcd  | Answer is incomplete (Hour field blank)          |
-    | Time Q   | abcd  | Answer is incomplete (Minute field blank)        |
+#  @wip
+#  Scenarios:  View warnings for invalid data after saving (Incomplete dates/times, invalid dates)
+#  | question | value | warning                                              |
 
