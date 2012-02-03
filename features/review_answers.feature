@@ -47,3 +47,44 @@ Feature: Review my answers
     And I follow "Edit Answers" for section "SectionOne"
     Then I should see "SectionOne"
     And I should be on the response page for ABCDEF
+
+
+  Scenario: Shows 'Not answered' for questions that are not answered yet
+    Given I am on the review answers page for ABCDEF
+    Then I should see answers for section "SectionOne"
+      | Text Qn    | Not answered |
+      | Decimal Qn | Not answered |
+      | Integer Qn | Not answered |
+    And I should see answers for section "SectionTwo"
+      | Date Qn   | Not answered |
+      | Time Qn   | Not answered |
+      | Choice Qn | Not answered |
+
+  @javascript
+  Scenario: Shows answers in an appropriate format for those that are answered
+    Given I am on the response page for ABCDEF
+    And I answer as follows
+      | question   | answer |
+      | Text Qn    | mytext |
+      | Decimal Qn | 1.23   |
+      | Integer Qn | 22     |
+    And I follow "SectionTwo"
+    And I answer as follows
+      | question  | answer     |
+      | Date Qn   | 2011/12/25 |
+      | Time Qn   | 18:56      |
+      | Choice Qn | (0) Yes    |
+    And I follow "Summary"
+    And I follow "Review Answers"
+    Then I should see answers for section "SectionOne"
+      | Text Qn    | mytext |
+      | Decimal Qn | 1.23   |
+      | Integer Qn | 22     |
+    And I should see answers for section "SectionTwo"
+      | Date Qn   | 25/12/2011 |
+      | Time Qn   | 18:56      |
+      | Choice Qn | (0) Yes    |
+
+  Scenario: saved invalid answers are shown as?
+
+  Scenario: warnings are shown as ?

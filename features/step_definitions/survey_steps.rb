@@ -328,3 +328,9 @@ def get_checked_radio(question_name)
   end
 
 end
+
+Then /^I should see answers for section "([^"]*)"$/ do |section_name, expected_table|
+  section = Section.find_by_name(section_name)
+  actual = find("table#section_#{section.id}").all('tr').map { |row| row.all('th, td').map { |cell| cell.text.strip } }
+  expected_table.diff!(actual)
+end

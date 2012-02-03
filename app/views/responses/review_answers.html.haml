@@ -7,3 +7,9 @@
 - @response.survey.sections.each do |section|
   %h2= section.name
   = link_to "Edit Answers", edit_response_path(@response, section: section.id), id: "edit_answers_#{section.id}", class: 'btn'
+  %table.bordered-table{id: "section_#{section.id}"}
+    - answers =  @response.prepare_answers_to_section_for_editing(section)
+    - section.questions.each do |question|
+      %tr
+        %td= question.question
+        %td= answers[question.id].format_for_display

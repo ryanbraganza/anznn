@@ -226,4 +226,35 @@ describe Answer do
 
   end
 
+  describe "Formatting an answer for display" do
+
+    it "should handle each of the data types correctly" do
+      Factory(:answer, question: text_question, answer_value: "blah").format_for_display.should eq("blah")
+      Factory(:answer, question: integer_question, answer_value: "14").format_for_display.should eq("14")
+      Factory(:answer, question: decimal_question, answer_value: "14").format_for_display.should eq("14.0")
+      Factory(:answer, question: decimal_question, answer_value: "22.5").format_for_display.should eq("22.5")
+      Factory(:answer, question: decimal_question, answer_value: "22.59").format_for_display.should eq("22.59")
+      Factory(:answer, question: date_question, answer_value: PartialDateTimeHash.new({day: 31, month: 12, year: 2011})).format_for_display.should eq("31/12/2011")
+      Factory(:answer, question: time_question, answer_value: PartialDateTimeHash.new({hour: 18, min: 6})).format_for_display.should eq("18:06")
+
+      choice_q = choice_question
+      Factory(:question_option, question: choice_q, label: 'Apple', option_value: '99')
+      Factory(:question_option, question: choice_q, label: 'Cat', option_value: '98')
+      Factory(:answer, question: choice_question, answer_value: "99").format_for_display.should eq("(99) Apple")
+    end
+    
+    it "should handle answers that are not filled out yet" do
+      Answer.new(question: text_question).format_for_display.should eq("Not answered")
+      Answer.new(question: integer_question).format_for_display.should eq("Not answered")
+      Answer.new(question: decimal_question).format_for_display.should eq("Not answered")
+      Answer.new(question: date_question).format_for_display.should eq("Not answered")
+      Answer.new(question: time_question).format_for_display.should eq("Not answered")
+
+      choice_q = choice_question
+      Factory(:question_option, question: choice_q, label: 'Apple', option_value: '99')
+      Factory(:question_option, question: choice_q, label: 'Cat', option_value: '98')
+      Answer.new(question: choice_question).format_for_display.should eq("Not answered")
+    end
+  end
+
 end

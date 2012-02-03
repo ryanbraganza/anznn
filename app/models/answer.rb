@@ -34,6 +34,30 @@ class Answer < ActiveRecord::Base
     !self.warning.blank?
   end
 
+  def format_for_display
+    case question.question_type
+      when TYPE_TEXT
+        self.text_answer.blank? ? "Not answered" : self.text_answer
+      when TYPE_DATE
+        self.date_answer.nil? ? "Not answered" : self.date_answer.strftime('%d/%m/%Y')
+      when TYPE_TIME
+        self.time_answer.nil? ? "Not answered" : self.time_answer.strftime('%H:%M')
+      when TYPE_CHOICE
+        if self.choice_answer.nil?
+          "Not answered"
+        else
+          qo = question.question_options.where(option_value: self.choice_answer).first
+          qo ? qo.display_value : "Not answered"
+        end
+      when TYPE_DECIMAL
+        self.decimal_answer.nil? ? "Not answered" : self.decimal_answer.to_s
+      when TYPE_INTEGER
+        self.integer_answer.nil? ? "Not answered" : self.integer_answer.to_s
+      else
+        nil
+    end
+  end
+
   def answer_value=(val)
     question_type = self.question.present? ? self.question.question_type : TYPE_ERROR
     sanitise_and_write_input val, question_type
@@ -96,14 +120,7 @@ class Answer < ActiveRecord::Base
   def compute_warnings
     # At this stage, we're only taking the highest priority warning.
     # This behaviour would be fairly easy to change however
-    self.warning =
-        warn_on_required_and_blank ||
-            warn_on_invalid_data ||
-            warn_on_range
-  end
-
-  def warn_on_required_and_blank
-    nil
+    self.warning = warn_on_invalid_data || warn_on_range
   end
 
   def warn_on_invalid_data

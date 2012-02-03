@@ -39,7 +39,7 @@
                 = radio_button_tag "answers[#{q.id}]", qo.option_value, (answer.answer_value == qo.option_value),
                   class: 'field_trigger',
                   data: {description: q.description, guide: q.guide_for_use}
-                %span.radio-label= "(#{qo.option_value}) #{qo.label}"
+                %span.radio-label= qo.display_value
                 %span.help-block.radio-description=  qo.hint_text
       - when 'Decimal'
         = text_field_tag "answers[#{q.id}]", answer.answer_value, id: field_id, maxlength: 15,

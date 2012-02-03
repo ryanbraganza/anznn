@@ -16,4 +16,11 @@ describe QuestionOption do
       under_different_question.should be_valid
     end
   end
+
+  describe "Display value" do
+    it "should include value and label" do
+      qo = Factory(:question_option, label: "A label", option_value: "99")
+      qo.display_value.should eq("(99) A label")
+    end
+  end
 end
