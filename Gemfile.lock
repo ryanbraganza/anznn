@@ -35,6 +35,8 @@ GEM
     arel (2.2.1)
     arrayfields (4.7.4)
     bcrypt-ruby (3.0.1)
+    bootstrap-sass (1.4.4)
+      sass-rails (~> 3.1)
     builder (3.0.0)
     cancan (1.6.7)
     capistrano (2.9.0)
@@ -288,6 +290,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bootstrap-sass (~> 1.4.4)
   cancan
   capistrano
   capistrano-ext

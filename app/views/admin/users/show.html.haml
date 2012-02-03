@@ -1,5 +1,6 @@
 - title 'User Details'
 %div
+  %h2 Actions
   - if @user.pending_approval?
     .user_details_menu
       - if can?(:approve, @user) then
@@ -37,6 +38,7 @@
       = link_to 'Back', admin_users_path, class: 'btn'
 
 #userdetails
+  %h2 Details
   = render_field "Email", @user.email
   = render_field "First name", @user.first_name
   = render_field "Last name", @user.last_name
@@ -46,7 +48,7 @@
         Never logged in
       - else
         = @user.last_sign_in_at.localtime.strftime("%d/%m/%Y %I:%M%p")
-  = render_field "Role", (@user.role ? @user.role.name : "")
+  = render_field "Role", (@user.role ? @user.role.name : "(None set)")
   = render_field_with_block "Status" do
     - if @user.status == 'A'
       Active

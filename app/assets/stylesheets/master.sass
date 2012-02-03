@@ -200,7 +200,7 @@ $red5: #b0281a
 // MIXINS - CLEARFIX
 /*///////////////////////////////////////////////////////////////////////////////////////////////*/
 
-/* Include this Mixin on things that will contain floats. These rules will cause the space to be filled.
+//* Include this Mixin on things that will contain floats. These rules will cause the space to be filled.
 =clearfix
   zoom: 1
   &:before
@@ -236,7 +236,7 @@ body
 h1, h2, h3, h4, h5, h6
   +font("", "", 1em, 1em, $dark2)
 
-/* Base heading styles
+//* Base heading styles
 h1
   +font("", normal, 1.5em, 40px)
 
@@ -254,15 +254,15 @@ h4
 
 p
 
-/* Paragraph style. Use for text, or for a libe break. </br> is for pebs, and you're not a pleb right?
+//* Paragraph style. Use for text, or for a libe break. </br> is for pebs, and you're not a pleb right?
 span
 
-/* Use as a default container for text that requires a Class or ID
+//* Use as a default container for text that requires a Class or ID
 a, a:visited
 
 a:hover
 
-/* Basic link feedback for user
+//* Basic link feedback for user
 
 ul
 
@@ -280,7 +280,7 @@ input[type=password]
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 
-/* Base notification container for users
+// Base notification container for users
 
 .formerror
   +m-p-w-h-p-t-b-l-r-f(0 0 20px 0)
@@ -305,22 +305,22 @@ input[type=password]
 // BASE STYLES - STRUCTURE MODULES
 /*///////////////////////////////////////////////////////////////////////////////////////////////*/
 
-/* Apply these class modules to elements. Any more than 3 modules per element is overkill and you should probably have a specific container.
+//* Apply these class modules to elements. Any more than 3 modules per element is overkill and you should probably have a specific container.
 
 .floatleft
   float: left
 
-/* Float an element to the left
+//* Float an element to the left
 .floatright
   float: right
 
-/* Float an element to the right
+//* Float an element to the right
 
-/* Basic row container
+//* Basic row container
 .rowform
   margin: 0 0 18px 0
 
-/* Basic row / horizontal container with 1 paragraph return equiv.
+//* Basic row / horizontal container with 1 paragraph return equiv.
 .fields
   margin: 0 0 18px 0
   +inlineblock
@@ -331,7 +331,7 @@ input[type=password]
 // BASE STYLES - TEXT MODULES
 /*///////////////////////////////////////////////////////////////////////////////////////////////*/
 
-/* Apply these to specific font containers. Any more than 2 text modules is overkill and a specific style / container should be used
+//* Apply these to specific font containers. Any more than 2 text modules is overkill and a specific style / container should be used
 
 .details
   +font("", "", 0.75em, 18px, $dark3)
@@ -345,15 +345,15 @@ input[type=password]
 .textalignleft
   text-align: left
 
-/* Align text to the left
+//* Align text to the left
 .textalignright
   text-align: right
 
-/* Align text to the right
+//* Align text to the right
 .textaligncenter
   text-align: center
 
-/* Align text to the center
+//* Align text to the center
 
 .truncate
   white-space: nowrap
@@ -459,8 +459,8 @@ a.edit
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 
-/* Note: Table Data cells will stretch to fill 100% of a table's width. If the width specified on individual cells 
- * dosen't add up to the total width, they  will expand to fit.
+/* Note: Table Data cells will stretch to fill 100% of a table's width. If the width specified on individual cells
+ * dosen't add up to the total width, they  will expand to fit. */
 
 
 // HEADER ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

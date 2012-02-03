@@ -5,8 +5,13 @@ module ApplicationHelper
 
   #shorthand for the required asterisk
   def required
-    "<a class='asterisk_icon' title='Required'></a>".html_safe
+    "<span class='required' title='Required'>* Required</span>".html_safe
   end
+
+  #when the stylesheets are updated, this will be the class to use
+  #def required
+  #  "<a class='asterisk_icon' title='Required'></a>".html_safe
+  #end
 
   # convenience method to render a field on a view screen - saves repeating the div/span etc each time
   def render_field(label, value)
@@ -29,7 +34,7 @@ module ApplicationHelper
     html = "<div class='detail-item inlineblock' id='display_#{div_id}'>"
     html << '<strong>'
     html << (h label)
-    html << ":"
+    html << ": "
     html << '</strong>'
     html << content
     html << '</div>'

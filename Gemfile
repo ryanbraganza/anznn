@@ -72,4 +72,4 @@ gem "capistrano_colors"
 gem "colorize"
 gem "metrical"
 gem "simplecov", ">=0.3.8", :require => false, :group => :test
-
+gem "bootstrap-sass", '~> 1.4.4'

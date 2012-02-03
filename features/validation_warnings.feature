@@ -46,6 +46,18 @@ Feature: Show warnings on survey pages
       | Decimal Q  | abcd         |
       | Integer Q1 | abcd         |
       | Integer Q2 | 1.5          |
+    And I press "Save"
+    Then I should see warnings as follows
+      | question   | warning                                               |
+      | Decimal Q  | Answer is the wrong format (Expected a decimal value) |
+      | Integer Q1 | Answer is the wrong format (Expected an integer)      |
+      | Integer Q2 | Answer is the wrong format (Expected an integer)      |
+
+  Scenario:  View warnings for invalid data after saving (Incomplete dates/times, invalid dates)
+    Given I am on the edit first response page
+    Then I should see no warnings
+    And I answer as follows
+      | question   | answer       |
       | Date Q1    | 2011/12/Day  |
       | Date Q2    | 2011/Month/1 |
       | Date Q3    | Year/12/1    |
@@ -55,17 +67,9 @@ Feature: Show warnings on survey pages
     And I press "Save"
     Then I should see warnings as follows
       | question   | warning                                               |
-      | Decimal Q  | Answer is the wrong format (Expected a decimal value) |
-      | Integer Q1 | Answer is the wrong format (Expected an integer)      |
-      | Integer Q2 | Answer is the wrong format (Expected an integer)      |
       | Date Q1    | Answer is incomplete (one or more fields left blank)  |
       | Date Q2    | Answer is incomplete (one or more fields left blank)  |
       | Date Q3    | Answer is incomplete (one or more fields left blank)  |
       | Date Q4    | Answer is invalid (Provided date does not exist)      |
       | Time Q1    | Answer is incomplete (a field was left blank)         |
       | Time Q2    | Answer is incomplete (a field was left blank)         |
-
-#  @wip
-#  Scenarios:  View warnings for invalid data after saving (Incomplete dates/times, invalid dates)
-#  | question | value | warning                                              |
-
