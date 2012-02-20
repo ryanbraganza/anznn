@@ -148,7 +148,7 @@ class Answer < ActiveRecord::Base
 
   def warn_on_cross_questions
     warnings = CrossQuestionValidation.check self
-    warnings.first if warnings
+    warnings.first
   end
 
   def warn_on_range
