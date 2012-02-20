@@ -46,6 +46,16 @@ describe Answer do
         decimal_answer.warning.should eq("My decimal warning")
       end
     end
+
+    describe "Cross-question validation" do
+      it "should record the warning if validation fails" do
+        CrossQuestionValidation.should_receive(:check).and_return(['error1', 'error2'])
+        answer = Factory(:answer)
+
+        answer.warning.should eq "error1"
+        answer.should have_warning
+      end
+    end
   end
 
   describe "accept and sanitise all input (via assignment of answer_value), and have a warning if invalid" do
