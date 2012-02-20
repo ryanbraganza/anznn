@@ -44,4 +44,16 @@ class CrossQuestionValidation < ActiveRecord::Base
   register_checker 'date_lte' do |answer, related_answer|
     answer.date_answer <= related_answer.date_answer
   end
+
+  register_checker 'date_gte' do |answer, related_answer|
+    answer.date_answer >= related_answer.date_answer
+  end
+
+  register_checker 'date_lt' do |answer, related_answer|
+    answer.date_answer < related_answer.date_answer
+  end
+
+  register_checker 'date_gt' do |answer, related_answer|
+    answer.date_answer > related_answer.date_answer
+  end
 end
