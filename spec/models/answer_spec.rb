@@ -265,6 +265,18 @@ describe Answer do
       Factory(:question_option, question: choice_q, label: 'Cat', option_value: '98')
       Answer.new(question: choice_question).format_for_display.should eq("Not answered")
     end
+
+    it "should return blank for answers that are invalid" do
+      Answer.new(question: integer_question, raw_answer: "asdf").format_for_display.should eq("")
+
+      Answer.new(question: decimal_question, raw_answer: "asdf").format_for_display.should eq("")
+
+      date_as_hash = ActiveSupport::HashWithIndifferentAccess.new ({day: 1, year: 2000})
+      Answer.new(question: date_question, raw_answer: PartialDateTimeHash.new(date_as_hash)).format_for_display.should eq("")
+
+      time_as_hash = ActiveSupport::HashWithIndifferentAccess.new ({hour: 1})
+      Answer.new(question: time_question, raw_answer: PartialDateTimeHash.new(time_as_hash)).format_for_display.should eq("")
+    end
   end
 
 end

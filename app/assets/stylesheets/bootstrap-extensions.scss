@@ -58,3 +58,14 @@ and therefore whether it will spill over to multiple lines. */
     border: 0;
   }
 }
+
+
+// Warning on review answers page
+.warning-display {
+  color: #c09853;
+}
+
+// Error on review answers page
+.error-display {
+  color: #b94a48;
+}

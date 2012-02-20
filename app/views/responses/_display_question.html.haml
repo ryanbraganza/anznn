@@ -50,7 +50,7 @@
           class: 'medium field_trigger',
           data: {description: q.description, guide: q.guide_for_use}
       - else
-        Question type not recognised!
+        - raise 'Question type not recognised!'
     %span.help-block
       - if answer.has_warning?
         = answer.warning

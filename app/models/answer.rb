@@ -35,26 +35,23 @@ class Answer < ActiveRecord::Base
   end
 
   def format_for_display
+    return "" unless raw_answer.nil?  #don't show anything if its a dodgy answer
     case question.question_type
-      when TYPE_TEXT
-        self.text_answer.blank? ? "Not answered" : self.text_answer
+      when TYPE_TEXT, TYPE_DECIMAL, TYPE_INTEGER
+        answer_value.nil? ? "Not answered" : answer_value.to_s
       when TYPE_DATE
-        self.date_answer.nil? ? "Not answered" : self.date_answer.strftime('%d/%m/%Y')
+        date_answer.nil? ? "Not answered" : date_answer.strftime('%d/%m/%Y')
       when TYPE_TIME
-        self.time_answer.nil? ? "Not answered" : self.time_answer.strftime('%H:%M')
+        time_answer.nil? ? "Not answered" : time_answer.strftime('%H:%M')
       when TYPE_CHOICE
-        if self.choice_answer.nil?
+        if answer_value.nil?
           "Not answered"
         else
-          qo = question.question_options.where(option_value: self.choice_answer).first
+          qo = question.question_options.where(option_value: self.answer_value).first
           qo ? qo.display_value : "Not answered"
         end
-      when TYPE_DECIMAL
-        self.decimal_answer.nil? ? "Not answered" : self.decimal_answer.to_s
-      when TYPE_INTEGER
-        self.integer_answer.nil? ? "Not answered" : self.integer_answer.to_s
       else
-        nil
+        raise "Unknown question type #{question.question_type}"
     end
   end
 
@@ -229,4 +226,6 @@ class Answer < ActiveRecord::Base
     self.integer_answer = nil
     self.raw_answer = nil
   end
+
+
 end
