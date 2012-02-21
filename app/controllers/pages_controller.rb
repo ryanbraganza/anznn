@@ -4,8 +4,8 @@ class PagesController < ApplicationController
 
   def home
     if user_signed_in?
-      #TODO: this should really redirect to the responses list. Breaks lots of tests though so will leave as is for now.
       @responses = Response.all
+      @batch_files = BatchFile.order("created_at DESC")
     end
   end
 end
