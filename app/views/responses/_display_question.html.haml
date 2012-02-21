@@ -53,6 +53,8 @@
         - raise 'Question type not recognised!'
     %span.help-block
       - if answer.has_warning?
-        = answer.warning
+        - answer.warnings.each do |warning|
+          = warning
+          %br/
       - else
         = HelpTextGenerator.new(q).help_text

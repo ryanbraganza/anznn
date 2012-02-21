@@ -17,5 +17,4 @@
           = answer.format_for_display
           - if answer.has_warning?
             %br/
-            %span.warning-display= answer.warning
-
+            %span.warning-display= answer.warnings.join ', '

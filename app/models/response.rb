@@ -53,7 +53,7 @@ class Response < ActiveRecord::Base
         answer = self.answers.build(question: question)
         # if the section is started and the question is mandatory, add a mandatory field warning
         if flag_missing_mandatory_answers && question.mandatory
-          answer.warning = "This question is mandatory"
+          answer.warnings = ["This question is mandatory"]
         end
         existing_answers[question.id] = answer
       end

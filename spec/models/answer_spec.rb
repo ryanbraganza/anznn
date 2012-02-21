@@ -27,7 +27,7 @@ describe Answer do
       it "should record the warning if validation fails" do
         StringLengthValidator.should_receive(:validate).with(text_question, "blah").and_return([false, "My string warning"])
         text_answer.has_warning?.should eq true
-        text_answer.warning.should eq("My string warning")
+        text_answer.warnings.should eq ["My string warning"]
       end
     end
 
@@ -35,7 +35,7 @@ describe Answer do
       it "should record the warning if validation fails" do
         NumberRangeValidator.should_receive(:validate).with(integer_question, 34).and_return([false, "My integer warning"])
         integer_answer.has_warning?.should eq true
-        integer_answer.warning.should eq("My integer warning")
+        integer_answer.warnings.should eq ["My integer warning"]
       end
     end
 
@@ -43,7 +43,7 @@ describe Answer do
       it "should record the warning if validation fails" do
         NumberRangeValidator.should_receive(:validate).with(decimal_question, 1.13).and_return([false, "My decimal warning"])
         decimal_answer.has_warning?.should eq true
-        decimal_answer.warning.should eq("My decimal warning")
+        decimal_answer.warnings.should eq ["My decimal warning"]
       end
     end
 
@@ -52,7 +52,7 @@ describe Answer do
         CrossQuestionValidation.should_receive(:check).and_return(['error1', 'error2'])
         answer = Factory(:answer)
 
-        answer.warning.should eq "error1"
+        answer.warnings.should eq ["error1", "error2"]
         answer.should have_warning
       end
     end
