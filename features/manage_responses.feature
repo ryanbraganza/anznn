@@ -32,7 +32,7 @@ Feature: Managing responses
       | Choice Q1 |
       | Choice Q2 |
     And "data.provider@intersect.org.au" created a response to the "survey" survey
-    When I am on the list of responses page
+    When I am on the home page
     And I follow "Edit"
     Then I should be on the response page for babycode123
 
@@ -42,6 +42,6 @@ Feature: Managing responses
       | Choice Q1 |
       | Choice Q2 |
     And "data.provider@intersect.org.au" created a response to the "survey" survey
-    When I am on the list of responses page
+    When I am on the home page
     And I follow "View Summary"
     Then I should be on the response summary page for babycode123

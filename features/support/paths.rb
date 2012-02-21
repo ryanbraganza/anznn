@@ -58,9 +58,6 @@ module NavigationHelpers
       response = Response.find_by_baby_code($1)
       review_answers_response_path response
 
-    when /the list of responses page/
-      responses_path
-
 # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #

@@ -4,7 +4,7 @@
       .brand ANZNN
       = tabs_tag(builder: MenuTabBuilder) do |tab|
         %ul.nav
-          = tab.home 'Home', user_signed_in? ? responses_path : root_path
+          = tab.home 'Home', root_path
         %ul.nav.secondary-nav
           - if user_signed_in?
             = (tab.admin 'Admin', admin_users_path) if can?(:read, User)

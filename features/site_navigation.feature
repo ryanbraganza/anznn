@@ -22,11 +22,13 @@ Feature: Navigating the site
     When I follow "Forgot your password?"
     And I follow "Home"
     Then I should be on the home page
+    And I should not see "Surveys In Progress"
 
   Scenario: When logged in, home link should be the list of surveys
     Given I am logged in as "data.provider@intersect.org.au"
     When I follow "Home"
-    Then I should be on the list of responses page
+    Then I should be on the home page
+    And I should see "Surveys In Progress"
 
   Scenario: Nav links visible to administrators (Admin, Chg pwd, Chg details, Logout)
     Given I am logged in as "super@intersect.org.au"

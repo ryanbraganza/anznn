@@ -26,6 +26,14 @@ Given /^I have a user "([^"]*)" with role "([^"]*)"$/ do |email, role|
   create_user_with_role(email, role)
 end
 
+Given /^"([^"]*)" has name "([^"]*)" "([^"]*)"$/ do |email, first, last|
+  u = User.find_by_email!(email)
+  u.first_name = first
+  u.last_name = last
+  u.save!
+end
+
+
 Given /^I am logged in as "([^"]*)" and have role "([^"]*)"$/ do |email, role|
   # convenience to avoid writing 3 lines to log in each time
   create_usual_roles

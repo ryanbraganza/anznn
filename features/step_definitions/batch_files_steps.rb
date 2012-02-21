@@ -24,6 +24,14 @@ Then /^I should have no batch files$/ do
   BatchFile.count.should eq(0)
 end
 
+Given /^I have batch uploads$/ do |table|
+  table.hashes.each do |attrs|
+    survey = Survey.find_by_name!(attrs.delete("survey"))
+    uploader = User.find_by_email!(attrs.delete("created_by"))
+    Factory(:batch_file, attrs.merge(survey: survey, user: uploader))
+  end
+end
+
 def check_batch_file(survey_name, email)
   file = BatchFile.last
   file.survey.should eq(Survey.find_by_name!(survey_name))
