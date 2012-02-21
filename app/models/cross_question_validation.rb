@@ -19,9 +19,7 @@ class CrossQuestionValidation < ActiveRecord::Base
 
   def check(answer)
     related_answer = Answer.find_by_question_id_and_response_id(related_question_id, answer.response_id)
-    if answer.nil? or related_answer.nil?
-      nil
-    elsif answer.raw_answer or related_answer.raw_answer
+    if answer.nil? or answer.raw_answer or related_answer.nil? or related_answer.raw_answer
       nil
     else
       error_message unless rule_checkers[rule].call answer, related_answer
@@ -43,5 +41,17 @@ class CrossQuestionValidation < ActiveRecord::Base
 
   register_checker 'date_lte' do |answer, related_answer|
     answer.date_answer <= related_answer.date_answer
+  end
+
+  register_checker 'date_gte' do |answer, related_answer|
+    answer.date_answer >= related_answer.date_answer
+  end
+
+  register_checker 'date_lt' do |answer, related_answer|
+    answer.date_answer < related_answer.date_answer
+  end
+
+  register_checker 'date_gt' do |answer, related_answer|
+    answer.date_answer > related_answer.date_answer
   end
 end

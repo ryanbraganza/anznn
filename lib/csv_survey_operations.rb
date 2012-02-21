@@ -30,4 +30,18 @@ module CsvSurveyOperations
       question.question_options.create!(qo)
     end
   end
+
+  def import_cross_question_validations(survey, cqv_hashes)
+    cqv_hashes.each do |cqv_hash|
+      question_code = cqv_hash.delete 'question_code'
+      related_question_code = cqv_hash.delete 'related_question_code'
+
+      question = survey.questions.find_by_code!(question_code)
+      related_question = survey.questions.find_by_code!(related_question_code)
+
+      attrs = cqv_hash.merge(question: question, related_question: related_question)
+
+      CrossQuestionValidation.create!(attrs)
+    end
+  end
 end

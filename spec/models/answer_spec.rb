@@ -46,6 +46,16 @@ describe Answer do
         decimal_answer.warning.should eq("My decimal warning")
       end
     end
+
+    describe "Cross-question validation" do
+      it "should record the warning if validation fails" do
+        CrossQuestionValidation.should_receive(:check).and_return(['error1', 'error2'])
+        answer = Factory(:answer)
+
+        answer.warning.should eq "error1"
+        answer.should have_warning
+      end
+    end
   end
 
   describe "accept and sanitise all input (via assignment of answer_value), and have a warning if invalid" do
@@ -254,6 +264,18 @@ describe Answer do
       Factory(:question_option, question: choice_q, label: 'Apple', option_value: '99')
       Factory(:question_option, question: choice_q, label: 'Cat', option_value: '98')
       Answer.new(question: choice_question).format_for_display.should eq("Not answered")
+    end
+
+    it "should return blank for answers that are invalid" do
+      Answer.new(question: integer_question, raw_answer: "asdf").format_for_display.should eq("")
+
+      Answer.new(question: decimal_question, raw_answer: "asdf").format_for_display.should eq("")
+
+      date_as_hash = ActiveSupport::HashWithIndifferentAccess.new ({day: 1, year: 2000})
+      Answer.new(question: date_question, raw_answer: PartialDateTimeHash.new(date_as_hash)).format_for_display.should eq("")
+
+      time_as_hash = ActiveSupport::HashWithIndifferentAccess.new ({hour: 1})
+      Answer.new(question: time_question, raw_answer: PartialDateTimeHash.new(time_as_hash)).format_for_display.should eq("")
     end
   end
 

@@ -7,3 +7,6 @@ en:
     attributes:
       response:
         survey_id: 'Survey type'
+      batch_file:
+        file_file_name: 'File'
+

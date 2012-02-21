@@ -18,49 +18,165 @@ describe CrossQuestionValidation do
     end
   end
   describe "check" do
-    describe "date_lte" do
+    describe "date" do
       before :each do
         @survey = Factory :survey
         @section = Factory :section, survey: @survey
         @q1 = Factory :question, section: @section, question_type: 'Date'
         @q2 = Factory :question, section: @section, question_type: 'Date'
         @response = Factory :response, survey: @survey
-        @error_message = 'not lte'
-
-        Factory :cross_question_validation, rule: 'date_lte', question: @q1, related_question: @q2, error_message: @error_message
-        
       end
-      it "handles nils" do
-        first = Factory :answer, response: @response, question: @q1, answer_value: {}
-        second = Factory :answer, response: @response, question: @q2, answer_value: {}
+      describe "date_lte" do
+        before :each do
+          @error_message = 'not lte'
+          Factory :cross_question_validation, rule: 'date_lte', question: @q1, related_question: @q2, error_message: @error_message
+        end
+        it "handles nils" do
+          first = Factory :answer, response: @response, question: @q1, answer_value: {}
+          second = Factory :answer, response: @response, question: @q2, answer_value: {}
 
-        error_messages = CrossQuestionValidation.check first
+          error_messages = CrossQuestionValidation.check first
 
-        error_messages.should eq []
+          error_messages.should eq []
+        end
+        it "rejects gt" do
+          first = Factory :answer, response: @response, question: @q1, answer_value: Date.new(2012, 2, 3)
+          second = Factory :answer, response: @response, question: @q2, answer_value: Date.new(2012, 2, 2)
+
+          error_messages = CrossQuestionValidation.check first
+
+          error_messages.should eq [@error_message]
+        end
+        it "accepts lt" do
+          first = Factory :answer, response: @response, question: @q1, answer_value: Date.new(2012, 2, 1)
+          second = Factory :answer, response: @response, question: @q2, answer_value: Date.new(2012, 2, 2)
+
+          error_messages = CrossQuestionValidation.check first
+
+          error_messages.should eq []
+        end
+        it "accepts eq" do
+          first = Factory :answer, response: @response, question: @q1, answer_value: Date.new(2012, 2, 2)
+          second = Factory :answer, response: @response, question: @q2, answer_value: Date.new(2012, 2, 2)
+
+          error_messages = CrossQuestionValidation.check first
+
+          error_messages.should eq []
+        end
       end
-      it "warns for gt" do
-        first = Factory :answer, response: @response, question: @q1, answer_value: Date.new(2012, 2, 3)
-        second = Factory :answer, response: @response, question: @q2, answer_value: Date.new(2012, 2, 2)
+      describe "date_gte" do
+        before :each do
+          @error_message = 'not gte'
+          Factory :cross_question_validation, rule: 'date_gte', question: @q1, related_question: @q2, error_message: @error_message
+        end
+        it "handles nils" do
+          first = Factory :answer, response: @response, question: @q1, answer_value: {}
+          second = Factory :answer, response: @response, question: @q2, answer_value: {}
 
-        error_messages = CrossQuestionValidation.check first
+          error_messages = CrossQuestionValidation.check first
 
-        error_messages.should eq [@error_message]
+          error_messages.should eq []
+        end
+        it "accepts gt" do
+          first = Factory :answer, response: @response, question: @q1, answer_value: Date.new(2012, 2, 3)
+          second = Factory :answer, response: @response, question: @q2, answer_value: Date.new(2012, 2, 2)
+
+          error_messages = CrossQuestionValidation.check first
+
+          error_messages.should eq []
+        end
+        it "rejects lt" do
+          first = Factory :answer, response: @response, question: @q1, answer_value: Date.new(2012, 2, 1)
+          second = Factory :answer, response: @response, question: @q2, answer_value: Date.new(2012, 2, 2)
+
+          error_messages = CrossQuestionValidation.check first
+
+          error_messages.should eq [@error_message]
+        end
+        it "accepts eq" do
+          first = Factory :answer, response: @response, question: @q1, answer_value: Date.new(2012, 2, 2)
+          second = Factory :answer, response: @response, question: @q2, answer_value: Date.new(2012, 2, 2)
+
+          error_messages = CrossQuestionValidation.check first
+
+          error_messages.should eq []
+        end
       end
-      it "accepts lt" do
-        first = Factory :answer, response: @response, question: @q1, answer_value: Date.new(2012, 2, 1)
-        second = Factory :answer, response: @response, question: @q2, answer_value: Date.new(2012, 2, 2)
+      describe "date_gt" do
+        before :each do
+          @error_message = 'not gt'
+          Factory :cross_question_validation, rule: 'date_gt', question: @q1, related_question: @q2, error_message: @error_message
+        end
+        it "handles nils" do
+          first = Factory :answer, response: @response, question: @q1, answer_value: {}
+          second = Factory :answer, response: @response, question: @q2, answer_value: {}
 
-        error_messages = CrossQuestionValidation.check first
+          error_messages = CrossQuestionValidation.check first
 
-        error_messages.should eq []
+          error_messages.should eq []
+        end
+        it "accepts gt" do
+          first = Factory :answer, response: @response, question: @q1, answer_value: Date.new(2012, 2, 3)
+          second = Factory :answer, response: @response, question: @q2, answer_value: Date.new(2012, 2, 2)
+
+          error_messages = CrossQuestionValidation.check first
+
+          error_messages.should eq []
+        end
+        it "rejects lt" do
+          first = Factory :answer, response: @response, question: @q1, answer_value: Date.new(2012, 2, 1)
+          second = Factory :answer, response: @response, question: @q2, answer_value: Date.new(2012, 2, 2)
+
+          error_messages = CrossQuestionValidation.check first
+
+          error_messages.should eq [@error_message]
+        end
+        it "rejects eq" do
+          first = Factory :answer, response: @response, question: @q1, answer_value: Date.new(2012, 2, 2)
+          second = Factory :answer, response: @response, question: @q2, answer_value: Date.new(2012, 2, 2)
+
+          error_messages = CrossQuestionValidation.check first
+
+          error_messages.should eq [@error_message]
+        end
       end
-      it "accepts eq" do
-        first = Factory :answer, response: @response, question: @q1, answer_value: Date.new(2012, 2, 2)
-        second = Factory :answer, response: @response, question: @q2, answer_value: Date.new(2012, 2, 2)
+      describe "date_lt" do
+        before :each do
+          @error_message = 'not lt'
+          Factory :cross_question_validation, rule: 'date_lt', question: @q1, related_question: @q2, error_message: @error_message
+        end
+        it "handles nils" do
+          first = Factory :answer, response: @response, question: @q1, answer_value: {}
+          second = Factory :answer, response: @response, question: @q2, answer_value: {}
 
-        error_messages = CrossQuestionValidation.check first
+          error_messages = CrossQuestionValidation.check first
 
-        error_messages.should eq []
+          error_messages.should eq []
+        end
+        it "rejects gt" do
+          first = Factory :answer, response: @response, question: @q1, answer_value: Date.new(2012, 2, 3)
+          second = Factory :answer, response: @response, question: @q2, answer_value: Date.new(2012, 2, 2)
+
+          error_messages = CrossQuestionValidation.check first
+
+          error_messages.should eq [@error_message]
+        end
+        it "accepts lt" do
+          first = Factory :answer, response: @response, question: @q1, answer_value: Date.new(2012, 2, 1)
+          second = Factory :answer, response: @response, question: @q2, answer_value: Date.new(2012, 2, 2)
+
+          error_messages = CrossQuestionValidation.check first
+
+          error_messages.should eq []
+        end
+        it "rejects eq" do
+          first = Factory :answer, response: @response, question: @q1, answer_value: Date.new(2012, 2, 2)
+          second = Factory :answer, response: @response, question: @q2, answer_value: Date.new(2012, 2, 2)
+
+          error_messages = CrossQuestionValidation.check first
+
+          error_messages.should eq [@error_message]
+        end
       end
     end
   end

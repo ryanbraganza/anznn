@@ -24,12 +24,15 @@ class Ability
       can :reject, User
       can :approve, User
 
-      can :manage, Response
       can :manage, Survey
+
+      can :manage, Response
+      can :manage, BatchFile
     end
 
     if user.role.is_data_provider?
       can :manage, Response
+      can :manage, BatchFile
     end
 
     #All users can see all available surveys

@@ -2,6 +2,7 @@
 
 %h2 New Survey Response
 =link_to "Start New Survey Response", new_response_path, class: 'btn'
+=link_to "Upload Batch File", new_batch_file_path, class: 'btn'
 
 %br/
 %br/
@@ -30,7 +31,7 @@
         %td
           = link_to "Edit", edit_response_path(r), class: 'btn'
           = link_to "View Summary", r, class: 'btn'
-          -#= link_to "Review Answers", review_answers_response_path(r), class: 'btn'
+          = link_to "Review Answers", review_answers_response_path(r), class: 'btn'
 
 
 

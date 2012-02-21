@@ -11,6 +11,8 @@ Anznn::Application.routes.draw do
     end
   end
 
+  resources :batch_files
+
   resource :pages do
     get :home
   end

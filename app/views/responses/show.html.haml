@@ -1,6 +1,6 @@
 - title "#{@response.survey.name} - Baby Code #{@response.baby_code}"
 
--#= link_to "Review Answers", review_answers_response_path(@response), class: 'btn'
+= link_to "Review Answers", review_answers_response_path(@response), class: 'btn'
 
 %table#summary.bordered-table.condensed-table
   - @response.survey.sections.each do |section|
