@@ -4,5 +4,6 @@ FactoryGirl.define do
   factory :batch_file do
     association :survey
     association :user
+    file_file_name "Blah"
   end
 end
