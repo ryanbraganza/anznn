@@ -3,8 +3,7 @@ class Answer < ActiveRecord::Base
   #Answer abstracts all of the hard work of storing and retrieving answers.
   #Because of this, you should only use the interface methods rather than poking around in the fields themselves:
   # The answer, regardless of type is stored and read from the #answer_value field
-  # If that answer generates a warning, it can be discovered through #has_warning? and read through #warning
-  # - AB 2012-02-01
+  # If that answer generates a warning, it can be discovered through #has_warning? and read through #warnings
 
   TYPE_CHOICE = 'Choice'
   TYPE_DATE = 'Date'
@@ -26,12 +25,12 @@ class Answer < ActiveRecord::Base
   #after_find :set_answer_value
   #before_validation :sanitise_input
 
-  attr_accessor :warning
+  attr_accessor :warnings
 
   serialize :raw_answer
 
   def has_warning?
-    !self.warning.blank?
+    !self.warnings.blank?
   end
 
   def format_for_display
@@ -115,9 +114,7 @@ class Answer < ActiveRecord::Base
   end
 
   def compute_warnings
-    # At this stage, we're only taking the highest priority warning.
-    # This behaviour would be fairly easy to change however
-    self.warning = warn_on_invalid_data || warn_on_range || warn_on_cross_questions
+    self.warnings = [warn_on_invalid_data, warn_on_range, *warn_on_cross_questions].compact
   end
 
   def warn_on_invalid_data
@@ -144,8 +141,7 @@ class Answer < ActiveRecord::Base
   end
 
   def warn_on_cross_questions
-    warnings = CrossQuestionValidation.check self
-    warnings.first
+    CrossQuestionValidation.check self
   end
 
   def warn_on_range
