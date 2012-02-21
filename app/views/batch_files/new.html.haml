@@ -1,0 +1,21 @@
+- content_for :title do
+  = "New Batch Upload"
+
+%p Please select the survey type and the file you want to upload
+
+= form_for @batch_file do |f|
+  %fieldset
+    = render "shared/error_messages", target: @batch_file
+    .clearfix
+      = f.label :survey_id
+      .input
+        = f.collection_select :survey_id, Survey.active, :id, :name, {:include_blank => "Please select"}, {:class => "large"}
+        = required
+    .clearfix
+      = f.label :file, "File"
+      .input
+        = f.file_field :file
+        = required
+    .actions
+      = f.submit "Upload", class: "btn primary"
+      = link_to 'Cancel', root_path, class: "btn"

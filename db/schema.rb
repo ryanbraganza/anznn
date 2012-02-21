@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120131061959) do
+ActiveRecord::Schema.define(:version => 20120221001525) do
 
   create_table "answers", :force => true do |t|
     t.integer "response_id"
@@ -24,6 +24,19 @@ ActiveRecord::Schema.define(:version => 20120131061959) do
     t.string  "choice_answer"
     t.string  "raw_answer"
   end
+
+  create_table "batch_files", :force => true do |t|
+    t.integer  "survey_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_updated_at"
+  end
+
+  add_index "batch_files", ["survey_id"], :name => "index_batch_files_on_survey_id"
 
   create_table "cross_question_validations", :force => true do |t|
     t.integer "question_id"
