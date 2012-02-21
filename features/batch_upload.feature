@@ -34,5 +34,5 @@ Feature: Upload survey responses in a batch file
     When I follow "Upload Batch File"
     When I press "Upload"
     Then I should see "Survey can't be blank"
-    And I should see "Please select a file to upload"
+    And I should see "File can't be blank"
     And I should have no batch files
