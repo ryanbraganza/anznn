@@ -28,7 +28,6 @@ Feature: Upload survey responses in a batch file
     And I upload batch file "batch_sample.csv" for survey "MySurvey"
     Then I should have two batch files stored
 
-  @wip
   Scenario: Validates that both survey type and a file are provided
     Given I am on the home page
     When I follow "Upload Batch File"

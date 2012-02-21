@@ -21,7 +21,7 @@ Then /^I should have two batch files stored$/ do
 end
 
 Then /^I should have no batch files$/ do
-  BatchFile.count.should eq(2)
+  BatchFile.count.should eq(0)
 end
 
 def check_batch_file(survey_name, email)
