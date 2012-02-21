@@ -1,11 +1,14 @@
 class Response < ActiveRecord::Base
   belongs_to :survey
   belongs_to :user
+  belongs_to :hospital
+
   has_many :answers, dependent: :destroy
 
   validates_presence_of :baby_code
   validates_presence_of :user
   validates_presence_of :survey_id
+  validates_presence_of :hospital_id
 
   def prepare_answers_to_section_for_editing(section)
     existing_answers = answers_to_section(section).reduce({}) { |hash, answer| hash[answer.question_id] = answer; hash }

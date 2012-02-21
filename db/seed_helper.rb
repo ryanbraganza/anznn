@@ -5,5 +5,6 @@ def create_roles_and_permissions
   superuser = "Administrator"
   Role.create!(:name => superuser)
   Role.create!(:name => "Data Provider")
+  Role.create!(:name => "Data Provider Supervisor")
 
 end

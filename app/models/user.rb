@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
 
   belongs_to :role
   has_many :responses
+  belongs_to :hospital
 
   # Setup accessible attributes (status/approved flags should NEVER be accessible by mass assignment)
   attr_accessible :email, :password, :password_confirmation, :first_name, :last_name
@@ -11,6 +12,9 @@ class User < ActiveRecord::Base
   validates_presence_of :first_name
   validates_presence_of :last_name
   validates_presence_of :status
+  validates_presence_of :hospital_id, :unless => Proc.new { |user|
+    user.role.blank? || user.super_user?
+    }
 
   validates_length_of :first_name, maximum: 255
   validates_length_of :last_name, maximum: 255
@@ -136,6 +140,17 @@ class User < ActiveRecord::Base
 
   def full_name
     "#{first_name} #{last_name}".strip
+  end
+
+  def super_user?
+    return false unless self.role.present?
+    self.role.super_user?
+  end
+
+  #class method to do the same thing
+  def self.super_user? (user)
+    return false unless user.role.present?
+    user.role.super_user?
   end
 
   private

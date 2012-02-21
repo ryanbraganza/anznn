@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120131061959) do
+ActiveRecord::Schema.define(:version => 20120221015627) do
 
   create_table "answers", :force => true do |t|
     t.integer "response_id"
@@ -30,6 +30,14 @@ ActiveRecord::Schema.define(:version => 20120131061959) do
     t.integer "related_question_id"
     t.string  "rule"
     t.string  "error_message"
+  end
+
+  create_table "hospitals", :force => true do |t|
+    t.string   "state"
+    t.string   "name"
+    t.string   "abbrev"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "question_options", :force => true do |t|
@@ -67,6 +75,7 @@ ActiveRecord::Schema.define(:version => 20120131061959) do
     t.string   "baby_code"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "hospital_id"
   end
 
   create_table "roles", :force => true do |t|
@@ -106,6 +115,7 @@ ActiveRecord::Schema.define(:version => 20120131061959) do
     t.integer  "role_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "hospital_id"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

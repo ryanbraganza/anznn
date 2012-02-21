@@ -4,6 +4,7 @@ describe Response do
   describe "Associations" do
     it { should belong_to :survey }
     it { should belong_to :user }
+    it { should belong_to :hospital }
     it { should have_many :answers }
   end
   describe "Validations" do

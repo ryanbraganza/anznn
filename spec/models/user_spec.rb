@@ -4,6 +4,7 @@ describe User do
   describe "Associations" do
     it { should belong_to(:role) }
     it { should have_many(:responses) }
+    it { should belong_to(:hospital) }
   end
 
   describe "Named Scopes" do
@@ -180,6 +181,26 @@ describe User do
     it { should validate_presence_of :last_name }
     it { should validate_presence_of :email }
     it { should validate_presence_of :password }
+
+    it "should validate presence of a hospital UNLESS user has no role OR user is a super user" do
+      super_role = Factory(:role, :name => Role::SuperUserRole)
+      research_role = Factory(:role, :name => 'Data Provider')
+
+      users = Array.new
+
+      users << Factory(:user, :role => super_role, :status => 'A', :email => 'user1@intersect.org.au')
+      users << Factory(:user, :role => nil, :status => 'A', :email => 'user2@intersect.org.au')
+      users << Factory(:user, :role => research_role, :status => 'A', :email => 'user3@intersect.org.au')
+
+      users.each do |u|
+        u.hospital = nil
+      end
+
+      users[0].should be_valid
+      users[1].should be_valid
+      users[2].should_not be_valid
+
+    end
 
     #password rules: at least one lowercase, uppercase, number, symbol
     # too short < 6
