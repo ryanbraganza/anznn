@@ -11,6 +11,7 @@ class BatchFilesController < ApplicationController
   def create
     @batch_file.user = current_user
     if @batch_file.save
+      @batch_file.send_later(:process)
       redirect_to root_path, notice: UPLOAD_NOTICE
     else
       render :new

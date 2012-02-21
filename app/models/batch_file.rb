@@ -1,3 +1,5 @@
+require 'csv'
+
 class BatchFile < ActiveRecord::Base
 
   belongs_to :survey
@@ -16,8 +18,29 @@ class BatchFile < ActiveRecord::Base
     "#{APP_CONFIG['batch_files_root']}/:id.:extension"
   end
 
+  def process
+    begin
+      CSV.foreach(file.path, {headers: true}) do |row|
+        unless row.headers.include?("BabyCode")
+          self.status = "Failed - invalid file"
+          save!
+          return
+        end
+      end
+    rescue ArgumentError
+      # TODO: Catching ArgumentError seems a bit odd, but CSV throws it when the file is not UTF-8 which happens if you upload an xls file
+      self.status = "Failed - invalid file"
+      save!
+    rescue CSV::MalformedCSVError
+      self.status = "Failed - invalid file"
+      save!
+    end
+  end
+
+
   private
   def set_status
     self.status = "In Progress" if self.status.nil?
   end
+
 end

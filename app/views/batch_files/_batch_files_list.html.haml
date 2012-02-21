@@ -1,14 +1,17 @@
 %h2 Batch Uploads
-%table#batch_uploads.bordered-table
-  %tr
-    %th Survey Type
-    %th Created By
-    %th Date Uploaded
-    %th Status
-  - @batch_files.each do |batch_file|
+- if @batch_files.blank?
+  %p There are no batch files to show.
+- else
+  %table#batch_uploads.bordered-table
     %tr
+      %th Survey Type
+      %th Created By
+      %th Date Uploaded
+      %th Status
+    - @batch_files.each do |batch_file|
+      %tr
 
-      %td= batch_file.survey.name
-      %td= batch_file.user.full_name
-      %td= time_tag batch_file.created_at
-      %td= batch_file.status
+        %td= batch_file.survey.name
+        %td= batch_file.user.full_name
+        %td= time_tag batch_file.created_at
+        %td= batch_file.status
