@@ -4,17 +4,18 @@
 %br/
 %br/
 
-- @response.survey.sections.each do |section|
+- @sections_to_answers.each do |section, answers|
   %h2= section.name
   = link_to "Edit Answers", edit_response_path(@response, section: section.id), id: "edit_answers_#{section.id}", class: 'btn'
   %table.bordered-table{id: "section_#{section.id}"}
-    - answers =  @response.prepare_answers_to_section_for_display(section)
-    - section.questions.each do |question|
-      - answer = answers[question.id]
+    - answers.each do |answer|
       %tr
-        %td= question.question
+        %td= answer.question.question
         %td
           = answer.format_for_display
+          - if answer.violates_mandatory
+            %br/
+            This question is mandatory
           - if answer.has_warning?
             %br/
             %span.warning-display= answer.warnings.join ', '

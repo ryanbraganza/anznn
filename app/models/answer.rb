@@ -21,16 +21,26 @@ class Answer < ActiveRecord::Base
   validates_presence_of :response
   validate :mutually_exclusive_columns_are_blank
 
-  after_find :compute_warnings
-  #after_find :set_answer_value
-  #before_validation :sanitise_input
-
-  attr_accessor :warnings
-
   serialize :raw_answer
 
   def has_warning?
-    !self.warnings.blank?
+    warnings.present?
+  end
+
+  def answer_value_set?
+    persisted? || answer_value_set
+  end
+
+  def warnings
+    if answer_value_set?
+      [warn_on_invalid_data, warn_on_range, *warn_on_cross_questions].compact
+    else
+      []
+    end
+  end
+
+  def violates_mandatory
+    question.mandatory and !answer_value_set?
   end
 
   def format_for_display
@@ -57,7 +67,7 @@ class Answer < ActiveRecord::Base
   def answer_value=(val)
     question_type = self.question.present? ? self.question.question_type : TYPE_ERROR
     sanitise_and_write_input val, question_type
-    compute_warnings
+    self.answer_value_set = true
   end
 
   def answer_value
@@ -100,6 +110,8 @@ class Answer < ActiveRecord::Base
 
   private
 
+  attr_accessor :answer_value_set
+
   def mutually_exclusive_columns_are_blank
     # A lazy way to work out if more than one of the data columns are set.
     set_columns = 0
@@ -111,10 +123,6 @@ class Answer < ActiveRecord::Base
     set_columns += raw_answer.present? ? 1 : 0
 
     return false unless set_columns <= 1
-  end
-
-  def compute_warnings
-    self.warnings = [warn_on_invalid_data, warn_on_range, *warn_on_cross_questions].compact
   end
 
   def warn_on_invalid_data

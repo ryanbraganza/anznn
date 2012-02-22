@@ -102,3 +102,19 @@ Feature: Cross Question Date Validations
       | Date Q2  | 2012/2/2 |
     And I should see "date should be gt"
     And I should see "date should really be gt"
+
+  Scenario: no infinite loop
+    Given I have the following cross question validations
+      | question | related | rule    | error_message     |
+      | Date Q1  | Date Q2 | date_gt | date should be gt |
+      | Date Q2  | Date Q1 | date_lt | date should be gt |
+    And I am logged in as "data.provider@intersect.org.au"
+    And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
+    And I am on the edit first response page
+    When I answer as follows
+      | question | answer   |
+      | Date Q1  | 2012/2/1 |
+      | Date Q2  | 2012/2/2 |
+    And press "Save page"
+    # Then I should not get a "stack level too deep" error
+    And I should be on the edit first response page

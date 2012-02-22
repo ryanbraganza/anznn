@@ -10,13 +10,25 @@ class Response < ActiveRecord::Base
   validates_presence_of :survey_id
   validates_presence_of :hospital_id
 
-  def prepare_answers_to_section_for_editing(section)
-    section_started = section_started?(section)
-    prepare_answers_to_section(section, section_started)
+  def prepare_answers_to_section(section)
+    existing_answers = answers_to_section(section).reduce({}) { |hash, answer| hash[answer.question_id] = answer; hash }
+
+    section.questions.each do |question|
+      #if there's no answer object already, build an empty one
+      if existing_answers[question.id].nil?
+        answer = self.answers.build(question: question)
+        existing_answers[question.id] = answer
+      end
+    end
+    existing_answers
   end
 
-  def prepare_answers_to_section_for_display(section)
-    prepare_answers_to_section(section, true)
+  def sections_to_answers
+    survey.sections.reduce({}) do |hsh, section|
+      answers = prepare_answers_to_section(section).values
+      sorted_answers = answers.sort_by {|a| a.question.order }
+      hsh.merge section => sorted_answers
+    end
   end
 
   def section_started?(section)
@@ -44,20 +56,4 @@ class Response < ActiveRecord::Base
     answers.joins(:question).merge(Question.for_section(section))
   end
 
-  def prepare_answers_to_section(section, flag_missing_mandatory_answers)
-    existing_answers = answers_to_section(section).reduce({}) { |hash, answer| hash[answer.question_id] = answer; hash }
-
-    section.questions.each do |question|
-      #if there's no answer object already, build an empty one
-      if existing_answers[question.id].nil?
-        answer = self.answers.build(question: question)
-        # if the section is started and the question is mandatory, add a mandatory field warning
-        if flag_missing_mandatory_answers && question.mandatory
-          answer.warnings = ["This question is mandatory"]
-        end
-        existing_answers[question.id] = answer
-      end
-    end
-    existing_answers
-  end
 end
