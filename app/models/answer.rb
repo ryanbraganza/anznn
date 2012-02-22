@@ -144,7 +144,11 @@ class Answer < ActiveRecord::Base
           "Answer contains invalid data"
       end
     else
-      nil
+      if self.question.question_type == Question::TYPE_CHOICE
+        #this should only ever be triggered by batch processing
+        allowed_values = question.question_options.collect(&:option_value)
+        "Answer must be one of #{allowed_values.inspect}" unless allowed_values.include?(choice_answer)
+      end
     end
   end
 

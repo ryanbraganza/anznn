@@ -29,7 +29,7 @@ class Response < ActiveRecord::Base
   end
 
   def no_errors_or_warnings?
-    !violates_mandatory
+    !violates_mandatory && !has_any_warnings
   end
 
   def section_started?(section)
@@ -84,6 +84,8 @@ class Response < ActiveRecord::Base
     !(required_question_ids - answered_question_ids).empty?
   end
 
-
+  def has_any_warnings
+    answers.collect(&:has_warning?).include?(true)
+  end
 
 end

@@ -43,32 +43,24 @@ describe BatchFile do
 
     describe "Invalid files" do
       it "should reject file without a baby code column" do
-        batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('features/sample_data/batch_files/no_baby_code_column.csv', 'text/csv'), survey: survey, user: user)
-        batch_file.process
-        batch_file.reload
+        batch_file = process_batch_file('no_baby_code_column.csv', survey, user)
         batch_file.status.should eq("Failed - invalid file")
       end
 
       it "should handle binary files such as xls" do
-        batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('features/sample_data/batch_files/not_csv.xls', 'text/csv'), survey: survey, user: user)
-        batch_file.process
-        batch_file.reload
+        batch_file = process_batch_file('not_csv.xls', survey, user)
         batch_file.status.should eq("Failed - invalid file")
       end
 
       it "should reject files that are text but have malformed csv" do
-        batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('features/sample_data/batch_files/invalid_csv.csv', 'text/csv'), survey: survey, user: user)
-        batch_file.process
-        batch_file.reload
+        batch_file = process_batch_file('invalid_csv.csv', survey, user)
         batch_file.status.should eq("Failed - invalid file")
       end
     end
 
     describe "Valid file with no errors or warnings" do
       it "Should create the survey responses and answers" do
-        batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('features/sample_data/batch_files/no_errors_or_warnings.csv', 'text/csv'), survey: survey, user: user)
-        batch_file.process
-        batch_file.reload
+        batch_file = process_batch_file('no_errors_or_warnings.csv', survey, user)
         batch_file.status.should eq("Processed successfully")
         Response.count.should == 3
         Answer.count.should eq(20) #3x7 questions, one not answered
@@ -95,9 +87,7 @@ describe BatchFile do
 
     describe "Valid file with missing baby codes" do
       it "Should set the file status to failed if any baby codes are missing, and not save any responses" do
-        batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('features/sample_data/batch_files/missing_baby_code.csv', 'text/csv'), survey: survey, user: user)
-        batch_file.process
-        batch_file.reload
+        batch_file = process_batch_file('missing_baby_code.csv', survey, user)
         batch_file.status.should eq("Failed")
         Response.count.should == 0
         Answer.count.should == 0
@@ -106,26 +96,35 @@ describe BatchFile do
 
     describe "Valid file with validation errors" do
       it "should reject records with missing mandatory fields" do
-        batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('features/sample_data/batch_files/missing_mandatory_fields.csv', 'text/csv'), survey: survey, user: user)
-        batch_file.process
-        batch_file.reload
+        batch_file = process_batch_file('missing_mandatory_fields.csv', survey, user)
         batch_file.status.should eq("Failed")
         Response.count.should == 0
         Answer.count.should == 0
       end
 
       it "should reject records with missing mandatory fields - where the column is missing entirely" do
-        batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('features/sample_data/batch_files/missing_mandatory_column.csv', 'text/csv'), survey: survey, user: user)
-        batch_file.process
-        batch_file.reload
+        batch_file = process_batch_file('missing_mandatory_column.csv', survey, user)
         batch_file.status.should eq("Failed")
         Response.count.should == 0
         Answer.count.should == 0
       end
 
+      it "should reject records with choice answers that are not one of the allowed values for the question" do
+        batch_file = process_batch_file('incorrect_choice_answer_value.csv', survey, user)
+        batch_file.status.should eq("Failed")
+        Response.count.should == 0
+        Answer.count.should == 0
+      end
     end
 
     #TODO: files with extra columns
     #Choice value isn't one of the allowed values
   end
+end
+
+def process_batch_file(file_name, survey, user)
+  batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('features/sample_data/batch_files/' + file_name, 'text/csv'), survey: survey, user: user)
+  batch_file.process
+  batch_file.reload
+  batch_file
 end
