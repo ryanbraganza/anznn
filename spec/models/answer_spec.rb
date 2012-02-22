@@ -15,7 +15,7 @@ describe Answer do
   end
   describe "Validations" do
     it { should validate_presence_of :question }
-    it { should validate_presence_of :response }
+    #it { should validate_presence_of :response }
   end
 
   describe "Validating for warnings" do

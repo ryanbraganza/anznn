@@ -47,6 +47,27 @@ class Response < ActiveRecord::Base
     end
   end
 
+  def build_answers_from_hash(hash)
+    hash.each do |question_code, answer_text|
+      question = survey.questions.where(code: question_code).first
+      if question && !answer_text.blank?
+        answer = answers.build(question: question)
+        my_answer = case question.question_type
+                      when Question::TYPE_DECIMAL, Question::TYPE_INTEGER, Question::TYPE_TEXT
+                        answer_text
+                      when Question::TYPE_DATE
+                        Date.parse(answer_text)
+                      when Question::TYPE_TIME
+                        time = answer_text.split(":")
+                        PartialDateTimeHash.new(hour: time[0], min: time[1]) #TODO: yuck
+                      when Question::TYPE_CHOICE
+                        answer_text
+                    end
+        answer.answer_value = my_answer
+      end
+    end
+  end
+
   private
 
   def answers_to_section(section)

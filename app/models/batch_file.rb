@@ -37,7 +37,9 @@ class BatchFile < ActiveRecord::Base
         if baby_code.blank?
           failures = true
         else
-          responses << Response.new(survey: survey, baby_code: baby_code, user: user)
+          response = Response.new(survey: survey, baby_code: baby_code, user: user)
+          response.build_answers_from_hash(row.to_hash)
+          responses << response
         end
       end
       self.status = failures ? STATUS_FAILED : STATUS_SUCCESS

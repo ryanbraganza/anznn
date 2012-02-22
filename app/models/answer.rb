@@ -18,7 +18,7 @@ class Answer < ActiveRecord::Base
   belongs_to :response
 
   validates_presence_of :question
-  validates_presence_of :response
+#  validates_presence_of :response
   validate :mutually_exclusive_columns_are_blank
 
   serialize :raw_answer
@@ -44,7 +44,7 @@ class Answer < ActiveRecord::Base
   end
 
   def format_for_display
-    return "" unless raw_answer.nil?  #don't show anything if its a dodgy answer
+    return "" unless raw_answer.nil? #don't show anything if its a dodgy answer
     case question.question_type
       when TYPE_TEXT, TYPE_DECIMAL, TYPE_INTEGER
         answer_value.nil? ? "Not answered" : answer_value.to_s
