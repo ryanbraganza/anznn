@@ -39,6 +39,7 @@ class BatchFile < ActiveRecord::Base
         else
           response = Response.new(survey: survey, baby_code: baby_code, user: user)
           response.build_answers_from_hash(row.to_hash)
+          failures = true unless response.no_errors_or_warnings?
           responses << response
         end
       end

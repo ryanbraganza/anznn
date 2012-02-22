@@ -28,6 +28,10 @@ class Response < ActiveRecord::Base
     end
   end
 
+  def no_errors_or_warnings?
+    !violates_mandatory
+  end
+
   def section_started?(section)
     !answers_to_section(section).empty?
   end
@@ -73,5 +77,13 @@ class Response < ActiveRecord::Base
   def answers_to_section(section)
     answers.joins(:question).merge(Question.for_section(section))
   end
+
+  def violates_mandatory
+    required_question_ids = survey.questions.where(:mandatory => true).collect(&:id)
+    answered_question_ids = answers.collect(&:question_id)
+    !(required_question_ids - answered_question_ids).empty?
+  end
+
+
 
 end

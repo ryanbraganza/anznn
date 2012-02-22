@@ -106,8 +106,26 @@ describe BatchFile do
 
     describe "Valid file with validation errors" do
       it "should reject records with missing mandatory fields" do
-
+        batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('features/sample_data/batch_files/missing_mandatory_fields.csv', 'text/csv'), survey: survey, user: user)
+        batch_file.process
+        batch_file.reload
+        batch_file.status.should eq("Failed")
+        Response.count.should == 0
+        Answer.count.should == 0
       end
+
+      it "should reject records with missing mandatory fields - where the column is missing entirely" do
+        batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('features/sample_data/batch_files/missing_mandatory_column.csv', 'text/csv'), survey: survey, user: user)
+        batch_file.process
+        batch_file.reload
+        batch_file.status.should eq("Failed")
+        Response.count.should == 0
+        Answer.count.should == 0
+      end
+
     end
+
+    #TODO: files with extra columns
+    #Choice value isn't one of the allowed values
   end
 end
