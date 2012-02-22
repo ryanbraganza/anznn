@@ -6,7 +6,7 @@ Given /^I upload batch file "([^"]*)" for survey "([^"]*)"$/ do |filename, surve
   visit root_path
   click_link "Upload Batch File"
   select survey_name, from: "Survey"
-  attach_file("File", File.expand_path("features/sample_data/#{filename}"))
+  attach_file("File", File.expand_path("features/sample_data/batch_files/#{filename}"))
   click_button "Upload"
   page.should have_content "Your upload has been received and is now being processed. This may take some time depending on the size of the file."
   page.should have_content "The status of your uploads can be seen in the table below. You will need to refresh the page to see an updated status."
