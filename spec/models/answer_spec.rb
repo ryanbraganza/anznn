@@ -25,7 +25,7 @@ describe Answer do
 
     describe "Should call the string length validator if question type is text" do
       it "should record the warning if validation fails" do
-        StringLengthValidator.should_receive(:validate).with(text_question, "blah").and_return([false, "My string warning"])
+        StringLengthValidator.should_receive(:validate).twice.with(text_question, "blah").and_return([false, "My string warning"])
         text_answer.has_warning?.should eq true
         text_answer.warnings.should eq ["My string warning"]
       end
@@ -33,7 +33,7 @@ describe Answer do
 
     describe "Should call the number validator if question type is integer" do
       it "should record the warning if validation fails" do
-        NumberRangeValidator.should_receive(:validate).with(integer_question, 34).and_return([false, "My integer warning"])
+        NumberRangeValidator.should_receive(:validate).twice.with(integer_question, 34).and_return([false, "My integer warning"])
         integer_answer.has_warning?.should eq true
         integer_answer.warnings.should eq ["My integer warning"]
       end
@@ -41,7 +41,7 @@ describe Answer do
 
     describe "Should call the number validator if question type is decimal" do
       it "should record the warning if validation fails" do
-        NumberRangeValidator.should_receive(:validate).with(decimal_question, 1.13).and_return([false, "My decimal warning"])
+        NumberRangeValidator.should_receive(:validate).twice.with(decimal_question, 1.13).and_return([false, "My decimal warning"])
         decimal_answer.has_warning?.should eq true
         decimal_answer.warnings.should eq ["My decimal warning"]
       end
@@ -49,7 +49,7 @@ describe Answer do
 
     describe "Cross-question validation" do
       it "should record the warning if validation fails" do
-        CrossQuestionValidation.should_receive(:check).and_return(['error1', 'error2'])
+        CrossQuestionValidation.should_receive(:check).twice.and_return(['error1', 'error2'])
         answer = Factory(:answer)
 
         answer.warnings.should eq ["error1", "error2"]
@@ -59,8 +59,6 @@ describe Answer do
   end
 
   describe "accept and sanitise all input (via assignment of answer_value), and have a warning if invalid" do
-
-
     describe "Decimal" do
       it "saves a decimal as a decimal" do
         a = Answer.new(question: decimal_question)
