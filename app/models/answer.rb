@@ -137,7 +137,9 @@ class Answer < ActiveRecord::Base
     if raw_answer.present?
       case self.question.question_type
         when TYPE_DATE
-          if raw_answer[:day].present? && raw_answer[:month].present? && raw_answer[:year].present?
+          if raw_answer.is_a?(String)
+            "Answer is invalid (must be a valid date)"
+          elsif raw_answer[:day].present? && raw_answer[:month].present? && raw_answer[:year].present?
             "Answer is invalid (Provided date does not exist)"
           else
             "Answer is incomplete (one or more fields left blank)"
@@ -189,15 +191,11 @@ class Answer < ActiveRecord::Base
         when TYPE_TEXT
           self.text_answer = input
         when TYPE_DATE
-          if input.is_a? Date
-            self.date_answer = input
+          input_handler = DateInputHandler.new(input)
+          if input_handler.valid?
+            self.date_answer = input_handler.to_date
           else
-            self.date_answer =
-              if input[:day].blank? || input[:month].blank? || input[:year].blank?
-                raise ArgumentError
-              else
-                Date.civil input[:year].to_i, input[:month].to_i, input[:day].to_i
-              end
+            self.raw_answer = input_handler.to_raw
           end
         when TYPE_TIME
           self.time_answer =

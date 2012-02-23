@@ -154,10 +154,34 @@ describe Answer do
 
       end
     end
+
+    describe "For date questions, should delegate to DateInputHandler to process the input" do
+      it "should set the date answer if the input is valid" do
+        date = Date.today
+        mock_ih = mock('mock input handler')
+        DateInputHandler.should_receive(:new).and_return(mock_ih)
+        mock_ih.should_receive(:valid?).and_return(true)
+        mock_ih.should_receive(:to_date).and_return(date)
+        a = Factory(:answer, question: date_question, answer_value: "abc")
+        a.date_answer.should be(date)
+      end
+
+      it "should set the raw answer if the input is invalid" do
+        mock_ih = mock('mock input handler')
+        DateInputHandler.should_receive(:new).and_return(mock_ih)
+        mock_ih.should_receive(:valid?).and_return(false)
+        mock_ih.should_receive(:to_raw).and_return("blah")
+        a = Factory(:answer, question: date_question, answer_value: "abc")
+        a.date_answer.should be_nil
+        a.raw_answer.should eq("blah")
+      end
+    end
+
     describe "other question types" do
       pending
     end
   end
+
   describe "answer_value should contain the correct data on load with valid data" do
     it "Valid text" do
       a = Answer.new(response: response, question: text_question, answer_value: "abc")
@@ -200,24 +224,28 @@ describe Answer do
 
   describe "answer_value should contain the inputted data on load with invalid data, and a warning should be present" do
 
-    it "invalid date" do
-      date_a_s_hash = ActiveSupport::HashWithIndifferentAccess.new ({day: 31, month: 2, year: 2000})
-      date_hash = PartialDateTimeHash.new date_a_s_hash
-      a = Answer.new(response: response, question: date_question, answer_value: date_a_s_hash)
-
-      a.save!; b = Answer.find(a.id); a = b
-
-      a.answer_value.should eq(date_hash)
+    it "invalid date from a string" do
+      a = Answer.create!(response: response, question: date_question, answer_value: "blah")
+      a.reload
+      a.answer_value.should eq("blah")
       a.has_warning?.should be_true
-
+      a.warnings.should eq(["Answer is invalid (must be a valid date)"])
     end
 
-    it "partial date" do
+    it "invalid date from a hash" do
+      date_a_s_hash = ActiveSupport::HashWithIndifferentAccess.new ({day: 31, month: 2, year: 2000})
+      date_hash = PartialDateTimeHash.new date_a_s_hash
+      a = Answer.create!(response: response, question: date_question, answer_value: date_a_s_hash)
+      a.reload
+      a.answer_value.should eq(date_hash)
+      a.has_warning?.should be_true
+    end
+
+    it "partial date from a hash" do
       date_a_s_hash = ActiveSupport::HashWithIndifferentAccess.new ({day: 1, year: 2000})
       date_hash = PartialDateTimeHash.new date_a_s_hash
-      a = Answer.new(response: response, question: date_question, answer_value: date_a_s_hash)
-
-      a.save!; b = Answer.find(a.id); a = b
+      a = Answer.create!(response: response, question: date_question, answer_value: date_a_s_hash)
+      a.reload
       a.answer_value.should eq(date_hash)
       a.has_warning?.should be_true
     end
