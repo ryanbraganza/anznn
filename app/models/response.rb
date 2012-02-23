@@ -25,7 +25,7 @@ class Response < ActiveRecord::Base
 
   def sections_to_answers
     survey.sections.reduce({}) do |hsh, section|
-      answers = prepare_answers_to_section(section).values
+      answers = all_answers_for_section(section)
       sorted_answers = answers.sort_by {|a| a.question.order }
       hsh.merge section => sorted_answers
     end
@@ -39,15 +39,27 @@ class Response < ActiveRecord::Base
     !answers_to_section(section).empty?
   end
 
-  def status_of_section(section)
+  def status_of_section(section, treat_no_mandatory_as_complete_instead_of_not_started=false)
     if section_started?(section)
-      answers_to_section = answers_to_section(section)
-      required_question_ids = section.questions.where(:mandatory => true).collect(&:id)
-      answered_question_ids = answers_to_section.collect(&:question_id)
-      all_mandatory_questions_answered = (required_question_ids - answered_question_ids).empty?
-      return "Incomplete" unless all_mandatory_questions_answered
-      any_warnings = answers_to_section.collect(&:has_warning?).include?(true)
-      return "Incomplete" if any_warnings
+      answers = all_answers_for_section(section)
+
+      all_mandatory_questions_answered = all_mandatory_passed(answers)
+
+      any_warnings = answers.map{|a| a.warnings.present?}.any?
+      any_fatal_warnings = answers.map{|a| a.fatal_warnings.present?}.any?
+
+      if all_mandatory_questions_answered
+        if any_fatal_warnings
+          "Incomplete"
+        elsif any_warnings
+          "Complete with warnings"
+        else
+          "Complete"
+        end
+      else
+        "Incomplete"
+      end
+    elsif treat_no_mandatory_as_complete_instead_of_not_started and all_mandatory_passed(all_answers_for_section(section))
       "Complete"
     else
       "Not started"
@@ -75,7 +87,29 @@ class Response < ActiveRecord::Base
     end
   end
 
+  def status
+    statii_of_sections = survey.sections.map{|s| status_of_section(s, :complete_if_no_mandatory) }
+
+    if statii_of_sections.all? {|status| status == 'Not started'}
+      'Not started'
+    elsif statii_of_sections.include? 'Incomplete' or statii_of_sections.include? 'Not started'
+      'Incomplete'
+    elsif statii_of_sections.include? 'Complete with warnings'
+      'Complete with warnings'
+    else
+      'Complete'
+    end
+  end
+
   private
+
+  def all_mandatory_passed(answers)
+    all_mandatory_questions_answered = answers.all?{|a| !a.violates_mandatory}
+  end
+
+  def all_answers_for_section(section)
+    prepare_answers_to_section(section).values
+  end
 
   def answers_to_section(section)
     answers.joins(:question).merge(Question.for_section(section))

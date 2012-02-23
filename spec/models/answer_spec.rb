@@ -34,6 +34,7 @@ describe Answer do
         StringLengthValidator.should_receive(:validate).twice.with(text_question, "blah").and_return([false, "My string warning"])
         text_answer.has_warning?.should eq true
         text_answer.warnings.should eq ["My string warning"]
+        text_answer.fatal_warnings.should eq []
       end
     end
 
@@ -42,6 +43,7 @@ describe Answer do
         NumberRangeValidator.should_receive(:validate).twice.with(integer_question, 34).and_return([false, "My integer warning"])
         integer_answer.has_warning?.should eq true
         integer_answer.warnings.should eq ["My integer warning"]
+        integer_answer.fatal_warnings.should eq []
       end
     end
 
@@ -50,6 +52,7 @@ describe Answer do
         NumberRangeValidator.should_receive(:validate).twice.with(decimal_question, 1.13).and_return([false, "My decimal warning"])
         decimal_answer.has_warning?.should eq true
         decimal_answer.warnings.should eq ["My decimal warning"]
+        decimal_answer.fatal_warnings.should eq []
       end
     end
 
@@ -58,8 +61,9 @@ describe Answer do
         CrossQuestionValidation.should_receive(:check).twice.and_return(['error1', 'error2'])
         answer = Factory(:answer)
 
-        answer.warnings.should eq ["error1", "error2"]
         answer.should have_warning
+        answer.fatal_warnings.should eq ["error1", "error2"]
+        answer.warnings.should eq []
       end
     end
 
@@ -70,7 +74,7 @@ describe Answer do
       end
       it "should fail when value is not allowed" do
         answer = Factory(:answer, question: choice_question, answer_value: "98")
-        answer.warnings.should eq(['Answer must be one of ["0", "1", "99"]'])
+        answer.fatal_warnings.should eq(['Answer must be one of ["0", "1", "99"]'])
         answer.should have_warning
       end
     end

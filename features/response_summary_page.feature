@@ -51,8 +51,28 @@ Feature: View a summary page for a survey response
       | Sec2 | Not started |
       | Sec3 | Not started |
 
-  Scenario: Section stays incomplete when warnings are present (even if all questions are answered)
+  Scenario: Section is complete with warnings when range warnings are present (and all questions are answered)
     Given I am on the edit first response page
+    When I answer as follows
+      | question       | answer     |
+      | Sect1 QText1   | abc        |
+      | Sect1 QText2   | def        |
+      | Sect1 QInteger | 5          |
+      | Sect1 QDecimal | 1          |
+      | Sect1 QDate    | 2011/12/31 |
+      | Sect1 QTime    | 11:30      |
+      | Sect1 QChoice  | (A) Apple  |
+    And I follow "Summary"
+    Then I should see "summary" table with
+      | Sec1 | Complete with warnings |
+      | Sec2 | Not started            |
+      | Sec3 | Not started            |
+
+  Scenario: Section is incomplete when a cross-question validation fails (and all questions are answered)
+    Given I have the following cross question validations
+      | question       | related     | rule    | error_message        |
+      | Sect1 QDate    | Sect1 QDate | date_gt | This will never pass |
+    And I am on the edit first response page
     When I answer as follows
       | question       | answer     |
       | Sect1 QText1   | abc        |

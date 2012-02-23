@@ -7,6 +7,7 @@
       %th Baby Code
       %th Survey Type
       %th Created By
+      %th Status
       %th Date Started
       %th
     - @responses.each do |r|
@@ -15,6 +16,7 @@
         %td= r.baby_code
         %td= r.survey.name
         %td= r.user.full_name
+        %td= r.status
         %td
           %p
             = time_tag r.created_at

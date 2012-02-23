@@ -56,6 +56,9 @@
         - answer.warnings.each do |warning|
           = warning
           %br/
+        - answer.fatal_warnings.each do |warning|
+          %span.warning= warning
+          %br/
       - elsif @flag_mandatory and answer.violates_mandatory
         This question is mandatory
       - else

@@ -58,6 +58,12 @@ module NavigationHelpers
       response = Response.find_by_baby_code($1)
       review_answers_response_path response
 
+    when /the edit section (.*) page$/
+      section_order = $1
+      section = Section.find_by_order!(section_order)
+      response = Response.first
+      edit_response_path response, section: section
+
 # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #

@@ -19,3 +19,4 @@
           - if answer.has_warning?
             %br/
             %span.warning-display= answer.warnings.join ', '
+            %span.warning-display= answer.fatal_warnings.join ', '

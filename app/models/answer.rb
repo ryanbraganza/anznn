@@ -24,16 +24,24 @@ class Answer < ActiveRecord::Base
   serialize :raw_answer
 
   def has_warning?
-    warnings.present?
+    warnings.present? or fatal_warnings.present?
   end
 
   def answer_value_set?
     persisted? || answer_value_set
   end
 
+  def fatal_warnings
+    if answer_value_set?
+      [warn_on_invalid_data, *warn_on_cross_questions].compact
+    else
+      []
+    end
+  end
+
   def warnings
     if answer_value_set?
-      [warn_on_invalid_data, warn_on_range, *warn_on_cross_questions].compact
+      [warn_on_range].compact
     else
       []
     end
