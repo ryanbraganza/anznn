@@ -42,9 +42,9 @@ class Admin::UsersController < Admin::AdminBaseController
 
   def edit_role
     if @user == current_user
-      flash.now[:alert] = "You are changing the role of the user you are logged in as."
+      flash.now[:alert] = "You are changing the access level of the user you are logged in as."
     elsif @user.rejected?
-      redirect_to(admin_users_path, alert: "Role can not be set. This user has previously been rejected as a spammer.")
+      redirect_to(admin_users_path, alert: "Access level can not be set. This user has previously been rejected as a spammer.")
     end
     @roles = Role.by_name
   end
@@ -58,10 +58,13 @@ class Admin::UsersController < Admin::AdminBaseController
         redirect_to(edit_role_admin_user_path(@user), alert: "Please select a role for the user.")
     else
       @user.role_id = params[:user][:role_id]
+      @user.hospital_id = params[:user][:hospital_id]
       if !@user.check_number_of_superusers(params[:id], current_user.id)
         redirect_to(edit_role_admin_user_path(@user), alert: "Only one superuser exists. You cannot change this role.")
       elsif @user.save
-        redirect_to(admin_user_path(@user), notice: "The role for #{@user.email} was successfully updated.")
+        redirect_to(admin_user_path(@user), notice: "The access level for #{@user.email} was successfully updated.")
+      else
+        redirect_to(edit_role_admin_user_path(@user), alert: "All non-superusers must be assigned a hospital")
       end
     end
   end
@@ -69,6 +72,7 @@ class Admin::UsersController < Admin::AdminBaseController
   def approve
     if !params[:user][:role_id].blank?
       @user.role_id = params[:user][:role_id]
+      @user.hospital_id = params[:user][:hospital_id]
       @user.save
       @user.approve_access_request
 

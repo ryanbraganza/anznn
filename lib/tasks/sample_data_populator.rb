@@ -4,10 +4,25 @@ def populate_data
   load_password
 
   User.delete_all
+
+  create_hospitals
+
   create_test_users
 
   create_surveys
 end
+
+def create_hospitals
+  include CsvSurveyOperations
+  Hospital.delete_all
+
+  hospitals = read_hashes_from_csv(Rails.root.join("lib/tasks", "hospitals.csv"))
+  hospitals.each do |hash|
+    Hospital.create!(hash)
+  end
+
+end
+
 
 def create_surveys
   Response.delete_all
@@ -28,7 +43,7 @@ def create_survey(name, question_file, options_file, cross_question_validations_
   questions = read_hashes_from_csv(Rails.root.join("lib/tasks", question_file))
   question_options = read_hashes_from_csv(Rails.root.join("lib/tasks", options_file))
   cqv_hashes = read_hashes_from_csv(Rails.root.join("lib/tasks", cross_question_validations_file))
- 
+
   import_questions(survey, questions)
   import_question_options(survey, question_options)
   import_cross_question_validations(survey, cqv_hashes)
@@ -53,15 +68,17 @@ def create_test_users
   set_role("kali@intersect.org.au", "Administrator")
   set_role("diego@intersect.org.au", "Administrator")
   set_role("shuqian@intersect.org.au", "Administrator")
-  set_role("dataprovider@intersect.org.au", "Data Provider")
-  set_role("supervisor@intersect.org.au", "Data Provider Supervisor")
+  set_role("dataprovider@intersect.org.au", "Data Provider", Hospital.first.name)
+  set_role("supervisor@intersect.org.au", "Data Provider Supervisor", Hospital.first.name)
 
 end
 
-def set_role(email, role)
-  user = User.where(email: email).first
-  role = Role.where(name: role).first
+def set_role(email, role, hospital_name=nil)
+  user = User.find_by_email(email)
+  role = Role.find_by_name(role)
+  hospital = Hospital.find_by_name(hospital_name) unless hospital_name.nil?
   user.role = role
+  user.hospital = hospital
   user.save!
 end
 

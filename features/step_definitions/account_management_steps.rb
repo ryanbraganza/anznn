@@ -70,7 +70,7 @@ When /^I follow "View Details" for "([^"]*)"$/ do |email|
   click_link("view_#{user.id}")
 end
 
-When /^I follow "Edit Role" for "([^"]*)"$/ do |email|
+When /^I follow "Edit Access Level" for "([^"]*)"$/ do |email|
   user = User.where(:email => email).first
   click_link("edit_role_#{user.id}")
 end

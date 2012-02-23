@@ -16,7 +16,7 @@
   - if @user.approved?
     .user_details_menu
       - if can?(:update_role, User)
-        = link_to 'Edit Role', edit_role_admin_user_path(@user), class: 'btn'
+        = link_to 'Edit Access Level', edit_role_admin_user_path(@user), class: 'btn'
         &nbsp;
       - if can?(:deactivate, User)
         - if @user == current_user
@@ -30,7 +30,7 @@
   - if @user.deactivated?
     .user_details_menu
       - if can?(:update_role, User)
-        = link_to 'Edit Role', edit_role_admin_user_path(@user), class: 'btn'
+        = link_to 'Edit Access Level', edit_role_admin_user_path(@user), class: 'btn'
         &nbsp;
       - if can?(:activate, User)
         = link_to "Activate", activate_admin_user_path(@user), method: :put, class: 'btn'
@@ -49,6 +49,7 @@
       - else
         = @user.last_sign_in_at.localtime.strftime("%d/%m/%Y %I:%M%p")
   = render_field "Role", (@user.role ? @user.role.name : "(None set)")
+  = render_field "Hospital","#{@user.hospital.name} (#{@user.hospital.state})" if @user.hospital
   = render_field_with_block "Status" do
     - if @user.status == 'A'
       Active

@@ -27,11 +27,13 @@ class Ability
       can :manage, Survey
 
       can :manage, Response
+      cannot :create, Response
+
       can :manage, BatchFile
     end
 
     if user.role.is_data_provider?
-      can :manage, Response
+      can :manage, Response, hospital_id: user.hospital_id
       can :manage, BatchFile
     end
 

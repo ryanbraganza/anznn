@@ -8,6 +8,7 @@
     %th Last name
     %th Email
     %th Role
+    %th Hospital
     %th Status
     %th Last signed in
     %th Actions
@@ -17,6 +18,7 @@
       %td= user.last_name
       %td= user.email
       %td= user.role.name if user.role
+      %td= user.hospital.present? ? "#{user.hospital.name} (#{user.hospital.state})" : "(None)"
       %td
         - if user.status == 'A'
           Active
@@ -30,4 +32,4 @@
       %td
         = link_to "View Details", admin_user_path(user), id: "view_#{user.id}", class: 'btn'
         - if can?(:update_role, User)
-          = link_to 'Edit Role', edit_role_admin_user_path(user), id: "edit_role_#{user.id}", class: 'btn'
+          = link_to 'Edit Access Level', edit_role_admin_user_path(user), id: "edit_role_#{user.id}", class: 'btn'

@@ -39,13 +39,13 @@ describe User do
     end
     describe "Approved Administrators Scope" do
       it "should return users that are approved ordered by email address" do
-        super_role = Factory(:role, :name => "Administrator")
+        #super_role = Factory(:role, :name => "Administrator")
         other_role = Factory(:role, :name => "Other")
-        u1 = Factory(:user, :status => 'A', :role => super_role, :email => "fasdf1@intersect.org.au")
+        u1 = Factory(:super_user, :status => 'A', :email => "fasdf1@intersect.org.au")
         u2 = Factory(:user, :status => 'A', :role => other_role)
-        u3 = Factory(:user, :status => 'U', :role => super_role)
-        u4 = Factory(:user, :status => 'R', :role => super_role)
-        u5 = Factory(:user, :status => 'D', :role => super_role)
+        u3 = Factory(:super_user, :status => 'U')
+        u4 = Factory(:super_user, :status => 'R')
+        u5 = Factory(:super_user, :status => 'D')
         User.approved_superusers.should eq([u1])
       end
     end
@@ -154,23 +154,20 @@ describe User do
 
   describe "Find the number of superusers method" do
     it "should return true if there are at least 2 superusers" do
-      super_role = Factory(:role, :name => 'Administrator')
-      user_1 = Factory(:user, :role => super_role, :status => 'A', :email => 'user1@intersect.org.au')
-      user_2 = Factory(:user, :role => super_role, :status => 'A', :email => 'user2@intersect.org.au')
-      user_3 = Factory(:user, :role => super_role, :status => 'A', :email => 'user3@intersect.org.au')
+      user_1 = Factory(:super_user, :status => 'A', :email => 'user1@intersect.org.au')
+      user_2 = Factory(:super_user, :status => 'A', :email => 'user2@intersect.org.au')
+      user_3 = Factory(:super_user, :status => 'A', :email => 'user3@intersect.org.au')
       user_1.check_number_of_superusers(1, 1).should eq(true)
     end
 
     it "should return false if there is only 1 superuser" do
-      super_role = Factory(:role, :name => 'Administrator')
-      user_1 = Factory(:user, :role => super_role, :status => 'A', :email => 'user1@intersect.org.au')
+      user_1 = Factory(:super_user, :status => 'A', :email => 'user1@intersect.org.au')
       user_1.check_number_of_superusers(1, 1).should eq(false)
     end
     
     it "should return true if the logged in user does not match the user record being modified" do  
-      super_role = Factory(:role, :name => 'Administrator')
       research_role = Factory(:role, :name => 'Data Provider')
-      user_1 = Factory(:user, :role => super_role, :status => 'A', :email => 'user1@intersect.org.au')
+      user_1 = Factory(:super_user, :status => 'A', :email => 'user1@intersect.org.au')
       user_2 = Factory(:user, :role => research_role, :status => 'A', :email => 'user2@intersect.org.au')
       user_1.check_number_of_superusers(1, 2).should eq(true)
     end
@@ -183,12 +180,12 @@ describe User do
     it { should validate_presence_of :password }
 
     it "should validate presence of a hospital UNLESS user has no role OR user is a super user" do
-      super_role = Factory(:role, :name => Role::SuperUserRole)
+      #NB: this could also be if they are inactive instead of no role, however this works fine
       research_role = Factory(:role, :name => 'Data Provider')
 
       users = Array.new
 
-      users << Factory(:user, :role => super_role, :status => 'A', :email => 'user1@intersect.org.au')
+      users << Factory(:super_user, :status => 'A', :email => 'user1@intersect.org.au')
       users << Factory(:user, :role => nil, :status => 'A', :email => 'user2@intersect.org.au')
       users << Factory(:user, :role => research_role, :status => 'A', :email => 'user3@intersect.org.au')
 
@@ -199,6 +196,30 @@ describe User do
       users[0].should be_valid
       users[1].should be_valid
       users[2].should_not be_valid
+
+    end
+
+    it "should clear the hospital on before validation if a user becomes a super user" do
+      super_role = Factory(:role, :name => Role::SuperUserRole)
+      hospital = Factory(:hospital)
+      user1 = Factory(:user, :status => 'A', :email => 'user1@intersect.org.au', :hospital => hospital)
+      user1.hospital.should eq(hospital)
+
+      user1.role = super_role
+      user1.should be_valid
+      user1.hospital.should eq(nil)
+
+    end
+
+    it "should never clear the hospital for regular users" do
+      hospital = Factory(:hospital)
+      user1 = Factory(:user, :status => 'A', :email => 'user1@intersect.org.au', :hospital => hospital)
+
+      user1.should be_valid
+      user1.save
+      user1a = User.find_by_email('user1@intersect.org.au')
+      user1a.hospital.should eq(hospital)
+
 
     end
 
@@ -255,13 +276,13 @@ describe User do
 
   describe "Get superuser emails" do
     it "should find all approved superusers and extract their email address" do
-      super_role = Factory(:role, :name => "Administrator")
-      admin_role = Factory(:role, :name => "Admin")
-      super_1 = Factory(:user, :role => super_role, :status => "A", :email => "a@intersect.org.au")
-      super_2 = Factory(:user, :role => super_role, :status => "U", :email => "b@intersect.org.au")
-      super_3 = Factory(:user, :role => super_role, :status => "A", :email => "c@intersect.org.au")
-      super_4 = Factory(:user, :role => super_role, :status => "D", :email => "d@intersect.org.au")
-      super_5 = Factory(:user, :role => super_role, :status => "R", :email => "e@intersect.org.au")
+
+      admin_role = Factory(:role, :name => "Admin") # Testing near matches - Role::SuperUserRole => "Administrator"
+      super_1 = Factory(:super_user, :status => "A", :email => "a@intersect.org.au")
+      super_2 = Factory(:super_user, :status => "U", :email => "b@intersect.org.au")
+      super_3 = Factory(:super_user, :status => "A", :email => "c@intersect.org.au")
+      super_4 = Factory(:super_user, :status => "D", :email => "d@intersect.org.au")
+      super_5 = Factory(:super_user, :status => "R", :email => "e@intersect.org.au")
       admin = Factory(:user, :role => admin_role, :status => "A", :email => "f@intersect.org.au")
 
       supers = User.get_superuser_emails

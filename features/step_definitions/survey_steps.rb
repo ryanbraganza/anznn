@@ -1,7 +1,3 @@
-Given /^I have a simple survey$/ do
-  create_simple_survey
-end
-
 Given /^I have a survey with name "([^"]*)" and questions$/ do |name, table|
   survey = Survey.create!(:name => name)
   create_questions(survey, table)
@@ -23,28 +19,13 @@ Given /^"([^"]*)" has questions$/ do |survey_name, table|
   create_questions(survey, table)
 end
 
-Given /^"(.*)" created a response to a simple survey$/ do |email|
-  create_response($simple_survey, email)
-end
-
 Given /^"([^"]*)" created a response to the "([^"]*)" survey$/ do |email, survey_name|
   create_response(Survey.find_by_name(survey_name), email)
 end
 
-def create_simple_survey
-  survey = Survey.create!(name: 'simple')
-  section = Section.create!(survey: survey, order: 1, name: 'Section1')
-  q = Question.create!(question: 'What is the answer?', section: section, order: 1, question_type: "Text", code: "What", data_domain: "")
-  $simple_survey = survey
-end
-
-def simple_question
-  $simple_survey.sections.first.questions.first
-end
-
 def create_response(survey, email)
   user = User.find_by_email(email)
-  Response.create!(survey: survey, baby_code: 'babycode123', user: user)
+  Response.create!(survey: survey, baby_code: 'babycode123', user: user, hospital: user.hospital)
 end
 
 When /^I answer "([^"]*)" with "([^"]*)"$/ do |q, a|

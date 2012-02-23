@@ -1,6 +1,6 @@
 Then /^I should see "([^"]*)" table with$/ do |table_id, expected_table|
   actual = find("table##{table_id}").all('tr').map { |row| row.all('th, td').map { |cell| cell.text.strip } }
-  expected_table.diff!(actual)
+  chatty_diff_table!(expected_table, actual)
 end
 
 Then /^I should see field "([^"]*)" with value "([^"]*)"$/ do |field, value|
@@ -108,4 +108,21 @@ Then /^the "([^"]*)" select should contain$/ do |label, table|
   actual_options = options.collect(&:text)
   expected_options = table.raw.collect { |row| row[0] }
   actual_options.should eq(expected_options)
+end
+
+def chatty_diff_table!(expected_table, actual, opts={})
+  begin
+    expected_table.diff!(actual, opts)
+  rescue Cucumber::Ast::Table::Different
+    puts "Tables were as follows:"
+    puts expected_table
+    raise
+  end
+end
+When /^I should see the access denied error$/ do
+  step "I should see \"You are not authorized to access this page.\""
+end
+
+When /^I should see that the "([^"]*)" update succeeded for (.*)$/ do |update, obj|
+  step "I should see \"The #{update} for #{obj} was successfully updated.\""
 end

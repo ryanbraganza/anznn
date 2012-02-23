@@ -83,9 +83,11 @@ Given /^I have the usual roles$/ do
 end
 
 def create_usual_roles
-  Role.create!(:name => 'Administrator') unless Role.find_by_name('Administrator')
+  Role.create!(:name => Role::SuperUserRole) unless Role.find_by_name(Role::SuperUserRole)
   Role.create!(:name => "Data Provider") unless Role.find_by_name('Data Provider')
+  Role.create!(:name => "Data Provider Supervisor") unless Role.find_by_name('Data Provider Supervisor')
 end
+
 
 def create_user_with_role(email, role)
   user = Factory(:user, :email => email, :password => "Pas$w0rd", :status => 'A')

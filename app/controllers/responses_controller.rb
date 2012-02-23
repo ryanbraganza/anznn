@@ -11,6 +11,7 @@ class ResponsesController < ApplicationController
 
   def create
     @response.user = current_user
+    @response.hospital = current_user.hospital
     if @response.save
       redirect_to edit_response_path(@response, section: @response.survey.sections.first.id), notice: 'Survey created'
     else

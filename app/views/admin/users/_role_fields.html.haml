@@ -1,0 +1,27 @@
+.clearfix
+  = f.label :role_id, "Role"
+  .input
+    = f.collection_select :role_id, @roles, :id, :name, {include_blank: ""}, {class: 'large'}
+.clearfix#hospital_fields
+  = f.label :hospital_id, "Hospital"
+  .input
+    = f.select :hospital_id, grouped_options_for_select(Hospital.hospitals_by_state, @user.hospital_id), {include_blank: ""}, {class: 'large'}
+
+
+:javascript
+  $(window).load(function() {
+    hide_hospital_if_required();
+  });
+
+  $('#user_role_id').change(function() {
+    hide_hospital_if_required();
+  });
+
+  function hide_hospital_if_required() {
+    if ($('#user_role_id :selected').text() == "#{Role.super_user_role}") {
+      $('#hospital_fields').hide();
+    } else {
+      $('#hospital_fields').show();
+    }
+  }
+
