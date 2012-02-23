@@ -17,7 +17,7 @@ Feature: Upload survey responses in a batch file
       | MySurvey2     |
     Then I should see "Please select the survey type and the file you want to upload"
     When I select "MySurvey" from "Survey"
-    And I attach the file "features/sample_data/batch_sample.csv" to "File"
+    And I attach the file "features/sample_data/batch_files/batch_sample.csv" to "File"
     When I press "Upload"
     Then I should see "Your upload has been received and is now being processed. This may take some time depending on the size of the file."
     And I should see "The status of your uploads can be seen in the table below. You will need to refresh the page to see an updated status."

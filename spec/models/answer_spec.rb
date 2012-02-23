@@ -7,7 +7,13 @@ describe Answer do
   let(:decimal_question) { Factory(:question, question_type: Question::TYPE_DECIMAL) }
   let(:date_question) { Factory(:question, question_type: Question::TYPE_DATE) } # Specs missing
   let(:time_question) { Factory(:question, question_type: Question::TYPE_TIME) } # Specs missing
-  let(:choice_question) { Factory(:question, question_type: Question::TYPE_CHOICE) } # Specs missing
+  let(:choice_question) do
+    cq = Factory(:question, question_type: Question::TYPE_CHOICE)
+    Factory(:question_option, question: cq, option_value: '0', label: 'Dog')
+    Factory(:question_option, question: cq, option_value: '1', label: 'Cat')
+    Factory(:question_option, question: cq, option_value: '99', label: 'Apple')
+    cq
+  end
 
   describe "Associations" do
     it { should belong_to :question }
@@ -15,7 +21,7 @@ describe Answer do
   end
   describe "Validations" do
     it { should validate_presence_of :question }
-    it { should validate_presence_of :response }
+    #it { should validate_presence_of :response }
   end
 
   describe "Validating for warnings" do
@@ -53,6 +59,18 @@ describe Answer do
         answer = Factory(:answer)
 
         answer.warnings.should eq ["error1", "error2"]
+        answer.should have_warning
+      end
+    end
+
+    describe "Validating that choice answers are one of the allowed values" do
+      it "should pass when value is allowed" do
+        answer = Factory(:answer, question: choice_question, answer_value: "99")
+        answer.should_not have_warning
+      end
+      it "should fail when value is not allowed" do
+        answer = Factory(:answer, question: choice_question, answer_value: "98")
+        answer.warnings.should eq(['Answer must be one of ["0", "1", "99"]'])
         answer.should have_warning
       end
     end
@@ -245,22 +263,15 @@ describe Answer do
       Factory(:answer, question: date_question, answer_value: PartialDateTimeHash.new({day: 31, month: 12, year: 2011})).format_for_display.should eq("31/12/2011")
       Factory(:answer, question: time_question, answer_value: PartialDateTimeHash.new({hour: 18, min: 6})).format_for_display.should eq("18:06")
 
-      choice_q = choice_question
-      Factory(:question_option, question: choice_q, label: 'Apple', option_value: '99')
-      Factory(:question_option, question: choice_q, label: 'Cat', option_value: '98')
       Factory(:answer, question: choice_question, answer_value: "99").format_for_display.should eq("(99) Apple")
     end
-    
+
     it "should handle answers that are not filled out yet" do
       Answer.new(question: text_question).format_for_display.should eq("Not answered")
       Answer.new(question: integer_question).format_for_display.should eq("Not answered")
       Answer.new(question: decimal_question).format_for_display.should eq("Not answered")
       Answer.new(question: date_question).format_for_display.should eq("Not answered")
       Answer.new(question: time_question).format_for_display.should eq("Not answered")
-
-      choice_q = choice_question
-      Factory(:question_option, question: choice_q, label: 'Apple', option_value: '99')
-      Factory(:question_option, question: choice_q, label: 'Cat', option_value: '98')
       Answer.new(question: choice_question).format_for_display.should eq("Not answered")
     end
 

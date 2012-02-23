@@ -18,7 +18,7 @@ class Answer < ActiveRecord::Base
   belongs_to :response
 
   validates_presence_of :question
-  validates_presence_of :response
+#  validates_presence_of :response
   validate :mutually_exclusive_columns_are_blank
 
   serialize :raw_answer
@@ -44,7 +44,7 @@ class Answer < ActiveRecord::Base
   end
 
   def format_for_display
-    return "" unless raw_answer.nil?  #don't show anything if its a dodgy answer
+    return "" unless raw_answer.nil? #don't show anything if its a dodgy answer
     case question.question_type
       when TYPE_TEXT, TYPE_DECIMAL, TYPE_INTEGER
         answer_value.nil? ? "Not answered" : answer_value.to_s
@@ -144,7 +144,11 @@ class Answer < ActiveRecord::Base
           "Answer contains invalid data"
       end
     else
-      nil
+      if self.question.question_type == Question::TYPE_CHOICE
+        #this should only ever be triggered by batch processing
+        allowed_values = question.question_options.collect(&:option_value)
+        "Answer must be one of #{allowed_values.inspect}" unless allowed_values.include?(choice_answer)
+      end
     end
   end
 
