@@ -164,6 +164,7 @@ describe Answer do
         mock_ih.should_receive(:to_date).and_return(date)
         a = Factory(:answer, question: date_question, answer_value: "abc")
         a.date_answer.should be(date)
+        a.raw_answer.should be_nil
       end
 
       it "should set the raw answer if the input is invalid" do
@@ -173,6 +174,29 @@ describe Answer do
         mock_ih.should_receive(:to_raw).and_return("blah")
         a = Factory(:answer, question: date_question, answer_value: "abc")
         a.date_answer.should be_nil
+        a.raw_answer.should eq("blah")
+      end
+    end
+
+    describe "For time questions, should delegate to TimeInputHandler to process the input" do
+      it "should set the time answer if the input is valid" do
+        time = Time.now
+        mock_ih = mock('mock input handler')
+        TimeInputHandler.should_receive(:new).and_return(mock_ih)
+        mock_ih.should_receive(:valid?).and_return(true)
+        mock_ih.should_receive(:to_time).and_return(time)
+        a = Factory(:answer, question: time_question, answer_value: "abc")
+        a.time_answer.should be(time)
+        a.raw_answer.should be_nil
+      end
+
+      it "should set the raw answer if the input is invalid" do
+        mock_ih = mock('mock input handler')
+        TimeInputHandler.should_receive(:new).and_return(mock_ih)
+        mock_ih.should_receive(:valid?).and_return(false)
+        mock_ih.should_receive(:to_raw).and_return("blah")
+        a = Factory(:answer, question: time_question, answer_value: "abc")
+        a.time_answer.should be_nil
         a.raw_answer.should eq("blah")
       end
     end
@@ -229,7 +253,7 @@ describe Answer do
       a.reload
       a.answer_value.should eq("blah")
       a.has_warning?.should be_true
-      a.warnings.should eq(["Answer is invalid (must be a valid date)"])
+      a.fatal_warnings.should eq(["Answer is invalid (must be a valid date)"])
     end
 
     it "invalid date from a hash" do
@@ -239,6 +263,7 @@ describe Answer do
       a.reload
       a.answer_value.should eq(date_hash)
       a.has_warning?.should be_true
+      a.fatal_warnings.should eq(["Answer is invalid (Provided date does not exist)"])
     end
 
     it "partial date from a hash" do
@@ -248,25 +273,36 @@ describe Answer do
       a.reload
       a.answer_value.should eq(date_hash)
       a.has_warning?.should be_true
+      a.fatal_warnings.should eq(["Answer is incomplete (one or more fields left blank)"])
     end
 
-    it "invalid time" do
+    it "invalid time from a string" do
+      a = Answer.create!(response: response, question: time_question, answer_value: "ab:11")
+      a.reload
+      a.answer_value.should eq("ab:11")
+      a.has_warning?.should be_true
+      a.fatal_warnings.should eq(["Answer is invalid (must be a valid time)"])
+    end
+
+    it "invalid time from a hash" do
       time_a_s_hash = ActiveSupport::HashWithIndifferentAccess.new ({hour: 20, min: 61})
       time_hash = PartialDateTimeHash.new time_a_s_hash
-      a = Answer.new(response: response, question: time_question, answer_value: time_a_s_hash)
-
-      a.save!; b = Answer.find(a.id); a = b
+      a = Answer.create!(response: response, question: time_question, answer_value: time_a_s_hash)
+      a.reload
       a.answer_value.should eq(time_hash)
       a.has_warning?.should be_true
+      a.fatal_warnings.should eq(["Answer is incomplete (a field was left blank)"])
     end
 
     it "partial time" do
       time_a_s_hash = ActiveSupport::HashWithIndifferentAccess.new ({hour: 20})
       time_hash = PartialDateTimeHash.new time_a_s_hash
-      a = Answer.new(response: response, question: time_question, answer_value: time_a_s_hash)
-      a.save!; b = Answer.find(a.id); a = b
+      a = Answer.create!(response: response, question: time_question, answer_value: time_a_s_hash)
+      a.reload
       a.answer_value.should eq(time_hash)
+      a.fatal_warnings.should eq(["Answer is incomplete (a field was left blank)"])
     end
+
     it "invalid integer" do
       input = "4.5"
       a = Answer.new(response: response, question: integer_question, answer_value: input)
@@ -274,6 +310,7 @@ describe Answer do
       a.answer_value.should eq(input)
       a.has_warning?.should be_true
     end
+
     it "invalid decimal" do
       input = "abc"
       a = Answer.new(response: response, question: decimal_question, answer_value: input)

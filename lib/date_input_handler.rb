@@ -9,7 +9,7 @@ class DateInputHandler
       @valid = true
       @date = input
     else
-      raise "DateInputHandler can only handle String, Hashes and Dates"
+      raise "DateInputHandler can only handle String, Hash and Date input"
     end
   end
 

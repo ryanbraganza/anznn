@@ -93,16 +93,17 @@ describe DateInputHandler do
       lambda { dih.to_date }.should raise_error
     end
   end
+
+  def should_accept(string)
+    dih = DateInputHandler.new(string)
+    dih.should be_valid
+    dih.to_date.should eq(Date.parse(string))
+  end
+
+  def should_reject(string)
+    dih = DateInputHandler.new(string)
+    dih.should_not be_valid
+    dih.to_raw.should eq(string)
+  end
 end
 
-def should_accept(string)
-  dih = DateInputHandler.new(string)
-  dih.should be_valid
-  dih.to_date.should eq(Date.parse(string))
-end
-
-def should_reject(string)
-  dih = DateInputHandler.new(string)
-  dih.should_not be_valid
-  dih.to_raw.should eq(string)
-end

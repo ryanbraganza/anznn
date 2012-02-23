@@ -145,7 +145,7 @@ class Answer < ActiveRecord::Base
             "Answer is incomplete (one or more fields left blank)"
           end
         when TYPE_TIME
-          "Answer is incomplete (a field was left blank)"
+          raw_answer.is_a?(String) ? "Answer is invalid (must be a valid time)" : "Answer is incomplete (a field was left blank)"
         when TYPE_DECIMAL
           "Answer is the wrong format (Expected a decimal value)"
         when TYPE_INTEGER
@@ -198,12 +198,12 @@ class Answer < ActiveRecord::Base
             self.raw_answer = input_handler.to_raw
           end
         when TYPE_TIME
-          self.time_answer =
-              if input[:hour].blank? || input[:min].blank?
-                raise ArgumentError
-              else
-                Time.utc 2000, 1, 1, input[:hour].to_i, input[:min].to_i
-              end
+          input_handler = TimeInputHandler.new(input)
+          if input_handler.valid?
+            self.time_answer = input_handler.to_time
+          else
+            self.raw_answer = input_handler.to_raw
+          end
         when TYPE_CHOICE
           self.choice_answer = input
         when TYPE_DECIMAL
