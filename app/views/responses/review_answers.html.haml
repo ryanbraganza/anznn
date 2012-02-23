@@ -15,8 +15,8 @@
           = answer.format_for_display
           - if answer.violates_mandatory
             %br/
-            This question is mandatory
+            %span.fatalerror-display This question is mandatory
           - if answer.has_warning?
             %br/
             %span.warning-display= answer.warnings.join ', '
-            %span.warning-display= answer.fatal_warnings.join ', '
+            %span.fatalerror-display= answer.fatal_warnings.join ', '

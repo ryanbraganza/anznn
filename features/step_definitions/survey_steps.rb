@@ -43,11 +43,12 @@ Then /^I should see help text "([^"]*)" for question "([^"]*)"$/ do |text, quest
   help_text.text.gsub("\n", "").should eq(text)
 end
 
-Then /^I should see warning "([^"]*)" for question "([^"]*)"$/ do |warning, question_label|
+Then /^I should see( fatal)? warning "([^"]*)" for question "([^"]*)"$/ do |maybe_fatal, warning, question_label|
   question = question_div(question_label)
 
   classes = question[:class].split(" ")
-  classes.include?("warning").should be_true, "Expected question div to have class=warning, but found only #{classes}"
+  expected_class = maybe_fatal ? 'fatalwarning' : 'warning'
+  classes.include?(expected_class).should be_true, "Expected question div to have class=#{expected_class}, but found only #{classes}"
 
   warning_text = question.find(".help-block")
   warning_text.text.gsub("\n", "").should eq(warning)
@@ -59,7 +60,9 @@ Then /^I should see warnings as follows$/ do |table|
     question = question_div(attrs[:question])
 
     classes = question[:class].split(" ")
-    classes.include?("warning").should be_true, "Expected question div to have class=warning, but found only #{classes}"
+
+    expected_class = attrs[:fatal] ? 'fatalwarning' : 'warning'
+    classes.include?(expected_class).should be_true, "Expected question div to have class=#{expected_class}, but found only #{classes}"
 
     warning_text = question.find(".help-block")
     warning_text.text.gsub("\n", "").should eq(attrs[:warning])

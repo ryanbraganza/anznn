@@ -48,10 +48,10 @@ Feature: Show warnings on survey pages
       | Integer Q2 | 1.5          |
     And I press "Save"
     Then I should see warnings as follows
-      | question   | warning                                               |
-      | Decimal Q  | Answer is the wrong format (Expected a decimal value) |
-      | Integer Q1 | Answer is the wrong format (Expected an integer)      |
-      | Integer Q2 | Answer is the wrong format (Expected an integer)      |
+      | question   | warning                                               | fatal |
+      | Decimal Q  | Answer is the wrong format (Expected a decimal value) | true  |
+      | Integer Q1 | Answer is the wrong format (Expected an integer)      | true  |
+      | Integer Q2 | Answer is the wrong format (Expected an integer)      | true  |
 
   Scenario:  View warnings for invalid data after saving (Incomplete dates/times, invalid dates)
     Given I am on the edit first response page
@@ -66,10 +66,10 @@ Feature: Show warnings on survey pages
       | Time Q2    | Hour:05      |
     And I press "Save"
     Then I should see warnings as follows
-      | question   | warning                                               |
-      | Date Q1    | Answer is incomplete (one or more fields left blank)  |
-      | Date Q2    | Answer is incomplete (one or more fields left blank)  |
-      | Date Q3    | Answer is incomplete (one or more fields left blank)  |
-      | Date Q4    | Answer is invalid (Provided date does not exist)      |
-      | Time Q1    | Answer is incomplete (a field was left blank)         |
-      | Time Q2    | Answer is incomplete (a field was left blank)         |
+      | question   | warning                                               | fatal |
+      | Date Q1    | Answer is incomplete (one or more fields left blank)  | true  |
+      | Date Q2    | Answer is incomplete (one or more fields left blank)  | true  |
+      | Date Q3    | Answer is incomplete (one or more fields left blank)  | true  |
+      | Date Q4    | Answer is invalid (Provided date does not exist)      | true  |
+      | Time Q1    | Answer is incomplete (a field was left blank)         | true  |
+      | Time Q2    | Answer is incomplete (a field was left blank)         | true  |

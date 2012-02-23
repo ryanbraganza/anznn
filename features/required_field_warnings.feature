@@ -49,12 +49,12 @@ Feature: Show warnings on survey pages
     When I answer "Sect1 QText2" with "123"
     And I follow "Sec2"
     And I follow "Sec1"
-    Then I should see warning "This question is mandatory" for question "Sect1 QText1"
-    Then I should see warning "This question is mandatory" for question "Sect1 QInteger"
-    Then I should see warning "This question is mandatory" for question "Sect1 QDecimal"
-    Then I should see warning "This question is mandatory" for question "Sect1 QDate"
-    Then I should see warning "This question is mandatory" for question "Sect1 QTime"
-    Then I should see warning "This question is mandatory" for question "Sect1 QChoice"
+    Then I should see fatal warning "This question is mandatory" for question "Sect1 QText1"
+    Then I should see fatal warning "This question is mandatory" for question "Sect1 QInteger"
+    Then I should see fatal warning "This question is mandatory" for question "Sect1 QDecimal"
+    Then I should see fatal warning "This question is mandatory" for question "Sect1 QDate"
+    Then I should see fatal warning "This question is mandatory" for question "Sect1 QTime"
+    Then I should see fatal warning "This question is mandatory" for question "Sect1 QChoice"
     And "Sect1 QOptional" should have no warning
     When I follow "Sec2"
     Then I should see no warnings
