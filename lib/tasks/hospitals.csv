@@ -1,0 +1,59 @@
+state,name,abbrev
+ACT,The Canberra Hospital,TCH
+NSW,Blacktown Hospital,T3
+NSW,Campbelltown Hospital,T4
+NSW,Gosford Hospital,T5
+NSW,John Hunter Childrens Hospital,JHCH
+NSW,Liverpool Hospital,LH
+NSW,Nepean Hospital,NH
+NSW,NICUS,NICUS
+NSW,Royal Hospital for Women,RHW
+NSW,Royal North Shore Hospital,RNSH
+NSW,Royal Prince Alfred Hospital,RPA
+NSW,St George Hospital,T6
+NSW,Sydney Childrens Hospital,SCH
+NSW,The Childrens Hospital at Westmead,CHW
+NSW,Westmead Hospital,WH
+NSW,Wollongong Hospital,T7
+NT,Alice Springs Hospital,T10
+NT,Royal Darwin Hospital,RDH
+Qld,Cairns Base Hospital,T8
+Qld,Cairns Base Hospital,T8
+Qld,Gold Coast Hospital,GCH
+Qld,Mackay Base Hospital,T9
+Qld,Mater Mothers Hospital,MMH
+Qld,Royal Brisbane & Womens Hospital,RB&WH
+Qld,The Townsville Hospital,TTH
+SA,Flinders Medical Centre,FMC
+SA,Womens and Childrens Hospital,WCH
+Tas,Launceston General Hospital,T2
+Tas,Royal Hobart Hospital,RHH
+Vic,Mercy Hospital for Women,MHW
+Vic,"Monash Medical Centre, Clayton Campus",MMC
+Vic,The Royal Childrens Hospital,RCH
+Vic,The Royal Womens Hospital,RWHMELB
+WA,King Edward Memorial Hospital,KEMH
+WA,Princess Margaret Hospital,PMH
+North Island,Auckland City Hospital,NWH
+North Island,Gisborne Hospital,L209
+North Island,Hawkes Bay Hospital,L214
+North Island,Hutt Hospital,L208
+North Island,Middlemore Hospital,MH
+North Island,North Shore Hospital,L216
+North Island,Palmerston North Hospital,L211
+North Island,Rotorua Hospital,L203
+North Island,Starship,Starship
+North Island,Taranaki Hospital,L201
+North Island,Tauranga Hospital,L202
+North Island,Waikato Hospital,WAIK
+North Island,Waitakere Hospital,L217
+North Island,Wanganui Hospital,L206
+North Island,Wellington Womens Hospital,WWH
+North Island,Whakatane Hospital,L213
+North Island,Whangarei Hospital,L210
+South Island,Christchurch Womens Hospital,CHCH
+South Island,Dunedin Hospital,DH
+South Island,Nelson Hospital,L205
+South Island,Southland (Kew) Hospital,L207
+South Island,Timaru Hospital,L204
+South Island,Wairau Hospital,L215
