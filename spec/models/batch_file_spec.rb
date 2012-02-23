@@ -115,6 +115,34 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
       end
+
+      it "should reject records with integer answers that are badly formed" do
+        batch_file = process_batch_file('bad_integer.csv', survey, user)
+        batch_file.status.should eq("Failed")
+        Response.count.should == 0
+        Answer.count.should == 0
+      end
+
+      it "should reject records with decimal answers that are badly formed" do
+        batch_file = process_batch_file('bad_decimal.csv', survey, user)
+        batch_file.status.should eq("Failed")
+        Response.count.should == 0
+        Answer.count.should == 0
+      end
+
+      it "should reject records with time answers that are badly formed" do
+        batch_file = process_batch_file('bad_time.csv', survey, user)
+        batch_file.status.should eq("Failed")
+        Response.count.should == 0
+        Answer.count.should == 0
+      end
+
+      it "should reject records with date answers that are badly formed" do
+        batch_file = process_batch_file('bad_date.csv', survey, user)
+        batch_file.status.should eq("Failed")
+        Response.count.should == 0
+        Answer.count.should == 0
+      end
     end
 
     #TODO: files with extra columns
