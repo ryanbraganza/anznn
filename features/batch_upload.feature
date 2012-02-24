@@ -41,15 +41,15 @@ Feature: Upload survey responses in a batch file
     Given "fred@intersect.org.au" has name "Fred" "Smith"
     Given "data.provider@intersect.org.au" has name "Data" "Provider"
     Given I have batch uploads
-      | survey    | created_by                     | created_at       | status      |
-      | MySurvey  | data.provider@intersect.org.au | 2012-01-03 13:56 | In Progress |
-      | MySurvey2 | data.provider@intersect.org.au | 2012-01-04 13:56 | In Progress |
-      | MySurvey  | fred@intersect.org.au          | 2012-01-03 08:00 | Succeeded   |
-      | MySurvey2 | fred@intersect.org.au          | 2012-01-03 11:23 | Failed      |
+      | survey    | created_by                     | created_at       | status      | message   |
+      | MySurvey  | data.provider@intersect.org.au | 2012-01-03 13:56 | In Progress | Message 1 |
+      | MySurvey2 | data.provider@intersect.org.au | 2012-01-04 13:56 | In Progress | Message 2 |
+      | MySurvey  | fred@intersect.org.au          | 2012-01-03 08:00 | Succeeded   | Message 3 |
+      | MySurvey2 | fred@intersect.org.au          | 2012-01-03 11:23 | Failed      | Message 4 |
     When I am on the home page
     Then I should see "batch_uploads" table with
-      | Survey Type | Created By    | Date Uploaded          | Status      |
-      | MySurvey2   | Data Provider | January 04, 2012 13:56 | In Progress |
-      | MySurvey    | Data Provider | January 03, 2012 13:56 | In Progress |
-      | MySurvey2   | Fred Smith    | January 03, 2012 11:23 | Failed      |
-      | MySurvey    | Fred Smith    | January 03, 2012 08:00 | Succeeded   |
+      | Survey Type | Created By    | Date Uploaded          | Status      | Details   |
+      | MySurvey2   | Data Provider | January 04, 2012 13:56 | In Progress | Message 2 |
+      | MySurvey    | Data Provider | January 03, 2012 13:56 | In Progress | Message 1 |
+      | MySurvey2   | Fred Smith    | January 03, 2012 11:23 | Failed      | Message 4 |
+      | MySurvey    | Fred Smith    | January 03, 2012 08:00 | Succeeded   | Message 3 |

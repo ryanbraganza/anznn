@@ -8,6 +8,7 @@
       %th Created By
       %th Date Uploaded
       %th Status
+      %th Details
     - @batch_files.each do |batch_file|
       %tr
 
@@ -15,3 +16,4 @@
         %td= batch_file.user.full_name
         %td= time_tag batch_file.created_at
         %td= batch_file.status
+        %td= batch_file.message
