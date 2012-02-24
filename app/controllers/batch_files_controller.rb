@@ -10,6 +10,7 @@ class BatchFilesController < ApplicationController
 
   def create
     @batch_file.user = current_user
+    @batch_file.hospital = current_user.hospital
     if @batch_file.save
       @batch_file.delay.process
       redirect_to root_path, notice: UPLOAD_NOTICE

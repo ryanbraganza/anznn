@@ -4,7 +4,7 @@ Feature: Upload survey responses in a batch file
   I want to upload a batch file
 
   Background:
-    Given I am logged in as "data.provider@intersect.org.au" and have role "Data Provider"
+    Given I am logged in as "data.provider@intersect.org.au" and have role "Data Provider" and I'm linked to hospital "RPA"
     And I have a survey with name "MySurvey"
     And I have a survey with name "MySurvey2"
 
@@ -21,7 +21,7 @@ Feature: Upload survey responses in a batch file
     When I press "Upload"
     Then I should see "Your upload has been received and is now being processed. This may take some time depending on the size of the file."
     And I should see "The status of your uploads can be seen in the table below. You will need to refresh the page to see an updated status."
-    And I should have a batch file stored for survey "MySurvey" with uploader "data.provider@intersect.org.au"
+    And I should have a batch file stored for survey "MySurvey" with uploader "data.provider@intersect.org.au" and hospital "RPA"
 
   Scenario: Accepts duplicates
     Given I upload batch file "batch_sample.csv" for survey "MySurvey"

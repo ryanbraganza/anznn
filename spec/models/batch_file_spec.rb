@@ -4,11 +4,13 @@ describe BatchFile do
   describe "Associations" do
     it { should belong_to(:user) }
     it { should belong_to(:survey) }
+    it { should belong_to(:hospital) }
   end
 
   describe "Validations" do
     it { should validate_presence_of(:user_id) }
     it { should validate_presence_of(:survey_id) }
+    it { should validate_presence_of(:hospital_id) }
   end
 
   describe "New object should have status set to 'In Progress'" do
@@ -40,6 +42,7 @@ describe BatchFile do
       survey
     end
     let(:user) { Factory(:user) }
+    let(:hospital) { Factory(:hospital) }
 
     describe "Invalid files" do
       it "should reject file without a baby code column" do
@@ -47,7 +50,7 @@ describe BatchFile do
         batch_file.status.should eq("Failed - invalid file")
       end
 
-      it "should handle binary files such as xls" do
+      it "should reject binary files such as xls" do
         batch_file = process_batch_file('not_csv.xls', survey, user)
         batch_file.status.should eq("Failed - invalid file")
       end
@@ -58,8 +61,8 @@ describe BatchFile do
       end
     end
 
-    describe "Valid file with no errors or warnings" do
-      it "Should create the survey responses and answers" do
+    describe "Well formatted files" do
+      it "file with no errors or warnings - should create the survey responses and answers" do
         batch_file = process_batch_file('no_errors_or_warnings.csv', survey, user)
         batch_file.status.should eq("Processed successfully")
         Response.count.should == 3
@@ -71,6 +74,7 @@ describe BatchFile do
         [r1, r2, r3].each do |r|
           r.survey.should eq(survey)
           r.user.should eq(user)
+          r.hospital.should eq(hospital)
         end
 
         answer_hash = r1.answers.reduce({}) { |hash, answer| hash[answer.question.code] = answer; hash }
@@ -85,16 +89,14 @@ describe BatchFile do
       end
     end
 
-    describe "Valid file with missing baby codes" do
-      it "Should set the file status to failed if any baby codes are missing, and not save any responses" do
-        batch_file = process_batch_file('missing_baby_code.csv', survey, user)
-        batch_file.status.should eq("Failed")
-        Response.count.should == 0
-        Answer.count.should == 0
-      end
+    it "file with missing baby codes - should set the file status to failed, and not save any responses" do
+      batch_file = process_batch_file('missing_baby_code.csv', survey, user)
+      batch_file.status.should eq("Failed")
+      Response.count.should == 0
+      Answer.count.should == 0
     end
 
-    describe "Valid file with validation errors" do
+    describe "with validation errors" do
       it "should reject records with missing mandatory fields" do
         batch_file = process_batch_file('missing_mandatory_fields.csv', survey, user)
         batch_file.status.should eq("Failed")
@@ -146,13 +148,13 @@ describe BatchFile do
     end
 
     #TODO: files with extra columns
-    #Choice value isn't one of the allowed values
+  end
+
+  def process_batch_file(file_name, survey, user)
+    batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('features/sample_data/batch_files/' + file_name, 'text/csv'), survey: survey, user: user, hospital: hospital)
+    batch_file.process
+    batch_file.reload
+    batch_file
   end
 end
 
-def process_batch_file(file_name, survey, user)
-  batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('features/sample_data/batch_files/' + file_name, 'text/csv'), survey: survey, user: user)
-  batch_file.process
-  batch_file.reload
-  batch_file
-end

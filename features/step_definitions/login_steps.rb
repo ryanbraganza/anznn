@@ -33,6 +33,16 @@ Given /^"([^"]*)" has name "([^"]*)" "([^"]*)"$/ do |email, first, last|
   u.save!
 end
 
+Given /^I am logged in as "([^"]*)" and have role "([^"]*)" and I'm linked to hospital "([^"]*)"$/ do |email, role, hospital_name|
+  # convenience to avoid writing 3 lines to log in each time
+  create_usual_roles
+  user = create_user_with_role(email, role) unless User.find_by_email(email)
+  hospital = Hospital.find_by_name(hospital_name)
+  hospital ||= Factory(:hospital, name: hospital_name)
+  user.hospital = hospital
+  user.save!
+  log_in(email)
+end
 
 Given /^I am logged in as "([^"]*)" and have role "([^"]*)"$/ do |email, role|
   # convenience to avoid writing 3 lines to log in each time
@@ -94,6 +104,7 @@ def create_user_with_role(email, role)
   role = Role.where(:name => role).first
   user.role_id = role.id
   user.save!
+  user
 end
 
 def log_in(email)
