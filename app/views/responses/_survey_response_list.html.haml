@@ -11,7 +11,7 @@
       %th Date Started
       %th
     - @responses.each do |r|
-      %tr
+      %tr{id: "response_#{r.id}"}
 
         %td= r.baby_code
         %td= r.survey.name
@@ -25,4 +25,6 @@
           = link_to "Edit", edit_response_path(r), class: 'btn'
           = link_to "View Summary", r, class: 'btn'
           = link_to "Review Answers", review_answers_response_path(r), class: 'btn'
+          = form_tag(submit_response_path(r)) do
+            = submit_tag 'Submit', class: 'btn submit_response'
 

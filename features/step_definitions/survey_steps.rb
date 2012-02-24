@@ -23,13 +23,14 @@ Given /^"([^"]*)" created a response to the "([^"]*)" survey$/ do |email, survey
   create_response(Survey.find_by_name(survey_name), email)
 end
 
-Given /^"([^"]*)" created a response to the "([^"]*)" survey with babycode "([^"]*)"$/ do |email, survey_name, babycode|
-  create_response(Survey.find_by_name(survey_name), email, babycode)
+Given /^"([^"]*)" created a response to the "([^"]*)" survey with babycode "([^"]*)"( and submitted it)?$/ do |email, survey_name, babycode, submitted|
+  create_response(Survey.find_by_name(survey_name), email, babycode, submitted)
 end
 
-def create_response(survey, email, babycode = 'babycode123')
+def create_response(survey, email, babycode = 'babycode123', submitted = false)
   user = User.find_by_email(email)
-  Response.create!(survey: survey, baby_code: babycode, user: user, hospital: user.hospital, submitted_status: Response::STATUS_UNSUBMITTED)
+  submitted_status = submitted ? Response::STATUS_SUBMITTED : Response::STATUS_UNSUBMITTED
+  Response.create!(survey: survey, baby_code: babycode, user: user, hospital: user.hospital, submitted_status: submitted_status)
 end
 
 When /^I answer "([^"]*)" with "([^"]*)"$/ do |q, a|
@@ -321,4 +322,97 @@ Then /^I should see answers for section "([^"]*)"$/ do |section_name, expected_t
   section = Section.find_by_name(section_name)
   actual = find("table#section_#{section.id}").all('tr').map { |row| row.all('th, td').map { |cell| cell.text.strip.gsub(/\n+/, "\n") } }
   expected_table.diff!(actual)
+end
+
+Then /^I should( not)? see a submit button on the home page for survey "([^"]*)" and baby code "([^"]*)( with warning "(.*)")?"$/ do |not_see, survey, baby_code, see_warning, warning|
+  if not_see
+    submit_survey_link(survey, baby_code).should_not be
+  else
+    submit_survey_link(survey, baby_code).should be
+  end
+end
+
+Then /^I should not see the response for survey "(.*)" and baby code "(.*)" on the home page$/ do |survey_name, baby_code|
+  current_path = URI.parse(current_url).path
+  current_path.should eq root_path
+
+  response = response_by_survey_name_and_baby_code!(survey_name, baby_code)
+
+  selector = "#response_#{response.id}"
+  elem = find_or_nil(selector)
+
+  elem.should be_nil
+end
+
+Then /^I should( not)? see a submit button on the review answers page for survey "([^"]*)" and baby code "([^"]*)"( with warning "(.*)")?$/ do |not_see, arg1, arg2, with_warning, warning|
+  pending
+end
+
+Then /^I should not see a submit button on the home page for survey "([^"]*)" with warning "([^"]*)"$/ do |arg1, arg2|
+  pending # express the regexp above with the code you wish you had
+end
+
+When /^I submit the survey for survey "(.*)" and baby code "(.*)"$/ do |survey, baby_code|
+  submit_survey_link(survey, baby_code).click
+end
+
+Then /^I should see a confirmation message that "([^"]*)" for survey "([^"]*)" has been submitted$/ do |baby_code, survey|
+  find('div.alert-message.info').text.should eq "Response for #{baby_code} to #{survey} was submitted successfully."
+end
+
+Then /^I can't view response for survey "([^"]*)" and baby code "([^"]*)"$/ do |survey, baby_code|
+  response = response_by_survey_name_and_baby_code!(survey, baby_code)
+  visit response_path(response)
+  find("div.alert-message.error").should have_content "You are not authorized to access this page."
+end
+
+Then /^I can't edit response for survey "([^"]*)" and baby code "([^"]*)"$/ do |survey, baby_code|
+  response = response_by_survey_name_and_baby_code!(survey, baby_code)
+  visit edit_response_path(response)
+  find("div.alert-message.error").should have_content "You are not authorized to access this page."
+end
+
+Then /^I can't review response for survey "([^"]*)" and baby code "([^"]*)"$/ do |survey, baby_code|
+  response = response_by_survey_name_and_baby_code!(survey, baby_code)
+  visit review_answers_response_path(response)
+  find("div.alert-message.error").should have_content "You are not authorized to access this page."
+end
+
+Then /^I should see a submit button on the home page for survey "([^"]*)" and baby code "([^"]*)" with no warning$/ do |arg1, arg2|
+  pending # express the regexp above with the code you wish you had
+end
+
+
+Then /^I should not see a submit button on the home page for survey "([^"]*)" with no warning$/ do |arg1|
+  pending # express the regexp above with the code you wish you had
+end
+
+
+Then /^I should not see a submit button on the home page for survey "([^"]*)" and baby code "([^"]*)" with warning "([^"]*)"$/ do |arg1, arg2, arg3|
+  pending # express the regexp above with the code you wish you had
+end
+
+
+Then /^I should not see a submit button on the home page for survey "([^"]*)" and baby code "([^"]*)" with no warning$/ do |arg1, arg2|
+  pending # express the regexp above with the code you wish you had
+end
+
+
+def submit_survey_link(survey, baby_code)
+  response = Response.find_by_baby_code!(baby_code)
+  selector = %Q{form[action="#{submit_response_path response}"] > input.submit_response}
+  find_or_nil(selector)
+end
+
+def find_or_nil(selector)
+  begin
+    find selector
+  rescue Capybara::ElementNotFound => e
+    nil
+  end
+end
+
+def response_by_survey_name_and_baby_code!(survey_name, baby_code)
+  survey = Survey.find_by_name!(survey_name)
+  Response.find_by_survey_id_and_baby_code!(survey, baby_code)
 end

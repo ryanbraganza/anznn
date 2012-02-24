@@ -3,6 +3,11 @@ class Response < ActiveRecord::Base
   STATUS_UNSUBMITTED = 'Unsubmitted'
   STATUS_SUBMITTED = 'Submitted'
 
+  COMPLETE = 'Complete'
+  NOT_STARTED = 'Not started'
+  INCOMPLETE = 'Incomplete'
+  COMPLETE_WITH_WARNINGS = 'Complete with warnings'
+
   belongs_to :survey
   belongs_to :user
   belongs_to :hospital
@@ -14,6 +19,14 @@ class Response < ActiveRecord::Base
   validates_presence_of :survey_id
   validates_presence_of :hospital_id
   validates_inclusion_of :submitted_status, in: [STATUS_UNSUBMITTED, STATUS_SUBMITTED]
+
+  def submit!
+    if ![COMPLETE, COMPLETE_WITH_WARNINGS].include?(status)
+      raise "Can't submit with status #{status}"
+    end
+    self.submitted_status = STATUS_SUBMITTED
+    self.save!
+  end
 
   def prepare_answers_to_section(section)
     existing_answers = answers_to_section(section).reduce({}) { |hash, answer| hash[answer.question_id] = answer; hash }
@@ -51,19 +64,19 @@ class Response < ActiveRecord::Base
 
       if all_mandatory_questions_answered
         if any_fatal_warnings
-          "Incomplete"
+          INCOMPLETE
         elsif any_warnings
-          "Complete with warnings"
+          COMPLETE_WITH_WARNINGS
         else
-          "Complete"
+          COMPLETE
         end
       else
-        "Incomplete"
+        INCOMPLETE
       end
     elsif treat_no_mandatory_as_complete_instead_of_not_started and all_mandatory_passed(all_answers_for_section(section))
-      "Complete"
+      COMPLETE
     else
-      "Not started"
+      NOT_STARTED
     end
   end
 
@@ -80,23 +93,23 @@ class Response < ActiveRecord::Base
   def status
     statii_of_sections = survey.sections.map{|s| status_of_section(s, :complete_if_no_mandatory) }
 
-    if statii_of_sections.all? {|status| status == 'Not started'}
-      'Not started'
-    elsif statii_of_sections.include? 'Incomplete' or statii_of_sections.include? 'Not started'
-      'Incomplete'
-    elsif statii_of_sections.include? 'Complete with warnings'
-      'Complete with warnings'
+    if statii_of_sections.all? {|status| status == NOT_STARTED}
+      NOT_STARTED
+    elsif statii_of_sections.include? INCOMPLETE or statii_of_sections.include? NOT_STARTED
+      INCOMPLETE
+    elsif statii_of_sections.include? COMPLETE_WITH_WARNINGS
+      COMPLETE_WITH_WARNINGS
     else
-      'Complete'
+      COMPLETE
     end
   end
 
   def fatal_warnings?
-    violates_mandatory || answers.collect(&:has_fatal_warning?).include?(true)
+    violates_mandatory || answers.collect(&:has_fatal_warning?).any?
   end
 
   def warnings?
-    violates_mandatory || answers.collect(&:has_warning?).include?(true)
+    violates_mandatory || answers.collect(&:has_warning?).any?
   end
 
   private

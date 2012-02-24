@@ -3,10 +3,15 @@ class ResponsesController < ApplicationController
 
   load_and_authorize_resource
 
-  def new;
+  def new
   end
 
   def show
+  end
+
+  def submit
+    @response.submit!
+    redirect_to root_path, notice: "Response for #{@response.baby_code} to #{@response.survey.name} was submitted successfully."
   end
 
   def create

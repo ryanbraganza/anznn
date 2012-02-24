@@ -8,6 +8,7 @@ Anznn::Application.routes.draw do
   resources :responses, :only => [:new, :create, :edit, :update, :show] do
     member do
       get :review_answers
+      post :submit
     end
   end
 

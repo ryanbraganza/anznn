@@ -20,6 +20,42 @@ describe Response do
     end
   end
 
+  describe "submit" do
+    let (:response) {Factory(:response)}
+    it "should set the status of the response when complete" do
+      response.stub(:status) {Response::COMPLETE}
+      response.submitted_status.should eq Response::STATUS_UNSUBMITTED
+
+      response.submit!
+
+      response.submitted_status.should eq Response::STATUS_SUBMITTED
+      response.reload
+
+      response.submitted_status.should eq Response::STATUS_SUBMITTED
+    end
+    it "should set the status of the response when complete with warnings" do
+      response.stub(:status) {Response::COMPLETE_WITH_WARNINGS}
+      response.submitted_status.should eq Response::STATUS_UNSUBMITTED
+
+      response.submit!
+
+      response.submitted_status.should eq Response::STATUS_SUBMITTED
+      response.reload
+
+      response.submitted_status.should eq Response::STATUS_SUBMITTED
+    end
+    it "can't submit a response not started" do
+      response.stub(:status) {Response::NOT_STARTED}
+
+      expect { response.submit! }.should raise_error
+    end
+    it "can't submit a response incomplete" do
+      response.stub(:status) {Response::INCOMPLETE}
+
+      expect { response.submit! }.should raise_error
+    end
+  end
+
   describe "status" do
     before(:each) do
       @survey = Factory(:survey)
