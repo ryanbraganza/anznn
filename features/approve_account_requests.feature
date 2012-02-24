@@ -140,3 +140,5 @@ Feature: Approve access requests
     And I am on the list users page
     When I follow "View Details" for "second@intersect.org.au"
     And I should see field "Hospital" with value "Left Wing (NSW)"
+
+    ##END Scenarios relating to assigning a hospital to an approved user

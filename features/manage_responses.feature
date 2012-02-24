@@ -78,5 +78,5 @@ Feature: Managing responses
     Then I should see "responses" table with
       | Baby Code   | Survey Type | Created By  |
       | babycode123 | survey      | Fred Bloggs |
-
+    ### END Hospital-related scenarios
 

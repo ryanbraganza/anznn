@@ -143,3 +143,5 @@ Feature: Administer users
     And I should be on the user details page for other_super@intersect.org.au
     And I should see field "Hospital" with value "Left Wing (NSW)"
 
+    ##END Scenarios relating to assigning a hospital to an approved user
+
