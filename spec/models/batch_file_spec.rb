@@ -47,17 +47,27 @@ describe BatchFile do
     describe "Invalid files" do
       it "should reject file without a baby code column" do
         batch_file = process_batch_file('no_baby_code_column.csv', survey, user)
-        batch_file.status.should eq("Failed - invalid file")
+        batch_file.status.should eq("Failed")
       end
 
       it "should reject binary files such as xls" do
         batch_file = process_batch_file('not_csv.xls', survey, user)
-        batch_file.status.should eq("Failed - invalid file")
+        batch_file.status.should eq("Failed")
       end
 
       it "should reject files that are text but have malformed csv" do
         batch_file = process_batch_file('invalid_csv.csv', survey, user)
-        batch_file.status.should eq("Failed - invalid file")
+        batch_file.status.should eq("Failed")
+      end
+
+      it "should reject files that are empty" do
+        batch_file = process_batch_file('empty.csv', survey, user)
+        batch_file.status.should eq("Failed")
+      end
+
+      it "should reject files that have a header row only" do
+        batch_file = process_batch_file('headers_only.csv', survey, user)
+        batch_file.status.should eq("Failed")
       end
     end
 
@@ -89,14 +99,14 @@ describe BatchFile do
       end
     end
 
-    it "file with missing baby codes - should set the file status to failed, and not save any responses" do
-      batch_file = process_batch_file('missing_baby_code.csv', survey, user)
-      batch_file.status.should eq("Failed")
-      Response.count.should == 0
-      Answer.count.should == 0
-    end
-
     describe "with validation errors" do
+      it "file with missing baby codes - should set the file status to failed, and not save any responses" do
+        batch_file = process_batch_file('missing_baby_code.csv', survey, user)
+        batch_file.status.should eq("Failed")
+        Response.count.should == 0
+        Answer.count.should == 0
+      end
+
       it "should reject records with missing mandatory fields" do
         batch_file = process_batch_file('missing_mandatory_fields.csv', survey, user)
         batch_file.status.should eq("Failed")

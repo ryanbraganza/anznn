@@ -4,7 +4,6 @@ class BatchFile < ActiveRecord::Base
 
   STATUS_FAILED = "Failed"
   STATUS_SUCCESS = "Processed successfully"
-  STATUS_FAILED_INVALID_FILE = "Failed - invalid file"
 
   belongs_to :survey
   belongs_to :user
@@ -30,10 +29,12 @@ class BatchFile < ActiveRecord::Base
       failures = false
       responses = []
       logger.info("Processing batch file with id #{id}")
+      processed_a_row = false
       CSV.foreach(file.path, {headers: true}) do |row|
         logger.info("Processing row #{row}")
+        processed_a_row = true
         unless row.headers.include?("BabyCode")
-          self.status = STATUS_FAILED_INVALID_FILE
+          self.status = STATUS_FAILED
           save!
           return
         end
@@ -47,6 +48,7 @@ class BatchFile < ActiveRecord::Base
           responses << response
         end
       end
+      failures = true unless processed_a_row
       self.status = failures ? STATUS_FAILED : STATUS_SUCCESS
       unless failures
         responses.each { |r| r.save! }
@@ -55,11 +57,11 @@ class BatchFile < ActiveRecord::Base
     rescue ArgumentError
       logger.info("Argument error while reading file")
       # TODO: Catching ArgumentError seems a bit odd, but CSV throws it when the file is not UTF-8 which happens if you upload an xls file
-      self.status = STATUS_FAILED_INVALID_FILE
+      self.status = STATUS_FAILED
       save!
     rescue CSV::MalformedCSVError
       logger.info("Malformed CSV error while reading file")
-      self.status = STATUS_FAILED_INVALID_FILE
+      self.status = STATUS_FAILED
       save!
     end
     logger.info("Finished processing file with id #{id}, status is now #{status}")
