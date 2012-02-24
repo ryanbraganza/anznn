@@ -3,7 +3,14 @@ require 'csv'
 class BatchFile < ActiveRecord::Base
 
   STATUS_FAILED = "Failed"
-  STATUS_SUCCESS = "Processed successfully"
+  STATUS_SUCCESS = "Processed Successfully"
+  STATUS_REVIEW = "Needs Review"
+  MESSAGE_WARNINGS = "The file you uploaded has one or more warnings. Please review the reports for details."
+  MESSAGE_NO_BABY_CODE = "The file you uploaded did not contain a BabyCode column"
+  MESSAGE_EMPTY = "The file you uploaded did not contain any data"
+  MESSAGE_FAILED_VALIDATION = "The file you uploaded did not pass validation. Please review the reports for details."
+  MESSAGE_SUCCESS = "Your file has been processed successfully"
+  MESSAGE_BAD_FORMAT = "The file you uploaded was not a valid CSV file"
 
   belongs_to :survey
   belongs_to :user
@@ -27,42 +34,51 @@ class BatchFile < ActiveRecord::Base
 
     begin
       failures = false
+      warnings = false
       responses = []
       logger.info("Processing batch file with id #{id}")
       processed_a_row = false
+
       CSV.foreach(file.path, {headers: true}) do |row|
         logger.info("Processing row #{row}")
-        processed_a_row = true
         unless row.headers.include?("BabyCode")
-          self.status = STATUS_FAILED
-          save!
+          set_outcome(STATUS_FAILED, MESSAGE_NO_BABY_CODE)
           return
         end
+        processed_a_row = true
         baby_code = row["BabyCode"]
         if baby_code.blank?
           failures = true
         else
           response = Response.new(survey: survey, baby_code: baby_code, user: user, hospital: hospital)
           response.build_answers_from_hash(row.to_hash)
-          failures = true unless response.no_errors_or_warnings?
+          failures = true if response.fatal_warnings?
+          warnings = true if response.warnings?
           responses << response
         end
       end
-      failures = true unless processed_a_row
-      self.status = failures ? STATUS_FAILED : STATUS_SUCCESS
-      unless failures
-        responses.each { |r| r.save! }
+
+      if !processed_a_row
+        set_outcome(STATUS_FAILED, MESSAGE_EMPTY)
+        return
       end
-      save!
+
+      if failures
+        set_outcome(STATUS_FAILED, MESSAGE_FAILED_VALIDATION)
+      elsif warnings
+        set_outcome(STATUS_REVIEW, MESSAGE_WARNINGS)
+      else
+        responses.each { |r| r.save! }
+        set_outcome(STATUS_SUCCESS, MESSAGE_SUCCESS)
+      end
+
     rescue ArgumentError
       logger.info("Argument error while reading file")
-      # TODO: Catching ArgumentError seems a bit odd, but CSV throws it when the file is not UTF-8 which happens if you upload an xls file
-      self.status = STATUS_FAILED
-      save!
+      # Note: Catching ArgumentError seems a bit odd, but CSV throws it when the file is not UTF-8 which happens if you upload an xls file
+      set_outcome(STATUS_FAILED, MESSAGE_BAD_FORMAT)
     rescue CSV::MalformedCSVError
       logger.info("Malformed CSV error while reading file")
-      self.status = STATUS_FAILED
-      save!
+      set_outcome(STATUS_FAILED, MESSAGE_BAD_FORMAT)
     end
     logger.info("Finished processing file with id #{id}, status is now #{status}")
   end
@@ -72,4 +88,9 @@ class BatchFile < ActiveRecord::Base
     self.status = "In Progress" if self.status.nil?
   end
 
+  def set_outcome(status, message)
+    self.status = status
+    self.message = message
+    save!
+  end
 end

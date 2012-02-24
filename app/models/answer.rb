@@ -27,6 +27,10 @@ class Answer < ActiveRecord::Base
     warnings.present? or fatal_warnings.present?
   end
 
+  def has_fatal_warning?
+    fatal_warnings.present?
+  end
+
   def answer_value_set?
     persisted? || answer_value_set
   end

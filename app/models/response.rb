@@ -31,10 +31,6 @@ class Response < ActiveRecord::Base
     end
   end
 
-  def no_errors_or_warnings?
-    !violates_mandatory && !has_any_warnings
-  end
-
   def section_started?(section)
     !answers_to_section(section).empty?
   end
@@ -90,6 +86,14 @@ class Response < ActiveRecord::Base
     end
   end
 
+  def fatal_warnings?
+    violates_mandatory || answers.collect(&:has_fatal_warning?).include?(true)
+  end
+
+  def warnings?
+    violates_mandatory || answers.collect(&:has_warning?).include?(true)
+  end
+
   private
 
   def all_mandatory_passed(answers)
@@ -108,10 +112,6 @@ class Response < ActiveRecord::Base
     required_question_ids = survey.questions.where(:mandatory => true).collect(&:id)
     answered_question_ids = answers.collect(&:question_id)
     !(required_question_ids - answered_question_ids).empty?
-  end
-
-  def has_any_warnings
-    answers.collect(&:has_warning?).include?(true)
   end
 
 end

@@ -141,4 +141,54 @@ describe Response do
       end
     end
   end
+
+  describe "Finding out if a response has warnings or fatal warnings" do
+    before(:each) do
+      @survey = Factory(:survey)
+      @section = Factory(:section, survey: @survey)
+      @question1 = Factory(:question, mandatory: true, section: @section, code: "A", question_type: Question::TYPE_INTEGER, number_min: 5)
+      @question2 = Factory(:question, mandatory: false, section: @section, code: "B")
+    end
+
+    it "both warnings and fatal warnings are true if mandatory questions are missing" do
+      response = Factory(:response, survey: @survey)
+      response.fatal_warnings?.should be_true
+      response.warnings?.should be_true
+      response.build_answers_from_hash({"B" => "B answer"})
+      response.save!
+      response.reload
+      response.fatal_warnings?.should be_true
+      response.warnings?.should be_true
+    end
+
+    it "both warnings and fatal warnings are false if mandatory questions are all answered" do
+      response = Factory(:response, survey: @survey)
+      response.build_answers_from_hash({"A" => "10"})
+      response.save!
+      response.reload
+      response.fatal_warnings?.should be_false
+      response.warnings?.should be_false
+    end
+
+    it "has fatal warnings and has warnings are both true if at least one answer has a fatal warning" do
+      response = Factory(:response, survey: @survey)
+      response.build_answers_from_hash({"A" => "A answer", "B" => "B answer"}) #A answer is invalid
+      response.fatal_warnings?.should be_true
+      response.warnings?.should be_true
+    end
+
+    it "has fatal warnings is false but has warnings is true if at least one answer has a warning but none have fatal warnings" do
+      response = Factory(:response, survey: @survey)
+      response.build_answers_from_hash({"A" => "2", "B" => "B answer"}) #A is out of range
+      response.fatal_warnings?.should be_false
+      response.warnings?.should be_true
+    end
+
+    it "has fatal warnings and has warnings are both false if no answers have warnings or fatal warnings" do
+      response = Factory(:response, survey: @survey)
+      response.build_answers_from_hash({"A" => "7", "B" => "B answer"}) #A is out of range
+      response.fatal_warnings?.should be_false
+      response.warnings?.should be_false
+    end
+  end
 end

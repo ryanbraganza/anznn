@@ -34,7 +34,7 @@ describe BatchFile do
       Factory(:question, section: s1, question_type: Question::TYPE_TIME, mandatory: false, code: "Time")
       choice_q = Factory(:question, section: s2, question_type: Question::TYPE_CHOICE, mandatory: false, code: "Choice")
       Factory(:question, section: s2, question_type: Question::TYPE_DECIMAL, mandatory: false, code: "Decimal")
-      Factory(:question, section: s2, question_type: Question::TYPE_INTEGER, mandatory: false, code: "Integer")
+      Factory(:question, section: s2, question_type: Question::TYPE_INTEGER, mandatory: false, code: "Integer", number_min: 5)
 
       Factory(:question_option, question: choice_q, option_value: "0", label: "No")
       Factory(:question_option, question: choice_q, option_value: "1", label: "Yes")
@@ -45,36 +45,42 @@ describe BatchFile do
     let(:hospital) { Factory(:hospital) }
 
     describe "Invalid files" do
-      it "should reject file without a baby code column" do
-        batch_file = process_batch_file('no_baby_code_column.csv', survey, user)
-        batch_file.status.should eq("Failed")
-      end
-
       it "should reject binary files such as xls" do
         batch_file = process_batch_file('not_csv.xls', survey, user)
         batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded was not a valid CSV file")
       end
 
       it "should reject files that are text but have malformed csv" do
         batch_file = process_batch_file('invalid_csv.csv', survey, user)
         batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded was not a valid CSV file")
+      end
+
+      it "should reject file without a baby code column" do
+        batch_file = process_batch_file('no_baby_code_column.csv', survey, user)
+        batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded did not contain a BabyCode column")
       end
 
       it "should reject files that are empty" do
         batch_file = process_batch_file('empty.csv', survey, user)
         batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded did not contain any data")
       end
 
       it "should reject files that have a header row only" do
         batch_file = process_batch_file('headers_only.csv', survey, user)
         batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded did not contain any data")
       end
     end
 
     describe "Well formatted files" do
       it "file with no errors or warnings - should create the survey responses and answers" do
         batch_file = process_batch_file('no_errors_or_warnings.csv', survey, user)
-        batch_file.status.should eq("Processed successfully")
+        batch_file.status.should eq("Processed Successfully")
+        batch_file.message.should eq("Your file has been processed successfully")
         Response.count.should == 3
         Answer.count.should eq(20) #3x7 questions, one not answered
         r1 = Response.find_by_baby_code!("B1")
@@ -103,6 +109,7 @@ describe BatchFile do
       it "file with missing baby codes - should set the file status to failed, and not save any responses" do
         batch_file = process_batch_file('missing_baby_code.csv', survey, user)
         batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
       end
@@ -110,6 +117,7 @@ describe BatchFile do
       it "should reject records with missing mandatory fields" do
         batch_file = process_batch_file('missing_mandatory_fields.csv', survey, user)
         batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
       end
@@ -117,6 +125,7 @@ describe BatchFile do
       it "should reject records with missing mandatory fields - where the column is missing entirely" do
         batch_file = process_batch_file('missing_mandatory_column.csv', survey, user)
         batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
       end
@@ -124,6 +133,7 @@ describe BatchFile do
       it "should reject records with choice answers that are not one of the allowed values for the question" do
         batch_file = process_batch_file('incorrect_choice_answer_value.csv', survey, user)
         batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
       end
@@ -131,6 +141,7 @@ describe BatchFile do
       it "should reject records with integer answers that are badly formed" do
         batch_file = process_batch_file('bad_integer.csv', survey, user)
         batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
       end
@@ -138,6 +149,7 @@ describe BatchFile do
       it "should reject records with decimal answers that are badly formed" do
         batch_file = process_batch_file('bad_decimal.csv', survey, user)
         batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
       end
@@ -145,6 +157,7 @@ describe BatchFile do
       it "should reject records with time answers that are badly formed" do
         batch_file = process_batch_file('bad_time.csv', survey, user)
         batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
       end
@@ -152,6 +165,17 @@ describe BatchFile do
       it "should reject records with date answers that are badly formed" do
         batch_file = process_batch_file('bad_date.csv', survey, user)
         batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
+        Response.count.should == 0
+        Answer.count.should == 0
+      end
+    end
+
+    describe "with warnings" do
+      it "warns on number range issues" do
+        batch_file = process_batch_file('number_out_of_range.csv', survey, user)
+        batch_file.status.should eq("Needs Review")
+        batch_file.message.should eq("The file you uploaded has one or more warnings. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
       end
