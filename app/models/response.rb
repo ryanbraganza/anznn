@@ -66,7 +66,7 @@ class Response < ActiveRecord::Base
     hash.each do |question_code, answer_text|
       question = survey.questions.where(code: question_code).first
       if question && !answer_text.blank?
-        answer = answers.build(question: question)
+        answer = answers.build(question: question, response: self)
         answer.answer_value = answer_text
       end
     end

@@ -1,4 +1,4 @@
 BabyCode,TextMandatory,TextOptional,Date1,Date2,Time,Choice,Decimal,Integer
 B1,B1Val1,,2011-12-25,,14:30,0,56.77,10
-B2,B2Val1,B2Val2,asdf,,23:59,1,44,9
-B3,B3Val1,B3Val2,2010-05-30,,1:00,99,1.3,255
+B2,B2Val1,B2Val2,2012-01-01,,23:59,1,44,9
+B3,B3Val1,B3Val2,2010-05-29,2010-05-30,1:00,99,1.3,255

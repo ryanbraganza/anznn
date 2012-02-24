@@ -18,7 +18,8 @@ class CrossQuestionValidation < ActiveRecord::Base
   end
 
   def check(answer)
-    related_answer = Answer.find_by_question_id_and_response_id(related_question_id, answer.response_id)
+    # we have to filter the answers on the response rather than using find, as we want to check through as-yet unsaved answers as part of batch processing
+    related_answer = answer.response.answers.find { |a| a.question_id == related_question.id }
     if answer.nil? or answer.raw_answer or related_answer.nil? or related_answer.raw_answer
       nil
     else

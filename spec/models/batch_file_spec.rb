@@ -30,7 +30,8 @@ describe BatchFile do
       s2 = Factory(:section, survey: survey)
       Factory(:question, section: s1, question_type: Question::TYPE_TEXT, mandatory: true, code: "TextMandatory")
       Factory(:question, section: s1, question_type: Question::TYPE_TEXT, mandatory: false, code: "TextOptional")
-      Factory(:question, section: s1, question_type: Question::TYPE_DATE, mandatory: false, code: "Date")
+      date1 = Factory(:question, section: s1, question_type: Question::TYPE_DATE, mandatory: false, code: "Date1")
+      date2 = Factory(:question, section: s1, question_type: Question::TYPE_DATE, mandatory: false, code: "Date2")
       Factory(:question, section: s1, question_type: Question::TYPE_TIME, mandatory: false, code: "Time")
       choice_q = Factory(:question, section: s2, question_type: Question::TYPE_CHOICE, mandatory: false, code: "Choice")
       Factory(:question, section: s2, question_type: Question::TYPE_DECIMAL, mandatory: false, code: "Decimal")
@@ -39,6 +40,9 @@ describe BatchFile do
       Factory(:question_option, question: choice_q, option_value: "0", label: "No")
       Factory(:question_option, question: choice_q, option_value: "1", label: "Yes")
       Factory(:question_option, question: choice_q, option_value: "99", label: "Dunno")
+
+      Factory(:cross_question_validation, question: date1, related_question: date2, rule: 'date_gt')
+      survey.reload
       survey
     end
     let(:user) { Factory(:user) }
@@ -82,7 +86,7 @@ describe BatchFile do
         batch_file.status.should eq("Processed Successfully")
         batch_file.message.should eq("Your file has been processed successfully")
         Response.count.should == 3
-        Answer.count.should eq(20) #3x7 questions, one not answered
+        Answer.count.should eq(21) #3x8 questions = 24, 3 not answered
         r1 = Response.find_by_baby_code!("B1")
         r2 = Response.find_by_baby_code!("B2")
         r3 = Response.find_by_baby_code!("B3")
@@ -96,15 +100,17 @@ describe BatchFile do
         answer_hash = r1.answers.reduce({}) { |hash, answer| hash[answer.question.code] = answer; hash }
         answer_hash["TextMandatory"].text_answer.should == "B1Val1"
         answer_hash["TextOptional"].should be_nil #not answered
-        answer_hash["Date"].date_answer.should == Date.parse("2011-12-25")
+        answer_hash["Date1"].date_answer.should == Date.parse("2011-12-25")
         answer_hash["Time"].time_answer.should == Time.utc(2000, 1, 1, 14, 30)
         answer_hash["Choice"].choice_answer.should == "0"
         answer_hash["Decimal"].decimal_answer.should == 56.77
         answer_hash["Integer"].integer_answer.should == 10
+        Answer.all.each { |a| a.has_fatal_warning?.should be_false }
         Answer.all.each { |a| a.has_warning?.should be_false }
       end
     end
 
+    #TODO: these are really integration tests, perhaps belong elsewhere
     describe "with validation errors" do
       it "file with missing baby codes - should set the file status to failed, and not save any responses" do
         batch_file = process_batch_file('missing_baby_code.csv', survey, user)
@@ -164,6 +170,14 @@ describe BatchFile do
 
       it "should reject records with date answers that are badly formed" do
         batch_file = process_batch_file('bad_date.csv', survey, user)
+        batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
+        Response.count.should == 0
+        Answer.count.should == 0
+      end
+
+      it "should reject records which fail cross-question validations" do
+        batch_file = process_batch_file('cross_question_error.csv', survey, user)
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
