@@ -38,13 +38,14 @@ class BatchFile < ActiveRecord::Base
       responses = []
       logger.info("Processing batch file with id #{id}")
       processed_a_row = false
-
+      count = 0
       CSV.foreach(file.path, {headers: true}) do |row|
         logger.info("Processing row #{row}")
         unless row.headers.include?("BabyCode")
           set_outcome(STATUS_FAILED, MESSAGE_NO_BABY_CODE)
           return
         end
+        count += 1
         processed_a_row = true
         baby_code = row["BabyCode"]
         if baby_code.blank?
@@ -63,6 +64,7 @@ class BatchFile < ActiveRecord::Base
         return
       end
 
+      self.record_count = count
       if failures
         set_outcome(STATUS_FAILED, MESSAGE_FAILED_VALIDATION)
       elsif warnings

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120227004004) do
+ActiveRecord::Schema.define(:version => 20120227021816) do
 
   create_table "answers", :force => true do |t|
     t.integer "response_id"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(:version => 20120227004004) do
     t.string   "status"
     t.integer  "hospital_id"
     t.string   "message"
+    t.integer  "record_count"
   end
 
   add_index "batch_files", ["survey_id"], :name => "index_batch_files_on_survey_id"

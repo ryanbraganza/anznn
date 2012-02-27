@@ -53,30 +53,35 @@ describe BatchFile do
         batch_file = process_batch_file('not_csv.xls', survey, user)
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded was not a valid CSV file")
+        batch_file.record_count.should be_nil
       end
 
       it "should reject files that are text but have malformed csv" do
         batch_file = process_batch_file('invalid_csv.csv', survey, user)
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded was not a valid CSV file")
+        batch_file.record_count.should be_nil
       end
 
       it "should reject file without a baby code column" do
         batch_file = process_batch_file('no_baby_code_column.csv', survey, user)
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded did not contain a BabyCode column")
+        batch_file.record_count.should be_nil
       end
 
       it "should reject files that are empty" do
         batch_file = process_batch_file('empty.csv', survey, user)
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded did not contain any data")
+        batch_file.record_count.should be_nil
       end
 
       it "should reject files that have a header row only" do
         batch_file = process_batch_file('headers_only.csv', survey, user)
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded did not contain any data")
+        batch_file.record_count.should be_nil
       end
     end
 
@@ -107,6 +112,7 @@ describe BatchFile do
         answer_hash["Integer"].integer_answer.should == 10
         Answer.all.each { |a| a.has_fatal_warning?.should be_false }
         Answer.all.each { |a| a.has_warning?.should be_false }
+        batch_file.record_count.should == 3
       end
     end
 
@@ -118,6 +124,7 @@ describe BatchFile do
         batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
+        batch_file.record_count.should == 3
       end
 
       it "should reject records with missing mandatory fields" do
@@ -126,6 +133,7 @@ describe BatchFile do
         batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
+        batch_file.record_count.should == 3
       end
 
       it "should reject records with missing mandatory fields - where the column is missing entirely" do
@@ -134,6 +142,7 @@ describe BatchFile do
         batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
+        batch_file.record_count.should == 3
       end
 
       it "should reject records with choice answers that are not one of the allowed values for the question" do
@@ -142,6 +151,7 @@ describe BatchFile do
         batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
+        batch_file.record_count.should == 3
       end
 
       it "should reject records with integer answers that are badly formed" do
@@ -150,6 +160,7 @@ describe BatchFile do
         batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
+        batch_file.record_count.should == 3
       end
 
       it "should reject records with decimal answers that are badly formed" do
@@ -158,6 +169,7 @@ describe BatchFile do
         batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
+        batch_file.record_count.should == 3
       end
 
       it "should reject records with time answers that are badly formed" do
@@ -166,6 +178,7 @@ describe BatchFile do
         batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
+        batch_file.record_count.should == 3
       end
 
       it "should reject records with date answers that are badly formed" do
@@ -174,6 +187,7 @@ describe BatchFile do
         batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
+        batch_file.record_count.should == 3
       end
 
       it "should reject records which fail cross-question validations" do
@@ -182,6 +196,7 @@ describe BatchFile do
         batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
+        batch_file.record_count.should == 3
       end
     end
 
@@ -192,6 +207,7 @@ describe BatchFile do
         batch_file.message.should eq("The file you uploaded has one or more warnings. Please review the reports for details.")
         Response.count.should == 0
         Answer.count.should == 0
+        batch_file.record_count.should == 3
       end
     end
 
