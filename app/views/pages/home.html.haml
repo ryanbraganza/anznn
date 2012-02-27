@@ -1,7 +1,7 @@
 - if user_signed_in?
   - title "Survey Responses"
 
-  =link_to "Start New Survey Response", new_response_path, class: 'btn' unless current_user.super_user?
+  =link_to "Start New Survey Response", new_response_path, class: 'btn' if can?(:create, Response)
   =link_to "Upload Batch File", new_batch_file_path, class: 'btn' if can?(:create, BatchFile)
 
   %br/

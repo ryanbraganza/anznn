@@ -23,9 +23,13 @@ Given /^"([^"]*)" created a response to the "([^"]*)" survey$/ do |email, survey
   create_response(Survey.find_by_name(survey_name), email)
 end
 
-def create_response(survey, email)
+Given /^"([^"]*)" created a response to the "([^"]*)" survey with babycode "([^"]*)"$/ do |email, survey_name, babycode|
+  create_response(Survey.find_by_name(survey_name), email, babycode)
+end
+
+def create_response(survey, email, babycode = 'babycode123')
   user = User.find_by_email(email)
-  Response.create!(survey: survey, baby_code: 'babycode123', user: user, hospital: user.hospital)
+  Response.create!(survey: survey, baby_code: babycode, user: user, hospital: user.hospital)
 end
 
 When /^I answer "([^"]*)" with "([^"]*)"$/ do |q, a|

@@ -30,15 +30,11 @@ class Ability
         can :read, Response
         can :read, BatchFile
 
-      when Role::DATA_PROVIDER
+      when Role::DATA_PROVIDER, Role::DATA_PROVIDER_SUPERVISOR
         can :read, Response, hospital_id: user.hospital_id
         can :create, Response, hospital_id: user.hospital_id
         can :update, Response, hospital_id: user.hospital_id
 
-        can :read, BatchFile, hospital_id: user.hospital_id
-        can :create, BatchFile, hospital_id: user.hospital_id
-
-      when Role::DATA_PROVIDER_SUPERVISOR
         can :read, BatchFile, hospital_id: user.hospital_id
         can :create, BatchFile, hospital_id: user.hospital_id
 

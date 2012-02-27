@@ -4,7 +4,12 @@ Feature: Managing responses
   I want response information readily available.
 
   Background:
-    Given I am logged in as "data.provider@intersect.org.au" and have role "Data Provider"
+    Given I am logged in as "data.provider@intersect.org.au" and have role "Data Provider" and I'm linked to hospital "RPA"
+    And I have a survey with name "survey" and questions
+      | question  |
+      | Choice Q1 |
+      | Choice Q2 |
+    Given I have a user "other.provider@intersect.org.au" with role "Data Provider" and hospital "Other"
 
   Scenario: Home page should be the survey list page
     When I am on the home page
@@ -16,67 +21,57 @@ Feature: Managing responses
     Then I should see "There are no surveys in progress."
 
   Scenario: See a list of incomplete surveys
-    Given I have a survey with name "survey" and questions
-      | question  |
-      | Choice Q1 |
-      | Choice Q2 |
-    And "data.provider@intersect.org.au" created a response to the "survey" survey
+    Given "data.provider@intersect.org.au" created a response to the "survey" survey with babycode "babycode123"
     When I am on the home page
     And I should see "responses" table with
       | Baby Code   | Survey Type | Created By  |
       | babycode123 | survey      | Fred Bloggs |
 
   Scenario: Edit a listed survey
-    Given I have a survey with name "survey" and questions
-      | question  |
-      | Choice Q1 |
-      | Choice Q2 |
-    And "data.provider@intersect.org.au" created a response to the "survey" survey
+    Given "data.provider@intersect.org.au" created a response to the "survey" survey with babycode "babycode123"
     When I am on the home page
     And I follow "Edit"
     Then I should be on the response page for babycode123
 
   Scenario: View summary for a listed survey
-    Given I have a survey with name "survey" and questions
-      | question  |
-      | Choice Q1 |
-      | Choice Q2 |
-    And "data.provider@intersect.org.au" created a response to the "survey" survey
+    Given "data.provider@intersect.org.au" created a response to the "survey" survey with babycode "babycode123"
     When I am on the home page
     And I follow "View Summary"
     Then I should be on the response summary page for babycode123
 
-    ### Hospital-related scenarios
-  Scenario: Non-superusers can only see surveys from their own hospital
-    Given I have a survey with name "survey" and questions
-      | question  |
-      | Choice Q1 |
-      | Choice Q2 |
-    And I have a user "other.provider@intersect.org.au" with role "Data Provider"
-    And "other.provider@intersect.org.au" created a response to the "survey" survey
+  Scenario: Data providers can only see surveys from their own hospital
+    Given "data.provider@intersect.org.au" created a response to the "survey" survey with babycode "babycode123"
+    And "other.provider@intersect.org.au" created a response to the "survey" survey with babycode "babyother"
     And I am on the home page
-    Then I should see "There are no surveys in progress"
+    And I should see "responses" table with
+      | Baby Code   | Survey Type | Created By  |
+      | babycode123 | survey      | Fred Bloggs |
+    When I go to the response page for babycode123
+    Then I should be on the response page for babycode123
+    When I go to the response page for babyother
+    Then I should be on the home page
+    And I should see the access denied error
 
-  Scenario: Non-superusers cannot visit the url for surveys from other hospitals
-    Given I have a survey with name "survey" and questions
-      | question  |
-      | Choice Q1 |
-      | Choice Q2 |
-    And I have a user "other.provider@intersect.org.au" with role "Data Provider"
-    And "other.provider@intersect.org.au" created a response to the "survey" survey
-    And I go to the response page for babycode123
+  Scenario: Data provider supervisors can only see surveys from their own hospital
+    Given I am logged in as "supervisor@intersect.org.au" and have role "Data Provider Supervisor" and I'm linked to hospital "RPA"
+    Given "data.provider@intersect.org.au" created a response to the "survey" survey with babycode "babycode123"
+    And "other.provider@intersect.org.au" created a response to the "survey" survey with babycode "babyother"
+    And I am on the home page
+    And I should see "responses" table with
+      | Baby Code   | Survey Type | Created By  |
+      | babycode123 | survey      | Fred Bloggs |
+    When I go to the response page for babycode123
+    Then I should be on the response page for babycode123
+    When I go to the response page for babyother
     Then I should be on the home page
     And I should see the access denied error
 
   Scenario: superusers can see all surveys
-    Given I have a survey with name "survey" and questions
-      | question  |
-      | Choice Q1 |
-      | Choice Q2 |
-    And "data.provider@intersect.org.au" created a response to the "survey" survey
-    And I am on the home page
+    Given "data.provider@intersect.org.au" created a response to the "survey" survey with babycode "babycode123"
+    And "other.provider@intersect.org.au" created a response to the "survey" survey with babycode "babyother"
+    And I am logged in as "super@intersect.org.au" and have role "Administrator"
+    When I am on the home page
     Then I should see "responses" table with
       | Baby Code   | Survey Type | Created By  |
       | babycode123 | survey      | Fred Bloggs |
-    ### END Hospital-related scenarios
-
+      | babyother   | survey      | Fred Bloggs |
