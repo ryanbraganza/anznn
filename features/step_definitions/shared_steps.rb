@@ -126,3 +126,9 @@ end
 When /^I should see that the "([^"]*)" update succeeded for (.*)$/ do |update, obj|
   step "I should see \"The #{update} for #{obj} was successfully updated.\""
 end
+
+Then /^I should receive a pdf with name "([^"]*)"$/ do |name|
+  page.response_headers['Content-Type'].should == "application/pdf"
+  page.response_headers['Content-Disposition'].should include("filename=\"#{name}\"")
+  page.response_headers['Content-Disposition'].should include("attachment")
+end

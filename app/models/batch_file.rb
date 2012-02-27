@@ -31,6 +31,10 @@ class BatchFile < ActiveRecord::Base
     "#{APP_CONFIG['batch_files_root']}/:id.:extension"
   end
 
+  def has_summary_report?
+    !summary_report_path.blank?
+  end
+
   def process
     begin
       can_generate_report = process_batch

@@ -18,4 +18,10 @@ class BatchFilesController < ApplicationController
       render :new
     end
   end
+
+  def summary_report
+    raise "No summary report for batch file" unless @batch_file.has_summary_report?
+
+    send_file @batch_file.summary_report_path, :type => 'application/pdf', :disposition => 'attachment', :filename => "summary-report.pdf"
+  end
 end

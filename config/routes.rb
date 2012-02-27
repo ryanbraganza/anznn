@@ -12,7 +12,11 @@ Anznn::Application.routes.draw do
     end
   end
 
-  resources :batch_files
+  resources :batch_files, :only => [:new, :create] do
+    member do
+      get :summary_report
+    end
+  end
 
   resource :pages do
     get :home

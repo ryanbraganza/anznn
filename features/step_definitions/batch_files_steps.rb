@@ -30,7 +30,19 @@ Given /^I have batch uploads$/ do |table|
     hospital_name = attrs.delete("hospital")
     hospital = Hospital.find_by_name(hospital_name)
     hospital ||= Factory(:hospital, name: hospital_name)
-    Factory(:batch_file, attrs.merge(survey: survey, user: uploader, hospital: hospital))
+    reports = attrs.delete("report") == "true"
+
+    bf = Factory(:batch_file, attrs.merge(survey: survey, user: uploader, hospital: hospital))
+
+    #create fake reports so we can test downloading them
+    if reports
+      file_path = File.join(APP_CONFIG['summary_reports_path'], "#{bf.id}-summary.pdf")
+      Prawn::Document.generate file_path do
+        text "Fake PDF"
+      end
+    end
+    bf.summary_report_path = file_path
+    bf.save!
   end
 end
 

@@ -17,6 +17,9 @@ class Ability
     # aliases for responses actions
     alias_action :review_answers, to: :read
 
+    # aliases for batch files actions
+    alias_action :summary_report, to: :read
+
     return unless user.role
 
     #All users can see all available surveys

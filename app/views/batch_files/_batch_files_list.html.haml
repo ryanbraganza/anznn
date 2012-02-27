@@ -9,6 +9,7 @@
       %th Date Uploaded
       %th Status
       %th Details
+      %th Reports
     - @batch_files.each do |batch_file|
       %tr
 
@@ -17,3 +18,6 @@
         %td= time_tag batch_file.created_at
         %td= batch_file.status
         %td= batch_file.message
+        %td
+          - if batch_file.has_summary_report?
+            = link_to "Summary Report", summary_report_batch_file_path(batch_file)
