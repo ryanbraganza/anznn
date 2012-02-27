@@ -94,7 +94,7 @@ Given /^I have the usual roles$/ do
 end
 
 def create_usual_roles
-  Role.create!(:name => Role::SuperUserRole) unless Role.find_by_name(Role::SuperUserRole)
+  Role.create!(:name => Role::SUPER_USER) unless Role.find_by_name(Role::SUPER_USER)
   Role.create!(:name => Role::DATA_PROVIDER) unless Role.find_by_name(Role::DATA_PROVIDER)
   Role.create!(:name => Role::DATA_PROVIDER_SUPERVISOR) unless Role.find_by_name(Role::DATA_PROVIDER_SUPERVISOR)
 end

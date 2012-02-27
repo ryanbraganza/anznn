@@ -10,7 +10,7 @@ FactoryGirl.define do
     end
 
     factory :super_user do
-      role { |r| Role.superuser_roles.first || r.association(:role, name: Role::SuperUserRole) }
+      role { |r| Role.superuser_roles.first || r.association(:role, name: Role::SUPER_USER) }
     end
   end
 

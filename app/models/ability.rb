@@ -23,7 +23,7 @@ class Ability
     can :read, Survey
 
     case user.role.name
-      when Role::SuperUserRole
+      when Role::SUPER_USER
         can :read, User
         can :update, User
 

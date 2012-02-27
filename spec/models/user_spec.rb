@@ -200,7 +200,7 @@ describe User do
     end
 
     it "should clear the hospital on before validation if a user becomes a super user" do
-      super_role = Factory(:role, :name => Role::SuperUserRole)
+      super_role = Factory(:role, :name => Role::SUPER_USER)
       hospital = Factory(:hospital)
       user1 = Factory(:user, :status => 'A', :email => 'user1@intersect.org.au', :hospital => hospital)
       user1.hospital.should eq(hospital)
@@ -277,7 +277,7 @@ describe User do
   describe "Get superuser emails" do
     it "should find all approved superusers and extract their email address" do
 
-      admin_role = Factory(:role, :name => "Admin") # Testing near matches - Role::SuperUserRole => "Administrator"
+      admin_role = Factory(:role, :name => "Admin") # Testing near matches - Role::SUPER_USER => "Administrator"
       super_1 = Factory(:super_user, :status => "A", :email => "a@intersect.org.au")
       super_2 = Factory(:super_user, :status => "U", :email => "b@intersect.org.au")
       super_3 = Factory(:super_user, :status => "A", :email => "c@intersect.org.au")

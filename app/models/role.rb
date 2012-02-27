@@ -1,6 +1,6 @@
 class Role < ActiveRecord::Base
 
-  SuperUserRole = 'Administrator'
+  SUPER_USER = 'Administrator'
   DATA_PROVIDER = 'Data Provider'
   DATA_PROVIDER_SUPERVISOR = 'Data Provider Supervisor'
 
@@ -9,14 +9,14 @@ class Role < ActiveRecord::Base
   validates :name, presence: true, uniqueness: {case_sensitive: false}
 
   scope :by_name, order('name')
-  scope :superuser_roles, where(name: SuperUserRole)
+  scope :superuser_roles, where(name: SUPER_USER)
 
   def super_user?
-    self.name.eql? SuperUserRole
+    self.name.eql? SUPER_USER
   end
 
   def self.super_user_role
-    SuperUserRole
+    SUPER_USER
   end
 
 end
