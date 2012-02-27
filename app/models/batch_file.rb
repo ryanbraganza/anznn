@@ -2,6 +2,7 @@ require 'csv'
 
 class BatchFile < ActiveRecord::Base
 
+  BABY_CODE_COLUMN = "BabyCode"
   STATUS_FAILED = "Failed"
   STATUS_SUCCESS = "Processed Successfully"
   STATUS_REVIEW = "Needs Review"
@@ -31,49 +32,9 @@ class BatchFile < ActiveRecord::Base
   end
 
   def process
-
     begin
-      failures = false
-      warnings = false
-      responses = []
-      logger.info("Processing batch file with id #{id}")
-      processed_a_row = false
-      count = 0
-      CSV.foreach(file.path, {headers: true}) do |row|
-        logger.info("Processing row #{row}")
-        unless row.headers.include?("BabyCode")
-          set_outcome(STATUS_FAILED, MESSAGE_NO_BABY_CODE)
-          return
-        end
-        count += 1
-        processed_a_row = true
-        baby_code = row["BabyCode"]
-        if baby_code.blank?
-          failures = true
-        else
-          response = Response.new(survey: survey, baby_code: baby_code, user: user, hospital: hospital, submitted_status: Response::STATUS_UNSUBMITTED)
-          response.build_answers_from_hash(row.to_hash)
-          failures = true if response.fatal_warnings?
-          warnings = true if response.warnings?
-          responses << response
-        end
-      end
-
-      if !processed_a_row
-        set_outcome(STATUS_FAILED, MESSAGE_EMPTY)
-        return
-      end
-
-      self.record_count = count
-      if failures
-        set_outcome(STATUS_FAILED, MESSAGE_FAILED_VALIDATION)
-      elsif warnings
-        set_outcome(STATUS_REVIEW, MESSAGE_WARNINGS)
-      else
-        responses.each { |r| r.save! }
-        set_outcome(STATUS_SUCCESS, MESSAGE_SUCCESS)
-      end
-
+      can_generate_report = process_batch
+      self.summary_report_path = BatchSummaryReportGenerator.new(self).generate_report if can_generate_report
     rescue ArgumentError
       logger.info("Argument error while reading file")
       # Note: Catching ArgumentError seems a bit odd, but CSV throws it when the file is not UTF-8 which happens if you upload an xls file
@@ -82,10 +43,56 @@ class BatchFile < ActiveRecord::Base
       logger.info("Malformed CSV error while reading file")
       set_outcome(STATUS_FAILED, MESSAGE_BAD_FORMAT)
     end
+    save!
     logger.info("Finished processing file with id #{id}, status is now #{status}")
   end
 
   private
+
+  def process_batch
+    failures = false
+    warnings = false
+    responses = []
+    logger.info("Processing batch file with id #{id}")
+    processed_a_row = false
+    count = 0
+
+    CSV.foreach(file.path, {headers: true}) do |row|
+      unless row.headers.include?(BABY_CODE_COLUMN)
+        set_outcome(STATUS_FAILED, MESSAGE_NO_BABY_CODE)
+        return false
+      end
+      count += 1
+      processed_a_row = true
+      baby_code = row[BABY_CODE_COLUMN]
+      if baby_code.blank?
+        failures = true
+      else
+        response = Response.new(survey: survey, baby_code: baby_code, user: user, hospital: hospital, submitted_status: Response::STATUS_UNSUBMITTED)
+        response.build_answers_from_hash(row.to_hash)
+        failures = true if response.fatal_warnings?
+        warnings = true if response.warnings?
+        responses << response
+      end
+    end
+
+    if !processed_a_row
+      set_outcome(STATUS_FAILED, MESSAGE_EMPTY)
+      return false
+    end
+
+    self.record_count = count
+    if failures
+      set_outcome(STATUS_FAILED, MESSAGE_FAILED_VALIDATION)
+    elsif warnings
+      set_outcome(STATUS_REVIEW, MESSAGE_WARNINGS)
+    else
+      responses.each { |r| r.save! }
+      set_outcome(STATUS_SUCCESS, MESSAGE_SUCCESS)
+    end
+    true
+  end
+
   def set_status
     self.status = "In Progress" if self.status.nil?
   end
@@ -93,6 +100,5 @@ class BatchFile < ActiveRecord::Base
   def set_outcome(status, message)
     self.status = status
     self.message = message
-    save!
   end
 end

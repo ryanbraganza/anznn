@@ -54,6 +54,7 @@ describe BatchFile do
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded was not a valid CSV file")
         batch_file.record_count.should be_nil
+        batch_file.summary_report_path.should be_nil
       end
 
       it "should reject files that are text but have malformed csv" do
@@ -61,6 +62,7 @@ describe BatchFile do
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded was not a valid CSV file")
         batch_file.record_count.should be_nil
+        batch_file.summary_report_path.should be_nil
       end
 
       it "should reject file without a baby code column" do
@@ -68,6 +70,7 @@ describe BatchFile do
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded did not contain a BabyCode column")
         batch_file.record_count.should be_nil
+        batch_file.summary_report_path.should be_nil
       end
 
       it "should reject files that are empty" do
@@ -75,6 +78,7 @@ describe BatchFile do
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded did not contain any data")
         batch_file.record_count.should be_nil
+        batch_file.summary_report_path.should be_nil
       end
 
       it "should reject files that have a header row only" do
@@ -82,6 +86,7 @@ describe BatchFile do
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded did not contain any data")
         batch_file.record_count.should be_nil
+        batch_file.summary_report_path.should be_nil
       end
     end
 
@@ -113,6 +118,7 @@ describe BatchFile do
         Answer.all.each { |a| a.has_fatal_warning?.should be_false }
         Answer.all.each { |a| a.has_warning?.should be_false }
         batch_file.record_count.should == 3
+        batch_file.summary_report_path.should == "some path"
       end
     end
 
@@ -125,6 +131,7 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
+        batch_file.summary_report_path.should == "some path"
       end
 
       it "should reject records with missing mandatory fields" do
@@ -134,6 +141,7 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
+        batch_file.summary_report_path.should == "some path"
       end
 
       it "should reject records with missing mandatory fields - where the column is missing entirely" do
@@ -143,6 +151,7 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
+        batch_file.summary_report_path.should == "some path"
       end
 
       it "should reject records with choice answers that are not one of the allowed values for the question" do
@@ -152,6 +161,7 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
+        batch_file.summary_report_path.should == "some path"
       end
 
       it "should reject records with integer answers that are badly formed" do
@@ -161,6 +171,7 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
+        batch_file.summary_report_path.should == "some path"
       end
 
       it "should reject records with decimal answers that are badly formed" do
@@ -170,6 +181,7 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
+        batch_file.summary_report_path.should == "some path"
       end
 
       it "should reject records with time answers that are badly formed" do
@@ -179,6 +191,7 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
+        batch_file.summary_report_path.should == "some path"
       end
 
       it "should reject records with date answers that are badly formed" do
@@ -188,6 +201,7 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
+        batch_file.summary_report_path.should == "some path"
       end
 
       it "should reject records which fail cross-question validations" do
@@ -197,6 +211,7 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
+        batch_file.summary_report_path.should == "some path"
       end
     end
 
@@ -208,6 +223,7 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
+        batch_file.summary_report_path.should == "some path"
       end
     end
 
@@ -215,6 +231,9 @@ describe BatchFile do
   end
 
   def process_batch_file(file_name, survey, user)
+    mock_report_generator = mock('summary report generator mock')
+    BatchSummaryReportGenerator.stub(:new).and_return(mock_report_generator)
+    mock_report_generator.stub(:generate_report).and_return("some path")
     batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('features/sample_data/batch_files/' + file_name, 'text/csv'), survey: survey, user: user, hospital: hospital)
     batch_file.process
     batch_file.reload
