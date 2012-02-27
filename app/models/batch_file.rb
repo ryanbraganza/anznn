@@ -6,6 +6,8 @@ class BatchFile < ActiveRecord::Base
   STATUS_FAILED = "Failed"
   STATUS_SUCCESS = "Processed Successfully"
   STATUS_REVIEW = "Needs Review"
+  STATUS_IN_PROGRESS = "In Progress"
+
   MESSAGE_WARNINGS = "The file you uploaded has one or more warnings. Please review the reports for details."
   MESSAGE_NO_BABY_CODE = "The file you uploaded did not contain a BabyCode column"
   MESSAGE_EMPTY = "The file you uploaded did not contain any data"
@@ -38,6 +40,7 @@ class BatchFile < ActiveRecord::Base
   end
 
   def process
+    raise "Batch has already been processed, cannot reprocess" unless status == STATUS_IN_PROGRESS
     begin
       can_generate_report = process_batch
       self.summary_report_path = BatchSummaryReportGenerator.new(self).generate_report if can_generate_report
@@ -93,7 +96,10 @@ class BatchFile < ActiveRecord::Base
     elsif warnings
       set_outcome(STATUS_REVIEW, MESSAGE_WARNINGS)
     else
-      responses.each { |r| r.save! }
+      responses.each do |r|
+        r.submitted_status = Response::STATUS_SUBMITTED
+        r.save!
+      end
       set_outcome(STATUS_SUCCESS, MESSAGE_SUCCESS)
     end
     self.responses = responses
@@ -101,7 +107,7 @@ class BatchFile < ActiveRecord::Base
   end
 
   def set_status
-    self.status = "In Progress" if self.status.nil?
+    self.status = STATUS_IN_PROGRESS if self.status.nil?
   end
 
   def set_outcome(status, message)

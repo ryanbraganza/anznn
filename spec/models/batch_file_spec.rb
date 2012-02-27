@@ -105,6 +105,7 @@ describe BatchFile do
           r.survey.should eq(survey)
           r.user.should eq(user)
           r.hospital.should eq(hospital)
+          r.submitted_status.should eq(Response::STATUS_SUBMITTED)
         end
 
         answer_hash = r1.answers.reduce({}) { |hash, answer| hash[answer.question.code] = answer; hash }
