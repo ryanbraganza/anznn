@@ -1,10 +1,8 @@
 def create_roles_and_permissions
   Role.delete_all
 
-  #TODO: create your roles here
-  superuser = "Administrator"
-  Role.create!(:name => superuser)
-  Role.create!(:name => "Data Provider")
-  Role.create!(:name => "Data Provider Supervisor")
+  Role.create!(:name => Role::SuperUserRole)
+  Role.create!(:name => Role::DATA_PROVIDER)
+  Role.create!(:name => Role::DATA_PROVIDER_SUPERVISOR)
 
 end

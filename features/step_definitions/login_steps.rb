@@ -26,6 +26,12 @@ Given /^I have a user "([^"]*)" with role "([^"]*)"$/ do |email, role|
   create_user_with_role(email, role)
 end
 
+Given /^I have a user "([^"]*)" with role "([^"]*)" and hospital "([^"]*)"$/ do |email, role, hospital|
+  create_usual_roles
+  user = create_user_with_role(email, role)
+  link_user_to_hospital(user, hospital)
+end
+
 Given /^"([^"]*)" has name "([^"]*)" "([^"]*)"$/ do |email, first, last|
   u = User.find_by_email!(email)
   u.first_name = first
@@ -34,18 +40,13 @@ Given /^"([^"]*)" has name "([^"]*)" "([^"]*)"$/ do |email, first, last|
 end
 
 Given /^I am logged in as "([^"]*)" and have role "([^"]*)" and I'm linked to hospital "([^"]*)"$/ do |email, role, hospital_name|
-  # convenience to avoid writing 3 lines to log in each time
   create_usual_roles
   user = create_user_with_role(email, role) unless User.find_by_email(email)
-  hospital = Hospital.find_by_name(hospital_name)
-  hospital ||= Factory(:hospital, name: hospital_name)
-  user.hospital = hospital
-  user.save!
+  link_user_to_hospital(user, hospital_name)
   log_in(email)
 end
 
 Given /^I am logged in as "([^"]*)" and have role "([^"]*)"$/ do |email, role|
-  # convenience to avoid writing 3 lines to log in each time
   create_usual_roles
   create_user_with_role(email, role) unless User.find_by_email(email)
   log_in(email)
@@ -94,22 +95,29 @@ end
 
 def create_usual_roles
   Role.create!(:name => Role::SuperUserRole) unless Role.find_by_name(Role::SuperUserRole)
-  Role.create!(:name => "Data Provider") unless Role.find_by_name('Data Provider')
-  Role.create!(:name => "Data Provider Supervisor") unless Role.find_by_name('Data Provider Supervisor')
+  Role.create!(:name => Role::DATA_PROVIDER) unless Role.find_by_name(Role::DATA_PROVIDER)
+  Role.create!(:name => Role::DATA_PROVIDER_SUPERVISOR) unless Role.find_by_name(Role::DATA_PROVIDER_SUPERVISOR)
 end
 
-
-def create_user_with_role(email, role)
+def create_user_with_role(email, role_name)
   user = Factory(:user, :email => email, :password => "Pas$w0rd", :status => 'A')
-  role = Role.where(:name => role).first
+  role = Role.find_by_name!(role_name)
   user.role_id = role.id
   user.save!
   user
 end
 
 def log_in(email)
+  visit path_to("the logout page")
   visit path_to("the login page")
   fill_in("user_email", :with => email)
   fill_in("user_password", :with => "Pas$w0rd")
   click_button("Log in")
+end
+
+def link_user_to_hospital(user, hospital_name)
+  hospital = Hospital.find_by_name(hospital_name)
+  hospital ||= Factory(:hospital, name: hospital_name)
+  user.hospital = hospital
+  user.save!
 end

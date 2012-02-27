@@ -10,14 +10,13 @@ Given /^I upload batch file "([^"]*)" for survey "([^"]*)"$/ do |filename, surve
   click_button "Upload"
   page.should have_content "Your upload has been received and is now being processed. This may take some time depending on the size of the file."
   page.should have_content "The status of your uploads can be seen in the table below. You will need to refresh the page to see an updated status."
-  check_batch_file(survey_name, User.last.email, User.last.hospital.name)
+  check_batch_file(survey_name, User.first.email, User.first.hospital.name)
 end
 
-Then /^I should have two batch files stored$/ do
-  BatchFile.count.should eq(2)
-  first_path = BatchFile.first.file.path
-  last_path = BatchFile.last.file.path
-  first_path.should_not eq(last_path)
+Then /^I should have two batch files stored with name "([^"]*)"$/ do |name|
+  files = BatchFile.find_all_by_file_file_name(name)
+  files.count.should eq(2)
+  files[0].file.path.should_not eq(files[1].file.path)
 end
 
 Then /^I should have no batch files$/ do
@@ -28,7 +27,10 @@ Given /^I have batch uploads$/ do |table|
   table.hashes.each do |attrs|
     survey = Survey.find_by_name!(attrs.delete("survey"))
     uploader = User.find_by_email!(attrs.delete("created_by"))
-    Factory(:batch_file, attrs.merge(survey: survey, user: uploader))
+    hospital_name = attrs.delete("hospital")
+    hospital = Hospital.find_by_name(hospital_name)
+    hospital ||= Factory(:hospital, name: hospital_name)
+    Factory(:batch_file, attrs.merge(survey: survey, user: uploader, hospital: hospital))
   end
 end
 

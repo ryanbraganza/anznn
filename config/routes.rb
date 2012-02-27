@@ -18,11 +18,10 @@ Anznn::Application.routes.draw do
   end
 
   namespace :admin do
-    resources :users, :only => [:show] do
+    resources :users, :only => [:show, :index] do
 
         collection do
           get :access_requests
-          get :index
         end
 
         member do

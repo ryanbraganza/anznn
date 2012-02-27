@@ -5,7 +5,7 @@ class PagesController < ApplicationController
   def home
     if user_signed_in?
       @responses = current_user.super_user? ? Response.all : Response.find_all_by_hospital_id(current_user.hospital_id)
-      @batch_files = BatchFile.order("created_at DESC")
+      @batch_files = BatchFile.accessible_by(current_ability).order("created_at DESC")
     end
   end
 end

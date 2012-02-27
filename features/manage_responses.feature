@@ -13,7 +13,7 @@ Feature: Managing responses
 
   Scenario: See an informative message when there are no responses in progress
     When I am on the home page
-    Then I should see "There are no surveys in progress. To start a new one, click the 'Start New Survey Response' link above."
+    Then I should see "There are no surveys in progress."
 
   Scenario: See a list of incomplete surveys
     Given I have a survey with name "survey" and questions

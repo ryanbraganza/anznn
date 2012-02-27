@@ -50,26 +50,24 @@ def create_survey(name, question_file, options_file, cross_question_validations_
 end
 
 def create_test_users
-  create_user(email: "sean@intersect.org.au", first_name: "Sean", last_name: "McCarthy")
   create_user(email: "georgina@intersect.org.au", first_name: "Georgina", last_name: "Edwards")
-  create_user(email: "veronica@intersect.org.au", first_name: "Veronica", last_name: "Luke")
   create_user(email: "alexb@intersect.org.au", first_name: "Alex", last_name: "Bradner")
   create_user(email: "kali@intersect.org.au", first_name: "Kali", last_name: "Waterford")
-  create_user(email: "diego@intersect.org.au", first_name: "Diego", last_name: "Alonso de Marcos")
-  create_user(email: "shuqian@intersect.org.au", first_name: "Shuqian", last_name: "Hon")
+  create_user(email: "ryan@intersect.org.au", first_name: "Ryan", last_name: "Braganza")
   create_user(email: "dataprovider@intersect.org.au", first_name: "Data", last_name: "Provider")
   create_user(email: "supervisor@intersect.org.au", first_name: "Data", last_name: "Supervisor")
+  create_user(email: "dataprovider2@intersect.org.au", first_name: "Data", last_name: "Provider2")
+  create_user(email: "supervisor2@intersect.org.au", first_name: "Data", last_name: "Supervisor2")
   create_unapproved_user(email: "unapproved1@intersect.org.au", first_name: "Unapproved", last_name: "One")
   create_unapproved_user(email: "unapproved2@intersect.org.au", first_name: "Unapproved", last_name: "Two")
-  set_role("sean@intersect.org.au", "Administrator")
   set_role("georgina@intersect.org.au", "Administrator")
-  set_role("veronica@intersect.org.au", "Administrator")
   set_role("alexb@intersect.org.au", "Administrator")
   set_role("kali@intersect.org.au", "Administrator")
-  set_role("diego@intersect.org.au", "Administrator")
-  set_role("shuqian@intersect.org.au", "Administrator")
+  set_role("ryan@intersect.org.au", "Administrator")
   set_role("dataprovider@intersect.org.au", "Data Provider", Hospital.first.name)
   set_role("supervisor@intersect.org.au", "Data Provider Supervisor", Hospital.first.name)
+  set_role("dataprovider2@intersect.org.au", "Data Provider", Hospital.last.name)
+  set_role("supervisor2@intersect.org.au", "Data Provider Supervisor", Hospital.last.name)
 
 end
 

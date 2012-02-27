@@ -64,7 +64,10 @@ module NavigationHelpers
       response = Response.first
       edit_response_path response, section: section
 
-# Add more mappings here.
+    when /the upload batch file page/
+      new_batch_file_path
+
+    # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #
     #   when /^(.*)'s profile page$/i
