@@ -29,7 +29,7 @@ end
 
 def create_response(survey, email, babycode = 'babycode123')
   user = User.find_by_email(email)
-  Response.create!(survey: survey, baby_code: babycode, user: user, hospital: user.hospital)
+  Response.create!(survey: survey, baby_code: babycode, user: user, hospital: user.hospital, submitted_status: Response::STATUS_UNSUBMITTED)
 end
 
 When /^I answer "([^"]*)" with "([^"]*)"$/ do |q, a|

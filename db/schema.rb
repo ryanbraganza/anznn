@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120224010655) do
+ActiveRecord::Schema.define(:version => 20120227004004) do
 
   create_table "answers", :force => true do |t|
     t.integer "response_id"
@@ -108,6 +108,7 @@ ActiveRecord::Schema.define(:version => 20120224010655) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "hospital_id"
+    t.string   "submitted_status"
   end
 
   create_table "roles", :force => true do |t|

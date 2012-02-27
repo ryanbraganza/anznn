@@ -12,6 +12,7 @@ class ResponsesController < ApplicationController
   def create
     @response.user = current_user
     @response.hospital = current_user.hospital
+    @response.submitted_status = Response::STATUS_UNSUBMITTED
     if @response.save
       redirect_to edit_response_path(@response, section: @response.survey.sections.first.id), notice: 'Survey created'
     else

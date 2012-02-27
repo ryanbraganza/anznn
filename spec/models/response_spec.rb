@@ -11,6 +11,13 @@ describe Response do
     it { should validate_presence_of :baby_code }
     it { should validate_presence_of :user }
     it { should validate_presence_of :survey_id }
+    it "should validate that submitted_status is one of the allowed types" do
+      [Response::STATUS_SUBMITTED, Response::STATUS_UNSUBMITTED].each do |value|
+        should allow_value(value).for(:submitted_status)
+      end
+      Factory.build(:response, submitted_status: nil).should_not be_valid
+      Factory.build(:response, submitted_status: "Blah").should_not be_valid
+    end
   end
 
   describe "status" do

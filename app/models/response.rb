@@ -1,4 +1,8 @@
 class Response < ActiveRecord::Base
+
+  STATUS_UNSUBMITTED = 'Unsubmitted'
+  STATUS_SUBMITTED = 'Submitted'
+
   belongs_to :survey
   belongs_to :user
   belongs_to :hospital
@@ -9,6 +13,7 @@ class Response < ActiveRecord::Base
   validates_presence_of :user
   validates_presence_of :survey_id
   validates_presence_of :hospital_id
+  validates_inclusion_of :submitted_status, in: [STATUS_UNSUBMITTED, STATUS_SUBMITTED]
 
   def prepare_answers_to_section(section)
     existing_answers = answers_to_section(section).reduce({}) { |hash, answer| hash[answer.question_id] = answer; hash }
