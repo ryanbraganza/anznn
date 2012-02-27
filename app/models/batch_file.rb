@@ -41,19 +41,21 @@ class BatchFile < ActiveRecord::Base
 
   def process
     raise "Batch has already been processed, cannot reprocess" unless status == STATUS_IN_PROGRESS
-    begin
-      can_generate_report = process_batch
-      self.summary_report_path = BatchSummaryReportGenerator.new(self).generate_report if can_generate_report
-    rescue ArgumentError
-      logger.info("Argument error while reading file")
-      # Note: Catching ArgumentError seems a bit odd, but CSV throws it when the file is not UTF-8 which happens if you upload an xls file
-      set_outcome(STATUS_FAILED, MESSAGE_BAD_FORMAT)
-    rescue CSV::MalformedCSVError
-      logger.info("Malformed CSV error while reading file")
-      set_outcome(STATUS_FAILED, MESSAGE_BAD_FORMAT)
+    BatchFile.transaction do
+      begin
+        can_generate_report = process_batch
+        self.summary_report_path = BatchSummaryReportGenerator.new(self).generate_report if can_generate_report
+      rescue ArgumentError
+        logger.info("Argument error while reading file")
+        # Note: Catching ArgumentError seems a bit odd, but CSV throws it when the file is not UTF-8 which happens if you upload an xls file
+        set_outcome(STATUS_FAILED, MESSAGE_BAD_FORMAT)
+      rescue CSV::MalformedCSVError
+        logger.info("Malformed CSV error while reading file")
+        set_outcome(STATUS_FAILED, MESSAGE_BAD_FORMAT)
+      end
+      save!
+      logger.info("Finished processing file with id #{id}, status is now #{status}")
     end
-    save!
-    logger.info("Finished processing file with id #{id}, status is now #{status}")
   end
 
   private
