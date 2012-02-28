@@ -70,19 +70,17 @@ class ResponsesController < ApplicationController
   def redirect_after_update(params)
     clicked = params[:commit]
 
-    if clicked =~ /Save and return to home/
-      redirect_to root_path
+    go_to_section = params[:go_to_section]
+
+    if clicked =~ /^Save and return to summary page/
+      go_to_section = 'summary'
+    elsif clicked =~ /^Save and go to next section/
+      go_to_section = @response.survey.section_id_after(go_to_section.to_i)
+    end
+
+    if go_to_section == "summary"
+      redirect_to @response, notice: 'Your answers have been saved'
     else
-      go_to_section = params[:go_to_section]
-
-      if go_to_section == "summary"
-        redirect_to @response, notice: 'Your answers have been saved'
-        return
-      end
-
-      if clicked =~ /Save and go to next section/
-        go_to_section = @response.survey.section_id_after(go_to_section.to_i)
-      end
       redirect_to edit_response_path(@response, section: go_to_section), notice: 'Your answers have been saved'
     end
   end

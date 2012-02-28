@@ -10,7 +10,7 @@
         .actions
           = submit_tag 'Save page', class: "btn primary"
           - if @section.last?
-            = submit_tag 'Save and return to home page &rarr;'.html_safe, class: "btn primary"
+            = submit_tag 'Save and return to summary page &rarr;'.html_safe, class: "btn primary"
           - else
             = submit_tag 'Save and go to next section &rarr;'.html_safe, class: "btn primary"
           %a.btn Cancel

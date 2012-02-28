@@ -74,11 +74,11 @@ Feature: Navigating around the sections of a survey response
       | Sect2 Q1 |
       | Sect2 Q2 |
 
-  Scenario: Last section should replace save-and-go-next with save and return to home page
+  Scenario: Last section should replace save-and-go-next with save and return to summary page
     Given I am logged in as "data.provider@intersect.org.au"
     And I create a response for "MySurvey" with baby code "ABC123"
     And I follow "Sec3"
     And I answer "Sect3 Q2" with "5678"
-    When I press "Save and return to home page"
+    When I press "Save and return to summary page"
     Then the answer to "Sect3 Q2" should be "5678"
-    And I should be on the home page
+    And I should be on the response summary page for ABC123
