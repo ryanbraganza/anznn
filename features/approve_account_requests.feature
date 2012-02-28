@@ -130,15 +130,25 @@ Feature: Approve access requests
     Then I should not see "Hospital"
 
   @javascript
-  Scenario: Non-superusers must be assigned to a hospital when approved
+  Scenario: Non-superusers can be assigned to a hospital when approved
     Given I am on the access requests page
     And I follow "Approve" for "second@intersect.org.au"
     And I select "Data Provider" from "Role"
     Then I should see "Hospital"
+
     And I select "Left Wing" from "Hospital"
     And I press "Approve"
     And I am on the list users page
     When I follow "View Details" for "second@intersect.org.au"
     And I should see field "Hospital" with value "Left Wing (NSW)"
+
+  Scenario: Non-superusers must be assigned to a hospital when approved
+    Given I am on the access requests page
+    And I follow "Approve" for "second@intersect.org.au"
+    And I select "Data Provider" from "Role"
+    And I select blank from "Hospital"
+    And I press "Approve"
+    Then I should see "All non-superusers must be assigned a hospital"
+
 
     ##END Scenarios relating to assigning a hospital to an approved user

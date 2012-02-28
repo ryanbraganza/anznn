@@ -70,15 +70,17 @@ class Admin::UsersController < Admin::AdminBaseController
   end
 
   def approve
-    if !params[:user][:role_id].blank?
+    if params[:user][:role_id].blank?
+      redirect_to(edit_approval_admin_user_path(@user), alert: "Please select a role for the user.")
+    else
       @user.role_id = params[:user][:role_id]
       @user.hospital_id = params[:user][:hospital_id]
-      @user.save
-      @user.approve_access_request
-
-      redirect_to(access_requests_admin_users_path, notice: "The access request for #{@user.email} was approved.")
-    else
-      redirect_to(edit_approval_admin_user_path(@user), alert: "Please select a role for the user.")
+      if @user.save
+        @user.approve_access_request
+        redirect_to(access_requests_admin_users_path, notice: "The access request for #{@user.email} was approved.")
+      else
+        redirect_to(edit_approval_admin_user_path(@user), alert: "All non-superusers must be assigned a hospital")
+      end
     end
   end
 end

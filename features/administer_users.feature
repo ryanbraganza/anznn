@@ -129,7 +129,7 @@ Feature: Administer users
     And I should not see "Hospital"
 
   @javascript
-  Scenario: Changing a user's role from superuser to a regular role requires selection of a hospital
+  Scenario: Changing a user's role from superuser to a regular role allows selection of a hospital
     Given I have a user "other_super@intersect.org.au" with role "Administrator"
     And I have role "other role"
     And I am on the edit role page for other_super@intersect.org.au
@@ -142,6 +142,15 @@ Feature: Administer users
     And I should see that the "access level" update succeeded for other_super@intersect.org.au
     And I should be on the user details page for other_super@intersect.org.au
     And I should see field "Hospital" with value "Left Wing (NSW)"
+
+  Scenario: Changing a user's role from superuser to a regular role requires selection of a hospital
+    Given I have a user "other_super@intersect.org.au" with role "Administrator"
+    And I have role "other role"
+    And I am on the edit role page for other_super@intersect.org.au
+    And I select "other role" from "Role"
+    And I select blank from "Hospital"
+    And I press "Save"
+    Then I should see "All non-superusers must be assigned a hospital"
 
     ##END Scenarios relating to assigning a hospital to an approved user
 
