@@ -68,11 +68,11 @@ describe Response do
     end
     it "shows a warning for incomplete" do
       response.stub(:status) {Response::INCOMPLETE}
-      response.submit_warning.should eq "can't submit due to incomplete"
+      response.submit_warning.should eq "This survey is incomplete and can't be submitted."
     end
     it "shows a warning for complete with warnings" do
       response.stub(:status) {Response::COMPLETE_WITH_WARNINGS}
-      response.submit_warning.should eq "can't submit due to warnings existing. Double check and confirm with a supervisor"
+      response.submit_warning.should eq "This survey has warnings. Double check them. If you believe them to be correct, contact a supervisor."
     end
   end
 

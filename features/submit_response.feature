@@ -101,10 +101,10 @@ Feature: Submit Response
     When I am on the response summary page for <baby_code>
     Then I should not see a submit button on the response summary page for survey "The Survey" and baby code "<baby_code>" with warning "<warning>"
   Examples:
-    | user          | baby_code           | warning                                                                           |
-    | supervisor    | baby_incomplete     | can't submit due to incomplete                                                    |
-    | data.provider | baby_incomplete     | can't submit due to incomplete                                                    |
-    | data.provider | baby_range_warnings | can't submit due to warnings existing. Double check and confirm with a supervisor |
+    | user          | baby_code           | warning                                                                                              |
+    | supervisor    | baby_incomplete     | This survey is incomplete and can't be submitted.                                                    |
+    | data.provider | baby_incomplete     | This survey is incomplete and can't be submitted.                                                    |
+    | data.provider | baby_range_warnings | This survey has warnings. Double check them. If you believe them to be correct, contact a supervisor.|
 
   Scenario Outline: can't submit without warnings
     Given I am logged in as "<user>@intersect.org.au"

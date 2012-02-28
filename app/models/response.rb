@@ -33,9 +33,9 @@ class Response < ActiveRecord::Base
     # Use cancan to check if a response is not submittable before trying to display this
     case status
     when INCOMPLETE
-      "can't submit due to incomplete"
+      "This survey is incomplete and can't be submitted."
     when COMPLETE_WITH_WARNINGS
-      "can't submit due to warnings existing. Double check and confirm with a supervisor"
+      "This survey has warnings. Double check them. If you believe them to be correct, contact a supervisor."
     else
       nil
     end
