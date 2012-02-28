@@ -12,9 +12,9 @@ Feature: Create Response
     And I have a survey with name "Survey A" and questions
       | question   |
       | Question A |
+    And I am logged in as "data.provider@intersect.org.au"
 
   Scenario: Creating a response
-    Given I am logged in as "data.provider@intersect.org.au"
     When I create a response for "Survey A" with baby code "ABC123"
     Then I should see "Survey created"
     And I should see "Survey A - Baby Code ABC123"
@@ -22,7 +22,6 @@ Feature: Create Response
     And I should not see "Question B"
 
   Scenario: Correct survey types are in the dropdown
-    Given I am logged in as "data.provider@intersect.org.au"
     When I am on the new response page
     Then the "Survey" select should contain
       | Please select |
@@ -30,6 +29,20 @@ Feature: Create Response
       | Survey B      |
 
   Scenario: Try to create without selecting survey type
-    Given I am logged in as "data.provider@intersect.org.au"
     When I create a response for "Please select" with baby code "ABC123"
     Then I should see "Survey type can't be blank" within the form errors
+
+  Scenario: Responses should be ordered by baby code on the home page
+    Given I create a response for "Survey A" with baby code "C"
+    Given I create a response for "Survey A" with baby code "D"
+    Given I create a response for "Survey A" with baby code "B"
+    Given I create a response for "Survey A" with baby code "A"
+    Given I create a response for "Survey A" with baby code "AB"
+    When I am on the home page
+    Then I should see "responses" table with 
+    | Baby Code |
+    | A         |
+    | AB        |
+    | B         |
+    | C         |
+    | D         |
