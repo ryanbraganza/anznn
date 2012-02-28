@@ -1,4 +1,3 @@
-@javascript
 Feature: Submit Response
   In order to mark my response as finished and remove it from my "in-progress" responses
   As a data provider
@@ -55,11 +54,10 @@ Feature: Submit Response
     | data.provider | baby_complete |
     | supervisor    | baby_complete |
 
-  @wip
-  Scenario Outline: submitting surveys from the review answers page without warnings
+  Scenario Outline: submitting surveys from the response summary page without warnings
     Given I am logged in as "<user>@intersect.org.au"
-    When I am on the review answers page for <baby_code>
-    Then I should see a submit button on the review answers page for survey "The Survey" and baby code "<baby_code>"
+    When I am on the response summary page for <baby_code>
+    Then I should see a submit button on the response summary page for survey "The Survey" and baby code "<baby_code>"
     When I submit the survey for survey "The Survey" and baby code "<baby_code>"
     Then I should be on the home page
     And I should see a confirmation message that "<baby_code>" for survey "The Survey" has been submitted
@@ -72,12 +70,11 @@ Feature: Submit Response
     | data.provider | baby_complete |
     | supervisor    | baby_complete |
 
-  @wip
   Scenario: Submiting survey with range warnings by Supervisor from home page
     Given I am logged in as "supervisor@intersect.org.au"
     When I am on the home page
     Then I should see a submit button on the home page for survey "The Survey" and baby code "baby_range_warnings" with no warning
-    When I submit the survey for survey "The Survey" and baby code "<baby_code>"
+    When I submit the survey for survey "The Survey" and baby code "baby_range_warnings"
     Then I should be on the home page
     And I should see a confirmation message that "baby_range_warnings" for survey "The Survey" has been submitted
     And I should not see the response for survey "The Survey" and baby code "baby_range_warnings" on the home page
@@ -85,12 +82,11 @@ Feature: Submit Response
     And I can't edit response for survey "The Survey" and baby code "baby_range_warnings"
     And I can't review response for survey "The Survey" and baby code "baby_range_warnings"
 
-  @wip
-  Scenario: Submiting survey with range warnings by Supervisor from review answers page
+  Scenario: Submiting survey with range warnings by Supervisor from response summary page
     Given I am logged in as "supervisor@intersect.org.au"
-    When I am on the review answers page for baby_range_warnings
+    When I am on the response summary page for baby_range_warnings
     Then I should see a submit button on the home page for survey "The Survey" and baby code "baby_range_warnings" with no warning
-    When I submit the survey for survey "The Survey" and baby code "<baby_code>"
+    When I submit the survey for survey "The Survey" and baby code "baby_range_warnings"
     Then I should be on the home page
     And I should see a confirmation message that "baby_range_warnings" for survey "The Survey" has been submitted
     And I should not see the response for survey "The Survey" and baby code "baby_range_warnings" on the home page
@@ -98,26 +94,24 @@ Feature: Submit Response
     And I can't edit response for survey "The Survey" and baby code "baby_range_warnings"
     And I can't review response for survey "The Survey" and baby code "baby_range_warnings"
 
-  @wip
   Scenario Outline: can't submit with warnings
     Given I am logged in as "<user>@intersect.org.au"
     When I am on the home page
     Then I should not see a submit button on the home page for survey "The Survey" and baby code "<baby_code>" with warning "<warning>"
-    When I am on the review answers page for <baby_code>
-    Then I should not see a submit button on the review answers page for survey "The Survey" and baby code "<baby_code>" with warning "<warning>"
+    When I am on the response summary page for <baby_code>
+    Then I should not see a submit button on the response summary page for survey "The Survey" and baby code "<baby_code>" with warning "<warning>"
   Examples:
-    | user          | baby_code           | warning |
-    | supervisor    | baby_incomplete     | todo    |
-    | data.provider | baby_incomplete     | todo    |
-    | data.provider | baby_range_warnings | todo    |
+    | user          | baby_code           | warning                                                                           |
+    | supervisor    | baby_incomplete     | can't submit due to incomplete                                                    |
+    | data.provider | baby_incomplete     | can't submit due to incomplete                                                    |
+    | data.provider | baby_range_warnings | can't submit due to warnings existing. Double check and confirm with a supervisor |
 
-  @wip
   Scenario Outline: can't submit without warnings
     Given I am logged in as "<user>@intersect.org.au"
     When I am on the home page
     Then I should not see a submit button on the home page for survey "The Survey" and baby code "<baby_code>" with no warning
-    When I am on the review answers page for <baby_code>
-    Then I should not see a submit button on the home page for survey "The Survey" and baby code "<baby_code>" with no warning
+    When I am on the response summary page for <baby_code>
+    Then I should not see a submit button on the response summary page for survey "The Survey" and baby code "<baby_code>" with no warning
   Examples:
     | user          | baby_code           |
     | supervisor    | baby_not_started    |

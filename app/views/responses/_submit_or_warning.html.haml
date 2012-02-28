@@ -1,0 +1,8 @@
+- if can? :submit, Response
+  - if can? :submit, response
+    = form_tag(submit_response_path(response)) do
+      = submit_tag 'Submit', class: 'btn submit_response'
+  - else
+    - submit_warning = response.submit_warning
+    - if submit_warning
+      %span.warning-display.submit_warning= submit_warning

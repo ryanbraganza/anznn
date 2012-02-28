@@ -1,6 +1,7 @@
 - title "#{@response.survey.name} - Baby Code #{@response.baby_code}"
 
 = link_to "Review Answers", review_answers_response_path(@response), class: 'btn'
+= render 'submit_or_warning', response: @response
 
 %table#summary.bordered-table.condensed-table
   - @response.survey.sections.each do |section|

@@ -324,11 +324,40 @@ Then /^I should see answers for section "([^"]*)"$/ do |section_name, expected_t
   expected_table.diff!(actual)
 end
 
-Then /^I should( not)? see a submit button on the home page for survey "([^"]*)" and baby code "([^"]*)( with warning "(.*)")?"$/ do |not_see, survey, baby_code, see_warning, warning|
+Then /^I should( not)? see a submit button on the home page for survey "([^"]*)" and baby code "([^"]*)"( with( no)? warning( "(.*)")?)?$/ do |not_see, survey, baby_code, check_warning, no_warning, _, warning_text|
+  survey_link = submit_survey_link(baby_code)
   if not_see
-    submit_survey_link(survey, baby_code).should_not be
+    survey_link.should_not be
   else
-    submit_survey_link(survey, baby_code).should be
+    survey_link.should be
+  end
+
+  if check_warning
+    warning = submit_warning_homepage(baby_code)
+    if no_warning
+      warning.should_not be
+    else
+      warning.should be
+      warning.text.should eq warning_text
+    end
+  end
+end
+
+Then /^I should( not)? see a submit button on the response summary page for survey "([^"]*)" and baby code "([^"]*)"( with( no)? warning( "(.*)")?)?$/ do |not_see, survey, baby_code, with_warning, no_warning, _, warning_text|
+  if not_see
+    submit_survey_link(baby_code).should_not be
+  else
+    submit_survey_link(baby_code).should be
+  end
+
+  if with_warning
+    warning = submit_warning_summary_page(baby_code)
+    if no_warning
+      warning.should_not be
+    else
+      warning.should be
+      warning.text.should eq warning_text
+    end
   end
 end
 
@@ -344,16 +373,8 @@ Then /^I should not see the response for survey "(.*)" and baby code "(.*)" on t
   elem.should be_nil
 end
 
-Then /^I should( not)? see a submit button on the review answers page for survey "([^"]*)" and baby code "([^"]*)"( with warning "(.*)")?$/ do |not_see, arg1, arg2, with_warning, warning|
-  pending
-end
-
-Then /^I should not see a submit button on the home page for survey "([^"]*)" with warning "([^"]*)"$/ do |arg1, arg2|
-  pending # express the regexp above with the code you wish you had
-end
-
 When /^I submit the survey for survey "(.*)" and baby code "(.*)"$/ do |survey, baby_code|
-  submit_survey_link(survey, baby_code).click
+  submit_survey_link(baby_code).click
 end
 
 Then /^I should see a confirmation message that "([^"]*)" for survey "([^"]*)" has been submitted$/ do |baby_code, survey|
@@ -378,29 +399,21 @@ Then /^I can't review response for survey "([^"]*)" and baby code "([^"]*)"$/ do
   find("div.alert-message.error").should have_content "You are not authorized to access this page."
 end
 
-Then /^I should see a submit button on the home page for survey "([^"]*)" and baby code "([^"]*)" with no warning$/ do |arg1, arg2|
-  pending # express the regexp above with the code you wish you had
-end
-
-
-Then /^I should not see a submit button on the home page for survey "([^"]*)" with no warning$/ do |arg1|
-  pending # express the regexp above with the code you wish you had
-end
-
-
-Then /^I should not see a submit button on the home page for survey "([^"]*)" and baby code "([^"]*)" with warning "([^"]*)"$/ do |arg1, arg2, arg3|
-  pending # express the regexp above with the code you wish you had
-end
-
-
-Then /^I should not see a submit button on the home page for survey "([^"]*)" and baby code "([^"]*)" with no warning$/ do |arg1, arg2|
-  pending # express the regexp above with the code you wish you had
-end
-
-
-def submit_survey_link(survey, baby_code)
+def submit_survey_link(baby_code)
   response = Response.find_by_baby_code!(baby_code)
   selector = %Q{form[action="#{submit_response_path response}"] > input.submit_response}
+  find_or_nil(selector)
+end
+
+def submit_warning_homepage(baby_code)
+  response = Response.find_by_baby_code!(baby_code)
+  selector = %Q{#response_#{response.id} > td:last-child > span.warning-display.submit_warning}
+  find_or_nil(selector)
+end
+
+def submit_warning_summary_page(baby_code)
+  response = Response.find_by_baby_code!(baby_code)
+  selector = %Q{span.warning-display.submit_warning}
   find_or_nil(selector)
 end
 

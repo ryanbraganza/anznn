@@ -4,6 +4,10 @@
 %br/
 %br/
 
+%h2 Submit Answers
+= form_tag(submit_response_path(@response)) do
+  = submit_tag 'Submit', class: 'btn submit_response'
+
 - @sections_to_answers.each do |section, answers|
   %h2= section.name
   = link_to "Edit Answers", edit_response_path(@response, section: section.id), id: "edit_answers_#{section.id}", class: 'btn'

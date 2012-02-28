@@ -28,6 +28,19 @@ class Response < ActiveRecord::Base
     self.save!
   end
 
+  def submit_warning
+    # This method is role-ignorant.
+    # Use cancan to check if a response is not submittable before trying to display this
+    case status
+    when INCOMPLETE
+      "can't submit due to incomplete"
+    when COMPLETE_WITH_WARNINGS
+      "can't submit due to warnings existing. Double check and confirm with a supervisor"
+    else
+      nil
+    end
+  end
+
   def prepare_answers_to_section(section)
     existing_answers = answers_to_section(section).reduce({}) { |hash, answer| hash[answer.question_id] = answer; hash }
 

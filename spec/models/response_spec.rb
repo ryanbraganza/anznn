@@ -56,6 +56,26 @@ describe Response do
     end
   end
 
+  describe "submit_warning" do
+    let (:response) {Factory(:response)}
+    it "dies on complete" do
+      response.stub(:status) {Response::COMPLETE }
+      response.submit_warning.should be_nil
+    end
+    it "dies on not started" do
+      response.stub(:status) {Response::NOT_STARTED}
+      response.submit_warning.should be_nil
+    end
+    it "shows a warning for incomplete" do
+      response.stub(:status) {Response::INCOMPLETE}
+      response.submit_warning.should eq "can't submit due to incomplete"
+    end
+    it "shows a warning for complete with warnings" do
+      response.stub(:status) {Response::COMPLETE_WITH_WARNINGS}
+      response.submit_warning.should eq "can't submit due to warnings existing. Double check and confirm with a supervisor"
+    end
+  end
+
   describe "status" do
     before(:each) do
       @survey = Factory(:survey)
