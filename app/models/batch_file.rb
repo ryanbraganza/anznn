@@ -64,6 +64,10 @@ class BatchFile < ActiveRecord::Base
     end
   end
 
+  def problem_record_count
+    responses.collect(&:warnings?).count(true)
+  end
+
   private
 
   def process_batch

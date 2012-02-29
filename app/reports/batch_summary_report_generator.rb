@@ -17,6 +17,7 @@ class BatchSummaryReportGenerator
 
       move_down 10
       text "Number of records: #{batch_file.record_count}"
+      text "Number of records with problems: #{batch_file.problem_record_count}"
 
       move_down 10
       problems_table = organiser.aggregated_by_question_and_message

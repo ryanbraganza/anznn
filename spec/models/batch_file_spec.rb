@@ -228,6 +228,7 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
+        batch_file.problem_record_count.should == 1
         batch_file.summary_report_path.should_not be_nil
         batch_file.detail_report_path.should_not be_nil
       end
@@ -241,6 +242,7 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
+        batch_file.problem_record_count.should == 1
         batch_file.summary_report_path.should_not be_nil
         batch_file.detail_report_path.should_not be_nil
       end
@@ -248,6 +250,7 @@ describe BatchFile do
 
     describe "with a range of errors and warnings" do
       it "should produce a CSV detail report file with correct error and warning details" do
+        pending "awaiting fix for formatting date"
         batch_file = process_batch_file('a_range_of_problems.csv', survey, user)
 
         batch_file.status.should eq("Failed")
@@ -255,6 +258,7 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
+        batch_file.problem_record_count.should == 3
 
         csv_file = batch_file.detail_report_path
         rows = CSV.read(csv_file)
