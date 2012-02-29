@@ -41,6 +41,7 @@ describe BatchFile do
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded was not a valid CSV file")
         batch_file.record_count.should be_nil
+        batch_file.problem_record_count.should be_nil
         batch_file.summary_report_path.should be_nil
         batch_file.detail_report_path.should be_nil
       end
@@ -50,6 +51,7 @@ describe BatchFile do
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded was not a valid CSV file")
         batch_file.record_count.should be_nil
+        batch_file.problem_record_count.should be_nil
         batch_file.summary_report_path.should be_nil
         batch_file.detail_report_path.should be_nil
       end
@@ -59,6 +61,7 @@ describe BatchFile do
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded did not contain a BabyCode column")
         batch_file.record_count.should be_nil
+        batch_file.problem_record_count.should be_nil
         batch_file.summary_report_path.should be_nil
         batch_file.detail_report_path.should be_nil
       end
@@ -68,6 +71,7 @@ describe BatchFile do
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded did not contain any data")
         batch_file.record_count.should be_nil
+        batch_file.problem_record_count.should be_nil
         batch_file.summary_report_path.should be_nil
         batch_file.detail_report_path.should be_nil
       end
@@ -77,6 +81,7 @@ describe BatchFile do
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded did not contain any data")
         batch_file.record_count.should be_nil
+        batch_file.problem_record_count.should be_nil
         batch_file.summary_report_path.should be_nil
         batch_file.detail_report_path.should be_nil
       end
@@ -89,6 +94,9 @@ describe BatchFile do
         batch_file.message.should eq("Your file has been processed successfully")
         Response.count.should == 3
         Answer.count.should eq(21) #3x8 questions = 24, 3 not answered
+        batch_file.problem_record_count.should == 0
+        batch_file.record_count.should == 3
+
         r1 = Response.find_by_baby_code!("B1")
         r2 = Response.find_by_baby_code!("B2")
         r3 = Response.find_by_baby_code!("B3")
@@ -120,15 +128,28 @@ describe BatchFile do
     end
 
     describe "with validation errors" do
-      it "file with missing baby codes - should set the file status to failed, and not save any responses" do
-        batch_file = process_batch_file('missing_baby_code.csv', survey, user)
+      it "file that just has blank rows fails on baby code since baby codes are missing" do
+        batch_file = process_batch_file('blank_rows.csv', survey, user)
         batch_file.status.should eq("Failed")
-        batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
+        batch_file.message.should eq("The file you uploaded is missing one or more baby codes. Each record must have a baby code.")
         Response.count.should == 0
         Answer.count.should == 0
-        batch_file.record_count.should == 3
-        batch_file.summary_report_path.should_not be_nil
-        batch_file.detail_report_path.should_not be_nil
+        batch_file.record_count.should be_nil
+        batch_file.problem_record_count.should be_nil
+        batch_file.summary_report_path.should be_nil
+        batch_file.detail_report_path.should be_nil
+      end
+
+      it "file with missing baby codes should be rejected completely and no reports generated" do
+        batch_file = process_batch_file('missing_baby_code.csv', survey, user)
+        batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded is missing one or more baby codes. Each record must have a baby code.")
+        Response.count.should == 0
+        Answer.count.should == 0
+        batch_file.record_count.should be_nil
+        batch_file.problem_record_count.should be_nil
+        batch_file.summary_report_path.should be_nil
+        batch_file.detail_report_path.should be_nil
       end
 
       it "should reject records with missing mandatory fields" do
