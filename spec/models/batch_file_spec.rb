@@ -119,7 +119,8 @@ describe BatchFile do
         Answer.all.each { |a| a.has_fatal_warning?.should be_false }
         Answer.all.each { |a| a.has_warning?.should be_false }
         batch_file.record_count.should == 3
-        batch_file.summary_report_path.should == "some path"
+        batch_file.summary_report_path.should == "summary path"
+        batch_file.detail_report_path.should == "detail path"
       end
     end
 
@@ -132,7 +133,8 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
-        batch_file.summary_report_path.should == "some path"
+        batch_file.summary_report_path.should == "summary path"
+        batch_file.detail_report_path.should == "detail path"
       end
 
       it "should reject records with missing mandatory fields" do
@@ -142,7 +144,8 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
-        batch_file.summary_report_path.should == "some path"
+        batch_file.summary_report_path.should == "summary path"
+        batch_file.detail_report_path.should == "detail path"
       end
 
       it "should reject records with missing mandatory fields - where the column is missing entirely" do
@@ -152,7 +155,8 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
-        batch_file.summary_report_path.should == "some path"
+        batch_file.summary_report_path.should == "summary path"
+        batch_file.detail_report_path.should == "detail path"
       end
 
       it "should reject records with choice answers that are not one of the allowed values for the question" do
@@ -162,7 +166,8 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
-        batch_file.summary_report_path.should == "some path"
+        batch_file.summary_report_path.should == "summary path"
+        batch_file.detail_report_path.should == "detail path"
       end
 
       it "should reject records with integer answers that are badly formed" do
@@ -172,7 +177,8 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
-        batch_file.summary_report_path.should == "some path"
+        batch_file.summary_report_path.should == "summary path"
+        batch_file.detail_report_path.should == "detail path"
       end
 
       it "should reject records with decimal answers that are badly formed" do
@@ -182,7 +188,8 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
-        batch_file.summary_report_path.should == "some path"
+        batch_file.summary_report_path.should == "summary path"
+        batch_file.detail_report_path.should == "detail path"
       end
 
       it "should reject records with time answers that are badly formed" do
@@ -192,7 +199,8 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
-        batch_file.summary_report_path.should == "some path"
+        batch_file.summary_report_path.should == "summary path"
+        batch_file.detail_report_path.should == "detail path"
       end
 
       it "should reject records with date answers that are badly formed" do
@@ -202,7 +210,8 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
-        batch_file.summary_report_path.should == "some path"
+        batch_file.summary_report_path.should == "summary path"
+        batch_file.detail_report_path.should == "detail path"
       end
 
       it "should reject records which fail cross-question validations" do
@@ -212,7 +221,8 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
-        batch_file.summary_report_path.should == "some path"
+        batch_file.summary_report_path.should == "summary path"
+        batch_file.detail_report_path.should == "detail path"
       end
     end
 
@@ -224,7 +234,8 @@ describe BatchFile do
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should == 3
-        batch_file.summary_report_path.should == "some path"
+        batch_file.summary_report_path.should == "summary path"
+        batch_file.detail_report_path.should == "detail path"
       end
     end
 
@@ -232,9 +243,14 @@ describe BatchFile do
   end
 
   def process_batch_file(file_name, survey, user)
-    mock_report_generator = mock('summary report generator mock')
-    BatchSummaryReportGenerator.stub(:new).and_return(mock_report_generator)
-    mock_report_generator.stub(:generate_report).and_return("some path")
+    mock_summary_report_generator = mock('summary report generator mock')
+    BatchSummaryReportGenerator.stub(:new).and_return(mock_summary_report_generator)
+    mock_summary_report_generator.stub(:generate_report).and_return("summary path")
+
+    mock_detail_report_generator = mock('detail report generator mock')
+    BatchDetailReportGenerator.stub(:new).and_return(mock_detail_report_generator)
+    mock_detail_report_generator.stub(:generate_report).and_return("detail path")
+
     batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('features/sample_data/batch_files/' + file_name, 'text/csv'), survey: survey, user: user, hospital: hospital)
     batch_file.process
     batch_file.reload

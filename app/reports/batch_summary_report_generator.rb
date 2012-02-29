@@ -7,7 +7,7 @@ class BatchSummaryReportGenerator
   end
 
   def generate_report
-    file_path = File.join(APP_CONFIG['summary_reports_path'], "#{batch_file.id}-summary.pdf")
+    file_path = File.join(APP_CONFIG['batch_reports_path'], "#{batch_file.id}-summary.pdf")
     bf = self.batch_file
     Prawn::Document.generate file_path do
       font_size(24)

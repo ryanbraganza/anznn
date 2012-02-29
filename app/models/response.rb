@@ -125,6 +125,10 @@ class Response < ActiveRecord::Base
     violates_mandatory || answers.collect(&:has_warning?).any?
   end
 
+  def missing_mandatory_questions
+    Question.find(missing_mandatory_question_ids)
+  end
+
   private
 
   def all_mandatory_passed(answers)
@@ -140,9 +144,16 @@ class Response < ActiveRecord::Base
   end
 
   def violates_mandatory
+    !missing_mandatory_question_ids.empty?
+  end
+
+  def missing_mandatory_question_ids
     required_question_ids = survey.questions.where(:mandatory => true).collect(&:id)
     answered_question_ids = answers.collect(&:question_id)
-    !(required_question_ids - answered_question_ids).empty?
+    puts "required #{required_question_ids}"
+    puts "answered #{answered_question_ids}"
+    puts "difference #{required_question_ids - answered_question_ids}"
+    required_question_ids - answered_question_ids
   end
 
 end

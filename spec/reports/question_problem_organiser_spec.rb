@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe QuestionProblemOrganiser do
-  describe "Takes errors an warnings from all responses and organises them by question and error message" do
+  describe "Takes errors and warnings from all responses and aggregates them by question and error message" do
     it "should accept a set of problems and organise them for display" do
       qpo = QuestionProblemOrganiser.new
       qpo.add_problems("q1", "b1", %w(fwa fwb), %w(wa wb))

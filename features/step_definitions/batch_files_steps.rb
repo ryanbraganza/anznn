@@ -36,7 +36,7 @@ Given /^I have batch uploads$/ do |table|
 
     #create fake reports so we can test downloading them
     if reports
-      file_path = File.join(APP_CONFIG['summary_reports_path'], "#{bf.id}-summary.pdf")
+      file_path = File.join(APP_CONFIG['batch_reports_path'], "#{bf.id}-summary.pdf")
       Prawn::Document.generate file_path do
         text "Fake PDF"
       end

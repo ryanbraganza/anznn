@@ -44,7 +44,10 @@ class BatchFile < ActiveRecord::Base
     BatchFile.transaction do
       begin
         can_generate_report = process_batch
-        self.summary_report_path = BatchSummaryReportGenerator.new(self).generate_report if can_generate_report
+        if can_generate_report
+          self.summary_report_path = BatchSummaryReportGenerator.new(self).generate_report
+          self.detail_report_path = BatchDetailReportGenerator.new(self).generate_report
+        end
       rescue ArgumentError
         logger.info("Argument error while reading file")
         # Note: Catching ArgumentError seems a bit odd, but CSV throws it when the file is not UTF-8 which happens if you upload an xls file
