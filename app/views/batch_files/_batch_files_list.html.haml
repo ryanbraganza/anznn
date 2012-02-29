@@ -5,6 +5,7 @@
   %table#batch_uploads.bordered-table
     %tr
       %th Survey Type
+      %th Filename
       %th Created By
       %th Date Uploaded
       %th Status
@@ -14,6 +15,7 @@
       %tr
 
         %td= batch_file.survey.name
+        %td= batch_file.file_file_name
         %td= batch_file.user.full_name
         %td= time_tag batch_file.created_at
         %td= batch_file.status
