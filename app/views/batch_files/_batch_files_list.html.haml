@@ -21,3 +21,6 @@
         %td
           - if batch_file.has_summary_report?
             = link_to "Summary Report", summary_report_batch_file_path(batch_file)
+          - if batch_file.has_detail_report?
+            %br/
+            = link_to "Detail Report", detail_report_batch_file_path(batch_file)

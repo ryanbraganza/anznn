@@ -15,6 +15,7 @@ Anznn::Application.routes.draw do
   resources :batch_files, :only => [:new, :create] do
     member do
       get :summary_report
+      get :detail_report
     end
   end
 

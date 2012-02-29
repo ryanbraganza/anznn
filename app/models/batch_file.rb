@@ -39,6 +39,10 @@ class BatchFile < ActiveRecord::Base
     !summary_report_path.blank?
   end
 
+  def has_detail_report?
+    !detail_report_path.blank?
+  end
+
   def success?
     self.status == STATUS_SUCCESS
   end

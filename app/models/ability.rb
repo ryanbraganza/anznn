@@ -19,6 +19,7 @@ class Ability
 
     # aliases for batch files actions
     alias_action :summary_report, to: :read
+    alias_action :detail_report, to: :read
 
     return unless user.role
 

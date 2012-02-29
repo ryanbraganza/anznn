@@ -30,18 +30,29 @@ Given /^I have batch uploads$/ do |table|
     hospital_name = attrs.delete("hospital")
     hospital = Hospital.find_by_name(hospital_name)
     hospital ||= Factory(:hospital, name: hospital_name)
-    reports = attrs.delete("report") == "true"
+    summary = attrs.delete("summary report") == "true"
+    detail = attrs.delete("detail report") == "true"
 
     bf = Factory(:batch_file, attrs.merge(survey: survey, user: uploader, hospital: hospital))
 
     #create fake reports so we can test downloading them
-    if reports
+    if summary
       file_path = File.join(APP_CONFIG['batch_reports_path'], "#{bf.id}-summary.pdf")
       Prawn::Document.generate file_path do
         text "Fake PDF"
       end
+      bf.summary_report_path = file_path
     end
-    bf.summary_report_path = file_path
+
+    if detail
+      file_path = File.join(APP_CONFIG['batch_reports_path'], "#{bf.id}-details.csv")
+      CSV.open(file_path, "wb") do |csv|
+        csv.add_row ['BabyCode', 'Column Name', 'Type', 'Value', 'Message']
+        csv.add_row ['1', 'MoAge', 'Error', '6', 'A bad value']
+      end
+      bf.detail_report_path = file_path
+    end
+
     bf.save!
   end
 end
