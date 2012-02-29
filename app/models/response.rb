@@ -11,6 +11,7 @@ class Response < ActiveRecord::Base
   belongs_to :survey
   belongs_to :user
   belongs_to :hospital
+  belongs_to :batch_file
 
   has_many :answers, dependent: :destroy
 

@@ -98,6 +98,7 @@ describe BatchFile do
           r.user.should eq(user)
           r.hospital.should eq(hospital)
           r.submitted_status.should eq(Response::STATUS_SUBMITTED)
+          r.batch_file.id.should eq(batch_file.id)
         end
 
         answer_hash = r1.answers.reduce({}) { |hash, answer| hash[answer.question.code] = answer; hash }

@@ -94,7 +94,7 @@ class BatchFile < ActiveRecord::Base
       if baby_code.blank?
         failures = true
       else
-        response = Response.new(survey: survey, baby_code: baby_code, user: user, hospital: hospital, submitted_status: Response::STATUS_UNSUBMITTED)
+        response = Response.new(survey: survey, baby_code: baby_code, user: user, hospital: hospital, submitted_status: Response::STATUS_UNSUBMITTED, batch_file: self)
         response.build_answers_from_hash(row.to_hash)
         failures = true if response.fatal_warnings?
         warnings = true if response.warnings?
