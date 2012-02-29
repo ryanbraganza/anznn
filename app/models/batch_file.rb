@@ -10,6 +10,7 @@ class BatchFile < ActiveRecord::Base
 
   MESSAGE_WARNINGS = "The file you uploaded has one or more warnings. Please review the reports for details."
   MESSAGE_NO_BABY_CODE = "The file you uploaded did not contain a BabyCode column"
+  MESSAGE_MISSING_BABY_CODES = "The file you uploaded is missing one or more baby codes. Each record must have a baby code."
   MESSAGE_EMPTY = "The file you uploaded did not contain any data"
   MESSAGE_FAILED_VALIDATION = "The file you uploaded did not pass validation. Please review the reports for details."
   MESSAGE_SUCCESS = "Your file has been processed successfully"
@@ -92,7 +93,8 @@ class BatchFile < ActiveRecord::Base
       processed_a_row = true
       baby_code = row[BABY_CODE_COLUMN]
       if baby_code.blank?
-        failures = true
+        set_outcome(STATUS_FAILED, MESSAGE_MISSING_BABY_CODES)
+        return false
       else
         response = Response.new(survey: survey, baby_code: baby_code, user: user, hospital: hospital, submitted_status: Response::STATUS_UNSUBMITTED, batch_file: self)
         response.build_answers_from_hash(row.to_hash)
@@ -119,7 +121,7 @@ class BatchFile < ActiveRecord::Base
       end
       set_outcome(STATUS_SUCCESS, MESSAGE_SUCCESS)
     end
-    self.responses = responses
+    self.responses = responses #this is only ever kept in memory for the sake of reporting, its not an AR association
     true
   end
 
