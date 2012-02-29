@@ -12,7 +12,7 @@ class BatchReportGenerator
     # get all the problems from all the responses organised for reporting
     batch_file.responses.each do |r|
       r.answers.each do |answer|
-        organiser.add_problems(answer.question.code, r.baby_code, answer.fatal_warnings, answer.warnings, answer.answer_value)
+        organiser.add_problems(answer.question.code, r.baby_code, answer.fatal_warnings, answer.warnings, answer.format_for_batch_report)
       end
       r.missing_mandatory_questions.each do |question|
         organiser.add_problems(question.code, r.baby_code, ["This question is mandatory"], [], "")

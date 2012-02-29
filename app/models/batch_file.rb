@@ -65,6 +65,7 @@ class BatchFile < ActiveRecord::Base
   end
 
   def problem_record_count
+    return nil if responses.nil?
     responses.collect(&:warnings?).count(true)
   end
 

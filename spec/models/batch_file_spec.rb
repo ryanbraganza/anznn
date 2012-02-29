@@ -42,7 +42,7 @@ describe BatchFile do
       Factory(:question_option, question: choice_q, option_value: "1", label: "Yes")
       Factory(:question_option, question: choice_q, option_value: "99", label: "Dunno")
 
-      Factory(:cross_question_validation, question: date1, related_question: date2, rule: 'date_gt')
+      Factory(:cross_question_validation, question: date1, related_question: date2, rule: 'date_gt', error_message: 'date prob')
       survey.reload
       survey
     end
@@ -250,7 +250,6 @@ describe BatchFile do
 
     describe "with a range of errors and warnings" do
       it "should produce a CSV detail report file with correct error and warning details" do
-        pending "awaiting fix for formatting date"
         batch_file = process_batch_file('a_range_of_problems.csv', survey, user)
 
         batch_file.status.should eq("Failed")

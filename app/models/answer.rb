@@ -18,7 +18,7 @@ class Answer < ActiveRecord::Base
   belongs_to :response
 
   validates_presence_of :question
-#  validates_presence_of :response
+  #  validates_presence_of :response
   validate :mutually_exclusive_columns_are_blank
 
   serialize :raw_answer
@@ -71,6 +71,20 @@ class Answer < ActiveRecord::Base
           qo = question.question_options.where(option_value: self.answer_value).first
           qo ? qo.display_value : "Not answered"
         end
+      else
+        raise "Unknown question type #{question.question_type}"
+    end
+  end
+
+  def format_for_batch_report
+    return raw_answer unless raw_answer.nil?
+    case question.question_type
+      when TYPE_TEXT, TYPE_DECIMAL, TYPE_INTEGER, TYPE_CHOICE
+        answer_value.to_s
+      when TYPE_DATE
+        date_answer.strftime('%Y-%m-%d')
+      when TYPE_TIME
+        time_answer.strftime('%H:%M')
       else
         raise "Unknown question type #{question.question_type}"
     end

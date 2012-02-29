@@ -357,4 +357,25 @@ describe Answer do
     end
   end
 
+  describe "Formatting an answer for batch file detail report" do
+
+    it "should handle each of the data types correctly" do
+      Factory(:answer, question: text_question, answer_value: "blah").format_for_batch_report.should eq("blah")
+      Factory(:answer, question: integer_question, answer_value: "14").format_for_batch_report.should eq("14")
+      Factory(:answer, question: decimal_question, answer_value: "14").format_for_batch_report.should eq("14.0")
+      Factory(:answer, question: decimal_question, answer_value: "22.5").format_for_batch_report.should eq("22.5")
+      Factory(:answer, question: decimal_question, answer_value: "22.59").format_for_batch_report.should eq("22.59")
+      Factory(:answer, question: date_question, answer_value: "31/12/2011").format_for_batch_report.should eq("2011-12-31")
+      Factory(:answer, question: time_question, answer_value: "18:06").format_for_batch_report.should eq("18:06")
+      Factory(:answer, question: choice_question, answer_value: "99").format_for_batch_report.should eq("99")
+    end
+
+    it "should return the raw answer for answers that are invalid" do
+      Answer.new(question: integer_question, raw_answer: "asdf").format_for_batch_report.should eq("asdf")
+      Answer.new(question: decimal_question, raw_answer: "asdf").format_for_batch_report.should eq("asdf")
+      Answer.new(question: date_question, raw_answer: "12/ff/3333").format_for_batch_report.should eq("12/ff/3333")
+      Answer.new(question: time_question, raw_answer: "18:ab").format_for_batch_report.should eq("18:ab")
+    end
+  end
+
 end
