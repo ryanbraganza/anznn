@@ -3,6 +3,7 @@ require 'bundler/capistrano'
 require 'capistrano/ext/multistage'
 require 'capistrano_colors'
 require 'rvm/capistrano'
+require "delayed/recipes"
 
 set :application, 'anznn'
 set :stages, %w(qa staging production)
@@ -200,3 +201,6 @@ task :generate_database_yml, :roles => :app do
   put YAML::dump(buffer), "#{release_path}/config/database.yml", :mode => 0664
 end
 
+after "deploy:stop",    "delayed_job:stop"
+after "deploy:start",   "delayed_job:start"
+after "deploy:restart", "delayed_job:restart"
