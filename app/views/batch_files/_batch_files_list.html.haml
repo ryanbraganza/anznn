@@ -8,6 +8,7 @@
       %th Filename
       %th Created By
       %th Date Uploaded
+      %th Num records
       %th Status
       %th Details
       %th Reports
@@ -18,6 +19,7 @@
         %td= batch_file.file_file_name
         %td= batch_file.user.full_name
         %td= time_tag batch_file.created_at
+        %td= batch_file.record_count
         %td= batch_file.status
         %td= batch_file.message
         %td
