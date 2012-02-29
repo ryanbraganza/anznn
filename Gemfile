@@ -75,4 +75,5 @@ gem "simplecov", ">=0.3.8", :require => false, :group => :test
 gem "bootstrap-sass", '~> 1.4.4'
 gem "paperclip", "~> 2.0"
 gem 'delayed_job_active_record'
+gem 'daemons'
 gem 'prawn'
