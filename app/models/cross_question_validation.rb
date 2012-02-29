@@ -30,6 +30,10 @@ class CrossQuestionValidation < ActiveRecord::Base
   private
 
   cattr_accessor(:rule_checkers){{}}
+
+  def self.is_operator_safe?(operator)
+    %w(== <= >= < > !=).include? operator
+  end
  
   def self.register_checker(rule, &block)
     # Call register_checker with the rule 'code' of your check.
@@ -40,8 +44,17 @@ class CrossQuestionValidation < ActiveRecord::Base
     rule_checkers[rule] = block
   end
 
+  register_checker 'comparison' do |answer, related_answer, operator, offset=0|
+    if is_operator_safe? (operator)
+      answer.answer_val.send operator, (related_answer.answer_val + offset)
+    else
+      false
+    end
+  end
+
   register_checker 'date_lte' do |answer, related_answer|
-    answer.date_answer <= related_answer.date_answer
+    rule_checkers['comparison'].call answer, related_answer, '<='
+    #answer.date_answer <= related_answer.date_answer
   end
 
   register_checker 'date_gte' do |answer, related_answer|

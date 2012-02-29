@@ -26,5 +26,26 @@ class PartialDateTimeHash < HashWithIndifferentAccess
   end
 
 
+  #Comparison Operators
+  def <(other)
+    other.class.new
+  end
+
+  def >(other)
+  end
+
+  def <=(other)
+  end
+
+  def >=(other)
+  end
+
+  def ==(other)
+  end
+
+  def !=(other)
+  end
+
+
 
 end
