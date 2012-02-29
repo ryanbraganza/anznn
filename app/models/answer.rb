@@ -101,7 +101,7 @@ class Answer < ActiveRecord::Base
     unless self.raw_answer.blank?
       ans_val = self.raw_answer
       if ans_val.is_a?(Hash)
-        #By Convert the hash to a PartialDateTimeHash so we get the helper methods
+        #Convert the hash to a PartialDateTimeHash so we get the helper methods
         ans_val = PartialDateTimeHash.new(ans_val)
       end
       return ans_val
@@ -110,28 +110,23 @@ class Answer < ActiveRecord::Base
 
     #If not then lets assign the correct value
     qn_type = self.question.question_type
-    return case qn_type
-             when TYPE_TEXT
-               self.text_answer
-             when TYPE_DATE
-               #The only reason why this is converted to a PDTH rather than left as a Date object is because
-               #The object that goes in to this model should be of the same type as the one that comes out - ie you
-               # shouldn't put in a hash and get out a date.
-               # If for some reason the PDTH doesn't meet requirements and can't be extended, then you should be
-               # able to revert back to a Date without breaking too much. Good luck!
-               PartialDateTimeHash.new self.date_answer
-             when TYPE_TIME
-               # See above
-               PartialDateTimeHash.new self.time_answer
-             when TYPE_CHOICE
-               self.choice_answer
-             when TYPE_DECIMAL
-               self.decimal_answer
-             when TYPE_INTEGER
-               self.integer_answer
-             else
-               nil
-           end
+
+    case qn_type
+      when TYPE_TEXT
+        self.text_answer
+      when TYPE_DATE
+        self.date_answer
+      when TYPE_TIME
+        self.time_answer
+      when TYPE_CHOICE
+        self.choice_answer
+      when TYPE_DECIMAL
+        self.decimal_answer
+      when TYPE_INTEGER
+        self.integer_answer
+      else
+        nil
+    end
   end
 
   private
@@ -228,8 +223,8 @@ class Answer < ActiveRecord::Base
           if input.blank?
             self.decimal_answer = nil
           else
-            float = Float(input)
-            self.decimal_answer = float
+            Float(input) #This is used to see if the number can be expressed as a decimal - BigDecimal won't raise any exceptions
+            self.decimal_answer = input
           end
         when TYPE_INTEGER
           if input.blank?

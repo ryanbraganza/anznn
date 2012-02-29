@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120228001315) do
+ActiveRecord::Schema.define(:version => 20120229032851) do
 
   create_table "answers", :force => true do |t|
     t.integer "response_id"
@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(:version => 20120228001315) do
     t.text    "text_answer"
     t.date    "date_answer"
     t.time    "time_answer"
-    t.float   "decimal_answer"
+    t.decimal "decimal_answer"
     t.integer "integer_answer"
     t.string  "choice_answer"
     t.string  "raw_answer"
@@ -49,6 +49,8 @@ ActiveRecord::Schema.define(:version => 20120228001315) do
     t.integer "related_question_id"
     t.string  "rule"
     t.string  "error_message"
+    t.string  "operator"
+    t.decimal "constant"
   end
 
   create_table "delayed_jobs", :force => true do |t|

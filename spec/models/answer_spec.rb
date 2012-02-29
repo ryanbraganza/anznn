@@ -95,7 +95,7 @@ describe Answer do
       it "saves invalid input as 'raw input' and has a warning" do
         a = Answer.new(question: decimal_question)
         a.answer_value = '1.23f'
-        a.decimal_answer.should_not be
+        a.decimal_answer.should be_false
         a.raw_answer.should eq '1.23f'
         a.has_warning?.should be_true
 
@@ -106,15 +106,15 @@ describe Answer do
         a.decimal_answer.should eq 1.23
 
         a.answer_value = ''
-        a.decimal_answer.should_not be
-        a.raw_answer.should_not be
+        a.decimal_answer.should be_false
+        a.raw_answer.should be_false
       end
       it "does not nil out on invalid input, and has a warning" do
         a = Factory(:answer, question: decimal_question, decimal_answer: 1.23)
         a.decimal_answer.should eq 1.23
 
         a.answer_value = 'garbage'
-        a.decimal_answer.should_not be
+        a.decimal_answer.should be_false
         a.raw_answer.should eq 'garbage'
         a.has_warning?.should be_true
 
@@ -139,8 +139,8 @@ describe Answer do
         a.integer_answer.should eq 123
 
         a.answer_value = ''
-        a.integer_answer.should_not be
-        a.raw_answer.should_not be
+        a.integer_answer.should be_false
+        a.raw_answer.should be_false
       end
       # The answer record should be culled if it becomes empty, but if it gets left behind it should be blank.
       it "does not nil out on invalid input and shows a warning" do
@@ -148,7 +148,7 @@ describe Answer do
         a.integer_answer.should eq 123
 
         a.answer_value = 'garbage'
-        a.integer_answer.should_not be
+        a.integer_answer.should be_false
         a.raw_answer.should eq 'garbage'
         a.has_warning?.should be_true
 
@@ -217,13 +217,13 @@ describe Answer do
       date_hash = PartialDateTimeHash.new({day: date.day, month: date.month, year: date.year})
       a = Answer.new(response: response, question: date_question, answer_value: date_hash)
       a.save!; a.answer_value = nil; a.reload
-      a.answer_value.should eq(date_hash)
+      PartialDateTimeHash.new(a.answer_value).should eq(date_hash)
     end
     it "Valid time" do
       time_hash = PartialDateTimeHash.new(Time.now)
       a = Answer.new(response: response, question: time_question, answer_value: time_hash)
       a.save!; a.answer_value = nil; a.reload
-      a.answer_value.should eq(time_hash)
+      PartialDateTimeHash.new(a.answer_value).should eq(time_hash)
     end
     it "Valid decimal" do
       pending

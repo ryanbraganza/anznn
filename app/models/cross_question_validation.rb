@@ -46,7 +46,7 @@ class CrossQuestionValidation < ActiveRecord::Base
 
   register_checker 'comparison' do |answer, related_answer, operator, offset=0|
     if is_operator_safe? (operator)
-      answer.answer_val.send operator, (related_answer.answer_val + offset)
+      answer.answer_value.send operator, (related_answer.answer_value + offset)
     else
       false
     end
@@ -58,14 +58,17 @@ class CrossQuestionValidation < ActiveRecord::Base
   end
 
   register_checker 'date_gte' do |answer, related_answer|
-    answer.date_answer >= related_answer.date_answer
+    rule_checkers['comparison'].call answer, related_answer, '>='
+    #answer.date_answer >= related_answer.date_answer
   end
 
   register_checker 'date_lt' do |answer, related_answer|
-    answer.date_answer < related_answer.date_answer
+    rule_checkers['comparison'].call answer, related_answer, '<'
+    #answer.date_answer < related_answer.date_answer
   end
 
   register_checker 'date_gt' do |answer, related_answer|
-    answer.date_answer > related_answer.date_answer
+    rule_checkers['comparison'].call answer, related_answer, '>'
+    #answer.date_answer > related_answer.date_answer
   end
 end
