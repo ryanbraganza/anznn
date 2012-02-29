@@ -1,4 +1,5 @@
 require 'spec_helper'
+include CsvSurveyOperations
 
 describe BatchFile do
   describe "Associations" do
@@ -26,25 +27,10 @@ describe BatchFile do
   #TODO: these are really integration tests, perhaps belong elsewhere
   describe "File processing" do
     let(:survey) do
-      survey = Factory(:survey)
-      s1 = Factory(:section, survey: survey)
-      s2 = Factory(:section, survey: survey)
-      Factory(:question, section: s1, question_type: Question::TYPE_TEXT, mandatory: true, code: "TextMandatory")
-      Factory(:question, section: s1, question_type: Question::TYPE_TEXT, mandatory: false, code: "TextOptional")
-      date1 = Factory(:question, section: s1, question_type: Question::TYPE_DATE, mandatory: false, code: "Date1")
-      date2 = Factory(:question, section: s1, question_type: Question::TYPE_DATE, mandatory: false, code: "Date2")
-      Factory(:question, section: s1, question_type: Question::TYPE_TIME, mandatory: false, code: "Time")
-      choice_q = Factory(:question, section: s2, question_type: Question::TYPE_CHOICE, mandatory: false, code: "Choice")
-      Factory(:question, section: s2, question_type: Question::TYPE_DECIMAL, mandatory: false, code: "Decimal")
-      Factory(:question, section: s2, question_type: Question::TYPE_INTEGER, mandatory: false, code: "Integer", number_min: 5)
-
-      Factory(:question_option, question: choice_q, option_value: "0", label: "No")
-      Factory(:question_option, question: choice_q, option_value: "1", label: "Yes")
-      Factory(:question_option, question: choice_q, option_value: "99", label: "Dunno")
-
-      Factory(:cross_question_validation, question: date1, related_question: date2, rule: 'date_gt', error_message: 'date prob')
-      survey.reload
-      survey
+      question_file = Rails.root.join 'test_data/survey', 'survey_questions.csv'
+      options_file = Rails.root.join 'test_data/survey', 'survey_options.csv'
+      cross_question_validations_file = Rails.root.join 'test_data/survey', 'cross_question_validations.csv'
+      create_survey("some_name", question_file, options_file, cross_question_validations_file)
     end
     let(:user) { Factory(:user) }
     let(:hospital) { Factory(:hospital) }
@@ -277,7 +263,7 @@ describe BatchFile do
   end
 
   def process_batch_file(file_name, survey, user)
-    batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('features/sample_data/batch_files/' + file_name, 'text/csv'), survey: survey, user: user, hospital: hospital)
+    batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('test_data/survey/batch_files/' + file_name, 'text/csv'), survey: survey, user: user, hospital: hospital)
     batch_file.process
     batch_file.reload
     batch_file

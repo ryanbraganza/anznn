@@ -44,4 +44,22 @@ module CsvSurveyOperations
       CrossQuestionValidation.create!(attrs)
     end
   end
+
+  def create_survey(name, question_file, options_file=nil, cross_question_validations_file=nil)
+
+    survey = Survey.create!(name: name)
+
+    questions = read_hashes_from_csv(question_file)
+    import_questions(survey, questions)
+    if options_file
+      question_options = read_hashes_from_csv(options_file)
+      import_question_options(survey, question_options)
+    end
+
+    if cross_question_validations_file
+      cqv_hashes = read_hashes_from_csv(cross_question_validations_file)
+      import_cross_question_validations(survey, cqv_hashes)
+    end
+    survey
+  end
 end

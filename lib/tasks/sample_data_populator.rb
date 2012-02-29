@@ -1,4 +1,6 @@
 require 'csv'
+require 'csv_survey_operations.rb'
+include CsvSurveyOperations
 
 def populate_data
   load_password
@@ -13,7 +15,6 @@ def populate_data
 end
 
 def create_hospitals
-  include CsvSurveyOperations
   Hospital.delete_all
 
   hospitals = read_hashes_from_csv(Rails.root.join("lib/tasks", "hospitals.csv"))
@@ -31,23 +32,15 @@ def create_surveys
   Section.delete_all
   Question.delete_all
   QuestionOption.delete_all
-  create_survey("Main Survey", "main_survey_questions.csv", "main_survey_question_options.csv", "main_cross_question_validations.csv")
-  create_survey("Followup Survey", "followup_survey_questions.csv", "followup_survey_question_options.csv", "followup_cross_question_validations.csv")
+  create_survey_from_lib_tasks("Main Survey", "main_survey_questions.csv", "main_survey_question_options.csv", "main_cross_question_validations.csv")
+  create_survey_from_lib_tasks("Followup Survey", "followup_survey_questions.csv", "followup_survey_question_options.csv", "followup_cross_question_validations.csv")
 end
 
-def create_survey(name, question_file, options_file, cross_question_validations_file)
-  include CsvSurveyOperations
-
-  survey = Survey.create!(name: name)
-
-  questions = read_hashes_from_csv(Rails.root.join("lib/tasks", question_file))
-  question_options = read_hashes_from_csv(Rails.root.join("lib/tasks", options_file))
-  cqv_hashes = read_hashes_from_csv(Rails.root.join("lib/tasks", cross_question_validations_file))
-
-  import_questions(survey, questions)
-  import_question_options(survey, question_options)
-  import_cross_question_validations(survey, cqv_hashes)
+def create_survey_from_lib_tasks(name, question_file, options_file, cross_question_validations_file)
+  path_to = ->(filename){Rails.root.join 'lib/tasks', filename}
+  create_survey(name, path_to[question_file], path_to[options_file], path_to[cross_question_validations_file])
 end
+
 
 def create_test_users
   create_user(email: "georgina@intersect.org.au", first_name: "Georgina", last_name: "Edwards")
