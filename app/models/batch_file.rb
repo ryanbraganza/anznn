@@ -39,14 +39,17 @@ class BatchFile < ActiveRecord::Base
     !summary_report_path.blank?
   end
 
+  def success?
+    self.status == STATUS_SUCCESS
+  end
+
   def process
     raise "Batch has already been processed, cannot reprocess" unless status == STATUS_IN_PROGRESS
     BatchFile.transaction do
       begin
         can_generate_report = process_batch
         if can_generate_report
-          self.summary_report_path = BatchSummaryReportGenerator.new(self).generate_report
-          self.detail_report_path = BatchDetailReportGenerator.new(self).generate_report
+          BatchReportGenerator.new(self).generate_reports
         end
       rescue ArgumentError
         logger.info("Argument error while reading file")

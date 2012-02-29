@@ -150,9 +150,6 @@ class Response < ActiveRecord::Base
   def missing_mandatory_question_ids
     required_question_ids = survey.questions.where(:mandatory => true).collect(&:id)
     answered_question_ids = answers.collect(&:question_id)
-    puts "required #{required_question_ids}"
-    puts "answered #{answered_question_ids}"
-    puts "difference #{required_question_ids - answered_question_ids}"
     required_question_ids - answered_question_ids
   end
 

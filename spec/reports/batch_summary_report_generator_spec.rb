@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe BatchSummaryReportGenerator do
 
-  it "should return the file path of the generated pdf" do
+  it "should create a pdf in the specified path" do
     batch_file = Factory(:batch_file)
-    generator = BatchSummaryReportGenerator.new(batch_file)
-    file_path = generator.generate_report
-    file_path.should eq("tmp/#{batch_file.id}-summary.pdf")
-    File.exist?(file_path).should be_true
+    organiser = mock
+    organiser.should_receive(:aggregated_by_question_and_message).and_return([["row1", "row1"], ["row2", "row2"]])
+    BatchSummaryReportGenerator.generate_report(batch_file, organiser, "tmp/summary.pdf")
+    File.exist?("tmp/summary.pdf").should be_true
   end
 end
