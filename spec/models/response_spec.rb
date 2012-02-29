@@ -195,7 +195,7 @@ describe Response do
         @q8 = Factory(:question, section: @section3, mandatory: false, question_type: "Date")
         @q9 = Factory(:question, section: @section3, mandatory: false, question_type: "Integer", number_min: 0)
 
-        Factory(:cross_question_validation, rule: 'date_lt', question: @q8, related_question: @q8)
+        Factory(:cross_question_validation, rule: 'comparison', operator: '<', question: @q8, related_question: @q8)
         Factory(:answer, question: @q8, answer_value: Date.today, response: @response)
         Factory(:answer, question: @q9, answer_value: -1, response: @response)
 

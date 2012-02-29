@@ -1,8 +1,12 @@
 class CrossQuestionValidation < ActiveRecord::Base
+  VALID_RULES = %w(comparison)
+  SAFE_OPERATORS = %w(== <= >= < > !=)
+
   belongs_to :question
   belongs_to :related_question, class_name: 'Question'
 
-  validates_inclusion_of :rule, in: ['date_gte', 'date_gt', 'date_lt', 'date_lte']
+  validates_inclusion_of :rule, in: VALID_RULES
+  validates_inclusion_of :operator, in: SAFE_OPERATORS, allow_blank: true
 
   validates_presence_of :question_id
   validates_presence_of :related_question_id
@@ -23,7 +27,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     if answer.nil? or answer.raw_answer or related_answer.nil? or related_answer.raw_answer
       nil
     else
-      error_message unless rule_checkers[rule].call answer, related_answer
+      error_message unless rule_checkers[rule].call answer, related_answer, operator, constant
     end
   end
   
@@ -32,7 +36,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   cattr_accessor(:rule_checkers){{}}
 
   def self.is_operator_safe?(operator)
-    %w(== <= >= < > !=).include? operator
+    SAFE_OPERATORS.include? operator
   end
  
   def self.register_checker(rule, &block)
@@ -44,7 +48,8 @@ class CrossQuestionValidation < ActiveRecord::Base
     rule_checkers[rule] = block
   end
 
-  register_checker 'comparison' do |answer, related_answer, operator, offset=0|
+  register_checker 'comparison' do |answer, related_answer, operator, constant|
+    offset = constant.blank? ? 0 : constant
     if is_operator_safe? (operator)
       answer.answer_value.send operator, (related_answer.answer_value + offset)
     else

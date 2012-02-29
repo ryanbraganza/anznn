@@ -13,8 +13,8 @@ Feature: Cross Question Date Validations
 
   Scenario: date gte
     Given I have the following cross question validations
-      | question | related | rule     | error_message      |
-      | Date Q1  | Date Q2 | date_gte | date should be gte |
+      | question | related | rule       | operator | error_message      |
+      | Date Q1  | Date Q2 | comparison | >=       | date should be gte |
     And I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
     And I am on the edit first response page
@@ -31,8 +31,8 @@ Feature: Cross Question Date Validations
 
   Scenario: date lte
     Given I have the following cross question validations
-      | question | related | rule     | error_message      |
-      | Date Q1  | Date Q2 | date_lte | date should be lte |
+      | question | related | rule       | operator | error_message      |
+      | Date Q1  | Date Q2 | comparison | <=       | date should be lte |
     And I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
     And I am on the edit first response page
@@ -49,8 +49,8 @@ Feature: Cross Question Date Validations
 
   Scenario: date lt
     Given I have the following cross question validations
-      | question | related | rule    | error_message     |
-      | Date Q1  | Date Q2 | date_lt | date should be lt |
+      | question | related | rule       | operator | error_message     |
+      | Date Q1  | Date Q2 | comparison | <        | date should be lt |
     And I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
     And I am on the edit first response page
@@ -67,8 +67,8 @@ Feature: Cross Question Date Validations
 
   Scenario: date gt
     Given I have the following cross question validations
-      | question | related | rule    | error_message     |
-      | Date Q1  | Date Q2 | date_gt | date should be gt |
+      | question | related | rule       | operator | error_message     |
+      | Date Q1  | Date Q2 | comparison | >        | date should be gt |
     And I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
     And I am on the edit first response page
@@ -85,9 +85,9 @@ Feature: Cross Question Date Validations
 
   Scenario: multiple error messages
     Given I have the following cross question validations
-      | question | related | rule    | error_message            |
-      | Date Q1  | Date Q2 | date_gt | date should be gt        |
-      | Date Q1  | Date Q2 | date_gt | date should really be gt |
+      | question | related | rule       | operator | error_message            |
+      | Date Q1  | Date Q2 | comparison | >        | date should be gt        |
+      | Date Q1  | Date Q2 | comparison | >        | date should really be gt |
     And I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
     And I am on the edit first response page
@@ -105,9 +105,9 @@ Feature: Cross Question Date Validations
 
   Scenario: no infinite loop
     Given I have the following cross question validations
-      | question | related | rule    | error_message     |
-      | Date Q1  | Date Q2 | date_gt | date should be gt |
-      | Date Q2  | Date Q1 | date_lt | date should be gt |
+      | question | related | rule       | operator | error_message     |
+      | Date Q1  | Date Q2 | comparison | >        | date should be gt |
+      | Date Q2  | Date Q1 | comparison | <        | date should be gt |
     And I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
     And I am on the edit first response page
@@ -116,5 +116,5 @@ Feature: Cross Question Date Validations
       | Date Q1  | 2012/2/1 |
       | Date Q2  | 2012/2/2 |
     And press "Save page"
-    # Then I should not get a "stack level too deep" error
+  # Then I should not get a "stack level too deep" error
     And I should be on the edit first response page

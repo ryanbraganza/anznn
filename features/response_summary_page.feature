@@ -70,8 +70,8 @@ Feature: View a summary page for a survey response
 
   Scenario: Section is incomplete when a cross-question validation fails (and all questions are answered)
     Given I have the following cross question validations
-      | question       | related     | rule    | error_message        |
-      | Sect1 QDate    | Sect1 QDate | date_gt | This will never pass |
+      | question | related | rule       | operator | error_message      |
+      | Sect1 QDate    | Sect1 QDate | comparison | > | This will never pass |
     And I am on the edit first response page
     When I answer as follows
       | question       | answer     |
