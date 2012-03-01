@@ -57,12 +57,18 @@ Given /^I have batch uploads$/ do |table|
   end
 end
 
+When /^the system processes the latest upload$/ do
+  bf = BatchFile.last
+  bf.process
+end
+
 def check_batch_file(survey_name, email, hospital_name)
   file = BatchFile.last
   file.survey.should eq(Survey.find_by_name!(survey_name))
   file.user.should eq(User.find_by_email!(email))
   file.hospital.should eq(Hospital.find_by_name!(hospital_name))
   # since the test env is configured to store files in tmp, we look for them there
-  expected_path = Rails.root.join("tmp/#{file.id}.csv").to_s
+  ext = File.extname(file.file_file_name)
+  expected_path = Rails.root.join("tmp/#{file.id}#{ext}").to_s
   file.file.path.should eq(expected_path)
 end

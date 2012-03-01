@@ -15,6 +15,7 @@ class BatchFile < ActiveRecord::Base
   MESSAGE_FAILED_VALIDATION = "The file you uploaded did not pass validation. Please review the reports for details."
   MESSAGE_SUCCESS = "Your file has been processed successfully"
   MESSAGE_BAD_FORMAT = "The file you uploaded was not a valid CSV file"
+  MESSAGE_DUPLICATE_BABY_CODES = "The file you uploaded contained duplicate baby codes. Each baby code can only be used once."
 
   belongs_to :survey
   belongs_to :user
@@ -77,36 +78,26 @@ class BatchFile < ActiveRecord::Base
   private
 
   def process_batch
+    logger.info("Processing batch file with id #{id}")
+
+    passed_pre_processing = pre_process_file
+    unless passed_pre_processing
+      save!
+      return
+    end
+
+    count = 0
     failures = false
     warnings = false
     responses = []
-    logger.info("Processing batch file with id #{id}")
-    processed_a_row = false
-    count = 0
-
     CSV.foreach(file.path, {headers: true}) do |row|
-      unless row.headers.include?(BABY_CODE_COLUMN)
-        set_outcome(STATUS_FAILED, MESSAGE_NO_BABY_CODE)
-        return false
-      end
       count += 1
-      processed_a_row = true
       baby_code = row[BABY_CODE_COLUMN]
-      if baby_code.blank?
-        set_outcome(STATUS_FAILED, MESSAGE_MISSING_BABY_CODES)
-        return false
-      else
-        response = Response.new(survey: survey, baby_code: baby_code, user: user, hospital: hospital, submitted_status: Response::STATUS_UNSUBMITTED, batch_file: self)
-        response.build_answers_from_hash(row.to_hash)
-        failures = true if response.fatal_warnings?
-        warnings = true if response.warnings?
-        responses << response
-      end
-    end
-
-    if !processed_a_row
-      set_outcome(STATUS_FAILED, MESSAGE_EMPTY)
-      return false
+      response = Response.new(survey: survey, baby_code: baby_code, user: user, hospital: hospital, submitted_status: Response::STATUS_UNSUBMITTED, batch_file: self)
+      response.build_answers_from_hash(row.to_hash)
+      failures = true if response.fatal_warnings?
+      warnings = true if response.warnings?
+      responses << response
     end
 
     self.record_count = count
@@ -121,7 +112,40 @@ class BatchFile < ActiveRecord::Base
       end
       set_outcome(STATUS_SUCCESS, MESSAGE_SUCCESS)
     end
+    save!
     self.responses = responses #this is only ever kept in memory for the sake of reporting, its not an AR association
+    true
+  end
+
+  def pre_process_file
+    # do basic checks that can result in the file failing completely and not being validated
+    count = 0
+    baby_codes = []
+    CSV.foreach(file.path, {headers: true}) do |row|
+      unless row.headers.include?(BABY_CODE_COLUMN)
+        set_outcome(STATUS_FAILED, MESSAGE_NO_BABY_CODE)
+        return false
+      end
+      count += 1
+      baby_code = row[BABY_CODE_COLUMN]
+      if baby_code.blank?
+        set_outcome(STATUS_FAILED, MESSAGE_MISSING_BABY_CODES)
+        return false
+      else
+        if baby_codes.include?(baby_code)
+          set_outcome(STATUS_FAILED, MESSAGE_DUPLICATE_BABY_CODES)
+          return false
+        else
+          baby_codes << baby_code
+        end
+      end
+    end
+
+    if count == 0
+      set_outcome(STATUS_FAILED, MESSAGE_EMPTY)
+      return false
+    end
+
     true
   end
 

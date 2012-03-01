@@ -152,6 +152,18 @@ describe BatchFile do
         batch_file.detail_report_path.should be_nil
       end
 
+      it "file with duplicate baby codes within the file should be rejected completely and no reports generated" do
+        batch_file = process_batch_file('duplicate_baby_code.csv', survey, user)
+        batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded contained duplicate baby codes. Each baby code can only be used once.")
+        Response.count.should == 0
+        Answer.count.should == 0
+        batch_file.record_count.should be_nil
+        batch_file.problem_record_count.should be_nil
+        batch_file.summary_report_path.should be_nil
+        batch_file.detail_report_path.should be_nil
+      end
+
       it "should reject records with missing mandatory fields" do
         batch_file = process_batch_file('missing_mandatory_fields.csv', survey, user)
         batch_file.status.should eq("Failed")

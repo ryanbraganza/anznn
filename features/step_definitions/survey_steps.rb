@@ -1,3 +1,5 @@
+include CsvSurveyOperations
+
 Given /^I have a survey with name "([^"]*)" and questions$/ do |name, table|
   survey = Survey.create!(:name => name)
   create_questions(survey, table)
@@ -397,6 +399,13 @@ Then /^I can't review response for survey "([^"]*)" and baby code "([^"]*)"$/ do
   response = response_by_survey_name_and_baby_code!(survey, baby_code)
   visit review_answers_response_path(response)
   find("div.alert-message.error").should have_content "You are not authorized to access this page."
+end
+
+Given /^I have the standard survey setup$/ do
+  question_file = Rails.root.join 'test_data/survey', 'survey_questions.csv'
+  options_file = Rails.root.join 'test_data/survey', 'survey_options.csv'
+  cross_question_validations_file = Rails.root.join 'test_data/survey', 'cross_question_validations.csv'
+  create_survey("MySurvey", question_file, options_file, cross_question_validations_file)
 end
 
 def submit_survey_link(baby_code)
