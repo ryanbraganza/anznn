@@ -26,6 +26,12 @@ class Ability
     #All users can see all available surveys
     can :read, Survey
 
+    if user.role.name == Role::DATA_PROVIDER_SUPERVISOR
+      can :force_submit, BatchFile do | batch_file |
+        batch_file.force_submittable?
+      end
+    end
+
     case user.role.name
       when Role::SUPER_USER
         can :read, User

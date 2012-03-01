@@ -24,6 +24,37 @@ describe BatchFile do
     end
   end
 
+  describe "force_submittable?" do
+    let (:batch_file) { BatchFile.new }
+    it "returns true when NEEDS_REVIEW" do
+      batch_file.stub(:status) { BatchFile::STATUS_REVIEW }
+
+      batch_file.should be_force_submittable
+    end
+    it "returns false for FAILED, SUCCESS, IN_PROGRESS" do
+      [BatchFile::STATUS_FAILED, BatchFile::STATUS_SUCCESS, BatchFile::STATUS_IN_PROGRESS].each do |status|
+        batch_file.stub(:status) {status}
+
+        batch_file.should_not be_force_submittable
+      end
+    end
+  end
+  describe "can't process based on status" do
+    let (:batch_file) { BatchFile.new }
+    it "should die trying to force successful" do
+      [BatchFile::STATUS_FAILED, BatchFile::STATUS_SUCCESS, BatchFile::STATUS_IN_PROGRESS].each do |status|
+        batch_file.stub(:status) {status}
+
+        expect { batch_file.process }.should raise_error
+        expect { batch_file.process(:force) }.should raise_error
+      end
+    end
+    it "should needs_review" do
+      batch_file.stub(:status) {BatchFile::STATUS_REVIEW}
+      expect { batch_file.process }.should raise_error
+    end
+  end
+
   #TODO: these are really integration tests, perhaps belong elsewhere
   describe "File processing" do
     let(:survey) do
@@ -342,6 +373,34 @@ describe BatchFile do
         batch_file.problem_record_count.should == 1
         batch_file.summary_report_path.should_not be_nil
         batch_file.detail_report_path.should_not be_nil
+      end
+      it "accepts number range issues if forced to" do
+        # sad path covered earlier
+        batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('test_data/survey/batch_files/number_out_of_range.csv', 'text/csv'), survey: survey, user: user, hospital: hospital)
+        batch_file.process
+        batch_file.reload
+
+        batch_file.status.should eq("Needs Review")
+        batch_file.message.should eq("The file you uploaded has one or more warnings. Please review the reports for details.")
+        Response.count.should == 0
+        Answer.count.should == 0
+        batch_file.record_count.should == 3
+        batch_file.problem_record_count.should == 1
+        batch_file.summary_report_path.should_not be_nil
+        batch_file.detail_report_path.should_not be_nil
+
+        batch_file.process(:force)
+        batch_file.reload
+
+        batch_file.status.should eq("Processed Successfully")
+        batch_file.message.should eq("Your file has been processed successfully")
+        Response.count.should == 3
+        Answer.count.should == 20
+        batch_file.record_count.should == 3
+        batch_file.problem_record_count.should == 1
+        batch_file.summary_report_path.should_not be_nil
+        batch_file.detail_report_path.should_not be_nil
+
       end
     end
 

@@ -9,6 +9,13 @@ Given /^I have a survey with name "([^"]*)"$/ do |name|
   Survey.create!(:name => name)
 end
 
+And /^I have a survey with name "(.*)" with questions from "(.*)" and options from "(.*)"$/ do |survey_name, question_filename, options_filename|
+  pathify = ->(path){Rails.root.join('test_data', path)}
+  questions_path = pathify[question_filename]
+  options_path = pathify[options_filename]
+  create_survey(survey_name, questions_path, options_path)
+end
+
 Given /^"([^"]*)" has sections$/ do |survey_name, table|
   survey = Survey.find_by_name(survey_name)
   table.hashes.each do |sec_attrs|

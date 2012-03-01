@@ -2,6 +2,14 @@ Then /^I should have a batch file stored for survey "([^"]*)" with uploader "([^
   check_batch_file(survey_name, email, hospital_name)
 end
 
+When /^I force submit for "(.*)"$/ do |filename|
+  # should be on homepage first
+  current_url.should eq root_url
+  bf = BatchFile.find_by_file_file_name! filename
+
+  click_button "force_submit_#{bf.id}"
+end
+
 Given /^I upload batch file "([^"]*)" for survey "([^"]*)"$/ do |filename, survey_name|
   visit root_path
   click_link "Upload Batch File"
@@ -60,6 +68,13 @@ end
 When /^the system processes the latest upload$/ do
   bf = BatchFile.last
   bf.process
+end
+
+When /^the batch files are processed$/ do
+  Delayed::Job.all.each do |j|
+    j.invoke_job
+    j.destroy
+  end
 end
 
 def check_batch_file(survey_name, email, hospital_name)

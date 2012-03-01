@@ -49,11 +49,16 @@ class BatchFile < ActiveRecord::Base
     self.status == STATUS_SUCCESS
   end
 
-  def process
-    raise "Batch has already been processed, cannot reprocess" unless status == STATUS_IN_PROGRESS
+  def force_submittable?
+    status == STATUS_REVIEW
+  end
+
+  def process(force=false)
+    raise "Batch has already been processed, cannot reprocess" unless status == STATUS_IN_PROGRESS or force
+    raise "Can't force with status #{status}" unless !force or force_submittable?
     BatchFile.transaction do
       begin
-        can_generate_report = process_batch
+        can_generate_report = process_batch(force)
         if can_generate_report
           BatchReportGenerator.new(self).generate_reports
         end
@@ -94,7 +99,7 @@ class BatchFile < ActiveRecord::Base
 
   private
 
-  def process_batch
+  def process_batch(force)
     logger.info("Processing batch file with id #{id}")
 
     passed_pre_processing = pre_process_file
@@ -121,7 +126,7 @@ class BatchFile < ActiveRecord::Base
     self.record_count = count
     if failures
       set_outcome(STATUS_FAILED, MESSAGE_FAILED_VALIDATION)
-    elsif warnings
+    elsif warnings and !force
       set_outcome(STATUS_REVIEW, MESSAGE_WARNINGS)
     else
       responses.each do |r|

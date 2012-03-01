@@ -16,6 +16,7 @@ Anznn::Application.routes.draw do
     member do
       get :summary_report
       get :detail_report
+      post :force_submit
     end
   end
 

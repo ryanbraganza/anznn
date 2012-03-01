@@ -13,6 +13,8 @@
         %th Status
         %th Details
         %th Reports
+        - if can? :force_submit, BatchFile
+          %th
     - @batch_files.each do |batch_file|
       %tr
 
@@ -29,3 +31,8 @@
           - if batch_file.has_detail_report?
             %br/
             = link_to "Detail Report", detail_report_batch_file_path(batch_file)
+        - if can? :force_submit, BatchFile
+          %td
+            - if can? :force_submit, batch_file
+              = form_tag(force_submit_batch_file_path(batch_file)) do
+                = submit_tag 'Force Submit', class: 'btn', id: "force_submit_#{batch_file.id}"
