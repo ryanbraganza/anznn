@@ -22,7 +22,7 @@ class BatchSummaryReportGenerator
       move_down 10
       problems_table = organiser.aggregated_by_question_and_message
       if problems_table.size > 1
-        table(problems_table, header: true, row_colors: ["FFFFFF", "F0F0F0"], column_widths: {0 => 95, 1 => 40, 3 => 50}) do
+        table(problems_table, header: true, row_colors: ["FFFFFF", "F0F0F0"], column_widths: {0 => 95, 1 => 50, 3 => 50}) do
           row(0).font_style = :bold
         end
       end
