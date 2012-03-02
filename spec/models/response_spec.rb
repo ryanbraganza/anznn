@@ -8,6 +8,7 @@ describe Response do
     it { should have_many :answers }
     it { should belong_to :batch_file }
   end
+
   describe "Validations" do
     it { should validate_presence_of :baby_code }
     it { should validate_presence_of :user }
@@ -27,6 +28,15 @@ describe Response do
       second.errors.full_messages.should eq(["Baby code abcd has already been used."])
       diff_survey = Factory.build(:response, survey: Factory(:survey), baby_code: first.baby_code)
       diff_survey.should be_valid
+    end
+
+    it "should strip leading/trailing spaces from baby codes before validating" do
+      first = Factory(:response, baby_code: " abcd ")
+      first.baby_code.should eq("abcd")
+
+      second = Factory.build(:response, survey: first.survey, baby_code: " abcd")
+      second.should_not be_valid
+      second.errors.full_messages.should eq(["Baby code abcd has already been used."])
     end
   end
 

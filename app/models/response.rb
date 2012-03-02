@@ -22,6 +22,8 @@ class Response < ActiveRecord::Base
   validates_inclusion_of :submitted_status, in: [STATUS_UNSUBMITTED, STATUS_SUBMITTED]
   validates_uniqueness_of :baby_code, scope: :survey_id
 
+  before_validation :strip_whitespace
+
   def submit!
     if ![COMPLETE, COMPLETE_WITH_WARNINGS].include?(status)
       raise "Can't submit with status #{status}"
@@ -153,6 +155,10 @@ class Response < ActiveRecord::Base
     required_question_ids = survey.questions.where(:mandatory => true).collect(&:id)
     answered_question_ids = answers.collect(&:question_id)
     required_question_ids - answered_question_ids
+  end
+
+  def strip_whitespace
+    self.baby_code = self.baby_code.strip unless self.baby_code.nil?
   end
 
 end
