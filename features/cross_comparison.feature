@@ -26,7 +26,7 @@ Feature: Cross Question Comparison Validations
       | question   | answer |
       | Decimal Q1 | 12.5   |
       | Decimal Q2 | 12.5   |
-    And I should not see "decimal should be eq"
+    Then I should not see "decimal should be eq"
 
   Scenario: CQV Pass - Integer
     Given I have the following cross question validations
@@ -37,7 +37,7 @@ Feature: Cross Question Comparison Validations
       | question   | answer |
       | Integer Q1 | 12     |
       | Integer Q2 | 12     |
-    And I should not see "Integer should be eq"
+    Then I should not see "Integer should be eq"
 
   Scenario: CQV Pass - Time
     Given I have the following cross question validations
@@ -48,7 +48,7 @@ Feature: Cross Question Comparison Validations
       | question | answer |
       | Time Q1  | 12:30  |
       | Time Q2  | 12:30  |
-    And I should not see "time should be eq"
+    Then I should not see "time should be eq"
 
   Scenario: CQV Pass - Date
     Given I have the following cross question validations
@@ -59,7 +59,7 @@ Feature: Cross Question Comparison Validations
       | question | answer   |
       | Date Q1  | 2012/2/1 |
       | Date Q2  | 2012/2/1 |
-    And I should not see "date should be gte"
+    Then I should not see "date should be gte"
 
   Scenario: CQV Failure - date gte
     Given I have the following cross question validations
@@ -70,7 +70,7 @@ Feature: Cross Question Comparison Validations
       | question | answer   |
       | Date Q1  | 2012/2/1 |
       | Date Q2  | 2012/2/2 |
-    And I should see "date should be gte"
+    Then I should see "date should be gte"
 
   Scenario: CQV Failure - date lte
     Given I have the following cross question validations
@@ -81,7 +81,7 @@ Feature: Cross Question Comparison Validations
       | question | answer   |
       | Date Q1  | 2012/2/3 |
       | Date Q2  | 2012/2/2 |
-    And I should see "date should be lte"
+    Then I should see "date should be lte"
 
   Scenario: CQV Failure - date lt
     Given I have the following cross question validations
@@ -92,7 +92,7 @@ Feature: Cross Question Comparison Validations
       | question | answer   |
       | Date Q1  | 2012/2/3 |
       | Date Q2  | 2012/2/2 |
-    And I should see "date should be lt"
+    Then I should see "date should be lt"
 
   Scenario: CQV Failure - date gt
     Given I have the following cross question validations
@@ -103,7 +103,7 @@ Feature: Cross Question Comparison Validations
       | question | answer   |
       | Date Q1  | 2012/2/1 |
       | Date Q2  | 2012/2/2 |
-    And I should see "date should be gt"
+    Then I should see "date should be gt"
 
   Scenario: CQV Failure - date eq
     Given I have the following cross question validations
@@ -114,7 +114,7 @@ Feature: Cross Question Comparison Validations
       | question | answer   |
       | Date Q1  | 2012/2/1 |
       | Date Q2  | 2012/2/2 |
-    And I should see "date should be eq"
+    Then I should see "date should be eq"
 
   Scenario: CQV Failure - date ne
     Given I have the following cross question validations
@@ -125,7 +125,7 @@ Feature: Cross Question Comparison Validations
       | question | answer   |
       | Date Q1  | 2012/2/1 |
       | Date Q2  | 2012/2/1 |
-    And I should see "date should not be eq"
+    Then I should see "date should not be eq"
 
   Scenario: CQV Failure - date lte with offset
     Given I have the following cross question validations
@@ -136,7 +136,7 @@ Feature: Cross Question Comparison Validations
       | question | answer   |
       | Date Q1  | 2012/2/3 |
       | Date Q2  | 2012/2/1 |
-    And I should see "date should be not be lte Q2+1"
+    Then I should see "date should be not be lte Q2+1"
 
   Scenario: multiple error messages
     Given I have the following cross question validations
@@ -148,7 +148,7 @@ Feature: Cross Question Comparison Validations
       | question | answer   |
       | Date Q1  | 2012/2/1 |
       | Date Q2  | 2012/2/2 |
-    And I should see "date should be gt"
+    Then I should see "date should be gt"
     And I should see "date should really be gt"
 
   Scenario: no infinite loop
@@ -163,4 +163,4 @@ Feature: Cross Question Comparison Validations
       | Date Q2  | 2012/2/2 |
     And press "Save page"
   # Then I should not get a "stack level too deep" error
-    And I should be on the edit first response page
+    Then I should be on the edit first response page
