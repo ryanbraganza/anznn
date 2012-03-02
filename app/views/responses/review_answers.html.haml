@@ -14,17 +14,18 @@
       %tr
         %th
           %h2= section.name
-    - answers.each do |answer|
-      %tr
-        %td= answer.question.question
-        %td
-          = answer.format_for_display
-          - if answer.violates_mandatory
-            %br/
-            %span.fatalerror-display This question is mandatory
-          - if answer.has_warning?
-            %br/
-            %span.warning-display= answer.warnings.join ', '
-            %span.fatalerror-display= answer.fatal_warnings.join ', '
+    %tbody
+      - answers.each do |answer|
+        %tr
+          %td= answer.question.question
+          %td
+            = answer.format_for_display
+            - if answer.violates_mandatory
+              %br/
+              %span.fatalerror-display This question is mandatory
+            - if answer.has_warning?
+              %br/
+              %span.warning-display= answer.warnings.join ', '
+              %span.fatalerror-display= answer.fatal_warnings.join ', '
   .actions.review
     = link_to "Edit Answers", edit_response_path(@response, section: section.id), id: "edit_answers_#{section.id}", class: 'btn'

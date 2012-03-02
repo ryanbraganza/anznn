@@ -38,18 +38,20 @@ Feature: View a summary page for a survey response
     Given I am on the edit first response page
     When I follow "Summary"
     Then I should see "summary" table with
-      | Sec1 | Not started |
-      | Sec2 | Not started |
-      | Sec3 | Not started |
+      | Section | Status      |
+      | Sec1    | Not started |
+      | Sec2    | Not started |
+      | Sec3    | Not started |
 
   Scenario: Section changes to "Incomplete" once at least one question is answered
     Given I am on the edit first response page
     When I answer "Sect1 QText1" with "123"
     And I follow "Summary"
     Then I should see "summary" table with
-      | Sec1 | Incomplete  |
-      | Sec2 | Not started |
-      | Sec3 | Not started |
+      | Section | Status      |
+      | Sec1    | Incomplete  |
+      | Sec2    | Not started |
+      | Sec3    | Not started |
 
   Scenario: Section is complete with warnings when range warnings are present (and all questions are answered)
     Given I am on the edit first response page
@@ -64,9 +66,10 @@ Feature: View a summary page for a survey response
       | Sect1 QChoice  | (A) Apple  |
     And I follow "Summary"
     Then I should see "summary" table with
-      | Sec1 | Complete with warnings |
-      | Sec2 | Not started            |
-      | Sec3 | Not started            |
+      | Section | Status                 |
+      | Sec1    | Complete with warnings |
+      | Sec2    | Not started            |
+      | Sec3    | Not started            |
 
   Scenario: Section is incomplete when a cross-question validation fails (and all questions are answered)
     Given I have the following cross question validations
@@ -84,9 +87,10 @@ Feature: View a summary page for a survey response
       | Sect1 QChoice  | (A) Apple  |
     And I follow "Summary"
     Then I should see "summary" table with
-      | Sec1 | Incomplete  |
-      | Sec2 | Not started |
-      | Sec3 | Not started |
+      | Section | Status      |
+      | Sec1    | Incomplete  |
+      | Sec2    | Not started |
+      | Sec3    | Not started |
 
   Scenario: Section becomes complete when all are answered correctly
     Given I am on the edit first response page
@@ -101,8 +105,9 @@ Feature: View a summary page for a survey response
       | Sect1 QChoice  | (A) Apple  |
     And I follow "Summary"
     Then I should see "summary" table with
-      | Sec1 | Complete    |
-      | Sec2 | Not started |
-      | Sec3 | Not started |
+      | Section | Status      |
+      | Sec1    | Complete    |
+      | Sec2    | Not started |
+      | Sec3    | Not started |
 
 

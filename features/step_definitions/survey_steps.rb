@@ -335,8 +335,8 @@ end
 
 Then /^I should see answers for section "([^"]*)"$/ do |section_name, expected_table|
   section = Section.find_by_name(section_name)
-  actual = find("table#section_#{section.id}").all('tr').map { |row| row.all('th, td').map { |cell| cell.text.strip.gsub(/\n+/, "\n") } }
-  expected_table.diff!(actual)
+  actual = find("table#section_#{section.id}").all('tbody tr').map { |row| row.all('th, td').map { |cell| cell.text.strip.gsub(/\n+/, "\n") } }
+  chatty_diff_table!(expected_table, actual)
 end
 
 Then /^I should( not)? see a submit button on the home page for survey "([^"]*)" and baby code "([^"]*)"( with( no)? warning( "(.*)")?)?$/ do |not_see, survey, baby_code, check_warning, no_warning, _, warning_text|
@@ -429,7 +429,7 @@ end
 
 def submit_warning_homepage(baby_code)
   response = Response.find_by_baby_code!(baby_code)
-  selector = %Q{#response_#{response.id} > td:last-child > span.warning-display.submit_warning}
+  selector = %Q{#response_#{response.id} > td:last-child span.warning-display.submit_warning}
   find_or_nil(selector)
 end
 
