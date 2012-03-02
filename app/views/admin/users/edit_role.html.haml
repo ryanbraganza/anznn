@@ -4,5 +4,5 @@
   = render "shared/error_messages", target: @user
   = render partial: "role_fields", locals: {f: f}
   .actions
-    = f.submit "Save"
-    = link_to 'Back', admin_user_path(@user)
+    = f.submit "Save", class: 'btn primary'
+    = link_to 'Back', admin_user_path(@user), class: 'btn'

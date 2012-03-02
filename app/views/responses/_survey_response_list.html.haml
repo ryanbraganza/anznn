@@ -3,13 +3,14 @@
   %p There are no surveys in progress.
 - else
   %table#responses.bordered-table
-    %tr
-      %th Baby Code
-      %th Survey Type
-      %th Created By
-      %th Status
-      %th Date Started
-      %th
+    %thead
+      %tr
+        %th Baby Code
+        %th Survey Type
+        %th Created By
+        %th Status
+        %th Date Started
+        %th
     - @responses.each do |r|
       %tr{id: "response_#{r.id}"}
 
@@ -22,7 +23,9 @@
             = time_tag r.created_at
             %small (#{distance_of_time_in_words_to_now(r.created_at)} ago)
         %td
-          = link_to "Edit", edit_response_path(r), class: 'btn'
-          = link_to "View Summary", r, class: 'btn'
-          = link_to "Review Answers", review_answers_response_path(r), class: 'btn'
-          = render 'responses/submit_or_warning', response: r
+          %p
+            = link_to "Edit", edit_response_path(r), class: 'btn'
+            = link_to "View Summary", r, class: 'btn'
+          %p
+            = link_to "Review Answers", review_answers_response_path(r), class: 'btn'
+          %p= render 'responses/submit_or_warning', response: r
