@@ -72,7 +72,24 @@ class BatchFile < ActiveRecord::Base
 
   def problem_record_count
     return nil if responses.nil?
-    responses.collect(&:warnings?).count(true)
+    responses.collect { |r| r.warnings? || !r.valid? }.count(true)
+  end
+
+  def organised_problems
+    organiser = QuestionProblemsOrganiser.new
+
+    # get all the problems from all the responses organised for reporting
+    responses.each do |r|
+      r.answers.each do |answer|
+        organiser.add_problems(answer.question.code, r.baby_code, answer.fatal_warnings, answer.warnings, answer.format_for_batch_report)
+      end
+      r.missing_mandatory_questions.each do |question|
+        organiser.add_problems(question.code, r.baby_code, ["This question is mandatory"], [], "")
+      end
+      r.valid? #we have to call this to trigger errors getting populated
+      organiser.add_problems("BabyCode", r.baby_code, r.errors.full_messages, [], r. baby_code) unless r.errors.empty?
+    end
+    organiser
   end
 
   private
@@ -95,7 +112,8 @@ class BatchFile < ActiveRecord::Base
       baby_code = row[BABY_CODE_COLUMN]
       response = Response.new(survey: survey, baby_code: baby_code, user: user, hospital: hospital, submitted_status: Response::STATUS_UNSUBMITTED, batch_file: self)
       response.build_answers_from_hash(row.to_hash)
-      failures = true if response.fatal_warnings?
+
+      failures = true if (response.fatal_warnings? || !response.valid?)
       warnings = true if response.warnings?
       responses << response
     end

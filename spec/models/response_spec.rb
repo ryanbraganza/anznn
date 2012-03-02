@@ -19,12 +19,21 @@ describe Response do
       Factory.build(:response, submitted_status: nil).should_not be_valid
       Factory.build(:response, submitted_status: "Blah").should_not be_valid
     end
+
+    it "should validate that baby code is unique within survey" do
+      first = Factory(:response, baby_code: "abcd")
+      second = Factory.build(:response, survey: first.survey, baby_code: first.baby_code)
+      second.should_not be_valid
+      second.errors.full_messages.should eq(["Baby code abcd has already been used."])
+      diff_survey = Factory.build(:response, survey: Factory(:survey), baby_code: first.baby_code)
+      diff_survey.should be_valid
+    end
   end
 
   describe "submit" do
     let (:response) {Factory(:response)}
     it "should set the status of the response when complete" do
-      response.stub(:status) {Response::COMPLETE}
+      response.stub(:status) { Response::COMPLETE }
       response.submitted_status.should eq Response::STATUS_UNSUBMITTED
 
       response.submit!
@@ -35,7 +44,7 @@ describe Response do
       response.submitted_status.should eq Response::STATUS_SUBMITTED
     end
     it "should set the status of the response when complete with warnings" do
-      response.stub(:status) {Response::COMPLETE_WITH_WARNINGS}
+      response.stub(:status) { Response::COMPLETE_WITH_WARNINGS }
       response.submitted_status.should eq Response::STATUS_UNSUBMITTED
 
       response.submit!
@@ -46,12 +55,12 @@ describe Response do
       response.submitted_status.should eq Response::STATUS_SUBMITTED
     end
     it "can't submit a response not started" do
-      response.stub(:status) {Response::NOT_STARTED}
+      response.stub(:status) { Response::NOT_STARTED }
 
       expect { response.submit! }.should raise_error
     end
     it "can't submit a response incomplete" do
-      response.stub(:status) {Response::INCOMPLETE}
+      response.stub(:status) { Response::INCOMPLETE }
 
       expect { response.submit! }.should raise_error
     end
@@ -60,19 +69,19 @@ describe Response do
   describe "submit_warning" do
     let (:response) {Factory(:response)}
     it "dies on complete" do
-      response.stub(:status) {Response::COMPLETE }
+      response.stub(:status) { Response::COMPLETE }
       response.submit_warning.should be_nil
     end
     it "dies on not started" do
-      response.stub(:status) {Response::NOT_STARTED}
+      response.stub(:status) { Response::NOT_STARTED }
       response.submit_warning.should be_nil
     end
     it "shows a warning for incomplete" do
-      response.stub(:status) {Response::INCOMPLETE}
+      response.stub(:status) { Response::INCOMPLETE }
       response.submit_warning.should eq "This survey is incomplete and can't be submitted."
     end
     it "shows a warning for complete with warnings" do
-      response.stub(:status) {Response::COMPLETE_WITH_WARNINGS}
+      response.stub(:status) { Response::COMPLETE_WITH_WARNINGS }
       response.submit_warning.should eq "This survey has warnings. Double check them. If you believe them to be correct, contact a supervisor."
     end
   end

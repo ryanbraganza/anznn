@@ -252,6 +252,45 @@ describe BatchFile do
         batch_file.summary_report_path.should_not be_nil
         batch_file.detail_report_path.should_not be_nil
       end
+
+      it "should reject records where the baby code is already in the system" do
+        Factory(:response, survey: survey, baby_code: "B2")
+        batch_file = process_batch_file('no_errors_or_warnings.csv', survey, user)
+        batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
+        Response.count.should == 1 #the one we created earlier
+        Answer.count.should == 0
+        batch_file.record_count.should == 3
+        batch_file.problem_record_count.should == 1
+        batch_file.detail_report_path.should_not be_nil
+        File.exist?(batch_file.summary_report_path).should be_true
+
+        csv_file = batch_file.detail_report_path
+        rows = CSV.read(csv_file)
+        rows.size.should eq(2)
+        rows[0].should eq(["BabyCode", "Column Name", "Type", "Value", "Message"])
+        rows[1].should eq(['B2', 'BabyCode', 'Error', 'B2', 'Baby code B2 has already been used.'])
+      end
+
+      it "can detect both duplicate baby code and other errors on the same record" do
+        Factory(:response, survey: survey, baby_code: "B2")
+        batch_file = process_batch_file('missing_mandatory_fields.csv', survey, user)
+        batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
+        Response.count.should == 1 #the one we created earlier
+        Answer.count.should == 0
+        batch_file.record_count.should == 3
+        batch_file.problem_record_count.should == 1
+        batch_file.detail_report_path.should_not be_nil
+        File.exist?(batch_file.summary_report_path).should be_true
+
+        csv_file = batch_file.detail_report_path
+        rows = CSV.read(csv_file)
+        rows.size.should eq(3)
+        rows[0].should eq(["BabyCode", "Column Name", "Type", "Value", "Message"])
+        rows[1].should eq(['B2', 'BabyCode', 'Error', 'B2', 'Baby code B2 has already been used.'])
+        rows[2].should eq(['B2', 'TextMandatory', 'Error', '', 'This question is mandatory'])
+      end
     end
 
     describe "with warnings" do

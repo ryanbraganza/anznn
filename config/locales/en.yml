@@ -9,4 +9,9 @@ en:
         survey_id: 'Survey type'
       batch_file:
         file_file_name: 'File'
-
+    errors:
+      models:
+        response:
+          attributes:
+            baby_code:
+              taken: '%{value} has already been used.'
