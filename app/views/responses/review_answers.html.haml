@@ -9,9 +9,11 @@
   = submit_tag 'Submit', class: 'btn submit_response'
 
 - @sections_to_answers.each do |section, answers|
-  %h2= section.name
-  = link_to "Edit Answers", edit_response_path(@response, section: section.id), id: "edit_answers_#{section.id}", class: 'btn'
-  %table.bordered-table{id: "section_#{section.id}"}
+  %table.bordered-table.review{id: "section_#{section.id}"}
+    %thead
+      %tr
+        %th
+          %h2= section.name
     - answers.each do |answer|
       %tr
         %td= answer.question.question
@@ -24,3 +26,5 @@
             %br/
             %span.warning-display= answer.warnings.join ', '
             %span.fatalerror-display= answer.fatal_warnings.join ', '
+  .actions.review
+    = link_to "Edit Answers", edit_response_path(@response, section: section.id), id: "edit_answers_#{section.id}", class: 'btn'

@@ -3,15 +3,16 @@
   %p There are no batch files to show.
 - else
   %table#batch_uploads.bordered-table
-    %tr
-      %th Survey Type
-      %th Filename
-      %th Created By
-      %th Date Uploaded
-      %th Num records
-      %th Status
-      %th Details
-      %th Reports
+    %thead
+      %tr
+        %th Survey Type
+        %th Filename
+        %th Created By
+        %th Date Uploaded
+        %th Num records
+        %th Status
+        %th Details
+        %th Reports
     - @batch_files.each do |batch_file|
       %tr
 

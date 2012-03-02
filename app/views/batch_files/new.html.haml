@@ -14,7 +14,7 @@
     .clearfix
       = f.label :file, "File"
       .input
-        = f.file_field :file
+        = f.file_field :file, class: 'batchupload'
         = required
     .actions
       = f.submit "Upload", class: "btn primary"
