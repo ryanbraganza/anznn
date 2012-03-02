@@ -99,10 +99,11 @@ class Response < ActiveRecord::Base
 
   def build_answers_from_hash(hash)
     hash.each do |question_code, answer_text|
+      cleaned_text = answer_text.nil? ? "" : answer_text.strip
       question = survey.questions.where(code: question_code).first
-      if question && !answer_text.blank?
+      if question && !cleaned_text.blank?
         answer = answers.build(question: question, response: self)
-        answer.answer_value = answer_text
+        answer.answer_value = cleaned_text
       end
     end
   end

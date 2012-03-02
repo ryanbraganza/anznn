@@ -125,6 +125,44 @@ describe BatchFile do
         File.exist?(batch_file.summary_report_path).should be_true
         batch_file.detail_report_path.should be_nil
       end
+
+      it "file with no errors or warnings - should create the survey responses and answers and should strip leading/trailing whitespace" do
+        batch_file = process_batch_file('no_errors_or_warnings_whitespace.csv', survey, user)
+        batch_file.status.should eq("Processed Successfully")
+        batch_file.message.should eq("Your file has been processed successfully")
+        Response.count.should == 3
+        Answer.count.should eq(21) #3x8 questions = 24, 3 not answered
+        batch_file.problem_record_count.should == 0
+        batch_file.record_count.should == 3
+
+        r1 = Response.find_by_baby_code!("B1")
+        r2 = Response.find_by_baby_code!("B2")
+        r3 = Response.find_by_baby_code!("B3")
+
+        [r1, r2, r3].each do |r|
+          r.survey.should eq(survey)
+          r.user.should eq(user)
+          r.hospital.should eq(hospital)
+          r.submitted_status.should eq(Response::STATUS_SUBMITTED)
+          r.batch_file.id.should eq(batch_file.id)
+        end
+
+        answer_hash = r1.answers.reduce({}) { |hash, answer| hash[answer.question.code] = answer; hash }
+        answer_hash["TextMandatory"].text_answer.should == "B1Val1"
+        answer_hash["TextOptional"].should be_nil #not answered
+        answer_hash["Date1"].date_answer.should == Date.parse("2011-12-25")
+        answer_hash["Time"].time_answer.should == Time.utc(2000, 1, 1, 14, 30)
+        answer_hash["Choice"].choice_answer.should == "0"
+        answer_hash["Decimal"].decimal_answer.should == 56.77
+        answer_hash["Integer"].integer_answer.should == 10
+        Answer.all.each { |a| a.has_fatal_warning?.should be_false }
+        Answer.all.each { |a| a.has_warning?.should be_false }
+        batch_file.record_count.should == 3
+        # summary report should exist but not detail report
+        batch_file.summary_report_path.should_not be_nil
+        File.exist?(batch_file.summary_report_path).should be_true
+        batch_file.detail_report_path.should be_nil
+      end
     end
 
     describe "with validation errors" do
