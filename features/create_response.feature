@@ -32,6 +32,11 @@ Feature: Create Response
     When I create a response for "Please select" with baby code "ABC123"
     Then I should see "Survey type can't be blank" within the form errors
 
+  Scenario: Try to create with duplicate baby code
+    Given I create a response for "Survey A" with baby code "ABC123"
+    When I create a response for "Survey A" with baby code "ABC123"
+    Then I should see "Baby code ABC123 has already been used." within the form errors
+
   Scenario: Responses should be ordered by baby code on the home page
     Given I create a response for "Survey A" with baby code "C"
     Given I create a response for "Survey A" with baby code "D"
