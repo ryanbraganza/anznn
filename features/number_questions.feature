@@ -12,9 +12,7 @@ Feature: Number Questions
       | Decimal Q | Decimal       |            | 10         | 99             |
 
   Scenario: Integers
-    Given I am logged in as "data.provider@intersect.org.au"
-    And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
-    And I am on the edit first response page
+    Given I am ready to enter responses as data.provider@intersect.org.au
     And I answer as follows
       | question  | answer |
       | Integer Q | 4      |

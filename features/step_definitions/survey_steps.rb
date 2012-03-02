@@ -158,6 +158,12 @@ Then /^I should see the following answers$/ do |table|
   end
 end
 
+When /^I store the following answers$/ do |table|
+  step 'I answer as follows', table
+  step 'press "Save page"'
+  step 'I should see the following answers', table
+end
+
 def table_to_questions_and_answers(table)
   table.hashes.reduce([]) do |arr, row|
     question_question = row[:question]
@@ -437,4 +443,10 @@ end
 def response_by_survey_name_and_baby_code!(survey_name, baby_code)
   survey = Survey.find_by_name!(survey_name)
   Response.find_by_survey_id_and_baby_code!(survey, baby_code)
+end
+
+When /^I am ready to enter responses as (.*)$/ do |email|
+  step "I am logged in as \"#{email}\""
+  step "\"#{email}\" created a response to the \"MySurvey\" survey"
+  step "I am on the edit first response page"
 end

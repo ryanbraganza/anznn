@@ -29,9 +29,7 @@ Feature: Show warnings on survey pages
       | Sect3 Q2        | Integer       | 2       | false     |
 
   Scenario: As I navigate around without entering anything I don't get any warnings
-    Given I am logged in as "data.provider@intersect.org.au"
-    And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
-    And I am on the edit first response page
+    Given I am ready to enter responses as data.provider@intersect.org.au
     Then I should see no warnings
     When I follow "Sec2"
     Then I should see no warnings
@@ -43,9 +41,7 @@ Feature: Show warnings on survey pages
     Then I should see no warnings
 
   Scenario: As soon as I've answered a question in a section, I start seeing required field errors on that section
-    Given I am logged in as "data.provider@intersect.org.au"
-    And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
-    And I am on the edit first response page
+    Given I am ready to enter responses as data.provider@intersect.org.au
     When I answer "Sect1 QText2" with "123"
     And I follow "Sec2"
     And I follow "Sec1"
@@ -60,9 +56,7 @@ Feature: Show warnings on survey pages
     Then I should see no warnings
 
   Scenario: Once I've answered, the required field error goes away
-    Given I am logged in as "data.provider@intersect.org.au"
-    And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
-    And I am on the edit first response page
+    Given I am ready to enter responses as data.provider@intersect.org.au
     When I answer "Sect1 QText2" with "123"
     And I press "Save page"
     Then "Sect1 QText2" should have no warning
