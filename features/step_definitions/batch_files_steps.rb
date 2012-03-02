@@ -2,6 +2,24 @@ Then /^I should have a batch file stored for survey "([^"]*)" with uploader "([^
   check_batch_file(survey_name, email, hospital_name)
 end
 
+Then /^the batch uploads table should look like$/ do |expected_table|
+  actual = find("table#batch_uploads").all('tr').map do |row|
+    elems = row.all('th, td')
+    elems.map.with_index(1) do |cell, i|
+      if i == elems.length and cell.tag_name == 'td'
+        begin
+          cell.find('input[type=submit]').value
+        rescue Capybara::ElementNotFound
+          ''
+        end
+      else
+        cell.text.strip
+      end
+    end
+  end
+  chatty_diff_table!(expected_table, actual)
+end
+
 When /^I force submit for "(.*)"$/ do |filename|
   # should be on homepage first
   current_url.should eq root_url
@@ -10,7 +28,7 @@ When /^I force submit for "(.*)"$/ do |filename|
   click_button "force_submit_#{bf.id}"
 end
 
-Given /^I upload batch file "([^"]*)" for survey "([^"]*)"$/ do |filename, survey_name|
+Given /^I upload batch file( as "(.*)")? "([^"]*)" for survey "([^"]*)"$/ do |as_user, email, filename, survey_name|
   visit root_path
   click_link "Upload Batch File"
   select survey_name, from: "Survey"
@@ -18,7 +36,12 @@ Given /^I upload batch file "([^"]*)" for survey "([^"]*)"$/ do |filename, surve
   click_button "Upload"
   page.should have_content "Your upload has been received and is now being processed. This may take some time depending on the size of the file."
   page.should have_content "The status of your uploads can be seen in the table below. You will need to refresh the page to see an updated status."
-  check_batch_file(survey_name, User.first.email, User.first.hospital.name)
+  if as_user
+    user = User.find_by_email!(email)
+  else
+    user = User.first
+  end
+  check_batch_file(survey_name, user.email, user.hospital.name)
 end
 
 Then /^I should have two batch files stored with name "([^"]*)"$/ do |name|
