@@ -1,5 +1,4 @@
 class HelpTextGenerator
-  #TODO: figure out where this really belongs
   attr_accessor :question
 
   def initialize(question)

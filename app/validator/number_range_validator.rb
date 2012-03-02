@@ -1,7 +1,5 @@
 class NumberRangeValidator
 
-  #TODO: this may end up elsewhere, just putting it here for now so we can get started on the story
-
   def self.validate(question, answer_value)
     return [true, nil] unless question.validate_number_range?
     return [true, nil] if answer_value.nil?

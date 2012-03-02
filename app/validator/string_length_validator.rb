@@ -1,6 +1,5 @@
 class StringLengthValidator
 
-  #TODO: this may end up elsewhere, just putting it here for now so we can get started on the story
   def self.validate(question, answer_value)
     return [true, nil] unless question.validate_string_length?
     return [true, nil] if answer_value.blank?
