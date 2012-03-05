@@ -2,6 +2,7 @@
 - if @batch_files.blank?
   %p There are no batch files to show.
 - else
+  = link_to "Refresh Status", root_path, class: 'btn'
   %table#batch_uploads.bordered-table
     %thead
       %tr
