@@ -3,14 +3,11 @@ require 'csv_survey_operations.rb'
 include CsvSurveyOperations
 
 def populate_data
-  load_password
-
-  User.delete_all
+#  load_password
+#  User.delete_all
 
   create_hospitals
-
-  create_test_users
-
+#  create_test_users
   create_surveys
 end
 
