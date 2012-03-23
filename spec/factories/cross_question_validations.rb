@@ -3,7 +3,7 @@ FactoryGirl.define do
     association :question
     association :related_question, factory: :question
     error_message "err"
-    rule 'comparison'
+    self.send(:method_missing, :rule, "comparison")  # using "rule" directly calls a rake method
     operator '=='
   end
 end
