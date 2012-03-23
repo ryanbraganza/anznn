@@ -9,7 +9,7 @@ describe BatchDetailReportGenerator do
     organiser = mock
     organiser.should_receive(:detailed_problems).and_return(problems)
     
-    BatchDetailReportGenerator.generate_report(organiser, "tmp/details.csv")
+    BatchDetailReportGenerator.generate_report(organiser, Rails.root.join("tmp/details.csv"))
 
     rows = CSV.read("tmp/details.csv")
     rows.size.should eq(3)

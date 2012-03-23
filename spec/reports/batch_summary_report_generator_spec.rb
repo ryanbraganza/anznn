@@ -6,7 +6,7 @@ describe BatchSummaryReportGenerator do
     batch_file = Factory(:batch_file)
     organiser = mock
     organiser.should_receive(:aggregated_by_question_and_message).and_return([["row1", "row1"], ["row2", "row2"]])
-    BatchSummaryReportGenerator.generate_report(batch_file, organiser, "tmp/summary.pdf")
+    BatchSummaryReportGenerator.generate_report(batch_file, organiser, Rails.root.join("tmp/summary.pdf"))
     File.exist?("tmp/summary.pdf").should be_true
   end
 end
