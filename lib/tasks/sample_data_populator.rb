@@ -3,11 +3,15 @@ require 'csv_survey_operations.rb'
 include CsvSurveyOperations
 
 def populate_data
-#  load_password
-#  User.delete_all
+  puts "Creating sample data in #{ENV["RAILS_ENV"]} environment..."
+  load_password
+  User.delete_all
 
+  puts "Creating hospitals..."
   create_hospitals
-#  create_test_users
+  puts "Creating test users..."
+  create_test_users
+  puts "Creating surveys..."
   create_surveys
 end
 
@@ -18,7 +22,6 @@ def create_hospitals
   hospitals.each do |hash|
     Hospital.create!(hash)
   end
-
 end
 
 
@@ -39,7 +42,6 @@ def create_survey_from_lib_tasks(name, question_file, options_file, cross_questi
   create_survey(name, path_to[question_file], path_to[options_file], path_to[cross_question_validations_file])
 end
 
-
 def create_test_users
   create_user(email: "georgina@intersect.org.au", first_name: "Georgina", last_name: "Edwards")
   create_user(email: "alexb@intersect.org.au", first_name: "Alex", last_name: "Bradner")
@@ -59,7 +61,6 @@ def create_test_users
   set_role("supervisor@intersect.org.au", "Data Provider Supervisor", Hospital.first.name)
   set_role("dataprovider2@intersect.org.au", "Data Provider", Hospital.last.name)
   set_role("supervisor2@intersect.org.au", "Data Provider Supervisor", Hospital.last.name)
-
 end
 
 def set_role(email, role, hospital_name=nil)
