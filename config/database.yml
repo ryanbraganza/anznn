@@ -24,7 +24,7 @@ test: &test
   pool: 5
   timeout: 5000
 
-production:
+production: &production
   adapter: postgresql
   host: localhost
   database: anznn
@@ -34,10 +34,10 @@ production:
   timeout: 5000
 
 staging:
-  production
+  <<: *production
 
 qa:
-  production
+  <<: *production
 
 cucumber:
   <<: *test
