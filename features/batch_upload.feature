@@ -58,24 +58,24 @@ Feature: Upload survey responses in a batch file
     Given I upload batch file "batch_sample.csv" for survey "MySurvey"
     When I am logged in as "<user>@intersect.org.au" and have role "<role>"
     And I am on the home page
-    Then the "batch_uploads" table should have 8 columns
+    Then the "batch_uploads" table should have 9 columns
   Examples:
     | user          | role          |
     | data.provider | Data Provider |
     | administrator | Administrator |
 
-  Scenario: Supervisors see a ninth column
+  Scenario: Supervisors see an extra column
     Given I am logged in as "supervisor@intersect.org.au" and have role "Data Provider Supervisor" and I'm linked to hospital "RPA"
     And I upload batch file as "supervisor@intersect.org.au" "batch_sample.csv" for survey "MySurvey"
     When I am on the home page
-    Then the "batch_uploads" table should have 9 columns
+    Then the "batch_uploads" table should have 10 columns
 
-  Scenario: Supervisors see a ninth column
+  Scenario: Supervisors see an extra column
     Given I am logged in as "supervisor@intersect.org.au" and have role "Data Provider Supervisor" and I'm linked to hospital "RPA"
     And I upload batch file as "supervisor@intersect.org.au" "number_out_of_range.csv" for survey "Test Survey"
     And I upload batch file as "supervisor@intersect.org.au" "no_errors_or_warnings.csv" for survey "Test Survey"
     When I am on the home page
-    Then the "batch_uploads" table should have 9 columns
+    Then the "batch_uploads" table should have 10 columns
     And the batch uploads table should look like
       | Survey Type | Status      |
       | Test Survey | In Progress |
@@ -91,7 +91,7 @@ Feature: Upload survey responses in a batch file
     Given I am logged in as "data.provider@intersect.org.au"
     And I upload batch file as "data.provider@intersect.org.au" "number_out_of_range.csv" for survey "Test Survey"
     And I am on the home page
-    Then the "batch_uploads" table should have 8 columns
+    Then the "batch_uploads" table should have 9 columns
     And I should see "batch_uploads" table with
       | Survey Type | Status      |
       | Test Survey | In Progress |
@@ -103,7 +103,7 @@ Feature: Upload survey responses in a batch file
 
     Given I am logged in as "supervisor@intersect.org.au" and have role "Data Provider Supervisor" and I'm linked to hospital "RPA"
     When I am on the home page
-    And the "batch_uploads" table should have 9 columns
+    And the "batch_uploads" table should have 10 columns
     Then the batch uploads table should look like
       | Survey Type | Filename                | Status       |              |
       | Test Survey | number_out_of_range.csv | Needs Review | Force Submit |
