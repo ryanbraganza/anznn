@@ -21,12 +21,12 @@ Feature: Managing responses
     Then I should see "There are no surveys in progress."
 
   Scenario: See a list of incomplete surveys
-    Given "data.provider@intersect.org.au" created a response to the "survey" survey with babycode "babycode123"
-    Given "data.provider@intersect.org.au" created a response to the "survey" survey with babycode "babycode456" and submitted it
+    Given "data.provider@intersect.org.au" created a response to the "survey" survey with babycode "babycode123" and year of registration "2009"
+    Given "data.provider@intersect.org.au" created a response to the "survey" survey with babycode "babycode456" and year of registration "2011" and submitted it
     When I am on the home page
     And I should see "responses" table with
-      | Baby Code   | Survey Type | Created By  |
-      | babycode123 | survey      | Fred Bloggs |
+      | Baby Code   | Survey Type | Created By  | Year of Registration |
+      | babycode123 | survey      | Fred Bloggs | 2009                 |
 
   Scenario: Edit a listed survey
     Given "data.provider@intersect.org.au" created a response to the "survey" survey with babycode "babycode123"
