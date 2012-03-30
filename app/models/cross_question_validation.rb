@@ -50,7 +50,7 @@ class CrossQuestionValidation < ActiveRecord::Base
 
   register_checker 'comparison' do |answer, related_answer, operator, constant|
     offset = constant.blank? ? 0 : constant
-    if is_operator_safe? (operator)
+    if is_operator_safe? (operator) && related_answer.answer_value.present?
       answer.answer_value.send operator, (related_answer.answer_value + offset)
     else
       false

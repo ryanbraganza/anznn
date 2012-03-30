@@ -11,7 +11,7 @@ describe CrossQuestionValidation do
     it { should validate_presence_of :rule }
     it { should validate_presence_of :error_message }
     it "should validate that the rule is one of the allowed rules" do
-      %w(comparison).each do |value|
+      CrossQuestionValidation::VALID_RULES.each do |value|
         should allow_value(value).for(:rule)
       end
       Factory.build(:cross_question_validation, rule: 'Blahblah').should_not be_valid
