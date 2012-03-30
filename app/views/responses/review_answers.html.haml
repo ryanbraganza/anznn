@@ -19,9 +19,11 @@
             - if answer.violates_mandatory
               %br/
               %span.fatalerror-display This question is mandatory
-            - if answer.has_warning?
+            - answer.warnings.each do |warning|
               %br/
-              %span.warning-display= answer.warnings.join ', '
-              %span.fatalerror-display= answer.fatal_warnings.join ', '
+              %span.warning-display= warning
+            - answer.fatal_warnings.each do |fatal|
+              %br/
+              %span.fatalerror-display= fatal
   .actions.review
     = link_to "Edit Answers", edit_response_path(@response, section: section.id), id: "edit_answers_#{section.id}", class: 'btn'
