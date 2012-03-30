@@ -22,7 +22,7 @@ Feature: Upload survey responses in a batch file
     And I attach the file "test_data/survey/batch_files/batch_sample.csv" to "File"
     And I press "Upload"
     Then I should see "Your upload has been received and is now being processed. This may take some time depending on the size of the file."
-    And I should see "The status of your uploads can be seen in the table below. You will need to refresh the page to see an updated status."
+    And I should see "The status of your uploads can be seen in the table below. Click the 'Refresh Status' button to see an updated status."
     And I should have a batch file stored for survey "MySurvey" with uploader "data.provider@intersect.org.au" and hospital "RPA"
 
   Scenario: Accepts duplicates
@@ -42,9 +42,7 @@ Feature: Upload survey responses in a batch file
     Given I am logged in as "super@intersect.org.au" and have role "Administrator"
     When I am on the home page
     Then I should not see "Upload Batch File"
-    When I am on the upload batch file page
-    Then I should be on the home page
-    And I should see "You are not authorized to access this page."
+    And I should get a security error when I visit the upload batch file page
 
   Scenario Outline: Data Providers and administrators don't see a last column
     Given I upload batch file "batch_sample.csv" for survey "MySurvey"

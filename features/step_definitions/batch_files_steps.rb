@@ -35,7 +35,7 @@ Given /^I upload batch file( as "(.*)")? "([^"]*)" for survey "([^"]*)"$/ do |as
   attach_file("File", File.expand_path("test_data/survey/batch_files/#{filename}"))
   click_button "Upload"
   page.should have_content "Your upload has been received and is now being processed. This may take some time depending on the size of the file."
-  page.should have_content "The status of your uploads can be seen in the table below. You will need to refresh the page to see an updated status."
+  page.should have_content "The status of your uploads can be seen in the table below. Click the 'Refresh Status' button to see an updated status."
   if as_user
     user = User.find_by_email!(email)
   else
