@@ -7,5 +7,6 @@ FactoryGirl.define do
     association :hospital
     baby_code "Blah"
     submitted_status Response::STATUS_UNSUBMITTED
+    year_of_registration "2003"
   end
 end

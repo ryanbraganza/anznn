@@ -3,6 +3,8 @@ class ResponsesController < ApplicationController
 
   load_and_authorize_resource
 
+  expose(:year_of_registration_range) { ConfigurationItem.year_of_registration_range }
+
   def new
   end
 

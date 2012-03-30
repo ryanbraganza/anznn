@@ -26,12 +26,13 @@ Feature: View a summary page for a survey response
       | Sect2 Q2        | Integer       | 1       | false     |            |
       | Sect3 Q1        | Text          | 2       | true      |            |
       | Sect3 Q2        | Integer       | 2       | false     |            |
-    And "data.provider@intersect.org.au" created a response to the "MySurvey" survey
+    And "data.provider@intersect.org.au" created a response to the "MySurvey" survey with babycode "babycode123" and year of registration "2005"
 
   Scenario: Navigate from summary to section
     Given I am on the edit first response page
     When I follow "Summary"
-    And I follow "Edit" for section "Sec2"
+    Then I should see "MySurvey - Baby Code babycode123 - Year of Registration 2005"
+    When I follow "Edit" for section "Sec2"
     Then I should see "Sec2"
 
   Scenario: Initially everything is "Not Started"
@@ -73,8 +74,8 @@ Feature: View a summary page for a survey response
 
   Scenario: Section is incomplete when a cross-question validation fails (and all questions are answered)
     Given I have the following cross question validations
-      | question | related | rule       | operator | error_message      |
-      | Sect1 QDate    | Sect1 QDate | comparison | > | This will never pass |
+      | question    | related     | rule       | operator | error_message        |
+      | Sect1 QDate | Sect1 QDate | comparison | >        | This will never pass |
     And I am on the edit first response page
     When I answer as follows
       | question       | answer     |

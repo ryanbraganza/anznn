@@ -13,6 +13,7 @@ describe Response do
     it { should validate_presence_of :baby_code }
     it { should validate_presence_of :user }
     it { should validate_presence_of :survey_id }
+    it { should validate_presence_of :year_of_registration }
     it "should validate that submitted_status is one of the allowed types" do
       [Response::STATUS_SUBMITTED, Response::STATUS_UNSUBMITTED].each do |value|
         should allow_value(value).for(:submitted_status)
@@ -41,7 +42,7 @@ describe Response do
   end
 
   describe "submit" do
-    let (:response) {Factory(:response)}
+    let(:response) {Factory(:response)}
     it "should set the status of the response when complete" do
       response.stub(:status) { Response::COMPLETE }
       response.submitted_status.should eq Response::STATUS_UNSUBMITTED
@@ -77,7 +78,7 @@ describe Response do
   end
 
   describe "submit_warning" do
-    let (:response) {Factory(:response)}
+    let(:response) {Factory(:response)}
     it "dies on complete" do
       response.stub(:status) { Response::COMPLETE }
       response.submit_warning.should be_nil

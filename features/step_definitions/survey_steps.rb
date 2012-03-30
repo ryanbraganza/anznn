@@ -3,14 +3,16 @@ include CsvSurveyOperations
 Given /^I have a survey with name "([^"]*)" and questions$/ do |name, table|
   survey = Survey.create!(:name => name)
   create_questions(survey, table)
+  setup_year_of_reg("2001", "2012")
 end
 
 Given /^I have a survey with name "([^"]*)"$/ do |name|
   Survey.create!(:name => name)
+  setup_year_of_reg("2001", "2012")
 end
 
 And /^I have a survey with name "(.*)" with questions from "(.*)" and options from "(.*)"$/ do |survey_name, question_filename, options_filename|
-  pathify = ->(path){Rails.root.join('test_data', path)}
+  pathify = ->(path) { Rails.root.join('test_data', path) }
   questions_path = pathify[question_filename]
   options_path = pathify[options_filename]
   create_survey(survey_name, questions_path, options_path)
@@ -33,13 +35,17 @@ Given /^"([^"]*)" created a response to the "([^"]*)" survey$/ do |email, survey
 end
 
 Given /^"([^"]*)" created a response to the "([^"]*)" survey with babycode "([^"]*)"( and submitted it)?$/ do |email, survey_name, babycode, submitted|
-  create_response(Survey.find_by_name(survey_name), email, babycode, submitted)
+  create_response(Survey.find_by_name(survey_name), email, babycode, "2005", submitted)
 end
 
-def create_response(survey, email, babycode = 'babycode123', submitted = false)
+Given /^"([^"]*)" created a response to the "([^"]*)" survey with babycode "([^"]*)" and year of registration "([^"]*)"( and submitted it)?$/ do |email, survey_name, babycode, year_of_reg, submitted|
+  create_response(Survey.find_by_name(survey_name), email, babycode, year_of_reg, submitted)
+end
+
+def create_response(survey, email, babycode = 'babycode123', year_of_reg = "2005", submitted = false)
   user = User.find_by_email(email)
   submitted_status = submitted ? Response::STATUS_SUBMITTED : Response::STATUS_UNSUBMITTED
-  Response.create!(survey: survey, baby_code: babycode, user: user, hospital: user.hospital, submitted_status: submitted_status)
+  Response.create!(survey: survey, baby_code: babycode, year_of_registration: year_of_reg, user: user, hospital: user.hospital, submitted_status: submitted_status)
 end
 
 When /^I answer "([^"]*)" with "([^"]*)"$/ do |q, a|
@@ -99,6 +105,16 @@ When /^I create a response for "([^"]*)" with baby code "([^"]*)"$/ do |survey, 
   click_link "Start New Survey Response"
   fill_in "Baby code", :with => baby_code
   select survey, :from => "Survey"
+  select "2001", :from => "Year of registration"
+  click_button "Save"
+end
+
+When /^I create a response for "([^"]*)" with baby code "([^"]*)" and year of registration "([^"]*)"$/ do |survey, baby_code, year|
+  visit path_to("the home page")
+  click_link "Start New Survey Response"
+  fill_in "Baby code", :with => baby_code
+  select survey, :from => "Survey"
+  select year, :from => "Year of registration"
   click_button "Save"
 end
 
@@ -399,19 +415,19 @@ end
 Then /^I can't view response for survey "([^"]*)" and baby code "([^"]*)"$/ do |survey, baby_code|
   response = response_by_survey_name_and_baby_code!(survey, baby_code)
   visit response_path(response)
-  find("div.alert-message.error").should have_content "You are not authorized to access this page."
+  find("div.alert-message.error").should have_content "You tried to access a page you are not authorised to view."
 end
 
 Then /^I can't edit response for survey "([^"]*)" and baby code "([^"]*)"$/ do |survey, baby_code|
   response = response_by_survey_name_and_baby_code!(survey, baby_code)
   visit edit_response_path(response)
-  find("div.alert-message.error").should have_content "You are not authorized to access this page."
+  find("div.alert-message.error").should have_content "You tried to access a page you are not authorised to view."
 end
 
 Then /^I can't review response for survey "([^"]*)" and baby code "([^"]*)"$/ do |survey, baby_code|
   response = response_by_survey_name_and_baby_code!(survey, baby_code)
   visit review_answers_response_path(response)
-  find("div.alert-message.error").should have_content "You are not authorized to access this page."
+  find("div.alert-message.error").should have_content "You tried to access a page you are not authorised to view."
 end
 
 Given /^I have the standard survey setup$/ do
@@ -419,6 +435,7 @@ Given /^I have the standard survey setup$/ do
   options_file = Rails.root.join 'test_data/survey', 'survey_options.csv'
   cross_question_validations_file = Rails.root.join 'test_data/survey', 'cross_question_validations.csv'
   create_survey("MySurvey", question_file, options_file, cross_question_validations_file)
+  setup_year_of_reg("2001", "2012")
 end
 
 def submit_survey_link(baby_code)
@@ -456,4 +473,15 @@ When /^I am ready to enter responses as (.*)$/ do |email|
   step "I am logged in as \"#{email}\""
   step "\"#{email}\" created a response to the \"MySurvey\" survey"
   step "I am on the edit first response page"
+end
+
+def setup_year_of_reg(from, to)
+  if ConfigurationItem.all.empty?
+    Factory(:configuration_item, name: ConfigurationItem::YEAR_OF_REGISTRATION_START, configuration_value: from)
+    Factory(:configuration_item, name: ConfigurationItem::YEAR_OF_REGISTRATION_END, configuration_value: to)
+  end
+end
+
+Given /^I have year of registration range configured as "([^"]*)" to "([^"]*)"$/ do |from, to|
+  setup_year_of_reg(from, to)
 end

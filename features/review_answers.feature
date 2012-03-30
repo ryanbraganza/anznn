@@ -23,13 +23,13 @@ Feature: Review my answers
       | 99           | Dunno |              | 2            |
       | 0            | Yes   | this is true | 0            |
       | 1            | No    | not true     | 1            |
-    And I create a response for "MySurvey" with baby code "ABCDEF"
+    And I create a response for "MySurvey" with baby code "ABCDEF" and year of registration "2005"
 
   Scenario: Navigate from home page to review answers page
     Given I am on the home page
     When I follow "Review Answers"
     Then I should be on the review answers page for ABCDEF
-    And I should see "MySurvey - Baby Code ABCDEF"
+    Then I should see "MySurvey - Baby Code ABCDEF - Year of Registration 2005"
 
   Scenario: Navigate from summary page to review answers and back again
     Given I am on the home page

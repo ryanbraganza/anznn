@@ -125,7 +125,7 @@ def chatty_diff_table!(expected_table, actual, opts={})
   end
 end
 When /^I should see the access denied error$/ do
-  step "I should see \"You are not authorized to access this page.\""
+  step "I should see \"You tried to access a page you are not authorised to view.\""
 end
 
 When /^I should see that the "([^"]*)" update succeeded for (.*)$/ do |update, obj|

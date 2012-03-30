@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120229043937) do
+ActiveRecord::Schema.define(:version => 20120329041156) do
 
   create_table "answers", :force => true do |t|
     t.integer "response_id"
@@ -43,6 +43,13 @@ ActiveRecord::Schema.define(:version => 20120229043937) do
   end
 
   add_index "batch_files", ["survey_id"], :name => "index_batch_files_on_survey_id"
+
+  create_table "configuration_items", :force => true do |t|
+    t.string   "name"
+    t.string   "configuration_value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "cross_question_validations", :force => true do |t|
     t.integer "question_id"
@@ -115,6 +122,7 @@ ActiveRecord::Schema.define(:version => 20120229043937) do
     t.integer  "hospital_id"
     t.string   "submitted_status"
     t.integer  "batch_file_id"
+    t.integer  "year_of_registration"
   end
 
   create_table "roles", :force => true do |t|

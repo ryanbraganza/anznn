@@ -15,3 +15,6 @@ en:
           attributes:
             baby_code:
               taken: '%{value} has already been used.'
+
+  unauthorized:
+    default: 'You tried to access a page you are not authorised to view.'

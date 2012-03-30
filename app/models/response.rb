@@ -19,6 +19,7 @@ class Response < ActiveRecord::Base
   validates_presence_of :user
   validates_presence_of :survey_id
   validates_presence_of :hospital_id
+  validates_presence_of :year_of_registration
   validates_inclusion_of :submitted_status, in: [STATUS_UNSUBMITTED, STATUS_SUBMITTED]
   validates_uniqueness_of :baby_code, scope: :survey_id
 

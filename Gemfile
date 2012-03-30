@@ -77,3 +77,4 @@ gem "paperclip", "~> 2.0"
 gem 'delayed_job_active_record'
 gem 'daemons'
 gem 'prawn'
+gem 'decent_exposure'
