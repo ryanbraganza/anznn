@@ -14,23 +14,49 @@ FactoryGirl.define do
     conditional_set_operator nil
     conditional_set nil
 
-
+    #Comparisons
     factory :cqv_comparison do
       sequence(:rule){'comparison'}
       operator '=='
     end
 
+    #Implecations
     factory :cqv_date_implies_constant do
       sequence(:rule){'date_implies_constant'}
-      operator nil
+      operator "=="
       constant -1
     end
+
     factory :cqv_const_implies_const do
       sequence(:rule){'const_implies_const'}
+      conditional_operator "!="
+      conditional_constant 0
       operator ">"
       constant 0
+    end
+
+    factory :cqv_const_implies_set do
+      sequence(:rule){'const_implies_set'}
       conditional_operator "!="
-      conditional_constant "0"
+      conditional_constant 0
+      set_operator "included"
+      set [1,3,5,7]
+    end
+
+    factory :cqv_set_implies_const do
+      sequence(:rule){'set_implies_const'}
+      conditional_set_operator "included"
+      conditional_set [2,4,6,8]
+      operator ">"
+      constant 0
+    end
+
+    factory :cqv_set_implies_set do
+      sequence(:rule){'set_implies_set'}
+      conditional_set_operator "included"
+      conditional_set [2,4,6,8]
+      set_operator "included"
+      set [1,3,5,7]
     end
   end
 end
