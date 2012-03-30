@@ -12,6 +12,13 @@ Anznn::Application.routes.draw do
     end
   end
 
+  resources :configuration_items, :only => [] do
+    collection do
+      get :edit_year_of_registration
+      put :update_year_of_registration
+    end
+  end
+
   resources :batch_files, :only => [:new, :create] do
     member do
       get :summary_report

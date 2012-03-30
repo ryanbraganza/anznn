@@ -1,0 +1,25 @@
+- content_for :tabs do
+  = render "admin/users/tabs"
+
+- title 'Configure Year of Registration Options'
+
+.container
+
+  = form_tag update_year_of_registration_configuration_items_path, method: :put do
+    %fieldset
+      - unless @errors.blank?
+        #form_errors.alert-message.block-message.error
+          %h3.error_header Please correct the following before continuing
+          %ul
+            - @errors.each do |msg|
+              %li= msg
+      .clearfix
+        = label_tag "start_year", "Start year"
+        .input
+          = text_field_tag :start_year, @start_year.configuration_value, class: "medium"
+      .clearfix
+        = label_tag "end_year", "End year"
+        .input
+          = text_field_tag :end_year, @end_year.configuration_value, class: "medium"
+      .actions
+        = submit_tag "Save", class: "btn primary"

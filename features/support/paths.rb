@@ -67,6 +67,9 @@ module NavigationHelpers
     when /the upload batch file page/
       new_batch_file_path
 
+    when /the configure year of registration range page/
+      edit_year_of_registration_configuration_items_path
+
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #

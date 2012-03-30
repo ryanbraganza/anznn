@@ -40,6 +40,8 @@ class Ability
         can :read, Response
         can :read, BatchFile
 
+        can :manage, ConfigurationItem
+
       when Role::DATA_PROVIDER, Role::DATA_PROVIDER_SUPERVISOR
         can :read, Response, hospital_id: user.hospital_id, submitted_status: Response::STATUS_UNSUBMITTED
         can :create, Response, hospital_id: user.hospital_id

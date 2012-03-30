@@ -485,3 +485,9 @@ end
 Given /^I have year of registration range configured as "([^"]*)" to "([^"]*)"$/ do |from, to|
   setup_year_of_reg(from, to)
 end
+
+Given /^I fill in the year of registration range with "([^"]*)" and "([^"]*)"$/ do |from, to|
+  fill_in "End year", :with => to
+  fill_in "Start year", :with => from
+  click_button "Save"
+end
