@@ -12,6 +12,11 @@
         = f.collection_select :survey_id, Survey.active, :id, :name, {:include_blank => "Please select"}, {:class => "large"}
         = required
     .clearfix
+      = f.label :year_of_registration
+      .input
+        = f.select :year_of_registration, year_of_registration_range, {:include_blank => "Please select"}, {:class => "medium"}
+        = required
+    .clearfix
       = f.label :file, "File"
       .input
         = f.file_field :file, class: 'batchupload'

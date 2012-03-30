@@ -29,6 +29,7 @@ class BatchFile < ActiveRecord::Base
   validates_presence_of :user_id
   validates_presence_of :hospital_id
   validates_presence_of :file_file_name
+  validates_presence_of :year_of_registration
 
   attr_accessor :responses
 
@@ -115,8 +116,7 @@ class BatchFile < ActiveRecord::Base
     CSV.foreach(file.path, {headers: true}) do |row|
       count += 1
       baby_code = row[BABY_CODE_COLUMN]
-      #TODO placeholder year of reg until we implement that for batches
-      response = Response.new(survey: survey, baby_code: baby_code, user: user, hospital: hospital, year_of_registration: 2005, submitted_status: Response::STATUS_UNSUBMITTED, batch_file: self)
+      response = Response.new(survey: survey, baby_code: baby_code, user: user, hospital: hospital, year_of_registration: year_of_registration, submitted_status: Response::STATUS_UNSUBMITTED, batch_file: self)
       response.build_answers_from_hash(row.to_hash)
 
       failures = true if (response.fatal_warnings? || !response.valid?)

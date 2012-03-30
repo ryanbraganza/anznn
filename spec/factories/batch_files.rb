@@ -6,5 +6,6 @@ FactoryGirl.define do
     association :user
     association :hospital
     file_file_name "Blah"
+    year_of_registration 2012
   end
 end

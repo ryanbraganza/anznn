@@ -5,6 +5,7 @@ Feature: Upload survey responses in a batch file
 
   Background:
     Given I am logged in as "data.provider@intersect.org.au" and have role "Data Provider" and I'm linked to hospital "RPA"
+    And I have year of registration range configured as "2005" to "2009"
     And I have a survey with name "MySurvey"
     And I have a survey with name "MySurvey2"
     And I have a survey with name "Test Survey" with questions from "survey/survey_questions.csv" and options from "survey/survey_options.csv"
@@ -17,8 +18,16 @@ Feature: Upload survey responses in a batch file
       | MySurvey      |
       | MySurvey2     |
       | Test Survey   |
+    And the "Year of registration" select should contain
+      | Please select |
+      | 2005          |
+      | 2006          |
+      | 2007          |
+      | 2008          |
+      | 2009          |
     And I should see "Please select the survey type and the file you want to upload"
     When I select "MySurvey" from "Survey"
+    And I select "2007" from "Year of registration"
     And I attach the file "test_data/survey/batch_files/batch_sample.csv" to "File"
     And I press "Upload"
     Then I should see "Your upload has been received and is now being processed. This may take some time depending on the size of the file."
@@ -30,11 +39,12 @@ Feature: Upload survey responses in a batch file
     And I upload batch file "batch_sample.csv" for survey "MySurvey"
     Then I should have two batch files stored with name "batch_sample.csv"
 
-  Scenario: Validates that both survey type and a file are provided
+  Scenario: Validates that both survey type, year of registration and a file are provided
     Given I am on the home page
     When I follow "Upload Batch File"
     And I press "Upload"
     Then I should see "Survey can't be blank"
+    Then I should see "Year of registration can't be blank"
     And I should see "File can't be blank"
     And I should have no batch files
 
@@ -50,9 +60,9 @@ Feature: Upload survey responses in a batch file
     And I am on the home page
     Then the "batch_uploads" table should have 8 columns
   Examples:
-    | user            | role          |
-    | data.provider   | Data Provider |
-    | administrator   | Administrator |
+    | user          | role          |
+    | data.provider | Data Provider |
+    | administrator | Administrator |
 
   Scenario: Supervisors see a ninth column
     Given I am logged in as "supervisor@intersect.org.au" and have role "Data Provider Supervisor" and I'm linked to hospital "RPA"
@@ -107,5 +117,5 @@ Feature: Upload survey responses in a batch file
     When the batch files are processed
     And I am on the home page
     Then I should see "batch_uploads" table with
-      | Survey Type | Status                 | |
-      | Test Survey | Processed Successfully | |
+      | Survey Type | Status                 |  |
+      | Test Survey | Processed Successfully |  |

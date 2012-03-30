@@ -12,6 +12,7 @@ describe BatchFile do
     it { should validate_presence_of(:user_id) }
     it { should validate_presence_of(:survey_id) }
     it { should validate_presence_of(:hospital_id) }
+    it { should validate_presence_of(:year_of_registration) }
   end
 
   describe "New object should have status set to 'In Progress'" do
@@ -25,7 +26,7 @@ describe BatchFile do
   end
 
   describe "force_submittable?" do
-    let (:batch_file) { BatchFile.new }
+    let(:batch_file) { BatchFile.new }
     it "returns true when NEEDS_REVIEW" do
       batch_file.stub(:status) { BatchFile::STATUS_REVIEW }
 
@@ -40,7 +41,7 @@ describe BatchFile do
     end
   end
   describe "can't process based on status" do
-    let (:batch_file) { BatchFile.new }
+    let(:batch_file) { BatchFile.new }
     it "should die trying to force successful" do
       [BatchFile::STATUS_FAILED, BatchFile::STATUS_SUCCESS, BatchFile::STATUS_IN_PROGRESS].each do |status|
         batch_file.stub(:status) {status}
@@ -55,7 +56,7 @@ describe BatchFile do
     end
   end
 
-  #TODO: these are really integration tests, perhaps belong elsewhere
+  #These are integration checks that verify the file processing works correctly
   describe "File processing" do
     let(:survey) do
       question_file = Rails.root.join 'test_data/survey', 'survey_questions.csv'
@@ -120,7 +121,7 @@ describe BatchFile do
 
     describe "Well formatted files" do
       it "file with no errors or warnings - should create the survey responses and answers" do
-        batch_file = process_batch_file('no_errors_or_warnings.csv', survey, user)
+        batch_file = process_batch_file('no_errors_or_warnings.csv', survey, user, 2008)
         batch_file.status.should eq("Processed Successfully")
         batch_file.message.should eq("Your file has been processed successfully")
         Response.count.should == 3
@@ -138,6 +139,7 @@ describe BatchFile do
           r.hospital.should eq(hospital)
           r.submitted_status.should eq(Response::STATUS_SUBMITTED)
           r.batch_file.id.should eq(batch_file.id)
+          r.year_of_registration.should eq(2008)
         end
 
         answer_hash = r1.answers.reduce({}) { |hash, answer| hash[answer.question.code] = answer; hash }
@@ -374,9 +376,10 @@ describe BatchFile do
         batch_file.summary_report_path.should_not be_nil
         batch_file.detail_report_path.should_not be_nil
       end
+
       it "accepts number range issues if forced to" do
         # sad path covered earlier
-        batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('test_data/survey/batch_files/number_out_of_range.csv', 'text/csv'), survey: survey, user: user, hospital: hospital)
+        batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('test_data/survey/batch_files/number_out_of_range.csv', 'text/csv'), survey: survey, user: user, hospital: hospital, year_of_registration: 2009)
         batch_file.process
         batch_file.reload
 
@@ -432,8 +435,8 @@ describe BatchFile do
     end
   end
 
-  def process_batch_file(file_name, survey, user)
-    batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('test_data/survey/batch_files/' + file_name, 'text/csv'), survey: survey, user: user, hospital: hospital)
+  def process_batch_file(file_name, survey, user, year_of_registration=2009)
+    batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('test_data/survey/batch_files/' + file_name, 'text/csv'), survey: survey, user: user, hospital: hospital, year_of_registration: year_of_registration)
     batch_file.process
     batch_file.reload
     batch_file

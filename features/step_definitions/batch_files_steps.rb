@@ -32,6 +32,7 @@ Given /^I upload batch file( as "(.*)")? "([^"]*)" for survey "([^"]*)"$/ do |as
   visit root_path
   click_link "Upload Batch File"
   select survey_name, from: "Survey"
+  select "2009", from: "Year of registration"
   attach_file("File", File.expand_path("test_data/survey/batch_files/#{filename}"))
   click_button "Upload"
   page.should have_content "Your upload has been received and is now being processed. This may take some time depending on the size of the file."
