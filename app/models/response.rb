@@ -36,12 +36,12 @@ class Response < ActiveRecord::Base
     # This method is role-ignorant.
     # Use cancan to check if a response is not submittable before trying to display this
     case status
-    when INCOMPLETE
-      "This survey is incomplete and can't be submitted."
-    when COMPLETE_WITH_WARNINGS
-      "This survey has warnings. Double check them. If you believe them to be correct, contact a supervisor."
-    else
-      nil
+      when INCOMPLETE
+        "This survey is incomplete and can't be submitted."
+      when COMPLETE_WITH_WARNINGS
+        "This survey has warnings. Double check them. If you believe them to be correct, contact a supervisor."
+      else
+        nil
     end
   end
 
@@ -61,7 +61,7 @@ class Response < ActiveRecord::Base
   def sections_to_answers
     survey.sections.reduce({}) do |hsh, section|
       answers = all_answers_for_section(section)
-      sorted_answers = answers.sort_by {|a| a.question.order }
+      sorted_answers = answers.sort_by { |a| a.question.order }
       hsh.merge section => sorted_answers
     end
   end
@@ -70,28 +70,21 @@ class Response < ActiveRecord::Base
     !answers_to_section(section).empty?
   end
 
-  def status_of_section(section, treat_no_mandatory_as_complete_instead_of_not_started=false)
-    if section_started?(section)
-      answers = all_answers_for_section(section)
+  def status_of_section(section)
+    answers = all_answers_for_section(section)
 
-      all_mandatory_questions_answered = all_mandatory_passed(answers)
+    all_mandatory_questions_answered = all_mandatory_passed(answers)
+    any_warnings = answers.map { |a| a.warnings.present? }.any?
+    any_fatal_warnings = answers.map { |a| a.fatal_warnings.present? }.any?
 
-      any_warnings = answers.map{|a| a.warnings.present?}.any?
-      any_fatal_warnings = answers.map{|a| a.fatal_warnings.present?}.any?
-
-      if all_mandatory_questions_answered
-        if any_fatal_warnings
-          INCOMPLETE
-        elsif any_warnings
-          COMPLETE_WITH_WARNINGS
-        else
-          COMPLETE
-        end
-      else
+    if all_mandatory_questions_answered
+      if any_fatal_warnings
         INCOMPLETE
+      elsif any_warnings
+        COMPLETE_WITH_WARNINGS
+      else
+        COMPLETE
       end
-    elsif treat_no_mandatory_as_complete_instead_of_not_started and all_mandatory_passed(all_answers_for_section(section))
-      COMPLETE
     else
       INCOMPLETE
     end
@@ -109,7 +102,7 @@ class Response < ActiveRecord::Base
   end
 
   def status
-    statii_of_sections = survey.sections.map{|s| status_of_section(s, :complete_if_no_mandatory) }
+    statii_of_sections = survey.sections.map { |s| status_of_section(s) }
 
     if statii_of_sections.include? INCOMPLETE
       INCOMPLETE
@@ -135,7 +128,7 @@ class Response < ActiveRecord::Base
   private
 
   def all_mandatory_passed(answers)
-    all_mandatory_questions_answered = answers.all?{|a| !a.violates_mandatory}
+    all_mandatory_questions_answered = answers.all? { |a| !a.violates_mandatory }
   end
 
   def all_answers_for_section(section)
