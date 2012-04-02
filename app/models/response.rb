@@ -4,7 +4,6 @@ class Response < ActiveRecord::Base
   STATUS_SUBMITTED = 'Submitted'
 
   COMPLETE = 'Complete'
-  NOT_STARTED = 'Not started'
   INCOMPLETE = 'Incomplete'
   COMPLETE_WITH_WARNINGS = 'Complete with warnings'
 
@@ -94,7 +93,7 @@ class Response < ActiveRecord::Base
     elsif treat_no_mandatory_as_complete_instead_of_not_started and all_mandatory_passed(all_answers_for_section(section))
       COMPLETE
     else
-      NOT_STARTED
+      INCOMPLETE
     end
   end
 
@@ -112,9 +111,7 @@ class Response < ActiveRecord::Base
   def status
     statii_of_sections = survey.sections.map{|s| status_of_section(s, :complete_if_no_mandatory) }
 
-    if statii_of_sections.all? {|status| status == NOT_STARTED}
-      NOT_STARTED
-    elsif statii_of_sections.include? INCOMPLETE or statii_of_sections.include? NOT_STARTED
+    if statii_of_sections.include? INCOMPLETE
       INCOMPLETE
     elsif statii_of_sections.include? COMPLETE_WITH_WARNINGS
       COMPLETE_WITH_WARNINGS

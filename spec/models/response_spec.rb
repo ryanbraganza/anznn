@@ -65,11 +65,6 @@ describe Response do
 
       response.submitted_status.should eq Response::STATUS_SUBMITTED
     end
-    it "can't submit a response not started" do
-      response.stub(:status) { Response::NOT_STARTED }
-
-      expect { response.submit! }.should raise_error
-    end
     it "can't submit a response incomplete" do
       response.stub(:status) { Response::INCOMPLETE }
 
@@ -81,10 +76,6 @@ describe Response do
     let(:response) {Factory(:response)}
     it "dies on complete" do
       response.stub(:status) { Response::COMPLETE }
-      response.submit_warning.should be_nil
-    end
-    it "dies on not started" do
-      response.stub(:status) { Response::NOT_STARTED }
       response.submit_warning.should be_nil
     end
     it "shows a warning for incomplete" do
@@ -115,8 +106,8 @@ describe Response do
       @response = Factory(:response, survey: @survey)
     end
     describe "of a response" do
-      it "not started" do
-        @response.status.should eq "Not started"
+      it "incomplete when nothing done yet" do
+        @response.status.should eq "Incomplete"
       end
       it "incomplete section 1" do
         Factory(:answer, response: @response, question: @q1, integer_answer: 3)
@@ -153,12 +144,11 @@ describe Response do
     end
     describe "of a section" do
 
-      it "should be 'not started' if no answers have been saved yet" do
-        #initially, nothing is started
+      it "should be incomplete if no answers have been saved yet" do
         @response.section_started?(@section1).should be_false
-        @response.status_of_section(@section1).should eq("Not started")
+        @response.status_of_section(@section1).should eq("Incomplete")
         @response.section_started?(@section2).should be_false
-        @response.status_of_section(@section2).should eq("Not started")
+        @response.status_of_section(@section2).should eq("Incomplete")
       end
 
       it "should be incomplete if at least one question is answered but not all mandatory questions are answered" do
@@ -167,7 +157,7 @@ describe Response do
         @response.section_started?(@section1).should be_true
         @response.status_of_section(@section1).should eq("Incomplete")
         @response.section_started?(@section2).should be_false
-        @response.status_of_section(@section2).should eq("Not started")
+        @response.status_of_section(@section2).should eq("Incomplete")
       end
 
       it "should be complete once all mandatory questions are answered" do

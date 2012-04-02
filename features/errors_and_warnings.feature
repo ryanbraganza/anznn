@@ -20,11 +20,11 @@ Feature: Errors and Warnings
       | 1            | No    | not true     | 1            |
     And "data.provider@intersect.org.au" created a response to the "survey" survey
 
-  Scenario: Not started
+  Scenario: Not started yet is considered to be incomplete
     When I am on the homepage
     Then I should see "responses" table with
       | Baby Code   | Survey Type | Created By  | Status      |
-      | babycode123 | survey      | Fred Bloggs | Not started |
+      | babycode123 | survey      | Fred Bloggs | Incomplete |
 
   Scenario: Incomplete
     When I am on the edit section 1 page
