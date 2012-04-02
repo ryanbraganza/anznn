@@ -6,7 +6,11 @@ end
 
 Given /^I have users$/ do |table|
   table.hashes.each do |hash|
-    Factory(:user, hash.merge(:status => 'A'))
+    hospital_name = hash.delete('hospital')
+    role_name = hash.delete('role')
+    role = role_name.blank? ? nil : Role.find_by_name!(role_name)
+    hospital = hospital_name.blank? ? nil : Hospital.find_by_name!(hospital_name)
+    Factory(:user, hash.merge(status: 'A', hospital: hospital, role: role))
   end
 end
 
@@ -90,4 +94,18 @@ end
 Given /^"([^"]*)" is rejected as spam$/ do |email|
   user = User.find_by_email!(email)
   user.reject_access_request
+end
+
+Then /^the filter by hospital select should contain$/ do |table|
+  field = find_field("Filter by hospital")
+  groups = field.all("optgroup")
+
+  actual_options = []
+  groups.each do |group|
+    options = group.all("option").collect(&:text)
+    actual_options << [group[:label], options]
+  end
+
+  expected_options = table.raw.collect { |row| [row[0], row[1].split(",").collect { |i| i.strip }] }
+  actual_options.should eq(expected_options)
 end

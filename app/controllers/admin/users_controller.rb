@@ -8,7 +8,15 @@ class Admin::UsersController < Admin::AdminBaseController
     set_tab :users, :admin_navigation
     sort = sort_column + ' ' + sort_direction
     sort = sort + ", email ASC" unless sort_column == "email" # add email as a secondary sort so its predictable when there's multiple values
+
     @users = User.deactivated_or_approved.includes(:role).includes(:hospital).order(sort)
+
+    @hospital_filter = params[:hospital_filter]
+    if @hospital_filter == "None"
+      @users = @users.where("users.hospital_id IS NULL")
+    elsif !@hospital_filter.blank?
+      @users = @users.where(hospital_id: @hospital_filter)
+    end
   end
 
   def show
@@ -20,7 +28,7 @@ class Admin::UsersController < Admin::AdminBaseController
   end
 
   def deactivate
-    if !@user.check_number_of_superusers(params[:id], current_user.id) 
+    if !@user.check_number_of_superusers(params[:id], current_user.id)
       redirect_to(admin_user_path(@user), alert: "You cannot deactivate this account as it is the only account with Administrator privileges.")
     else
       @user.deactivate
@@ -59,7 +67,7 @@ class Admin::UsersController < Admin::AdminBaseController
 
   def update_role
     if params[:user][:role_id].blank?
-        redirect_to(edit_role_admin_user_path(@user), alert: "Please select a role for the user.")
+      redirect_to(edit_role_admin_user_path(@user), alert: "Please select a role for the user.")
     else
       @user.role_id = params[:user][:role_id]
       @user.hospital_id = params[:user][:hospital_id]
@@ -94,7 +102,7 @@ class Admin::UsersController < Admin::AdminBaseController
   end
 
   def sort_direction
-    %w[asc desc].include?(params[:direction]) ?  params[:direction] : "asc"
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
   end
 
 end

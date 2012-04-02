@@ -95,6 +95,12 @@ When /^I select$/ do |table|
   end
 end
 
+Then /^"([^"]*)" should be selected in the "([^"]*)" select$/ do |expected_option, select_label|
+  field = find_field(select_label)
+  option = field.find("option[selected]")
+  option.text.should eq(expected_option)
+end
+
 When /^I fill in$/ do |table|
   table.hashes.each do |hash|
     When "I fill in \"#{hash[:field]}\" with \"#{hash[:value]}\""

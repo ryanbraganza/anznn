@@ -2,6 +2,12 @@
   = render "tabs"
 
 - title 'Current Users'
+= form_tag admin_users_path, method: :get do
+  = label_tag :hospital_filter, 'Filter by hospital'
+  = select_tag :hospital_filter, hospital_filter_options(@hospital_filter), {class: 'large'}
+  = hidden_field_tag :sort, sort_column
+  = hidden_field_tag :direction, sort_direction
+  = submit_tag "Filter"
 %table#users
   %thead
     %tr.sortable
