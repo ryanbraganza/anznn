@@ -43,50 +43,51 @@ def create_permission(entity, action, roles)
   end
 end
 
-Given /^"([^"]*)" has role "([^"]*)"$/ do |email, role|
-  user = User.where(:email => email).first 
-  role = Role.where(:name => role).first
+Given /^"([^"]*)" has role "([^"]*)"$/ do |email, role_name|
+  user = User.find_by_email!(email)
+  role = Role.find_by_name!(role_name)
   user.role = role
+  user.hospital = nil if role_name == "Administrator"
   user.save!(:validate => false)
 end
 
 When /^I follow "Approve" for "([^"]*)"$/ do |email|
-  user = User.where(:email => email).first
+  user = User.find_by_email!(email)
   click_link("approve_#{user.id}")
 end
 
 When /^I follow "Reject" for "([^"]*)"$/ do |email|
-  user = User.where(:email => email).first
+  user = User.find_by_email!(email)
   click_link("reject_#{user.id}")
 end
 
 When /^I follow "Reject as Spam" for "([^"]*)"$/ do |email|
-  user = User.where(:email => email).first
+  user = User.find_by_email!(email)
   click_link("reject_as_spam_#{user.id}")
 end
 
 When /^I follow "View Details" for "([^"]*)"$/ do |email|
-  user = User.where(:email => email).first
+  user = User.find_by_email!(email)
   click_link("view_#{user.id}")
 end
 
 When /^I follow "Edit Access Level" for "([^"]*)"$/ do |email|
-  user = User.where(:email => email).first
+  user = User.find_by_email!(email)
   click_link("edit_role_#{user.id}")
 end
 
 Given /^"([^"]*)" is deactivated$/ do |email|
-  user = User.where(:email => email).first
+  user = User.find_by_email!(email)
   user.deactivate
 end
 
 Given /^"([^"]*)" is pending approval$/ do |email|
-  user = User.where(:email => email).first
+  user = User.find_by_email!(email)
   user.status = "U"
   user.save!
 end
 
 Given /^"([^"]*)" is rejected as spam$/ do |email|
-  user = User.where(:email => email).first
+  user = User.find_by_email!(email)
   user.reject_access_request
 end

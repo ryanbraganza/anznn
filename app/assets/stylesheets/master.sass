@@ -500,3 +500,32 @@ a.edit
 // FOOTER - DEV INFO
 /*///////////////////////////////////////////////////////////////////////////////////////////////*/
 
+
+tr.sortable
+  a
+    +m-p-w-h-p-t-b-l-r-f("", 0 20px 0 0, "", "")
+    +inlineblock
+    cursor: pointer
+    background: url("../images/icon_arrow_right_light.png") center right no-repeat
+    -moz-background-size: 6px
+    background-size: 6px
+    &:hover
+      background: url("../images/icon_arrow_down_dark.png") center right no-repeat
+      -moz-background-size: 12px
+      background-size: 12px
+  a.current.asc
+    background: url("../images/icon_arrow_up_blue.png") center right no-repeat
+    -moz-background-size: 12px
+    background-size: 12px
+    &:hover
+      background: url("../images/icon_arrow_down_dark.png") center right no-repeat
+      -moz-background-size: 12px
+      background-size: 12px
+  a.current.desc
+    background: url("../images/icon_arrow_down_blue.png") center right no-repeat
+    -moz-background-size: 12px
+    background-size: 12px
+    &:hover
+      background: url("../images/icon_arrow_up_dark.png") center right no-repeat
+      -moz-background-size: 12px
+      background-size: 12px

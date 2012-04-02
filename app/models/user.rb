@@ -1,4 +1,10 @@
 class User < ActiveRecord::Base
+
+  STATUS_UNAPPROVED = 'U'
+  STATUS_ACTIVE = 'A'
+  STATUS_DEACTIVATED = 'D'
+  STATUS_REJECTED = 'R'
+
   # Include devise modules
   devise :database_authenticatable, :registerable, :lockable, :recoverable, :trackable, :validatable, :timeoutable
 
@@ -25,9 +31,9 @@ class User < ActiveRecord::Base
   before_validation :initialize_status
   before_validation :clear_super_user_hospital
 
-  scope :pending_approval, where(status: 'U').order(:email)
-  scope :approved, where(status: 'A').order(:email)
-  scope :deactivated_or_approved, where("status = 'D' or status = 'A' ").order(:email)
+  scope :pending_approval, where(status: STATUS_UNAPPROVED).order(:email)
+  scope :approved, where(status: STATUS_ACTIVE).order(:email)
+  scope :deactivated_or_approved, where("status = 'D' or status = 'A' ")
   scope :approved_superusers, joins(:role).merge(User.approved).merge(Role.superuser_roles)
 
   # Override Devise active for authentication method so that users must be approved before being allowed to log in
@@ -84,33 +90,34 @@ class User < ActiveRecord::Base
 
 
   def approved?
-    self.status == 'A'
+    self.status == STATUS_ACTIVE
   end
 
   def pending_approval?
-    self.status == 'U'
+    self.status == STATUS_UNAPPROVED
   end
 
   def deactivated?
-    self.status == 'D'
+    self.status == STATUS_DEACTIVATED
   end
 
+
   def rejected?
-    self.status == 'R'
+    self.status == STATUS_REJECTED
   end
 
   def deactivate
-    self.status = 'D'
+    self.status = STATUS_DEACTIVATED
     save!(validate: false)
   end
 
   def activate
-    self.status = 'A'
+    self.status = STATUS_ACTIVE
     save!(validate: false)
   end
 
   def approve_access_request
-    self.status = 'A'
+    self.status = STATUS_ACTIVE
     save!(validate: false)
 
     # send an email to the user
@@ -118,7 +125,7 @@ class User < ActiveRecord::Base
   end
 
   def reject_access_request
-    self.status = 'R'
+    self.status = STATUS_REJECTED
     save!(validate: false)
 
     # send an email to the user
@@ -159,7 +166,7 @@ class User < ActiveRecord::Base
   end
 
   def initialize_status
-    self.status = "U" unless self.status
+    self.status = STATUS_UNAPPROVED unless self.status
   end
 
 end

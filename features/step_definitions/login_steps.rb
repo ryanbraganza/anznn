@@ -93,6 +93,11 @@ Given /^I have the usual roles$/ do
   create_usual_roles
 end
 
+Given /^"([^"]*)" has hospital "([^"]*)"$/ do |email, hospital|
+  link_user_to_hospital(User.find_by_email!(email), hospital)
+end
+
+
 def create_usual_roles
   Role.create!(:name => Role::SUPER_USER) unless Role.find_by_name(Role::SUPER_USER)
   Role.create!(:name => Role::DATA_PROVIDER) unless Role.find_by_name(Role::DATA_PROVIDER)

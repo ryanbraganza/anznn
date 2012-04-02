@@ -28,13 +28,13 @@ describe User do
       end
     end
     describe "Deactivated or Approved Users Scope" do
-      it "should return users that are approved ordered by email address" do
+      it "should return users that are approved or deactivated" do
         u1 = Factory(:user, :status => 'A', :email => "fasdf1@intersect.org.au")
         u2 = Factory(:user, :status => 'U')
         u3 = Factory(:user, :status => 'A', :email => "asdf1@intersect.org.au")
         u4 = Factory(:user, :status => 'R')
         u5 = Factory(:user, :status => 'D', :email => "zz@inter.org")
-        User.deactivated_or_approved.should eq([u3,u1, u5])
+        User.deactivated_or_approved.order(:email).should eq([u3, u1, u5])
       end
     end
     describe "Approved Administrators Scope" do

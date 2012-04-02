@@ -28,7 +28,14 @@ module ApplicationHelper
     render_field_content(label, content)
   end
 
+  def sortable(column, title = nil)
+    title ||= column.humanize
+    direction = (column == sort_column && sort_direction == "asc") ? "desc" : "asc"
+    css_class = (column == sort_column) ? "sort_link current #{sort_direction}" : "sort_link"
+    link_to title, {sort: column, direction: direction}, {class: css_class}
+  end
   private
+
   def render_field_content(label, content)
     div_id = label.tr(" ,", "_").downcase
     html = "<div class='detail-item inlineblock' id='display_#{div_id}'>"

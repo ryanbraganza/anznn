@@ -4,14 +4,14 @@
 - title 'Current Users'
 %table#users
   %thead
-    %tr
-      %th First name
-      %th Last name
-      %th Email
-      %th Role
-      %th Hospital
-      %th Status
-      %th Last signed in
+    %tr.sortable
+      %th= sortable 'first_name'
+      %th= sortable 'last_name'
+      %th= sortable 'email'
+      %th= sortable 'roles.name', 'Role'
+      %th= sortable 'hospitals.name', 'Hospital'
+      %th= sortable 'status'
+      %th= sortable 'last_sign_in_at', 'Last signed in'
       %th Actions
   %tbody
     - @users.each do |user|
