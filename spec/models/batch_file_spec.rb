@@ -56,7 +56,7 @@ describe BatchFile do
     end
   end
 
-  #These are integration checks that verify the file processing works correctly
+  #These are integration tests that verify the file processing works correctly
   describe "File processing" do
     let(:survey) do
       question_file = Rails.root.join 'test_data/survey', 'survey_questions.csv'
@@ -235,6 +235,18 @@ describe BatchFile do
         batch_file.detail_report_path.should be_nil
       end
 
+      it "file with duplicate baby codes within the file (with whitespace padding) should be rejected completely and no reports generated" do
+        batch_file = process_batch_file('duplicate_baby_code_whitespace.csv', survey, user)
+        batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded contained duplicate baby codes. Each baby code can only be used once.")
+        Response.count.should == 0
+        Answer.count.should == 0
+        batch_file.record_count.should be_nil
+        batch_file.problem_record_count.should be_nil
+        batch_file.summary_report_path.should be_nil
+        batch_file.detail_report_path.should be_nil
+      end
+
       it "should reject records with missing mandatory fields" do
         batch_file = process_batch_file('missing_mandatory_fields.csv', survey, user)
         batch_file.status.should eq("Failed")
@@ -327,6 +339,25 @@ describe BatchFile do
       it "should reject records where the baby code is already in the system" do
         Factory(:response, survey: survey, baby_code: "B2")
         batch_file = process_batch_file('no_errors_or_warnings.csv', survey, user)
+        batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
+        Response.count.should == 1 #the one we created earlier
+        Answer.count.should == 0
+        batch_file.record_count.should == 3
+        batch_file.problem_record_count.should == 1
+        batch_file.detail_report_path.should_not be_nil
+        File.exist?(batch_file.summary_report_path).should be_true
+
+        csv_file = batch_file.detail_report_path
+        rows = CSV.read(csv_file)
+        rows.size.should eq(2)
+        rows[0].should eq(["BabyCode", "Column Name", "Type", "Value", "Message"])
+        rows[1].should eq(['B2', 'BabyCode', 'Error', 'B2', 'Baby code B2 has already been used.'])
+      end
+
+      it "should reject records where the baby code is already in the system even with whitespace padding" do
+        Factory(:response, survey: survey, baby_code: "B2")
+        batch_file = process_batch_file('no_errors_or_warnings_whitespace.csv', survey, user)
         batch_file.status.should eq("Failed")
         batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
         Response.count.should == 1 #the one we created earlier

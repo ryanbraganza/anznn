@@ -116,6 +116,7 @@ class BatchFile < ActiveRecord::Base
     CSV.foreach(file.path, {headers: true}) do |row|
       count += 1
       baby_code = row[BABY_CODE_COLUMN]
+      baby_code.strip! unless baby_code.nil?
       response = Response.new(survey: survey, baby_code: baby_code, user: user, hospital: hospital, year_of_registration: year_of_registration, submitted_status: Response::STATUS_UNSUBMITTED, batch_file: self)
       response.build_answers_from_hash(row.to_hash)
 
@@ -156,6 +157,7 @@ class BatchFile < ActiveRecord::Base
         set_outcome(STATUS_FAILED, MESSAGE_MISSING_BABY_CODES)
         return false
       else
+        baby_code.strip!
         if baby_codes.include?(baby_code)
           set_outcome(STATUS_FAILED, MESSAGE_DUPLICATE_BABY_CODES)
           return false
