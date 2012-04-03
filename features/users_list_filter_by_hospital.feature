@@ -25,9 +25,10 @@ Feature: Administer users
 
 
   Scenario: Filter by hospital
-  #    Then the filter by hospital select should contain
-  #      | NSW | Hospital 2, Left Wing      |
-  #      | Vic | H4, Hospital 3, Right Wing |
+    Then the filter by hospital select should contain
+      |     | ANY, None                             |
+      | NSW | Hospital 2, Left Wing                 |
+      | Vic | H4, Hospital 3, Only Wing, Right Wing |
     When I select "Left Wing" from "Filter by hospital"
     And I press "Filter"
     Then I should see "users" table with

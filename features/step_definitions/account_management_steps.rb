@@ -99,13 +99,18 @@ end
 Then /^the filter by hospital select should contain$/ do |table|
   field = find_field("Filter by hospital")
   groups = field.all("optgroup")
+  top_level = all("#hospital_filter > option").collect(&:text)
 
-  actual_options = []
+  nested_options = []
   groups.each do |group|
     options = group.all("option").collect(&:text)
-    actual_options << [group[:label], options]
+    nested_options << [group[:label], options]
   end
 
   expected_options = table.raw.collect { |row| [row[0], row[1].split(",").collect { |i| i.strip }] }
-  actual_options.should eq(expected_options)
+  expected_top_level = expected_options.find { |item| item[0].blank? }[1]
+  expected_nested = expected_options.select { |item| !item[0].blank? }
+
+  nested_options.should eq(expected_nested)
+  top_level.should eq(expected_top_level)
 end
