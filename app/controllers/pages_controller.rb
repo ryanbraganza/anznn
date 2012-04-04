@@ -6,7 +6,7 @@ class PagesController < ApplicationController
 
   def home
     if user_signed_in?
-      @responses = Response.accessible_by(current_ability).order("baby_code")
+      @responses = Response.accessible_by(current_ability).unsubmitted.order("baby_code")
       @batch_files = BatchFile.accessible_by(current_ability).order("created_at DESC")
     end
   end

@@ -25,6 +25,7 @@ class Response < ActiveRecord::Base
   before_validation :strip_whitespace
 
   scope :for_survey, lambda { |survey| where(survey_id: survey.id) }
+  scope :unsubmitted, where(submitted_status: STATUS_UNSUBMITTED)
 
   def submit!
     if ![COMPLETE, COMPLETE_WITH_WARNINGS].include?(status)

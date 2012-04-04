@@ -52,6 +52,14 @@ describe Response do
       matches = Response.for_survey(survey_a).collect(&:id).sort
       matches.should eq([r1.id, r3.id])
     end
+
+    it "unsubmitted scope should return responses that are unsubmitted" do
+      r1 = Factory(:response, submitted_status: Response::STATUS_UNSUBMITTED)
+      r2 = Factory(:response, submitted_status: Response::STATUS_SUBMITTED)
+      r3 = Factory(:response, submitted_status: Response::STATUS_UNSUBMITTED)
+      matches = Response.unsubmitted.collect(&:id).sort
+      matches.should eq([r1.id, r3.id])
+    end
   end
 
   describe "submit" do

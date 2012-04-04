@@ -13,8 +13,8 @@ def populate_data
   create_test_users
   puts "Creating surveys..."
   create_surveys
-  puts "Creating sample responses..."
-  create_responses
+  #puts "Creating sample responses..."
+  #create_responses
 end
 
 def create_responses
