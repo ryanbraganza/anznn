@@ -1,15 +1,13 @@
-section,order,code,question,question_type,number_min,number_max,number_unknown,string_min,string_max,guide_for_use,description,data_domain
-0,0,TextU,Text Question,Text,,,,,,Fill in any number of characters,Text response that is unconstrained,Characters
-0,1,TextC,Maternal age,Text,,,,8,8,Fill in 8 characters,"Text response for contstrained input [8,8]",Characters
-0,2,IntU,Previous preterm birth,Integer,,,,,,Any int,Integer response that is unconstrained,domain-intU
-0,3,IntC,Previous perinatal death,Integer,-1,0,99,,,"Only 0,-1 or 99","Integer response that is [-1,0],99","0    Something_x000d_
--1   Something Else_x000d_
-99  Unknown"
-0,4,ChoiceU,Assisted conception in this pregnancy,Choice,,,,,,guide-choiceU,Unconstrained Choice,domain-choiceU
-0,5,ChoiceC,Ethnicity of mother,Choice,,,,,,guide-choiceC,Choice with constraints (not implemented),domain-choiceC
-0,6,DateU,Date of Rupture of membranes,Date,,,,,,guide-dateU,Unconstrained Date,domain-dateU
-0,7,DateC,Time of Rupture of membranes,Date,,,,,,guide-dateC,Date with constraints (not implemented),domain-dateC
-0,8,TimeU,Systemic antibiotics given to mother within 48 hours of birth,Time,,,,,,guide-timeU,Unconstrained Time,domain-timeU
-0,9,TimeC,Date of birth,Time,,,,,,guide-timeC,Time with constraints (not implemented),domain-timeC
-0,10,DecimalU,Time of birth,Decimal,,,,,,Any decimal,Decimal response that is unconstrained,domain-decimalU
-0,11,DecimalC,Admission date,Decimal,4.5,5.25,-1,,,"Decmal between 4.5 and 5.25 inclusive, or -1","Decimal response that is [4.5,5.25],-1",domain-decimalC
+section,order,code,question,question_type,number_min,number_max,number_unknown,string_min,string_max,guide_for_use,description
+0,0,TextU,Text Question,Text,,,,,,Fill in any number of characters,Text response that is unconstrained
+0,1,TextC,Maternal age,Text,,,,8,8,Fill in 8 characters,"Text response for contstrained input [8,8]"
+0,2,IntU,Previous preterm birth,Integer,,,,,,Any int,Integer response that is unconstrained
+0,3,IntC,Previous perinatal death,Integer,-1,0,99,,,"Only 0,-1 or 99","Integer response that is [-1,0],99"
+0,4,ChoiceU,Assisted conception in this pregnancy,Choice,,,,,,guide-choiceU,Unconstrained Choice
+0,5,ChoiceC,Ethnicity of mother,Choice,,,,,,guide-choiceC,Choice with constraints (not implemented)
+0,6,DateU,Date of Rupture of membranes,Date,,,,,,guide-dateU,Unconstrained Date
+0,7,DateC,Time of Rupture of membranes,Date,,,,,,guide-dateC,Date with constraints (not implemented)
+0,8,TimeU,Systemic antibiotics given to mother within 48 hours of birth,Time,,,,,,guide-timeU,Unconstrained Time
+0,9,TimeC,Date of birth,Time,,,,,,guide-timeC,Time with constraints (not implemented)
+0,10,DecimalU,Time of birth,Decimal,,,,,,Any decimal,Decimal response that is unconstrained
+0,11,DecimalC,Admission date,Decimal,4.5,5.25,-1,,,"Decmal between 4.5 and 5.25 inclusive, or -1","Decimal response that is [4.5,5.25],-1"

@@ -305,11 +305,6 @@ When /^I hover on question label for "(.*)"$/ do |question_question|
   endscript
 end
 
-Then /^I should see the help tooltip for "(.*)"$/ do |question_question|
-  question = Question.find_by_question!(question_question)
-  page.should have_content question.data_domain
-end
-
 When /^I follow "([^"]*)" for section "([^"]*)"$/ do |link, section|
   section_id = Section.find_by_name(section).id
   click_link "#{link.downcase.gsub(" ", "_")}_#{section_id}"

@@ -8,13 +8,13 @@ Feature: Dynamic Help
     Given I have the usual roles
     And I have a user "data.provider@intersect.org.au" with role "Data Provider"
     And I have a survey with name "MySurvey" and questions
-      | question  | question_type | description  | guide_for_use | data_domain    |
-      | Text Q    | Text          | desc_text    | guide_text    | text_domain    |
-      | Date Q    | Date          | desc_date    | guide_date    | date_domain    |
-      | Time Q    | Time          | desc_time    | guide_time    | time_domain    |
-      | Choice Q  | Choice        | desc_choice  | guide_choice  | choice_domain  |
-      | Decimal Q | Decimal       | desc_decimal | guide_decimal | decimal_domain |
-      | Integer Q | Integer       | desc_integer | guide_integer | integer_domain |
+      | question  | question_type | description  | guide_for_use |
+      | Text Q    | Text          | desc_text    | guide_text    |
+      | Date Q    | Date          | desc_date    | guide_date    |
+      | Time Q    | Time          | desc_time    | guide_time    |
+      | Choice Q  | Choice        | desc_choice  | guide_choice  |
+      | Decimal Q | Decimal       | desc_decimal | guide_decimal |
+      | Integer Q | Integer       | desc_integer | guide_integer |
     And question "Choice Q" has question options
       | option_value | label | hint_text    | option_order |
       | 99           | Dunno |              | 2            |
@@ -48,14 +48,3 @@ Feature: Dynamic Help
     | Date Q    | Time Q     |
     | Time Q    | Date Q     |
 
-  Scenario Outline: Viewing tooltips
-    When I hover on question label for "<question>"
-    Then I should see the help tooltip for "<question>"
-  Examples:
-    | question  |
-    | Text Q    |
-    | Integer Q |
-    | Decimal Q |
-    | Choice Q  |
-    | Date Q    |
-    | Time Q    |
