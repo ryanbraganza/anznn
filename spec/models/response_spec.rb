@@ -14,6 +14,7 @@ describe Response do
     it { should validate_presence_of :user }
     it { should validate_presence_of :survey_id }
     it { should validate_presence_of :year_of_registration }
+
     it "should validate that submitted_status is one of the allowed types" do
       [Response::STATUS_SUBMITTED, Response::STATUS_UNSUBMITTED].each do |value|
         should allow_value(value).for(:submitted_status)
@@ -38,6 +39,18 @@ describe Response do
       second = Factory.build(:response, survey: first.survey, baby_code: " abcd")
       second.should_not be_valid
       second.errors.full_messages.should eq(["Baby code abcd has already been used."])
+    end
+  end
+
+  describe "Scopes" do
+    it "for survey scope should return responses for the given survey" do
+      survey_a = Factory(:survey)
+      survey_b = Factory(:survey)
+      r1 = Factory(:response, survey: survey_a)
+      r2 = Factory(:response, survey: survey_b)
+      r3 = Factory(:response, survey: survey_a)
+      matches = Response.for_survey(survey_a).collect(&:id).sort
+      matches.should eq([r1.id, r3.id])
     end
   end
 

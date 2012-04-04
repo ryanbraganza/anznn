@@ -1,6 +1,8 @@
 class PagesController < ApplicationController
 
   skip_before_filter :authenticate_user!, only: :home
+  expose(:surveys) { Survey.order(:name) }
+  expose(:hospitals) { Hospital.hospitals_by_state }
 
   def home
     if user_signed_in?

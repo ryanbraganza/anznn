@@ -13,6 +13,29 @@ def populate_data
   create_test_users
   puts "Creating surveys..."
   create_surveys
+  puts "Creating sample responses..."
+  create_responses
+end
+
+def create_responses
+  Response.delete_all
+  hospitals = Hospital.all
+  hospital_count = hospitals.size
+  survey1 = Survey.first
+  survey2 = Survey.all[1]
+
+  102.times do |i|
+    status = (i % 2 == 0) ? Response::STATUS_UNSUBMITTED : Response::STATUS_SUBMITTED
+    survey = (i % 3 == 0) ? survey2 : survey1
+    year_of_reg = 2000 + (i % 4)
+    hospital = hospitals[i % 10]
+    Factory(:response,
+            hospital: hospital,
+            submitted_status: status,
+            baby_code: "Baby-#{hospital.abbrev}-#{i}",
+            survey: survey,
+            year_of_registration: year_of_reg)
+  end
 end
 
 def create_hospitals

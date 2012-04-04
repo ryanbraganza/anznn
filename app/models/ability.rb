@@ -38,6 +38,7 @@ class Ability
         can :update, User
 
         can :read, Response
+        can :stats, Response
         can :read, BatchFile
 
         can :manage, ConfigurationItem

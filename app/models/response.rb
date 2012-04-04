@@ -24,6 +24,8 @@ class Response < ActiveRecord::Base
 
   before_validation :strip_whitespace
 
+  scope :for_survey, lambda { |survey| where(survey_id: survey.id) }
+
   def submit!
     if ![COMPLETE, COMPLETE_WITH_WARNINGS].include?(status)
       raise "Can't submit with status #{status}"

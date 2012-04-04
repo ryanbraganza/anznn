@@ -13,7 +13,6 @@ Feature: Managing responses
 
   Scenario: Home page should be the survey list page
     When I am on the home page
-    Then I should see "Survey Responses"
     And I should see "Surveys In Progress"
 
   Scenario: See an informative message when there are no responses in progress

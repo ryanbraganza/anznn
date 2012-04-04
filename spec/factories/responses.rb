@@ -5,7 +5,7 @@ FactoryGirl.define do
     association :survey
     association :user
     association :hospital
-    baby_code "Blah"
+    sequence(:baby_code) { |n| "Some Baby #{n}" }
     submitted_status Response::STATUS_UNSUBMITTED
     year_of_registration "2003"
   end

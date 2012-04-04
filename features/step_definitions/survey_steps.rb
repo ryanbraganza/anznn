@@ -491,3 +491,57 @@ Given /^I fill in the year of registration range with "([^"]*)" and "([^"]*)"$/ 
   fill_in "Start year", :with => from
   click_button "Save"
 end
+
+When /^I have a range of responses$/ do
+  rpa = Hospital.find_by_name!("RPA")
+  rns = Hospital.find_by_name!("Royal North Shore")
+  mh = Hospital.find_by_name!("Mercy Hospital")
+  rc = Hospital.find_by_name!("The Royal Childrens Hospital")
+  sc = Hospital.find_by_name!("Sydney Childrens Hospital")
+
+  survey_a = Survey.find_by_name!("Survey A")
+  survey_b = Survey.find_by_name!("Survey B")
+
+  # set up how many we want of each type for each of 2009, 2010, 2011
+  create_responses({unsubmitted: [5, 3, 4], submitted: [3, 0, 8]}, rpa, survey_a)
+  create_responses({unsubmitted: [0, 0, 2], submitted: [0, 1, 6]}, rpa, survey_b)
+
+  create_responses({unsubmitted: [0, 0, 0], submitted: [0, 0, 0]}, rns, survey_a)
+  create_responses({unsubmitted: [0, 0, 2], submitted: [12, 3, 2]}, rns, survey_b)
+
+  create_responses({unsubmitted: [1, 2, 3], submitted: [3, 0, 8]}, mh, survey_a)
+  create_responses({unsubmitted: [0, 0, 0], submitted: [0, 1, 6]}, mh, survey_b)
+
+  create_responses({unsubmitted: [6, 8, 10], submitted: [0, 0, 2]}, rc, survey_a)
+  create_responses({unsubmitted: [0, 0, 0], submitted: [0, 0, 0]}, rc, survey_b)
+
+  create_responses({unsubmitted: [1, 1, 1], submitted: [1, 2, 3]}, sc, survey_a)
+  create_responses({unsubmitted: [0, 0, 1], submitted: [0, 0, 0]}, sc, survey_b)
+
+  #for some reason, even when we specify the hospital when using the factory, extra hospitals get created, so now we delete them
+  Hospital.where("name like ?", "Some Hospital%").delete_all
+
+end
+
+def create_responses(counts, hospital, survey)
+  counts[:unsubmitted].each_with_index do |required_number, index|
+    required_number.times do |i|
+      Factory(:response,
+              hospital: hospital,
+              submitted_status: Response::STATUS_UNSUBMITTED,
+              survey: survey,
+              year_of_registration: (2009 + index))
+    end
+  end
+
+  counts[:submitted].each_with_index do |required_number, index|
+    required_number.times do |i|
+      Factory(:response,
+              hospital: hospital,
+              submitted_status: Response::STATUS_SUBMITTED,
+              survey: survey,
+              year_of_registration: (2009 + index))
+    end
+  end
+
+end
