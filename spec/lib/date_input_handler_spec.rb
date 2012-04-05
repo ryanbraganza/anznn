@@ -17,7 +17,7 @@ describe DateInputHandler do
       it { should_reject("asdf-11-11") }
       it { should_reject("junk") }
       it { should_reject("2012-01-") }
-      it { should_reject("05-02-2011") } #TODO: should we allow this format?
+      it { should_reject("05-02-2011") } #we don't allow this format
       it { should_reject("05/22/2011") } #american date
       it { should_reject("30/2/2011") } #non existent
       it { should_reject("/22/2011") } #part missing

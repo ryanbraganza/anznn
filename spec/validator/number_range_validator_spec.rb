@@ -130,7 +130,7 @@ describe NumberRangeValidator do
   describe "Validating a nil answer" do
     it "should always return true" do
       question = Factory(:question, number_min: 1, number_max: 5)
-      #TODO: tbc what the behaviour should be on nil answers
+      #nil does not produce an error
       NumberRangeValidator.validate(question, nil).should eq([true, nil])
     end
   end

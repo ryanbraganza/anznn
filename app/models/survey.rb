@@ -3,9 +3,7 @@ class Survey < ActiveRecord::Base
   has_many :sections, dependent: :destroy, order: '"order"'
   has_many :questions, through: :sections
   
-  #TODO - this will be used to select 'active' surveys if that is required.
-  # It is used in the 'new reponse' form, so currently it just returns all of them
-  scope :active, order(:name)
+  scope :by_name, order(:name)
 
   validates :name, presence: true
 
@@ -22,8 +20,8 @@ class Survey < ActiveRecord::Base
     section_ids[current_index + 1]
   end
 
-  #TODO - thoughts?
   def destroy
+    # This is here as a safety measure, if we implement delete, it will need to be removed.
     if Rails.env.development? or Rails.env.test?
       super
     else

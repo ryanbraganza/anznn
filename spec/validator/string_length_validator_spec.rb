@@ -70,7 +70,7 @@ describe StringLengthValidator do
   describe "Validating a nil or blank answer" do
     it "should always return true" do
       question = Factory(:question, string_min: 1, string_max: 5)
-      #TODO: tbc what the behaviour should be on nil answers
+      #blank / nil are not considered errors
       StringLengthValidator.validate(question, nil).should eq([true, nil])
       StringLengthValidator.validate(question, "").should eq([true, nil])
     end

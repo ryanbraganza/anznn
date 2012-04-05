@@ -9,7 +9,7 @@
     .clearfix
       = f.label :survey_id
       .input
-        = f.collection_select :survey_id, Survey.active, :id, :name, {:include_blank => "Please select"}, {:class => "large"}
+        = f.collection_select :survey_id, Survey.by_name, :id, :name, {:include_blank => "Please select"}, {:class => "large"}
         = required
     .clearfix
       = f.label :year_of_registration
