@@ -11,9 +11,14 @@ class BatchFilesController < ApplicationController
   def new
   end
 
+  def index
+    set_tab :batches, :home
+    @batch_files = @batch_files.order("created_at DESC")
+  end
+
   def force_submit
     @batch_file.delay.process(:force)
-    redirect_to root_path, notice: FORCE_SUBMIT_NOTICE
+    redirect_to batch_files_path, notice: FORCE_SUBMIT_NOTICE
   end
 
   def create
@@ -21,7 +26,7 @@ class BatchFilesController < ApplicationController
     @batch_file.hospital = current_user.hospital
     if @batch_file.save
       @batch_file.delay.process
-      redirect_to root_path, notice: UPLOAD_NOTICE
+      redirect_to batch_files_path, notice: UPLOAD_NOTICE
     else
       render :new
     end

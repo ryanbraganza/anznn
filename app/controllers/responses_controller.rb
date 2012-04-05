@@ -4,6 +4,8 @@ class ResponsesController < ApplicationController
   load_and_authorize_resource
 
   expose(:year_of_registration_range) { ConfigurationItem.year_of_registration_range }
+  expose(:surveys) { Survey.order(:name) }
+  expose(:hospitals) { Hospital.hospitals_by_state }
 
   def new
   end
@@ -57,6 +59,10 @@ class ResponsesController < ApplicationController
 
   def review_answers
     @sections_to_answers = @response.sections_to_answers
+  end
+
+  def stats
+    set_tab :stats, :home
   end
 
   private

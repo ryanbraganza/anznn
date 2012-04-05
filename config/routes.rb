@@ -10,6 +10,9 @@ Anznn::Application.routes.draw do
       get :review_answers
       post :submit
     end
+    collection do
+      get :stats
+    end
   end
 
   resources :configuration_items, :only => [] do
@@ -19,7 +22,7 @@ Anznn::Application.routes.draw do
     end
   end
 
-  resources :batch_files, :only => [:new, :create] do
+  resources :batch_files, :only => [:new, :create, :index] do
     member do
       get :summary_report
       get :detail_report

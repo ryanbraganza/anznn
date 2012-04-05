@@ -25,5 +25,8 @@
             - answer.fatal_warnings.each do |fatal|
               %br/
               %span.fatalerror-display= fatal
-  .actions.review
-    = link_to "Edit Answers", edit_response_path(@response, section: section.id), id: "edit_answers_#{section.id}", class: 'btn'
+  - if can?(:edit, @response)
+    .actions.review
+      = link_to "Edit Answers", edit_response_path(@response, section: section.id), id: "edit_answers_#{section.id}", class: 'btn'
+  - else
+    %br/

@@ -23,7 +23,7 @@ Feature: View Stats
     And I am logged in as "admin@intersect.org.au"
 
   Scenario: Correct stats are shown on home page
-    Given I am on the home page
+    Given I am on the stats page
     Then I should not see "Survey None"
     And I should see survey stats table for "Survey A" with
       |                              | 2009 In Progress | 2009 Submitted | 2010 In Progress | 2010 Submitted | 2011 In Progress | 2011 Submitted |
@@ -46,10 +46,10 @@ Feature: View Stats
       | Mercy Hospital               | none             | none           | none             | 1              | none             | 6              |
       | The Royal Childrens Hospital | none             | none           | none             | none           | none             | none           |
 
-  Scenario: Data providers don't see stats
+  Scenario: Data providers can't see stats
     Given I am logged in as "dp@intersect.org.au" and have role "Data Provider"
-    Then I should not see "Data Collection Stats"
+    Then I should get a security error when I visit the stats page
 
-  Scenario: Data provider supervisors don't see stats
+  Scenario: Data provider supervisors can't see stats
     Given I am logged in as "dp@intersect.org.au" and have role "Data Provider Supervisor"
-    Then I should not see "Data Collection Stats"
+    Then I should get a security error when I visit the stats page

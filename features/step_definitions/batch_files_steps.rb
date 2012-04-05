@@ -22,14 +22,14 @@ end
 
 When /^I force submit for "(.*)"$/ do |filename|
   # should be on homepage first
-  current_url.should eq root_url
+  current_url.should eq batch_files_url
   bf = BatchFile.find_by_file_file_name! filename
 
   click_button "force_submit_#{bf.id}"
 end
 
 Given /^I upload batch file( as "(.*)")? "([^"]*)" for survey "([^"]*)"$/ do |as_user, email, filename, survey_name|
-  visit root_path
+  visit batch_files_path
   click_link "Upload Batch File"
   select survey_name, from: "Survey"
   select "2009", from: "Year of registration"

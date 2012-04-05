@@ -1,17 +1,16 @@
-- title "Home"
 
 - if user_signed_in?
+  - title 'Responses'
+
+  - content_for :tabs do
+    = render 'tabs'
 
   = link_to "Start New Survey Response", new_response_path, class: 'btn' if can?(:create, Response)
-  = link_to "Upload Batch File", new_batch_file_path, class: 'btn' if can?(:create, BatchFile)
 
   = render 'responses/survey_response_list'
-  = render 'batch_files/batch_files_list'
-
-  - if can?(:stats, Response)
-    = render 'response_stats'
 
 - else
+  - title 'Home'
   #content_container
     .container_home
       = form_for("user", url: user_session_path) do |f|

@@ -111,4 +111,9 @@ Feature: View a summary page for a survey response
       | Sec2    | Incomplete |
       | Sec3    | Incomplete |
 
+  Scenario: Superusers don't see edit button
+    Given I am logged in as "super@intersect.org.au" and have role "Administrator"
+    When I am on the response summary page for babycode123
+    Then I should not see link "Edit"
+
 

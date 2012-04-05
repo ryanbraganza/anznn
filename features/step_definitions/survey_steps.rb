@@ -540,3 +540,7 @@ def create_responses(counts, hospital, survey)
   end
 
 end
+
+Given /^there are no survey responses$/ do
+  Response.delete_all
+end

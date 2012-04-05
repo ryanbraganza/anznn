@@ -6,6 +6,7 @@ Feature: View a list of batch files
   Background:
     Given I have a user "data.provider@intersect.org.au" with role "Data Provider" and hospital "RPA"
     Given I have a user "supervisor@intersect.org.au" with role "Data Provider Supervisor" and hospital "RPA"
+    Given I have a user "admin@intersect.org.au" with role "Administrator" and hospital "RPA"
     And I have a survey with name "MySurvey"
     And I have a survey with name "MySurvey2"
     And "supervisor@intersect.org.au" has name "Fred" "Smith"
@@ -18,8 +19,8 @@ Feature: View a list of batch files
       | MySurvey2 | supervisor@intersect.org.au    | 2012-01-03 11:23 | Failed      | Message 4 | RPA      | true           | true          | fourth.csv     | 20           | 2012                 |
 
   Scenario: View a list of batch uploads - superuser sees all
-    Given I am logged in as "super@intersect.org.au" and have role "Administrator"
-    When I am on the home page
+    Given I am logged in as "admin@intersect.org.au"
+    When I am on the list of batch uploads page
     Then I should see "batch_uploads" table with
       | Survey Type | Year of Registration | Filename   | Created By    | Date Uploaded          | Num records | Status      | Details   | Reports                       |
       | MySurvey2   | 2010                 | second.csv | Data Provider | January 04, 2012 13:56 |             | In Progress | Message 2 |                               |
@@ -27,31 +28,42 @@ Feature: View a list of batch files
       | MySurvey2   | 2012                 | fourth.csv | Fred Smith    | January 03, 2012 11:23 | 20          | Failed      | Message 4 | Summary Report\nDetail Report |
       | MySurvey    | 2008                 | third.csv  | Fred Smith    | January 03, 2012 08:00 | 15          | Succeeded   | Message 3 | Summary Report                |
 
-  Scenario: View a list of batch uploads - data provider only sees own hospital
-    Given I am logged in as "data.provider@intersect.org.au" and have role "Administrator"
-    Given I am on the home page
+  Scenario Outline: View a list of batch uploads - data provider/data provider supervisor only sees own hospital
+    Given I am logged in as "<user>"
+    When I am on the list of batch uploads page
     Then I should see "batch_uploads" table with
       | Survey Type | Filename   | Created By    | Date Uploaded          | Num records | Status      | Details   | Reports                       |
       | MySurvey    | first.csv  | Data Provider | January 03, 2012 13:56 |             | In Progress | Message 1 |                               |
       | MySurvey2   | fourth.csv | Fred Smith    | January 03, 2012 11:23 | 20          | Failed      | Message 4 | Summary Report\nDetail Report |
+  Examples:
+    | user                           |
+    | supervisor@intersect.org.au    |
+    | data.provider@intersect.org.au |
 
-  Scenario: View a list of batch uploads - data provider supervisor only sees own hospital
-    Given I am logged in as "supervisor@intersect.org.au"
-    And I am on the home page
-    Then I should see "batch_uploads" table with
-      | Survey Type | Filename   | Created By    | Date Uploaded          | Num records | Status      | Details   | Reports                       |
-      | MySurvey    | first.csv  | Data Provider | January 03, 2012 13:56 |             | In Progress | Message 1 |                               |
-      | MySurvey2   | fourth.csv | Fred Smith    | January 03, 2012 11:23 | 20          | Failed      | Message 4 | Summary Report\nDetail Report |
-
-
-  Scenario: Download a summary report
-    Given I am logged in as "supervisor@intersect.org.au"
-    And I am on the home page
+  Scenario Outline: Download a summary report
+    Given I am logged in as "<user>"
+    When I am on the list of batch uploads page
     And I follow "Summary Report"
     Then I should receive a file with name "summary-report.pdf" and type "application/pdf"
+  Examples:
+    | user                           |
+    | supervisor@intersect.org.au    |
+    | data.provider@intersect.org.au |
+    | admin@intersect.org.au         |
 
-  Scenario: Download a summary report
-    Given I am logged in as "supervisor@intersect.org.au"
-    And I am on the home page
+  Scenario Outline: Download a detail report
+    Given I am logged in as "<user>"
+    When I am on the list of batch uploads page
     And I follow "Detail Report"
     Then I should receive a file with name "detail-report.csv" and type "text/csv"
+  Examples:
+    | user                           |
+    | supervisor@intersect.org.au    |
+    | data.provider@intersect.org.au |
+    | admin@intersect.org.au         |
+
+  Scenario: Refresh status button reloads the page
+    Given I am logged in as "data.provider@intersect.org.au"
+    When I am on the list of batch uploads page
+    And I follow "Refresh Status"
+    Then I should be on the list of batch uploads page

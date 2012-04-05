@@ -1,9 +1,13 @@
-%h2 Data Collection Stats
+- content_for :tabs do
+  = render 'pages/tabs'
+
+- title 'Data Collection Stats'
+
 - surveys.each do |survey|
   - stats = StatsReport.new(survey)
   - unless stats.empty?
 
-    %h3= survey.name
+    %h2= survey.name
 
     %table{id: "stats_#{survey.id}", class: 'bordered-table'}
       %thead
@@ -31,4 +35,3 @@
               - stats.years.each do |year|
                 %td= stats.response_count(year, Response::STATUS_UNSUBMITTED, hospital_id)
                 %td= stats.response_count(year, Response::STATUS_SUBMITTED, hospital_id)
-

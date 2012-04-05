@@ -70,6 +70,12 @@ module NavigationHelpers
     when /the configure year of registration range page/
       edit_year_of_registration_configuration_items_path
 
+    when /the list of batch uploads page/
+      batch_files_path
+
+    when /the stats page/
+      stats_responses_path
+
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #

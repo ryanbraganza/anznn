@@ -125,3 +125,11 @@ Feature: Review my answers
       | Time Qn 2 | Answer is incomplete (a field was left blank)        |
       | Date Qn 3 | 25/12/2011                                           |
       | Time Qn 3 | 14:43                                                |
+
+  Scenario: Superusers can review answers but don't see the edit answers button
+    Given I am logged in as "admin@intersect.org.au" and have role "Administrator"
+    When I am on the home page
+    And I follow "Review Answers"
+    Then I should be on the review answers page for ABCDEF
+    And I should see "MySurvey - Baby Code ABCDEF - Year of Registration 2005"
+    But I should not see link "Edit Answers"

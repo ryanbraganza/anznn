@@ -1,8 +1,17 @@
-%h2 Batch Uploads
+- content_for :tabs do
+  = render 'pages/tabs'
+
+- title 'Batch Uploads'
+
+- if can?(:create, BatchFile)
+  = link_to "Upload Batch File", new_batch_file_path, class: 'btn'
+  %br/
+  %br/
+
 - if @batch_files.blank?
   %p There are no batch files to show.
 - else
-  = link_to "Refresh Status", root_path, class: 'btn'
+  = link_to "Refresh Status", batch_files_path, class: 'btn'
   %table#batch_uploads.bordered-table
     %thead
       %tr
@@ -30,10 +39,10 @@
         %td= batch_file.message
         %td
           - if batch_file.has_summary_report?
-            = link_to "Summary Report", summary_report_batch_file_path(batch_file)
+            = link_to "Summary Report", summary_report_batch_file_path(batch_file), class: 'btn'
           - if batch_file.has_detail_report?
             %br/
-            = link_to "Detail Report", detail_report_batch_file_path(batch_file)
+            = link_to "Detail Report", detail_report_batch_file_path(batch_file), class: 'btn'
         - if can? :force_submit, BatchFile
           %td
             - if can? :force_submit, batch_file
