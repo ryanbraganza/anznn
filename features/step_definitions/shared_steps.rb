@@ -143,3 +143,8 @@ Then /^I should receive a file with name "([^"]*)" and type "([^"]*)"$/ do |name
   page.response_headers['Content-Disposition'].should include("filename=\"#{name}\"")
   page.response_headers['Content-Disposition'].should include("attachment")
 end
+
+Then /^the "([^"]*)" table should have (\d+) rows$/ do |table_id, expected_rows|
+  rows = find("table##{table_id}").all('tr').size
+  (rows - 1).should eq(expected_rows.to_i)
+end

@@ -67,3 +67,21 @@ Feature: View a list of batch files
     When I am on the list of batch uploads page
     And I follow "Refresh Status"
     Then I should be on the list of batch uploads page
+
+  Scenario: List should have pagination once there's more than 20 results
+    Given there are 50 batch uploads
+    And I am logged in as "admin@intersect.org.au"
+    And I am on the list of batch uploads page
+    Then the "batch_uploads" table should have 20 rows
+    When I follow "Next"
+    Then the "batch_uploads" table should have 20 rows
+    When I follow "Next"
+    Then the "batch_uploads" table should have 10 rows
+    When I follow "Previous"
+    Then the "batch_uploads" table should have 20 rows
+    When I follow "1"
+    Then the "batch_uploads" table should have 20 rows
+    When I follow "3"
+    Then the "batch_uploads" table should have 10 rows
+
+

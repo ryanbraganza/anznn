@@ -13,7 +13,7 @@ class BatchFilesController < ApplicationController
 
   def index
     set_tab :batches, :home
-    @batch_files = @batch_files.order("created_at DESC")
+    @batch_files = @batch_files.order("created_at DESC").page(params[:page]).per_page(20)
   end
 
   def force_submit

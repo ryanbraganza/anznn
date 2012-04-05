@@ -5,13 +5,14 @@
 
 - if can?(:create, BatchFile)
   = link_to "Upload Batch File", new_batch_file_path, class: 'btn'
-  %br/
-  %br/
 
 - if @batch_files.blank?
   %p There are no batch files to show.
 - else
   = link_to "Refresh Status", batch_files_path, class: 'btn'
+  %br/
+  %br/
+  = will_paginate @batch_files, :renderer => BootstrapPagination::Rails
   %table#batch_uploads.bordered-table
     %thead
       %tr

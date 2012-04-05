@@ -111,3 +111,11 @@ def check_batch_file(survey_name, email, hospital_name)
   expected_path = Rails.root.join("tmp/#{file.id}#{ext}").to_s
   file.file.path.should eq(expected_path)
 end
+
+Given /^there are (\d+) batch uploads$/ do |count|
+  BatchFile.delete_all
+  count.to_i.times do |i|
+    Factory(:batch_file, year_of_registration: i)
+  end
+end
+
