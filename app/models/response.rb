@@ -27,6 +27,10 @@ class Response < ActiveRecord::Base
   scope :for_survey, lambda { |survey| where(survey_id: survey.id) }
   scope :unsubmitted, where(submitted_status: STATUS_UNSUBMITTED)
 
+  def self.existing_years_of_registration
+    select("distinct year_of_registration").collect(&:year_of_registration).sort
+  end
+
   def submit!
     if ![COMPLETE, COMPLETE_WITH_WARNINGS].include?(status)
       raise "Can't submit with status #{status}"

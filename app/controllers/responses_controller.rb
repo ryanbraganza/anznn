@@ -6,6 +6,7 @@ class ResponsesController < ApplicationController
   expose(:year_of_registration_range) { ConfigurationItem.year_of_registration_range }
   expose(:surveys) { Survey.order(:name) }
   expose(:hospitals) { Hospital.hospitals_by_state }
+  expose(:existing_years_of_registration) { Response.existing_years_of_registration }
 
   def new
   end
@@ -63,6 +64,10 @@ class ResponsesController < ApplicationController
 
   def stats
     set_tab :stats, :home
+  end
+
+  def prepare_download
+    set_tab :download, :home
   end
 
   private

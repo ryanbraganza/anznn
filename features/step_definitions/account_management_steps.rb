@@ -96,10 +96,10 @@ Given /^"([^"]*)" is rejected as spam$/ do |email|
   user.reject_access_request
 end
 
-Then /^the filter by hospital select should contain$/ do |table|
-  field = find_field("Filter by hospital")
+Then /^the "([^"]*)" nested select should contain$/ do |label, table|
+  field = find_field(label)
   groups = field.all("optgroup")
-  top_level = all("#hospital_filter > option").collect(&:text)
+  top_level = all("##{field[:id]} > option").collect(&:text)
 
   nested_options = []
   groups.each do |group|

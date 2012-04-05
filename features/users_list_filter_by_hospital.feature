@@ -25,7 +25,7 @@ Feature: Administer users
 
 
   Scenario: Filter by hospital
-    Then the filter by hospital select should contain
+    Then the "Filter by hospital" nested select should contain
       |     | ANY, None                             |
       | NSW | Hospital 2, Left Wing                 |
       | Vic | H4, Hospital 3, Only Wing, Right Wing |

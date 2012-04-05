@@ -4,3 +4,5 @@
     = tab.batches 'Batch Uploads', batch_files_path
     - if can?(:stats, Response)
       = tab.stats 'Stats', stats_responses_path
+    - if can?(:download, Response)
+      = tab.download 'Download Data', prepare_download_responses_path

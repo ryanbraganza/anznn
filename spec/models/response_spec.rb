@@ -62,6 +62,16 @@ describe Response do
     end
   end
 
+  describe "Getting the full set of possible years of registration" do
+    it "returns unique values in ascending order" do
+      Factory(:response, year_of_registration: 2009)
+      Factory(:response, year_of_registration: 2007)
+      Factory(:response, year_of_registration: 2009)
+      Factory(:response, year_of_registration: 2011)
+      Response.existing_years_of_registration.should eq([2007, 2009, 2011])
+    end
+  end
+
   describe "submit" do
     let(:response) {Factory(:response)}
     it "should set the status of the response when complete" do

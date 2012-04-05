@@ -21,6 +21,8 @@ class Ability
     alias_action :summary_report, to: :read
     alias_action :detail_report, to: :read
 
+    alias_action :prepare_download, to: :download
+
     return unless user.role
 
     #All users can see all available surveys
@@ -39,6 +41,7 @@ class Ability
 
         can :read, Response
         can :stats, Response
+        can :download, Response
         can :read, BatchFile
 
         can :manage, ConfigurationItem

@@ -512,20 +512,18 @@ When /^I have a range of responses$/ do
 
   create_responses({unsubmitted: [1, 1, 1], submitted: [1, 2, 3]}, sc, survey_a)
   create_responses({unsubmitted: [0, 0, 1], submitted: [0, 0, 0]}, sc, survey_b)
-
-  #for some reason, even when we specify the hospital when using the factory, extra hospitals get created, so now we delete them
-  Hospital.where("name like ?", "Some Hospital%").delete_all
-
 end
 
 def create_responses(counts, hospital, survey)
+  user = Factory(:user, hospital: hospital)
   counts[:unsubmitted].each_with_index do |required_number, index|
     required_number.times do |i|
       Factory(:response,
               hospital: hospital,
               submitted_status: Response::STATUS_UNSUBMITTED,
               survey: survey,
-              year_of_registration: (2009 + index))
+              year_of_registration: (2009 + index),
+              user: user)
     end
   end
 
@@ -535,7 +533,8 @@ def create_responses(counts, hospital, survey)
               hospital: hospital,
               submitted_status: Response::STATUS_SUBMITTED,
               survey: survey,
-              year_of_registration: (2009 + index))
+              year_of_registration: (2009 + index),
+              user: user)
     end
   end
 
@@ -543,4 +542,15 @@ end
 
 Given /^there are no survey responses$/ do
   Response.delete_all
+end
+
+Given /^I have responses$/ do |table|
+  table.hashes.each do |attrs|
+    survey_name = attrs.delete('survey')
+    survey = survey_name.blank? ? Factory(:survey) : Survey.find_by_name!(survey_name)
+    hospital_name = attrs.delete('hospital')
+    hospital = hospital_name.blank? ? Factory(:hospital) : Hospital.find_by_name!(hospital_name)
+    user = Factory(:user, hospital: hospital)
+    Factory(:response, attrs.merge(survey: survey, user: user, hospital: hospital))
+  end
 end

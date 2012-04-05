@@ -105,7 +105,8 @@ def create_usual_roles
 end
 
 def create_user_with_role(email, role_name)
-  user = Factory(:user, :email => email, :password => "Pas$w0rd", :status => 'A')
+  hospital = role_name == Role::SUPER_USER ? nil : Factory(:hospital)
+  user = Factory(:user, :email => email, :password => "Pas$w0rd", :status => 'A', hospital: hospital)
   role = Role.find_by_name!(role_name)
   user.role_id = role.id
   user.save!

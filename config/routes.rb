@@ -12,6 +12,8 @@ Anznn::Application.routes.draw do
     end
     collection do
       get :stats
+      get :prepare_download
+      get :download
     end
   end
 
