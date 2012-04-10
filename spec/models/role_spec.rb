@@ -20,16 +20,14 @@ describe Role do
     it { should validate_presence_of(:name) }
 
     it "should reject duplicate names" do
-      attr = {:name => "abc"}
-      Role.create!(attr)
-      with_duplicate_name = Role.new(attr)
+      Role.create!(name: "abc")
+      with_duplicate_name = Role.new(name: "abc")
       with_duplicate_name.should_not be_valid
     end
 
     it "should reject duplicate names identical except for case" do
-      attr = {:name => "abc"}
-      Role.create!(attr.merge(:name => "ABC"))
-      with_duplicate_name = Role.new(@attr)
+      Role.create!(name: "ABC")
+      with_duplicate_name = Role.new(name: "abc")
       with_duplicate_name.should_not be_valid
     end
   end
