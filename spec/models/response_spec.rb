@@ -79,19 +79,19 @@ describe Response do
     end
 
     it "should return all submitted responses for survey when hospital and year of reg not provided" do
-      Response.for_survey_hospital_and_year_of_registration(@survey_a.id, "", "").collect(&:id).should eq([@r1, @r2, @r3, @r4, @r5, @r6])
+      Response.for_survey_hospital_and_year_of_registration(@survey_a, "", "").collect(&:id).should eq([@r1, @r2, @r3, @r4, @r5, @r6])
     end
 
     it "should filter by hospital when provided" do
-      Response.for_survey_hospital_and_year_of_registration(@survey_a.id, @hospital_a.id, "").collect(&:id).should eq([@r1, @r2, @r3])
+      Response.for_survey_hospital_and_year_of_registration(@survey_a, @hospital_a.id, "").collect(&:id).should eq([@r1, @r2, @r3])
     end
 
     it "should filter by year of reg when provided" do
-      Response.for_survey_hospital_and_year_of_registration(@survey_a.id, "", "2001").collect(&:id).should eq([@r1, @r2, @r4])
+      Response.for_survey_hospital_and_year_of_registration(@survey_a, "", "2001").collect(&:id).should eq([@r1, @r2, @r4])
     end
 
     it "should filter by hospital and year of reg when both provided" do
-      Response.for_survey_hospital_and_year_of_registration(@survey_a.id, @hospital_a.id, "2001").collect(&:id).should eq([@r1, @r2])
+      Response.for_survey_hospital_and_year_of_registration(@survey_a, @hospital_a.id, "2001").collect(&:id).should eq([@r1, @r2])
     end
   end
 

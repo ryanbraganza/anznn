@@ -140,8 +140,9 @@ end
 
 Then /^I should receive a file with name "([^"]*)" and type "([^"]*)"$/ do |name, type|
   page.response_headers['Content-Type'].should == type
-  page.response_headers['Content-Disposition'].should include("filename=\"#{name}\"")
-  page.response_headers['Content-Disposition'].should include("attachment")
+  disposition = page.response_headers['Content-Disposition']
+  disposition.should include("filename=\"#{name}\"")
+  disposition.should include("attachment")
 end
 
 Then /^the "([^"]*)" table should have (\d+) rows$/ do |table_id, expected_rows|
