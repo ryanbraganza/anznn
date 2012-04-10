@@ -76,7 +76,7 @@ class Answer < ActiveRecord::Base
     end
   end
 
-  def format_for_batch_report
+  def format_for_csv
     return raw_answer unless raw_answer.nil?
     case question.question_type
       when TYPE_TEXT, TYPE_DECIMAL, TYPE_INTEGER, TYPE_CHOICE

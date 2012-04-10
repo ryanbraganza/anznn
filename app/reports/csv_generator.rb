@@ -1,6 +1,7 @@
 class CsvGenerator
 
-  attr_accessor :survey_id, :hospital_id, :year_of_registration, :records, :survey
+  BASIC_HEADERS = %w(Survey YearOfRegistration Hospital BabyCode)
+  attr_accessor :survey_id, :hospital_id, :year_of_registration, :records, :survey, :question_codes
 
   def initialize(survey_id, hospital_id, year_of_registration)
     self.survey_id = survey_id
@@ -8,6 +9,7 @@ class CsvGenerator
     self.year_of_registration = year_of_registration
 
     self.survey = Survey.find(survey_id)
+    self.question_codes = survey.ordered_questions.collect(&:code)
 
     self.records = Response.for_survey_hospital_and_year_of_registration(survey, hospital_id, year_of_registration)
   end
@@ -31,10 +33,22 @@ class CsvGenerator
 
   def csv
     CSV.generate(:col_sep => ",") do |csv|
-      csv.add_row %w(Survey YearOfRegistration Hospital BabyCode)
-      records.each do |entry|
-        csv.add_row [entry.survey.name, entry.year_of_registration, entry.hospital.abbrev, entry.baby_code]
+      csv.add_row BASIC_HEADERS + question_codes
+      records.each do |response|
+        basic_row_data = [response.survey.name, response.year_of_registration, response.hospital.abbrev, response.baby_code]
+        csv.add_row basic_row_data + answers(response)
       end
     end
   end
+
+  private
+
+  def answers(response)
+    answer_hash = response.answers.reduce({}) { |hash, answer| hash[answer.question.code] = answer; hash }
+    question_codes.collect do |code|
+      answer = answer_hash[code]
+      answer.nil? ? "" : answer.format_for_csv
+    end
+  end
+
 end

@@ -52,6 +52,8 @@ Feature: Download survey data
     And I press "Download"
     Then I should see "No data was found for your search criteria" within the form errors
 
+  #TODO: the following tests don't check the full answer details in the files, as this is already tested in csv_generator_spec.rb,
+  # however it would be nice to have a full end to end test that checks that
   Scenario: Download all for a survey
     Given I am on the download page
     When I select "Survey A" from "Survey"

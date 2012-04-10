@@ -50,14 +50,33 @@ describe CsvGenerator do
 
   describe "Generating the CSV" do
     it "includes the correct details" do
-      response1 = Factory(:response, hospital: Factory(:hospital, abbrev: "HRL"), survey: survey, year_of_registration: 2009, baby_code: "ABC-123")
-      response2 = Factory(:response, hospital: Factory(:hospital, abbrev: "BBB"), survey: survey, year_of_registration: 2011, baby_code: "DEF-567")
-      Response.should_receive(:for_survey_hospital_and_year_of_registration).with(survey, "", "").and_return([response1, response2])
-      csv = CsvGenerator.new(survey.id, "", "").csv
+      section2 = Factory(:section, survey: survey, order: 2)
+      section1 = Factory(:section, survey: survey, order: 1)
+      q_choice = Factory(:question, section: section1, order: 1, question_type: Question::TYPE_CHOICE, code: 'ChoiceQ')
+      q_date = Factory(:question, section: section1, order: 3, question_type: Question::TYPE_DATE, code: 'DateQ')
+      q_decimal = Factory(:question, section: section2, order: 2, question_type: Question::TYPE_DECIMAL, code: 'DecimalQ')
+      q_integer = Factory(:question, section: section2, order: 1, question_type: Question::TYPE_INTEGER, code: 'IntegerQ')
+      q_text = Factory(:question, section: section1, order: 2, question_type: Question::TYPE_TEXT, code: 'TextQ')
+      q_time = Factory(:question, section: section1, order: 4, question_type: Question::TYPE_TIME, code: 'TimeQ')
+
+      response1 = Factory(:response, hospital: Factory(:hospital, abbrev: 'HRL'), survey: survey, year_of_registration: 2009, baby_code: 'ABC-123')
+      Factory(:answer, response: response1, question: q_choice, answer_value: '1')
+      Factory(:answer, response: response1, question: q_date, answer_value: '25/02/2001')
+      Factory(:answer, response: response1, question: q_decimal, answer_value: '15.5673')
+      Factory(:answer, response: response1, question: q_integer, answer_value: '877')
+      Factory(:answer, response: response1, question: q_text, answer_value: 'ABc')
+      Factory(:answer, response: response1, question: q_time, answer_value: '14:56')
+      
+      response2 = Factory(:response, hospital: Factory(:hospital, abbrev: 'BBB'), survey: survey, year_of_registration: 2011, baby_code: 'DEF-567')
+      Factory(:answer, response: response2, question: q_integer, answer_value: '99')
+      Factory(:answer, response: response2, question: q_text, answer_value: 'ABCdefg Ijkl')
+      
+      Response.should_receive(:for_survey_hospital_and_year_of_registration).with(survey, '', '').and_return([response1, response2])
+      csv = CsvGenerator.new(survey.id, '', '').csv
       expected = []
-      expected << ["Survey", "YearOfRegistration", "Hospital", "BabyCode"]
-      expected << ["Survey One", "2009", "HRL", "ABC-123"]
-      expected << ["Survey One", "2011", "BBB", "DEF-567"]
+      expected << %w(Survey YearOfRegistration Hospital BabyCode ChoiceQ TextQ DateQ TimeQ IntegerQ DecimalQ)
+      expected << ['Survey One', '2009', 'HRL', 'ABC-123', '1', 'ABc', '2001-02-25', '14:56', '877', '15.5673']
+      expected << ['Survey One', '2011', 'BBB', 'DEF-567', '', 'ABCdefg Ijkl', '', '', '99', '']
       CSV.parse(csv).should eq(expected)
     end
   end
