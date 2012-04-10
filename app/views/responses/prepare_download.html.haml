@@ -5,20 +5,25 @@
 
 = form_tag download_responses_path, method: :get do
   %fieldset
+    - unless @errors.blank?
+      #form_errors.alert-message.block-message.error
+        %ul
+          -@errors.each do |msg|
+            %li= msg
     .clearfix
       = label_tag :survey_id, "Survey"
       .input
-        = select_tag :survey_id, options_from_collection_for_select(Survey.by_name, :id, :name), {class: "large", prompt: "Please select"}
+        = select_tag :survey_id, options_from_collection_for_select(Survey.by_name, :id, :name, @survey_id), {class: "large", prompt: "Please select"}
         = required
     .clearfix
       = label_tag :hospital_id, "Hospital"
       .input
-        = select_tag :hospital_id, grouped_options_for_select(Hospital.hospitals_by_state, nil), {prompt: "ALL", class: 'large'}
+        = select_tag :hospital_id, grouped_options_for_select(Hospital.hospitals_by_state, @hospital_id), {prompt: "ALL", class: 'large'}
         = required
     .clearfix
       = label_tag :year_of_registration
       .input
-        = select_tag :year_of_registration, options_for_select(existing_years_of_registration), {prompt: "ALL", class: "medium"}
+        = select_tag :year_of_registration, options_for_select(existing_years_of_registration, @year_of_registration), {prompt: "ALL", class: "medium"}
         = required
     .actions
       = submit_tag "Download", class: "btn primary"

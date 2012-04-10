@@ -25,7 +25,16 @@ class Response < ActiveRecord::Base
   before_validation :strip_whitespace
 
   scope :for_survey, lambda { |survey| where(survey_id: survey.id) }
+
   scope :unsubmitted, where(submitted_status: STATUS_UNSUBMITTED)
+  scope :submitted, where(submitted_status: STATUS_SUBMITTED)
+
+  def self.for_survey_hospital_and_year_of_registration(survey_id, hospital_id, year_of_registration)
+    results = submitted.where(survey_id: survey_id)
+    results = results.where(hospital_id: hospital_id) unless hospital_id.blank?
+    results = results.where(year_of_registration: year_of_registration) unless year_of_registration.blank?
+    results
+  end
 
   def self.existing_years_of_registration
     select("distinct year_of_registration").collect(&:year_of_registration).sort

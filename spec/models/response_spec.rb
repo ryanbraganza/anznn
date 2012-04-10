@@ -62,6 +62,39 @@ describe Response do
     end
   end
 
+  describe "Getting submitted responses by survey, hospital and year of reg" do
+    before(:each) do
+      @survey_a = Factory(:survey)
+      @survey_b = Factory(:survey)
+      @hospital_a = Factory(:hospital)
+      @hospital_b = Factory(:hospital)
+      @r1 = Factory(:response, survey: @survey_a, hospital: @hospital_a, year_of_registration: 2001, submitted_status: Response::STATUS_SUBMITTED).id
+      @r2 = Factory(:response, survey: @survey_a, hospital: @hospital_a, year_of_registration: 2001, submitted_status: Response::STATUS_SUBMITTED).id
+      @r3 = Factory(:response, survey: @survey_a, hospital: @hospital_a, year_of_registration: 2002, submitted_status: Response::STATUS_SUBMITTED).id
+      @r4 = Factory(:response, survey: @survey_a, hospital: @hospital_b, year_of_registration: 2001, submitted_status: Response::STATUS_SUBMITTED).id
+      @r5 = Factory(:response, survey: @survey_a, hospital: @hospital_b, year_of_registration: 2002, submitted_status: Response::STATUS_SUBMITTED).id
+      @r6 = Factory(:response, survey: @survey_a, hospital: @hospital_b, year_of_registration: 2003, submitted_status: Response::STATUS_SUBMITTED).id
+      @r7 = Factory(:response, survey: @survey_b, hospital: @hospital_a, year_of_registration: 2001, submitted_status: Response::STATUS_SUBMITTED).id
+      @r8 = Factory(:response, survey: @survey_a, hospital: @hospital_a, year_of_registration: 2001, submitted_status: Response::STATUS_UNSUBMITTED).id
+    end
+
+    it "should return all submitted responses for survey when hospital and year of reg not provided" do
+      Response.for_survey_hospital_and_year_of_registration(@survey_a.id, "", "").collect(&:id).should eq([@r1, @r2, @r3, @r4, @r5, @r6])
+    end
+
+    it "should filter by hospital when provided" do
+      Response.for_survey_hospital_and_year_of_registration(@survey_a.id, @hospital_a.id, "").collect(&:id).should eq([@r1, @r2, @r3])
+    end
+
+    it "should filter by year of reg when provided" do
+      Response.for_survey_hospital_and_year_of_registration(@survey_a.id, "", "2001").collect(&:id).should eq([@r1, @r2, @r4])
+    end
+
+    it "should filter by hospital and year of reg when both provided" do
+      Response.for_survey_hospital_and_year_of_registration(@survey_a.id, @hospital_a.id, "2001").collect(&:id).should eq([@r1, @r2])
+    end
+  end
+
   describe "Getting the full set of possible years of registration" do
     it "returns unique values in ascending order" do
       Factory(:response, year_of_registration: 2009)

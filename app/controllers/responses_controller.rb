@@ -70,6 +70,26 @@ class ResponsesController < ApplicationController
     set_tab :download, :home
   end
 
+  def download
+    @survey_id = params[:survey_id]
+    @hospital_id = params[:hospital_id]
+    @year_of_registration = params[:year_of_registration]
+    if @survey_id.blank?
+      @errors = ["Please select a survey"]
+      render :prepare_download
+    else
+      records = Response.for_survey_hospital_and_year_of_registration(@survey_id, @hospital_id, @year_of_registration)
+      logger.info "-------------------------------------------------------------"
+      logger.info "FOUND #{records.count} responses - empty is #{records.empty?}"
+      if records.empty?
+        @errors = ["No data was found for your search criteria"]
+        render :prepare_download
+      else
+        raise "Not implemented yet!"
+      end
+    end
+  end
+
   private
 
   def blank_answer?(value)
