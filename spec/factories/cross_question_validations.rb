@@ -58,5 +58,18 @@ FactoryGirl.define do
       set_operator "included"
       set [1,3,5,7]
     end
+
+    factory :cqv_blank_unless_const do
+      sequence(:rule){'blank_unless_const'}
+      conditional_operator "=="
+      conditional_constant -1
+    end
+
+    factory :cqv_blank_unless_set do
+      sequence(:rule){'blank_unless_set'}
+      conditional_set_operator "range"
+      conditional_set [0,99]
+    end
+
   end
 end
