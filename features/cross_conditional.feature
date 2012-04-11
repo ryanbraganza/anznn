@@ -14,8 +14,8 @@ Feature: Cross Question Conditional Validations
 
   Scenario: CQV Failure - Date Implies Const, eg If Qx is a date then This <must be> <-1> [13 B, Hmegavage]
     Given I have the following cross question validations
-      | question | related | rule               | operator | constant | error_message                                |
-      | Num Q1   | Date Q1 | date_implies_const | ==       | -1       | Date entered in Date Q1, this needs to be -1 |
+      | question | related | rule                  | operator | constant | error_message                                |
+      | Num Q1   | Date Q1 | date_implies_constant | ==       | -1       | Date entered in Date Q1, this needs to be -1 |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer   |
@@ -52,7 +52,7 @@ Feature: Cross Question Conditional Validations
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer |
-      | Num Q1   | 1      |
+      | Num Q1   | 0      |
       | Num Q2   | 2      |
     Then I should see "NumQ2 is in [2,4,6,8], so this can't be 0"
 

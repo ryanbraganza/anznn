@@ -35,27 +35,49 @@ describe CrossQuestionValidation do
       end
     end
 
+    describe 'valid set operators' do
+
+      it "should accept valid operators" do
+        CrossQuestionValidation::ALLOWED_SET_OPERATORS.each do |op|
+          CrossQuestionValidation.is_set_operator_valid?(op).should eq true
+        end
+      end
+      it "should reject invalid operators" do
+        CrossQuestionValidation.is_set_operator_valid?("invalid_operator").should eq false
+        CrossQuestionValidation.is_set_operator_valid?("something_else").should eq false
+
+      end
+    end
+
     describe 'set_meets_conditions' do
       it "should pass true statements" do
-        CrossQuestionValidation.set_meets_condition?([1,3,5,7], "included", 5).should eq true
-        CrossQuestionValidation.set_meets_condition?([1,3,5,7], "excluded", 4).should eq true
-        CrossQuestionValidation.set_meets_condition?([1,5], "range", 4).should eq true
-        CrossQuestionValidation.set_meets_condition?([1,5], "range", 1).should eq true
-        CrossQuestionValidation.set_meets_condition?([1,5], "range", 5).should eq true
-        CrossQuestionValidation.set_meets_condition?([1,5], "range", 4.5).should eq true
+        CrossQuestionValidation.set_meets_condition?([1, 3, 5, 7], "included", 5).should eq true
+        CrossQuestionValidation.set_meets_condition?([1, 3, 5, 7], "excluded", 4).should eq true
+        CrossQuestionValidation.set_meets_condition?([1, 5], "range", 4).should eq true
+        CrossQuestionValidation.set_meets_condition?([1, 5], "range", 1).should eq true
+        CrossQuestionValidation.set_meets_condition?([1, 5], "range", 5).should eq true
+        CrossQuestionValidation.set_meets_condition?([1, 5], "range", 4.9).should eq true
+        CrossQuestionValidation.set_meets_condition?([1, 5], "between", 1.1).should eq true
+        CrossQuestionValidation.set_meets_condition?([1, 5], "between", 2).should eq true
+        CrossQuestionValidation.set_meets_condition?([1, 5], "between", 4).should eq true
+        CrossQuestionValidation.set_meets_condition?([1, 5], "between", 4.9).should eq true
       end
 
       it "should reject false statements" do
-        CrossQuestionValidation.set_meets_condition?([1,3,5,7], "included", 4).should eq false
-        CrossQuestionValidation.set_meets_condition?([1,3,5,7], "excluded", 5).should eq false
-        CrossQuestionValidation.set_meets_condition?([1,5], "range", 0).should eq false
-        CrossQuestionValidation.set_meets_condition?([1,5], "range", 6).should eq false
-        CrossQuestionValidation.set_meets_condition?([1,5], "range", 5.1).should eq false
+        CrossQuestionValidation.set_meets_condition?([1, 3, 5, 7], "included", 4).should eq false
+        CrossQuestionValidation.set_meets_condition?([1, 3, 5, 7], "excluded", 5).should eq false
+        CrossQuestionValidation.set_meets_condition?([1, 5], "range", 0).should eq false
+        CrossQuestionValidation.set_meets_condition?([1, 5], "range", 6).should eq false
+        CrossQuestionValidation.set_meets_condition?([1, 5], "range", 5.1).should eq false
+        CrossQuestionValidation.set_meets_condition?([1, 5], "between", 0).should eq false
+        CrossQuestionValidation.set_meets_condition?([1, 5], "between", 6).should eq false
+        CrossQuestionValidation.set_meets_condition?([1, 5], "between", 1).should eq false
+        CrossQuestionValidation.set_meets_condition?([1, 5], "between", 5).should eq false
       end
 
       it "should reject statements with invalid operators" do
-        CrossQuestionValidation.set_meets_condition?([1,3,5], "swirly", 0).should eq false
-        CrossQuestionValidation.set_meets_condition?([1,3,5], "includified", 0).should eq false
+        CrossQuestionValidation.set_meets_condition?([1, 3, 5], "swirly", 0).should eq false
+        CrossQuestionValidation.set_meets_condition?([1, 3, 5], "includified", 0).should eq false
       end
     end
 
@@ -111,21 +133,21 @@ describe CrossQuestionValidation do
       describe 'date implies constant' do
         before :each do
           @error_message = 'q1 was date, q2 was not expected constant (-1)'
-          @q1 = Factory :question, section: @section, question_type: 'Date'
-          @q2 = Factory :question, section: @section, question_type: 'Integer'
+          @q1 = Factory :question, section: @section, question_type: 'Integer'
+          @q2 = Factory :question, section: @section, question_type: 'Date'
           Factory :cqv_date_implies_constant, question: @q1, related_question: @q2, error_message: @error_message, operator: '==', constant: -1
         end
         it "handles nils" do
           standard_cqv_test({}, {}, [])
         end
-        it "doesn't reject the RHS when LHS not a date" do
-          standard_cqv_test({}, 5, [])
+        it "doesn't reject the LHS when RHS not a date" do
+          standard_cqv_test({}, "5", [])
         end
-        it "rejects when LHS is date and RHS is not expected constant" do
-          standard_cqv_test(Date.new(2012, 2, 3), 5, [@error_message])
+        it "rejects when RHS is date and LHS is not expected constant" do
+          standard_cqv_test(5, Date.new(2012, 2, 3), [@error_message])
         end
-        it "accepts when LHS is date and RHS is expected constant" do
-          standard_cqv_test(Date.new(2012, 2, 1), -1, [])
+        it "accepts when RHS is date and LHS is expected constant" do
+          standard_cqv_test(-1, Date.new(2012, 2, 1), [])
         end
       end
 
@@ -143,13 +165,13 @@ describe CrossQuestionValidation do
         it "handles nils" do
           standard_cqv_test({}, {}, [])
         end
-        it "doesn't reject the RHS when LHS not expected constant" do
-          standard_cqv_test(0, -1, [])
+        it "doesn't reject the LHS when RHS not expected constant" do
+          standard_cqv_test(-1, 0, [])
         end
-        it "rejects when LHS is specified constant and RHS is not expected constant" do
-          standard_cqv_test(1, -1, [@error_message])
+        it "rejects when RHS is specified constant and LHS is not expected constant" do
+          standard_cqv_test(-1, 1, [@error_message])
         end
-        it "accepts when LHS is specified constant and RHS is expected constant" do
+        it "accepts when RHS is specified constant and LHS is expected constant" do
           standard_cqv_test(1, 1, [])
         end
       end
@@ -168,13 +190,13 @@ describe CrossQuestionValidation do
         it "handles nils" do
           standard_cqv_test({}, {}, [])
         end
-        it "doesn't reject the RHS when LHS not expected constant" do
-          standard_cqv_test(0, -1, [])
+        it "doesn't reject the LHS when RHS not expected constant" do
+          standard_cqv_test(-1, 0, [])
         end
-        it "rejects when LHS is specified const and RHS is not in expected set" do
-          standard_cqv_test(1, 0, [@error_message])
+        it "rejects when RHS is specified const and LHS is not in expected set" do
+          standard_cqv_test(0, 1, [@error_message])
         end
-        it "accepts when LHS is specified const and RHS is in expected set" do
+        it "accepts when RHS is specified const and LHS is in expected set" do
           standard_cqv_test(1, 1, [])
         end
       end
@@ -193,14 +215,14 @@ describe CrossQuestionValidation do
         it "handles nils" do
           standard_cqv_test({}, {}, [])
         end
-        it "doesn't reject the RHS when LHS not in expected set" do
-          standard_cqv_test(0, -1, [])
+        it "doesn't reject the LHS when RHS not in expected set" do
+          standard_cqv_test(-1, 0, [])
         end
-        it "rejects when LHS is in specified set and RHS is not expected constant" do
-          standard_cqv_test(2, 0, [@error_message])
+        it "rejects when RHS is in specified set and LHS is not expected constant" do
+          standard_cqv_test(0, 2, [@error_message])
         end
-        it "accepts when LHS is in specified set and RHS is expected constant" do
-          standard_cqv_test(2, 1, [])
+        it "accepts when RHS is in specified set and LHS is expected constant" do
+          standard_cqv_test(1, 2, [])
         end
       end
 
@@ -218,14 +240,14 @@ describe CrossQuestionValidation do
         it "handles nils" do
           standard_cqv_test({}, {}, [])
         end
-        it "doesn't reject the RHS when LHS not in expected set" do
-          standard_cqv_test(0, -1, [])
+        it "doesn't reject the LHS when RHS not in expected set" do
+          standard_cqv_test(-1, 0, [])
         end
-        it "rejects when LHS is in specified set and RHS is in expected set" do
-          standard_cqv_test(2, 0, [@error_message])
+        it "rejects when RHS is in specified set and LHS is in expected set" do
+          standard_cqv_test(0, 2, [@error_message])
         end
-        it "accepts when LHS is in specified set and RHS is in expected set" do
-          standard_cqv_test(2, 1, [])
+        it "accepts when RHS is in specified set and LHS is in expected set" do
+          standard_cqv_test(1, 2, [])
         end
       end
 
@@ -238,7 +260,7 @@ describe CrossQuestionValidation do
 
       describe 'blank unless Qx = N' do
         before :each do
-          @error_message = 'q1 was != -1, q2 must be blank'
+          @error_message = 'q2 was != -1, q1 must be blank'
           @q1 = Factory :question, section: @section, question_type: 'Integer'
           @q2 = Factory :question, section: @section, question_type: 'Integer'
           Factory :cqv_blank_unless_const, question: @q1, related_question: @q2, error_message: @error_message
@@ -248,22 +270,22 @@ describe CrossQuestionValidation do
         it "handles nils" do
           standard_cqv_test({}, {}, [])
         end
-        it "doesn't reject a non-blank RHS when LHS meets requirements" do
-          standard_cqv_test(-1, "12345", [])
+        it "doesn't reject a non-blank LHS when RHS meets requirements" do
+          standard_cqv_test("12345", -1, [])
         end
-        it "rejects when LHS isn't expected value and RHS isn't blank" do
-          standard_cqv_test(0, "12345", [@error_message])
+        it "rejects when RHS isn't expected value and LHS isn't blank" do
+          standard_cqv_test("12345", 0, [@error_message])
         end
-        it "rejects when LHS is blank value and RHS isn't blank" do
-          standard_cqv_test({}, "12345", [@error_message])
+        it "rejects when RHS is blank value and LHS isn't blank" do
+          standard_cqv_test("12345", {}, [@error_message])
         end
       end
 
-      describe 'blank unless Qx is between N annd M' do
+      describe 'blank unless Qx is within range N..M (inclusive)' do
         before :each do
-          @error_message = 'q1 was outside 0..99, q2 must be blank'
-          @q1 = Factory :question, section: @section, question_type: 'Decimal'
-          @q2 = Factory :question, section: @section, question_type: 'Integer'
+          @error_message = 'q2 was outside 0..99 (inclusive), q1 must be blank'
+          @q1 = Factory :question, section: @section, question_type: 'Integer'
+          @q2 = Factory :question, section: @section, question_type: 'Decimal'
           Factory :cqv_blank_unless_set, question: @q1, related_question: @q2, error_message: @error_message
           #conditional_set_operator "range"
           #conditional_set [0,99]
@@ -271,17 +293,42 @@ describe CrossQuestionValidation do
         it "handles nils" do
           standard_cqv_test({}, {}, [])
         end
-        it "doesn't reject the RHS when LHS expected" do
-          standard_cqv_test(2, -1, [])
+        it "doesn't reject the LHS when RHS expected" do
+          standard_cqv_test(-1, 0, [])
         end
-        it "rejects when LHS isn't expected value (lower) and RHS isn't blank" do
+        it "rejects when RHS isn't expected value (lower) and LHS isn't blank" do
           standard_cqv_test(-1, -1, [@error_message])
         end
-        it "rejects when LHS isn't expected value (higher) and RHS isn't blank" do
-          standard_cqv_test(100, -1, [@error_message])
+        it "rejects when RHS isn't expected value (higher) and LHS isn't blank" do
+          standard_cqv_test(-1, 100, [@error_message])
         end
-        it "rejects when LHS is blank value and RHS isn't blank" do
-          standard_cqv_test({}, -1, [@error_message])
+        it "rejects when RHS is blank value and LHS isn't blank" do
+          standard_cqv_test(-1, {}, [@error_message])
+        end
+      end
+
+      describe 'blank unless Qx is between N annd M' do
+        before :each do
+          @error_message = 'q2 was not between 0...99 (exclusive), q1 must be blank'
+          @q1 = Factory :question, section: @section, question_type: 'Integer'
+          @q2 = Factory :question, section: @section, question_type: 'Decimal'
+          Factory :cqv_blank_unless_set, question: @q1, related_question: @q2, error_message: @error_message, conditional_set_operator: "between"
+          #conditional_set [0,99]
+        end
+        it "handles nils" do
+          standard_cqv_test({}, {}, [])
+        end
+        it "doesn't reject the LHS when RHS expected" do
+          standard_cqv_test(-1, 1, [])
+        end
+        it "rejects when RHS isn't expected value (lower) and LHS isn't blank" do
+          standard_cqv_test(-1, 0, [@error_message])
+        end
+        it "rejects when RHS isn't expected value (higher) and LHS isn't blank" do
+          standard_cqv_test(-1, 99, [@error_message])
+        end
+        it "rejects when RHS is blank value and LHS isn't blank" do
+          standard_cqv_test(-1, {}, [@error_message])
         end
       end
 

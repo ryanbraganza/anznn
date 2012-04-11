@@ -1,4 +1,8 @@
 Given /^I have the following cross question validations$/ do |table|
+
+  table.map_column!('set', false) { |str| str.is_a?(String) ? eval(str) : str }
+  table.map_column!('conditional_set', false) {|str| str.is_a?(String) ? eval(str) : str }
+
   table.hashes.each do |hash|
     question_question = hash.delete 'question'
     related_question_question = hash.delete 'related'
