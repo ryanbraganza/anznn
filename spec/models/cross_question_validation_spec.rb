@@ -132,7 +132,7 @@ describe CrossQuestionValidation do
       end
       describe 'date implies constant' do
         before :each do
-          @error_message = 'q1 was date, q2 was not expected constant (-1)'
+          @error_message = 'q2 was date, q1 was not expected constant (-1)'
           @q1 = Factory :question, section: @section, question_type: 'Integer'
           @q2 = Factory :question, section: @section, question_type: 'Date'
           Factory :cqv_date_implies_constant, question: @q1, related_question: @q2, error_message: @error_message, operator: '==', constant: -1
@@ -153,7 +153,7 @@ describe CrossQuestionValidation do
 
       describe 'constant implies constant' do
         before :each do
-          @error_message = 'q1 was != 0, q2 was not > 0'
+          @error_message = 'q2 was != 0, q1 was not > 0'
           @q1 = Factory :question, section: @section, question_type: 'Integer'
           @q2 = Factory :question, section: @section, question_type: 'Integer'
           Factory :cqv_const_implies_const, question: @q1, related_question: @q2, error_message: @error_message
@@ -178,7 +178,7 @@ describe CrossQuestionValidation do
 
       describe 'constant implies set' do
         before :each do
-          @error_message = 'q1 was != 0, q2 was not in specified set [1,3,5,7]'
+          @error_message = 'q2 was != 0, q1 was not in specified set [1,3,5,7]'
           @q1 = Factory :question, section: @section, question_type: 'Integer'
           @q2 = Factory :question, section: @section, question_type: 'Integer'
           Factory :cqv_const_implies_set, question: @q1, related_question: @q2, error_message: @error_message
@@ -203,7 +203,7 @@ describe CrossQuestionValidation do
 
       describe 'set implies const' do
         before :each do
-          @error_message = 'q1 was != 0, q2 was not in specified set [1,3,5,7]'
+          @error_message = 'q2 was in [2,4,6,8], q1 must be > 0'
           @q1 = Factory :question, section: @section, question_type: 'Integer'
           @q2 = Factory :question, section: @section, question_type: 'Integer'
           Factory :cqv_set_implies_const, question: @q1, related_question: @q2, error_message: @error_message
@@ -228,7 +228,7 @@ describe CrossQuestionValidation do
 
       describe 'set implies set' do
         before :each do
-          @error_message = 'q1 was != 0, q2 was not in specified set [1,3,5,7]'
+          @error_message = 'q2  was in [2,4,6,8], q1 was not in specified set [1,3,5,7]'
           @q1 = Factory :question, section: @section, question_type: 'Integer'
           @q2 = Factory :question, section: @section, question_type: 'Integer'
           Factory :cqv_set_implies_set, question: @q1, related_question: @q2, error_message: @error_message

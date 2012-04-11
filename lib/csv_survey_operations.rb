@@ -35,11 +35,17 @@ module CsvSurveyOperations
     cqv_hashes.each do |cqv_hash|
       question_code = cqv_hash.delete 'question_code'
       related_question_code = cqv_hash.delete 'related_question_code'
+      set_string = cqv_hash.delete 'set'
+      conditional_set_string = cqv_hash.delete 'conditional_set'
+
+      set = set_string.blank? ? nil : eval(set_string)
+      conditional_set =  conditional_set_string.blank? ? nil : eval(conditional_set_string)
+
 
       question = survey.questions.find_by_code!(question_code)
       related_question = survey.questions.find_by_code!(related_question_code)
 
-      attrs = cqv_hash.merge(question: question, related_question: related_question)
+      attrs = cqv_hash.merge(question: question, related_question: related_question, set: set, conditional_set: conditional_set)
 
       CrossQuestionValidation.create!(attrs)
     end
