@@ -1,4 +1,4 @@
-section,order,code,question,question_type,mandatory,number_min,number_max,number_unknown,string_min,string_max,guide_for_use,description
+section,question_order,code,question,question_type,mandatory,number_min,number_max,number_unknown,string_min,string_max,guide_for_use,description
 0,0,Hospital,Registration hospital,Text,TRUE,,,,8,8,"Babies who received their entire care in a level II hospital or who were not transferred to a level III neonatal intensive care unit during the first 28 days are registered to the first level II centre that they remained in for 4 or more hours.  
 
 If baby is transferred, she/he is considered to be in the next hospital from the time that the specialist retrieval team (NETS) arrives to collect her/him. 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120404130427) do
+ActiveRecord::Schema.define(:version => 20120412060904) do
 
   create_table "answers", :force => true do |t|
     t.integer "response_id"
@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(:version => 20120404130427) do
     t.text    "text_answer"
     t.date    "date_answer"
     t.time    "time_answer"
-    t.decimal "decimal_answer"
+    t.decimal "decimal_answer", :precision => 65, :scale => 15
     t.integer "integer_answer"
     t.string  "choice_answer"
     t.string  "raw_answer"
@@ -58,11 +58,11 @@ ActiveRecord::Schema.define(:version => 20120404130427) do
     t.string  "rule"
     t.string  "error_message"
     t.string  "operator"
-    t.decimal "constant"
+    t.decimal "constant",                 :precision => 65, :scale => 15
     t.string  "set_operator"
     t.string  "set"
     t.string  "conditional_operator"
-    t.decimal "conditional_constant"
+    t.decimal "conditional_constant",     :precision => 65, :scale => 15
     t.string  "conditional_set_operator"
     t.string  "conditional_set"
   end
@@ -107,12 +107,12 @@ ActiveRecord::Schema.define(:version => 20120404130427) do
     t.integer "section_id"
     t.string  "question"
     t.string  "question_type"
-    t.integer "order"
+    t.integer "question_order"
     t.string  "code"
     t.text    "description"
     t.text    "guide_for_use"
-    t.decimal "number_min"
-    t.decimal "number_max"
+    t.decimal "number_min",     :precision => 65, :scale => 15
+    t.decimal "number_max",     :precision => 65, :scale => 15
     t.integer "number_unknown"
     t.integer "string_min"
     t.integer "string_max"
@@ -139,7 +139,7 @@ ActiveRecord::Schema.define(:version => 20120404130427) do
 
   create_table "sections", :force => true do |t|
     t.integer "survey_id"
-    t.integer "order"
+    t.integer "section_order"
     t.string  "name"
   end
 

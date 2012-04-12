@@ -1,4 +1,4 @@
-section,order,code,question,question_type,number_min,number_max,number_unknown,string_min,string_max,guide_for_use,description
+section,question_order,code,question,question_type,number_min,number_max,number_unknown,string_min,string_max,guide_for_use,description
 0,0,TextU,Text Question,Text,,,,,,Fill in any number of characters,Text response that is unconstrained
 0,1,TextC,Maternal age,Text,,,,8,8,Fill in 8 characters,"Text response for contstrained input [8,8]"
 0,2,IntU,Previous preterm birth,Integer,,,,,,Any int,Integer response that is unconstrained

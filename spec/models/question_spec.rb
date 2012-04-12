@@ -10,13 +10,13 @@ describe Question do
 
   describe "Validations" do
     describe "order" do
-      it { should validate_presence_of :order }
+      it { should validate_presence_of :question_order }
       it "should validate that order is unique within a section" do
         first_q = Factory(:question)
         #should validate_uniqueness_of(:order).scoped_to :section_id
-        second_q = Factory.build(:question, section: first_q.section, order: first_q.order)
+        second_q = Factory.build(:question, section: first_q.section, question_order: first_q.question_order)
         second_q.should_not be_valid
-        diff_sec_q = Factory.build(:question, section: Factory(:section), order: first_q.order)
+        diff_sec_q = Factory.build(:question, section: Factory(:section), question_order: first_q.question_order)
         diff_sec_q.should be_valid
       end
     end

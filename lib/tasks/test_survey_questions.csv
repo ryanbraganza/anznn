@@ -1,4 +1,4 @@
-section,order,code,question,question_type,mandatory,number_min,number_max,number_unknown,string_min,string_max,guide_for_use,description
+section,question_order,code,question,question_type,mandatory,number_min,number_max,number_unknown,string_min,string_max,guide_for_use,description
 0,0,BaseInt,Base Integer Qn,Integer,TRUE,,,,,,Question Code: BaseInt,"This is used as a base for comparing Integers. Enter an integer. Related questions are in sections 1,5"
 0,1,BaseDeci,Base Decimal Qn,Decimal,TRUE,,,,,,Question Code: BaseDeci,This is used as a base for comparing Decimals. Enter an integer. Related questions are in section 2
 0,2,BaseDate,Base Date Qn,Date,TRUE,,,,,,Question Code: BaseDate,This is used as a base for comparing Dates. Enter an integer. Related questions are in section 3

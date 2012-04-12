@@ -7,7 +7,7 @@ Feature: Review my answers
     And I am logged in as "data.provider@intersect.org.au" and have role "Data Provider"
     And I have a survey with name "MySurvey"
     And "MySurvey" has sections
-      | name       | order |
+      | name       | section_order |
       | SectionOne | 0     |
       | SectionTwo | 1     |
     And "MySurvey" has questions

@@ -12,13 +12,13 @@ class Question < ActiveRecord::Base
   has_many :cross_question_validations, dependent: :destroy
   has_many :question_options, dependent: :destroy, order: 'option_order'
 
-  validates_presence_of :order
+  validates_presence_of :question_order
   validates_presence_of :section
   validates_presence_of :question
   validates_presence_of :question_type
   validates_presence_of :code
 
-  validates_uniqueness_of :order, scope: :section_id
+  validates_uniqueness_of :question_order, scope: :section_id
 
   validates_inclusion_of :question_type, in: [TYPE_CHOICE, TYPE_DATE, TYPE_DECIMAL, TYPE_INTEGER, TYPE_TEXT, TYPE_TIME]
 

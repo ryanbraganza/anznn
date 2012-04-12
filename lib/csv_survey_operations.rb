@@ -14,7 +14,7 @@ module CsvSurveyOperations
   def import_questions(survey, questions)
     questions.each do |hash|
       section_order = hash.delete('section')
-      section = survey.sections.find_or_create_by_order(section_order)
+      section = survey.sections.find_or_create_by_section_order(section_order)
       if section.name.blank?
         section.name = "Section #{section_order}"
       end

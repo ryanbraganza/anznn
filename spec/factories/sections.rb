@@ -3,7 +3,7 @@
 FactoryGirl.define do
   factory :section do
     name "Section 1"
-    sequence :order
+    sequence :section_order
     association :survey
   end
 end

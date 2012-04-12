@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :question do
-    sequence :order
+    sequence :question_order
     question "What?"
     association :section
     question_type "Text"

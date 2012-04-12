@@ -60,7 +60,7 @@ module NavigationHelpers
 
     when /the edit section (.*) page$/
       section_order = $1
-      section = Section.find_by_order!(section_order)
+      section = Section.find_by_section_order!(section_order)
       response = Response.first
       edit_response_path response, section: section
 

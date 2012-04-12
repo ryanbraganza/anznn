@@ -253,8 +253,8 @@ def create_questions(survey, table)
   table.hashes.each do |q_attrs|
     section_num = q_attrs.delete("section")
     section_num ||= 0
-    section = survey.sections.find_by_order(section_num)
-    section = Factory(:section, survey: survey, order: section_num) unless section
+    section = survey.sections.find_by_section_order(section_num)
+    section = Factory(:section, survey: survey, section_order: section_num) unless section
     question = Factory(:question, q_attrs.merge(section: section))
     if question.type_choice?
       Factory(:question_option, question: question, label: "Apple", option_value: "A")

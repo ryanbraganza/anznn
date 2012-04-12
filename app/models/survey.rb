@@ -1,6 +1,6 @@
 class Survey < ActiveRecord::Base
   has_many :responses, dependent: :destroy
-  has_many :sections, dependent: :destroy, order: '"order"'
+  has_many :sections, dependent: :destroy, order: :section_order
   has_many :questions, through: :sections
   
   scope :by_name, order(:name)
@@ -8,7 +8,7 @@ class Survey < ActiveRecord::Base
   validates :name, presence: true
 
   def ordered_questions
-    Question.joins(section: :survey).where(sections: {survey_id: id}).order('sections."order"', '"order"')
+    Question.joins(section: :survey).where(sections: {survey_id: id}).order(:section_order, :question_order)
   end
 
   # find the next section after the section with the given id

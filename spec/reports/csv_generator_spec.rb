@@ -50,14 +50,14 @@ describe CsvGenerator do
 
   describe "Generating the CSV" do
     it "includes the correct details" do
-      section2 = Factory(:section, survey: survey, order: 2)
-      section1 = Factory(:section, survey: survey, order: 1)
-      q_choice = Factory(:question, section: section1, order: 1, question_type: Question::TYPE_CHOICE, code: 'ChoiceQ')
-      q_date = Factory(:question, section: section1, order: 3, question_type: Question::TYPE_DATE, code: 'DateQ')
-      q_decimal = Factory(:question, section: section2, order: 2, question_type: Question::TYPE_DECIMAL, code: 'DecimalQ')
-      q_integer = Factory(:question, section: section2, order: 1, question_type: Question::TYPE_INTEGER, code: 'IntegerQ')
-      q_text = Factory(:question, section: section1, order: 2, question_type: Question::TYPE_TEXT, code: 'TextQ')
-      q_time = Factory(:question, section: section1, order: 4, question_type: Question::TYPE_TIME, code: 'TimeQ')
+      section2 = Factory(:section, survey: survey, section_order: 2)
+      section1 = Factory(:section, survey: survey, section_order: 1)
+      q_choice = Factory(:question, section: section1, question_order: 1, question_type: Question::TYPE_CHOICE, code: 'ChoiceQ')
+      q_date = Factory(:question, section: section1, question_order: 3, question_type: Question::TYPE_DATE, code: 'DateQ')
+      q_decimal = Factory(:question, section: section2, question_order: 2, question_type: Question::TYPE_DECIMAL, code: 'DecimalQ')
+      q_integer = Factory(:question, section: section2, question_order: 1, question_type: Question::TYPE_INTEGER, code: 'IntegerQ')
+      q_text = Factory(:question, section: section1, question_order: 2, question_type: Question::TYPE_TEXT, code: 'TextQ')
+      q_time = Factory(:question, section: section1, question_order: 4, question_type: Question::TYPE_TIME, code: 'TimeQ')
 
       response1 = Factory(:response, hospital: Factory(:hospital, abbrev: 'HRL'), survey: survey, year_of_registration: 2009, baby_code: 'ABC-123')
       Factory(:answer, response: response1, question: q_choice, answer_value: '1')

@@ -9,7 +9,7 @@ Feature: Show warnings on survey pages
     And I have a user "data.provider@intersect.org.au" with role "Data Provider"
     And I have a survey with name "MySurvey"
     And "MySurvey" has sections
-      | name | order |
+      | name | section_order |
       | Sec1 | 0     |
       | Sec2 | 1     |
       | Sec3 | 2     |
