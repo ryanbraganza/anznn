@@ -4,36 +4,38 @@
 - classes = ['clearfix']
 - classes << 'warning' if answer.warnings.any?
 - classes << 'fatalwarning' if answer.fatal_warnings.any? || (@flag_mandatory && answer.violates_mandatory)
+- data = {description: q.description, guide: q.guide_for_use, name: q.question}
 %div{id: "container_#{q.id}", class: classes}
   = label_tag field_id, q.question
+
   .input
     - case q.question_type
       - when 'Text'
         = text_field_tag "answers[#{q.id}]", answer.answer_value, id: field_id, maxlength: 255,
           class: 'xxlarge field_trigger',
-          data: {description: q.description, guide: q.guide_for_use}
+          data: data
       - when 'Date'
         - day = answer.answer_value ? answer.answer_value.day : nil
         - month = answer.answer_value ? answer.answer_value.month : nil
         - year = answer.answer_value ? answer.answer_value.year : nil
         = select_day(day, {field_name: "#{q.id}][day", prompt: true, prefix: "answers"},
           class: "small field_trigger",
-          data: {description: q.description, guide: q.guide_for_use})
+          data: data)
         = select_month(month, {field_name: "#{q.id}][month", prompt: true, prefix: "answers", use_month_numbers: true},
           class: "small field_trigger",
-          data: {description: q.description, guide: q.guide_for_use})
+          data: data)
         = select_year(year, {field_name: "#{q.id}][year", prompt: true, prefix: "answers"},
           class: "small field_trigger",
-          data: {description: q.description, guide: q.guide_for_use})
+          data: data)
       - when 'Time'
         - hour = answer.answer_value ? answer.answer_value.hour : nil
         - min = answer.answer_value ? answer.answer_value.min : nil
         = select_hour(hour, {field_name: "#{q.id}][hour", prompt: true, prefix: "answers"},
           class: "small field_trigger",
-          data: {description: q.description, guide: q.guide_for_use})
+          data: data)
         = select_minute(min, {field_name: "#{q.id}][min", prompt: true, prefix: "answers"},
           class: "small field_trigger",
-          data: {description: q.description, guide: q.guide_for_use})
+          data: data)
       - when 'Choice'
         %ul.inputs-list
           - q.question_options.each do |qo|
@@ -41,17 +43,17 @@
               %label.field_trigger
                 = radio_button_tag "answers[#{q.id}]", qo.option_value, (answer.answer_value == qo.option_value),
                   class: 'field_trigger',
-                  data: {description: q.description, guide: q.guide_for_use}
+                  data: data
                 %span.radio-label= qo.display_value
                 %span.help-block.radio-description=  qo.hint_text
       - when 'Decimal'
         = text_field_tag "answers[#{q.id}]", answer.answer_value, id: field_id, maxlength: 15,
           class: 'medium field_trigger',
-          data: {description: q.description, guide: q.guide_for_use}
+          data: data
       - when 'Integer'
         = text_field_tag "answers[#{q.id}]", answer.answer_value, id: field_id, maxlength: 15,
           class: 'medium field_trigger',
-          data: {description: q.description, guide: q.guide_for_use}
+          data: data
       - else
         - raise 'Question type not recognised!'
     %span.help-block

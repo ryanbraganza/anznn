@@ -1,7 +1,7 @@
 - title response_title(@response)
 = render 'section_navigation'
 .row
-  .span12
+  .span12#question_box
     = form_tag response_path(@response), method: :put, id: :response_form do
       = hidden_field_tag :go_to_section, @section.id, id: "go_to_section_field"
       %fieldset
@@ -14,7 +14,7 @@
           - else
             = submit_tag 'Save and go to next section &rarr;'.html_safe, class: "btn primary"
           %a.btn Cancel
-  .span4
-    %h2 Field Information
+  .span4#help_box
+    %h2#field_title Field Information
     %p#field_info Select a field to view its information.
 = render 'section_navigation'
