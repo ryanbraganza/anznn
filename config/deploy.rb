@@ -123,6 +123,11 @@ namespace :deploy do
     run("cd #{current_path} && rake db:schema:load", :env => {'RAILS_ENV' => "#{stage}"})
   end
 
+  desc "Setup the database (WARNING: destructive!)"
+  task :db_setup, :roles => :db do
+    run("cd #{current_path} && rake db:setup", :env => {'RAILS_ENV' => "#{stage}"})
+  end
+
   # Run the sample data populator
   desc "Run the test data populator script to load test data into the db (WARNING: destructive!)"
   task :populate, :roles => :db do
