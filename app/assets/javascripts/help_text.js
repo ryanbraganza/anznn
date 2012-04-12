@@ -11,11 +11,23 @@
     $field_trigger.focus(function(){
       var guide_for_use = $(this).data('guide');
       var qn_name = $(this).data('name');
+      var qn_code = $(this).data('code');
       var description = $(this).data('description');
 
-      var formatted = $('<div><h3>Definition</h3><p class="desc-body"><h3>Guide For Use</h3><p class="guide-body"> </div>');
+      var formatted = $('' +
+          '<div>' +
+            '<div id="help-code"><h3>Question Code</h3><p class="code-body"></div>' +
+            '<div id="help-desc"><h3>Definition</h3><p class="desc-body"></div>' +
+            '<div id="help-guide"><h3>Guide For Use</h3><p class="guide-body"></div>' +
+          '</div>');
       formatted.find('.desc-body').text(description);
-      formatted.find('.guide-body').text(guide_for_use);
+      if (guide_for_use != "") {
+        formatted.find('.guide-body').text(guide_for_use);
+      } else {
+        formatted.find('#help-guide').remove();
+      }
+
+      formatted.find('.code-body').text(qn_code);
       $field_info.html(formatted);
       $field_title.text(qn_name);
 

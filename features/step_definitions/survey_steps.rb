@@ -290,8 +290,9 @@ Then /^I should see the sidebar help for "([^"]*)"$/ do |question_question|
   question = Question.find_by_question!(question_question)
   help_box = page.find('#help_box')
   help_box.should have_content question.question
+  help_box.should have_content question.code
   help_box.should have_content question.description
-  help_box.should have_content question.guide_for_use
+  help_box.should have_content question.guide_for_use unless question.guide_for_use.blank?
 end
 
 And /^I should not see the sidebar help for "(.*)"$/ do |question_question|
