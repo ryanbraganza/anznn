@@ -68,13 +68,13 @@ describe Response do
       @survey_b = Factory(:survey)
       @hospital_a = Factory(:hospital)
       @hospital_b = Factory(:hospital)
-      @r1 = Factory(:response, survey: @survey_a, hospital: @hospital_a, year_of_registration: 2001, submitted_status: Response::STATUS_SUBMITTED).id
-      @r2 = Factory(:response, survey: @survey_a, hospital: @hospital_a, year_of_registration: 2001, submitted_status: Response::STATUS_SUBMITTED).id
-      @r3 = Factory(:response, survey: @survey_a, hospital: @hospital_a, year_of_registration: 2002, submitted_status: Response::STATUS_SUBMITTED).id
-      @r4 = Factory(:response, survey: @survey_a, hospital: @hospital_b, year_of_registration: 2001, submitted_status: Response::STATUS_SUBMITTED).id
-      @r5 = Factory(:response, survey: @survey_a, hospital: @hospital_b, year_of_registration: 2002, submitted_status: Response::STATUS_SUBMITTED).id
-      @r6 = Factory(:response, survey: @survey_a, hospital: @hospital_b, year_of_registration: 2003, submitted_status: Response::STATUS_SUBMITTED).id
-      @r7 = Factory(:response, survey: @survey_b, hospital: @hospital_a, year_of_registration: 2001, submitted_status: Response::STATUS_SUBMITTED).id
+      @r1 = Factory(:response, survey: @survey_a, hospital: @hospital_a, year_of_registration: 2001, submitted_status: Response::STATUS_SUBMITTED, baby_code: "1").id
+      @r2 = Factory(:response, survey: @survey_a, hospital: @hospital_a, year_of_registration: 2001, submitted_status: Response::STATUS_SUBMITTED, baby_code: "2").id
+      @r3 = Factory(:response, survey: @survey_a, hospital: @hospital_a, year_of_registration: 2002, submitted_status: Response::STATUS_SUBMITTED, baby_code: "3").id
+      @r4 = Factory(:response, survey: @survey_a, hospital: @hospital_b, year_of_registration: 2001, submitted_status: Response::STATUS_SUBMITTED, baby_code: "4").id
+      @r5 = Factory(:response, survey: @survey_a, hospital: @hospital_b, year_of_registration: 2002, submitted_status: Response::STATUS_SUBMITTED, baby_code: "5").id
+      @r6 = Factory(:response, survey: @survey_a, hospital: @hospital_b, year_of_registration: 2003, submitted_status: Response::STATUS_SUBMITTED, baby_code: "6").id
+      @r7 = Factory(:response, survey: @survey_b, hospital: @hospital_a, year_of_registration: 2001, submitted_status: Response::STATUS_SUBMITTED, baby_code: "7").id
       @r8 = Factory(:response, survey: @survey_a, hospital: @hospital_a, year_of_registration: 2001, submitted_status: Response::STATUS_UNSUBMITTED).id
     end
 
