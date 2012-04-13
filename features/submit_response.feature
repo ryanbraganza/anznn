@@ -15,6 +15,7 @@ Feature: Submit Response
       | section | question   | question_type | number_min | mandatory |
       | 1       | Text Qn    | Text          |            | true      |
       | 2       | Integer Qn | Integer       | 4          | true      |
+      | 2       | Date Qn    | Date          |            | false     |
 
     Given I am logged in as "data.provider@intersect.org.au"
     And I create a response for "The Survey" with baby code "baby_not_started"
@@ -49,6 +50,7 @@ Feature: Submit Response
     And I can't view response for survey "The Survey" and baby code "<baby_code>"
     And I can't edit response for survey "The Survey" and baby code "<baby_code>"
     And I can't review response for survey "The Survey" and baby code "<baby_code>"
+    And the response for baby "<baby_code>" should have 2 answers
   Examples:
     | user          | baby_code     |
     | data.provider | baby_complete |
@@ -100,7 +102,7 @@ Feature: Submit Response
     Then I should not see a submit button on the home page for survey "The Survey" and baby code "<baby_code>" with warning "<warning>"
     When I am on the response summary page for <baby_code>
     Then I should not see a submit button on the response summary page for survey "The Survey" and baby code "<baby_code>" with warning "<warning>"
-    # Note: not started and incomplete are now the same thing, so the same behaviour results.
+  # Note: not started and incomplete are now the same thing, so the same behaviour results.
   Examples:
     | user          | baby_code           | warning                                                                                               |
     | supervisor    | baby_not_started    | This survey is incomplete and can't be submitted.                                                     |

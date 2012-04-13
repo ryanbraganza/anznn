@@ -557,3 +557,8 @@ Given /^I have responses$/ do |table|
     Factory(:response, attrs.merge(survey: survey, user: user, hospital: hospital))
   end
 end
+
+When /^the response for baby "([^"]*)" should have (\d+) answers$/ do |babycode, expected_answers|
+  response = Response.find_by_baby_code!(babycode)
+  response.answers.count.should eq(expected_answers.to_i)
+end

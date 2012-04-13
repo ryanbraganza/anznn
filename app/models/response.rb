@@ -61,7 +61,7 @@ class Response < ActiveRecord::Base
     end
   end
 
-  def prepare_answers_to_section(section)
+  def prepare_answers_to_section_with_blanks_created(section)
     existing_answers = answers_to_section(section).reduce({}) { |hash, answer| hash[answer.question_id] = answer; hash }
 
     section.questions.each do |question|
@@ -74,9 +74,9 @@ class Response < ActiveRecord::Base
     existing_answers
   end
 
-  def sections_to_answers
+  def sections_to_answers_with_blanks_created
     survey.sections.reduce({}) do |hsh, section|
-      answers = all_answers_for_section(section)
+      answers = prepare_answers_to_section_with_blanks_created(section).values
       sorted_answers = answers.sort_by { |a| a.question.question_order }
       hsh.merge section => sorted_answers
     end
@@ -87,9 +87,9 @@ class Response < ActiveRecord::Base
   end
 
   def status_of_section(section)
-    answers = all_answers_for_section(section)
+    answers = answers_to_section(section)
 
-    all_mandatory_questions_answered = all_mandatory_passed(answers)
+    all_mandatory_questions_answered = all_mandatory_passed_for_section(section, answers)
     any_warnings = answers.map { |a| a.warnings.present? }.any?
     any_fatal_warnings = answers.map { |a| a.fatal_warnings.present? }.any?
 
@@ -143,14 +143,6 @@ class Response < ActiveRecord::Base
 
   private
 
-  def all_mandatory_passed(answers)
-    all_mandatory_questions_answered = answers.all? { |a| !a.violates_mandatory }
-  end
-
-  def all_answers_for_section(section)
-    prepare_answers_to_section(section).values
-  end
-
   def answers_to_section(section)
     answers.joins(:question).merge(Question.for_section(section))
   end
@@ -163,6 +155,12 @@ class Response < ActiveRecord::Base
     required_question_ids = survey.questions.where(:mandatory => true).collect(&:id)
     answered_question_ids = answers.collect(&:question_id)
     required_question_ids - answered_question_ids
+  end
+
+  def all_mandatory_passed_for_section(section, answers_to_section)
+    required_question_ids = section.questions.where(:mandatory => true).collect(&:id)
+    answered_question_ids = answers_to_section.collect(&:question_id)
+    (required_question_ids - answered_question_ids).empty?
   end
 
   def strip_whitespace

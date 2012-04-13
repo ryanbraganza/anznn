@@ -35,7 +35,7 @@ class ResponsesController < ApplicationController
     @section = section_id.blank? ? @response.survey.sections.first : @response.survey.sections.find(section_id)
 
     @questions = @section.questions
-    @question_id_to_answers = @response.prepare_answers_to_section(@section)
+    @question_id_to_answers = @response.prepare_answers_to_section_with_blanks_created(@section)
     @flag_mandatory = @response.section_started? @section
   end
 
@@ -59,7 +59,7 @@ class ResponsesController < ApplicationController
   end
 
   def review_answers
-    @sections_to_answers = @response.sections_to_answers
+    @sections_to_answers = @response.sections_to_answers_with_blanks_created
   end
 
   def stats
