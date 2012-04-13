@@ -29,8 +29,8 @@ Feature: View Stats
       |                              | 2009 In Progress | 2009 Submitted | 2010 In Progress | 2010 Submitted | 2011 In Progress | 2011 Submitted |
       | NSW                          |                  |                |                  |                |                  |                |
       | Another One                  | none             | none           | none             | none           | none             | none           |
-      | RPA                          | 5                | 3              | 3                | none           | 4                | 8              |
       | Royal North Shore            | none             | none           | none             | none           | none             | none           |
+      | RPA                          | 5                | 3              | 3                | none           | 4                | 8              |
       | Sydney Childrens Hospital    | 1                | 1              | 1                | 2              | 1                | 3              |
       | Vic                          |                  |                |                  |                |                  |                |
       | Mercy Hospital               | 1                | 3              | 2                | none           | 3                | 8              |
@@ -39,8 +39,8 @@ Feature: View Stats
       |                              | 2009 In Progress | 2009 Submitted | 2010 In Progress | 2010 Submitted | 2011 In Progress | 2011 Submitted |
       | NSW                          |                  |                |                  |                |                  |                |
       | Another One                  | none             | none           | none             | none           | none             | none           |
-      | RPA                          | none             | none           | none             | 1              | 2                | 6              |
       | Royal North Shore            | none             | 12             | none             | 3              | 2                | 2              |
+      | RPA                          | none             | none           | none             | 1              | 2                | 6              |
       | Sydney Childrens Hospital    | none             | none           | none             | none           | 1                | none           |
       | Vic                          |                  |                |                  |                |                  |                |
       | Mercy Hospital               | none             | none           | none             | 1              | none             | 6              |

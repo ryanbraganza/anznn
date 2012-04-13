@@ -32,7 +32,7 @@ Feature: Download survey data
       | Survey B      |
     And the "Hospital" nested select should contain
       |     | ALL                                                            |
-      | NSW | Another One, RPA, Royal North Shore, Sydney Childrens Hospital |
+      | NSW | Another One, Royal North Shore, RPA, Sydney Childrens Hospital |
       | Vic | Mercy Hospital, The Royal Childrens Hospital                   |
     And the "Year of registration" select should contain
       | ALL  |

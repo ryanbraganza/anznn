@@ -79,15 +79,15 @@ Feature: Sort the list of users
     When I follow "Hospital"
     Then I should see "users" table with
       | First name | Last name | Email                 | Role                     | Hospital         | Status      |
+      | TheManDan  | Superuser | dan@intersect.org.au  | Administrator            | (None)           | Active      |
       | Fred       | Jones     | fred@intersect.org.au | Data Provider Supervisor | Left Wing (NSW)  | Deactivated |
       | Anna       | Smith     | anna@intersect.org.au | Data Provider            | Right Wing (Vic) | Active      |
-      | TheManDan  | Superuser | dan@intersect.org.au  | Administrator            | (None)           | Active      |
     When I follow "Hospital"
     Then I should see "users" table with
       | First name | Last name | Email                 | Role                     | Hospital         | Status      |
-      | TheManDan  | Superuser | dan@intersect.org.au  | Administrator            | (None)           | Active      |
       | Anna       | Smith     | anna@intersect.org.au | Data Provider            | Right Wing (Vic) | Active      |
       | Fred       | Jones     | fred@intersect.org.au | Data Provider Supervisor | Left Wing (NSW)  | Deactivated |
+      | TheManDan  | Superuser | dan@intersect.org.au  | Administrator            | (None)           | Active      |
 
   Scenario: Sorting by status ascending/descending
     When I follow "Status"
@@ -105,17 +105,16 @@ Feature: Sort the list of users
 
   Scenario: Sorting by signin date ascending/descending
   # we're not actually checking the column, since the date changes each time the tests run, but dan is logged in now, fred logged in in 2011, anna never logged in
-  # for sorting this ends up as fred, dan, anna ascending (i.e. older, newer, none) - which may be slightly counter intuitive but is acceptable given this will be used infrequently
-    When I follow "Last signed in"
-    Then I should see "users" table with
-      | First name | Last name | Email                 | Role                     | Hospital         | Status      |
-      | Fred       | Jones     | fred@intersect.org.au | Data Provider Supervisor | Left Wing (NSW)  | Deactivated |
-      | TheManDan  | Superuser | dan@intersect.org.au  | Administrator            | (None)           | Active      |
-      | Anna       | Smith     | anna@intersect.org.au | Data Provider            | Right Wing (Vic) | Active      |
     When I follow "Last signed in"
     Then I should see "users" table with
       | First name | Last name | Email                 | Role                     | Hospital         | Status      |
       | Anna       | Smith     | anna@intersect.org.au | Data Provider            | Right Wing (Vic) | Active      |
+      | Fred       | Jones     | fred@intersect.org.au | Data Provider Supervisor | Left Wing (NSW)  | Deactivated |
+      | TheManDan  | Superuser | dan@intersect.org.au  | Administrator            | (None)           | Active      |
+    When I follow "Last signed in"
+    Then I should see "users" table with
+      | First name | Last name | Email                 | Role                     | Hospital         | Status      |
       | TheManDan  | Superuser | dan@intersect.org.au  | Administrator            | (None)           | Active      |
       | Fred       | Jones     | fred@intersect.org.au | Data Provider Supervisor | Left Wing (NSW)  | Deactivated |
+      | Anna       | Smith     | anna@intersect.org.au | Data Provider            | Right Wing (Vic) | Active      |
 

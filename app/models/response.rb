@@ -77,7 +77,7 @@ class Response < ActiveRecord::Base
   def sections_to_answers
     survey.sections.reduce({}) do |hsh, section|
       answers = all_answers_for_section(section)
-      sorted_answers = answers.sort_by { |a| a.question.order }
+      sorted_answers = answers.sort_by { |a| a.question.question_order }
       hsh.merge section => sorted_answers
     end
   end
