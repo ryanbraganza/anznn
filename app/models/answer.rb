@@ -18,7 +18,7 @@ class Answer < ActiveRecord::Base
   belongs_to :response
 
   validates_presence_of :question
-  #  validates_presence_of :response
+  validates_presence_of :response
   validate :mutually_exclusive_columns_are_blank
 
   serialize :raw_answer

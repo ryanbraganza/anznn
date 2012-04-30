@@ -5,8 +5,8 @@ describe Answer do
   let(:text_question) { Factory(:question, question_type: Question::TYPE_TEXT) }
   let(:integer_question) { Factory(:question, question_type: Question::TYPE_INTEGER) }
   let(:decimal_question) { Factory(:question, question_type: Question::TYPE_DECIMAL) }
-  let(:date_question) { Factory(:question, question_type: Question::TYPE_DATE) } # Specs missing
-  let(:time_question) { Factory(:question, question_type: Question::TYPE_TIME) } # Specs missing
+  let(:date_question) { Factory(:question, question_type: Question::TYPE_DATE) }
+  let(:time_question) { Factory(:question, question_type: Question::TYPE_TIME) }
   let(:choice_question) do
     cq = Factory(:question, question_type: Question::TYPE_CHOICE)
     Factory(:question_option, question: cq, option_value: '0', label: 'Dog')
@@ -21,7 +21,7 @@ describe Answer do
   end
   describe "Validations" do
     it { should validate_presence_of :question }
-    #it { should validate_presence_of :response }
+    it { should validate_presence_of :response }
   end
 
   describe "Validating for warnings" do
@@ -200,10 +200,6 @@ describe Answer do
         a.raw_answer.should eq("blah")
       end
     end
-
-    describe "other question types" do
-      pending
-    end
   end
 
   describe "answer_value should contain the correct data on load with valid data" do
@@ -226,22 +222,19 @@ describe Answer do
       PartialDateTimeHash.new(a.answer_value).should eq(time_hash)
     end
     it "Valid decimal" do
-      pending
-      a = Answer.new(response: response, question: text_question, answer_value: "abc")
+      a = Answer.new(response: response, question: decimal_question, answer_value: "3.45")
       a.save!; a.answer_value = nil; a.reload
-      a.answer_value.should eq("abc")
+      a.answer_value.should eq(3.45)
     end
     it "Valid integer" do
-      pending
-      a = Answer.new(response: response, question: text_question, answer_value: "abc")
+      a = Answer.new(response: response, question: integer_question, answer_value: "423")
       a.save!; a.answer_value = nil; a.reload
-      a.answer_value.should eq("abc")
+      a.answer_value.should eq(423)
     end
     it "Valid choice" do
-      pending
-      a = Answer.new(response: response, question: text_question, answer_value: "abc")
+      a = Answer.new(response: response, question: choice_question, answer_value: "1")
       a.save!; a.answer_value = nil; a.reload
-      a.answer_value.should eq("abc")
+      a.answer_value.should eq("1")
     end
 
   end
