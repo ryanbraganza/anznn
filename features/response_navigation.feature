@@ -82,3 +82,12 @@ Feature: Navigating around the sections of a survey response
     When I press "Save and return to summary page"
     Then the answer to "Sect3 Q2" should be "5678"
     And I should be on the response summary page for ABC123
+
+  Scenario: Cancel button should go to summar page
+    Given I am logged in as "data.provider@intersect.org.au"
+    And I create a response for "MySurvey" with baby code "ABC123"
+    And I follow "Sec3"
+    And I answer "Sect3 Q2" with "243"
+    When I follow "Cancel"
+    And I should be on the response summary page for ABC123
+    And there should be no answer for "Sect3 Q2"

@@ -13,7 +13,7 @@
             = submit_tag 'Save and return to summary page &rarr;'.html_safe, class: "btn primary"
           - else
             = submit_tag 'Save and go to next section &rarr;'.html_safe, class: "btn primary"
-          %a.btn Cancel
+          = link_to 'Cancel', response_path(@response), class: 'btn'
   .span4#help_box
     %h2#field_title Field Information
     %p#field_info Select a field to view its information.

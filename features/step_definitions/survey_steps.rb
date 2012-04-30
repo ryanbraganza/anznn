@@ -220,6 +220,12 @@ Then /^I should see choice question "([^"]*)" with options$/ do |question_name, 
   options_on_page.should eq(table.hashes)
 end
 
+Then /^there should be no answer for "(.*)"$/ do |question_name|
+  response = Response.last
+  question = Question.find_by_question! question_name
+  Answer.where(response_id: response, question_id: question).count.should eq 0
+end
+
 Then /^the answer to "([^"]*)" should be "([^"]*)"$/ do |question_name, expected_answer|
   question = Question.find_by_question!(question_name)
   response = Response.last
