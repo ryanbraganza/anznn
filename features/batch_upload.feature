@@ -14,7 +14,7 @@ Feature: Upload survey responses in a batch file
     Given I am on the home page
     When I follow "Batch Uploads"
     And I follow "Upload Batch File"
-    Then the "Survey" select should contain
+    Then the "Registration type" select should contain
       | Please select |
       | MySurvey      |
       | MySurvey2     |
@@ -26,8 +26,8 @@ Feature: Upload survey responses in a batch file
       | 2007          |
       | 2008          |
       | 2009          |
-    And I should see "Please select the survey type and the file you want to upload"
-    When I select "MySurvey" from "Survey"
+    And I should see "Please select the registration type and the file you want to upload"
+    When I select "MySurvey" from "Registration type"
     And I select "2007" from "Year of registration"
     And I attach the file "test_data/survey/batch_files/batch_sample.csv" to "File"
     And I press "Upload"
@@ -45,7 +45,7 @@ Feature: Upload survey responses in a batch file
     Given I am on the list of batch uploads page
     When I follow "Upload Batch File"
     And I press "Upload"
-    Then I should see "Survey can't be blank"
+    Then I should see "Registration type can't be blank"
     Then I should see "Year of registration can't be blank"
     And I should see "File can't be blank"
     And I should have no batch files
@@ -79,15 +79,15 @@ Feature: Upload survey responses in a batch file
     When I am on the list of batch uploads page
     Then the "batch_uploads" table should have 10 columns
     And the batch uploads table should look like
-      | Survey Type | Status      |
-      | Test Survey | In Progress |
-      | Test Survey | In Progress |
+      | Registration Type | Status      |
+      | Test Survey       | In Progress |
+      | Test Survey       | In Progress |
     When the batch files are processed
     And I am on the list of batch uploads page
     And the batch uploads table should look like
-      | Survey Type | Filename                  | Status                 |              |
-      | Test Survey | no_errors_or_warnings.csv | Processed Successfully |              |
-      | Test Survey | number_out_of_range.csv   | Needs Review           | Force Submit |
+      | Registration Type | Filename                  | Status                 |              |
+      | Test Survey       | no_errors_or_warnings.csv | Processed Successfully |              |
+      | Test Survey       | number_out_of_range.csv   | Needs Review           | Force Submit |
 
   Scenario: Supervisors can force submit
     Given I am logged in as "data.provider@intersect.org.au"
@@ -95,29 +95,29 @@ Feature: Upload survey responses in a batch file
     And I am on the list of batch uploads page
     Then the "batch_uploads" table should have 9 columns
     And I should see "batch_uploads" table with
-      | Survey Type | Status      |
-      | Test Survey | In Progress |
+      | Registration Type | Status      |
+      | Test Survey       | In Progress |
     When the batch files are processed
     And I am on the list of batch uploads page
     Then I should see "batch_uploads" table with
-      | Survey Type | Status       |
-      | Test Survey | Needs Review |
+      | Registration Type | Status       |
+      | Test Survey       | Needs Review |
 
     Given I am logged in as "supervisor@intersect.org.au" and have role "Data Provider Supervisor" and I'm linked to hospital "RPA"
     When I am on the list of batch uploads page
     And the "batch_uploads" table should have 10 columns
     Then the batch uploads table should look like
-      | Survey Type | Filename                | Status       |              |
-      | Test Survey | number_out_of_range.csv | Needs Review | Force Submit |
+      | Registration Type | Filename                | Status       |              |
+      | Test Survey       | number_out_of_range.csv | Needs Review | Force Submit |
     When I force submit for "number_out_of_range.csv"
     Then I should be on the list of batch uploads page
     And I should see "Your request is now being processed. This may take some time depending on the size of the file."
     And I should see "batch_uploads" table with
-      | Survey Type | Filename                | Status       |
-      | Test Survey | number_out_of_range.csv | Needs Review |
+      | Registration Type | Filename                | Status       |
+      | Test Survey       | number_out_of_range.csv | Needs Review |
 
     When the batch files are processed
     And I am on the list of batch uploads page
     Then I should see "batch_uploads" table with
-      | Survey Type | Status                 |  |
-      | Test Survey | Processed Successfully |  |
+      | Registration Type | Status                 |  |
+      | Test Survey       | Processed Successfully |  |

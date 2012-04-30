@@ -12,8 +12,8 @@ Feature: Processing batch files
     And the system processes the latest upload
     When I am on the list of batch uploads page
     Then I should see "batch_uploads" table with
-      | Survey Type | Num records | Status | Details   | Reports |
-      | MySurvey    |             | Failed | <message> |         |
+      | Registration Type | Num records | Status | Details   | Reports |
+      | MySurvey          |             | Failed | <message> |         |
   Examples:
     | file                    | message                                                                                     |
     | not_csv.xls             | The file you uploaded was not a valid CSV file                                              |
@@ -30,16 +30,16 @@ Feature: Processing batch files
     And the system processes the latest upload
     When I am on the list of batch uploads page
     Then I should see "batch_uploads" table with
-      | Survey Type | Num records | Status                 | Details                                   | Reports        |
-      | MySurvey    | 3           | Processed Successfully | Your file has been processed successfully | Summary Report |
+      | Registration Type | Num records | Status                 | Details                                   | Reports        |
+      | MySurvey          | 3           | Processed Successfully | Your file has been processed successfully | Summary Report |
 
   Scenario Outline: Well formed files that get rejected for validation errors
     Given I upload batch file "<file>" for survey "MySurvey"
     And the system processes the latest upload
     When I am on the list of batch uploads page
     Then I should see "batch_uploads" table with
-      | Survey Type | Num records | Status | Details                                                                               | Reports                       |
-      | MySurvey    | 3           | Failed | The file you uploaded did not pass validation. Please review the reports for details. | Summary Report\nDetail Report |
+      | Registration Type | Num records | Status | Details                                                                               | Reports                       |
+      | MySurvey          | 3           | Failed | The file you uploaded did not pass validation. Please review the reports for details. | Summary Report\nDetail Report |
   Examples:
     | file                              |
     | bad_date.csv                      |
@@ -58,7 +58,5 @@ Feature: Processing batch files
     And the system processes the latest upload
     When I am on the list of batch uploads page
     Then I should see "batch_uploads" table with
-      | Survey Type | Num records | Status | Details                                                                               | Reports                       |
-      | MySurvey    | 3           | Failed | The file you uploaded did not pass validation. Please review the reports for details. | Summary Report\nDetail Report |
-
-
+      | Registration Type | Num records | Status | Details                                                                               | Reports                       |
+      | MySurvey          | 3           | Failed | The file you uploaded did not pass validation. Please review the reports for details. | Summary Report\nDetail Report |

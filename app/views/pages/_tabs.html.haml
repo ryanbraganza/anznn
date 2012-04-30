@@ -1,6 +1,6 @@
 = tabs_tag(builder: MenuTabBuilder, namespace: :home) do |tab|
   %ul.tabs
-    = tab.responses 'Responses', root_path
+    = tab.responses 'Data Entry Forms', root_path
     = tab.batches 'Batch Uploads', batch_files_path
     - if can?(:stats, Response)
       = tab.stats 'Stats', stats_responses_path

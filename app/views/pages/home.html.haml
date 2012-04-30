@@ -1,11 +1,11 @@
 
 - if user_signed_in?
-  - title 'Responses'
+  - title 'Data Entry Forms'
 
   - content_for :tabs do
     = render 'tabs'
 
-  = link_to "Start New Survey Response", new_response_path, class: 'btn' if can?(:create, Response)
+  = link_to "Start New Data Entry Form", new_response_path, class: 'btn' if can?(:create, Response)
 
   = render 'responses/survey_response_list'
 

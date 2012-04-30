@@ -31,7 +31,7 @@ end
 Given /^I upload batch file( as "(.*)")? "([^"]*)" for survey "([^"]*)"$/ do |as_user, email, filename, survey_name|
   visit batch_files_path
   click_link "Upload Batch File"
-  select survey_name, from: "Survey"
+  select survey_name, from: "Registration type"
   select "2009", from: "Year of registration"
   attach_file("File", File.expand_path("test_data/survey/batch_files/#{filename}"))
   click_button "Upload"

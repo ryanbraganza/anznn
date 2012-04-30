@@ -55,9 +55,9 @@ def create_surveys
   Section.delete_all
   Question.delete_all
   QuestionOption.delete_all
-  create_survey_from_lib_tasks("Main Survey", "main_survey_questions.csv", "main_survey_question_options.csv", "main_cross_question_validations.csv")
-  create_survey_from_lib_tasks("Followup Survey", "followup_survey_questions.csv", "followup_survey_question_options.csv", "followup_cross_question_validations.csv")
-  create_survey_from_lib_tasks("Test Survey", "test_survey_questions.csv", "test_survey_question_options.csv", "test_cross_question_validations.csv")
+  create_survey_from_lib_tasks("ANZNN data form", "main_survey_questions.csv", "main_survey_question_options.csv", "main_cross_question_validations.csv")
+  create_survey_from_lib_tasks("ANZNN follow-up data form", "followup_survey_questions.csv", "followup_survey_question_options.csv", "followup_cross_question_validations.csv")
+  create_survey_from_lib_tasks("Test data form", "test_survey_questions.csv", "test_survey_question_options.csv", "test_cross_question_validations.csv")
 end
 
 def create_survey_from_lib_tasks(name, question_file, options_file, cross_question_validations_file)

@@ -16,12 +16,12 @@ Feature: Home page
   Scenario Outline: For data providers and supervisors, home page should have responses and batch uploads tabs and should default to responses
     Given I am logged in as "<user>"
     When I am on the home page
-    Then I should see "Surveys In Progress"
+    Then I should see "Data Entry Forms In Progress"
     And I should see link "Batch Uploads"
     And I should not see link "Stats"
     When I follow "Batch Uploads"
     Then I should be on the list of batch uploads page
-    When I follow "Responses"
+    When I follow "Data Entry Forms"
     Then I should be on the home page
   Examples:
     | user                             |
@@ -31,13 +31,13 @@ Feature: Home page
   Scenario: For administrators, home page should have responses, batch uploads and stats tabs and should default to responses
     Given I am logged in as "admin@intersect.org.au"
     When I am on the home page
-    Then I should see "Surveys In Progress"
+    Then I should see "Data Entry Forms In Progress"
     And I should see link "Batch Uploads"
     And I should see link "Stats"
     When I follow "Batch Uploads"
     Then I should be on the list of batch uploads page
     When I follow "Stats"
     Then I should be on the stats page
-    When I follow "Responses"
+    When I follow "Data Entry Forms"
     Then I should be on the home page
 

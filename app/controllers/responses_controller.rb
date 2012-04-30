@@ -16,7 +16,7 @@ class ResponsesController < ApplicationController
 
   def submit
     @response.submit!
-    redirect_to root_path, notice: "Response for #{@response.baby_code} to #{@response.survey.name} was submitted successfully."
+    redirect_to root_path, notice: "Data Entry Form for #{@response.baby_code} to #{@response.survey.name} was submitted successfully."
   end
 
   def create
@@ -24,7 +24,7 @@ class ResponsesController < ApplicationController
     @response.hospital_id = current_user.hospital_id
     @response.submitted_status = Response::STATUS_UNSUBMITTED
     if @response.save
-      redirect_to edit_response_path(@response, section: @response.survey.sections.first.id), notice: 'Survey created'
+      redirect_to edit_response_path(@response, section: @response.survey.sections.first.id), notice: 'Data entry form created'
     else
       render :new
     end
@@ -77,7 +77,7 @@ class ResponsesController < ApplicationController
     @year_of_registration = params[:year_of_registration]
 
     if @survey_id.blank?
-      @errors = ["Please select a survey"]
+      @errors = ["Please select a registration type"]
       render :prepare_download
     else
       generator = CsvGenerator.new(@survey_id, @hospital_id, @year_of_registration)

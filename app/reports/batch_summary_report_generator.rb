@@ -9,7 +9,7 @@ class BatchSummaryReportGenerator
 
       move_down 20
 
-      text "Survey: #{batch_file.survey.name}"
+      text "Registration Type: #{batch_file.survey.name}"
       text "File name: #{batch_file.file_file_name}"
       text "Date submitted: #{batch_file.created_at}"
       text "Submitted by: #{batch_file.user.full_name}"

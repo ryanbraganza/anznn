@@ -1,6 +1,6 @@
 class CsvGenerator
 
-  BASIC_HEADERS = %w(Survey YearOfRegistration Hospital BabyCode)
+  BASIC_HEADERS = %w(RegistrationType YearOfRegistration Hospital BabyCode)
   attr_accessor :survey_id, :hospital_id, :year_of_registration, :records, :survey, :question_codes
 
   def initialize(survey_id, hospital_id, year_of_registration)

@@ -104,12 +104,12 @@ Feature: Submit Response
     Then I should not see a submit button on the response summary page for survey "The Survey" and baby code "<baby_code>" with warning "<warning>"
   # Note: not started and incomplete are now the same thing, so the same behaviour results.
   Examples:
-    | user          | baby_code           | warning                                                                                               |
-    | supervisor    | baby_not_started    | This survey is incomplete and can't be submitted.                                                     |
-    | data.provider | baby_not_started    | This survey is incomplete and can't be submitted.                                                     |
-    | supervisor    | baby_incomplete     | This survey is incomplete and can't be submitted.                                                     |
-    | data.provider | baby_incomplete     | This survey is incomplete and can't be submitted.                                                     |
-    | data.provider | baby_range_warnings | This survey has warnings. Double check them. If you believe them to be correct, contact a supervisor. |
+    | user          | baby_code           | warning                                                                                                       |
+    | supervisor    | baby_not_started    | This data entry form is incomplete and can't be submitted.                                                     |
+    | data.provider | baby_not_started    | This data entry form is incomplete and can't be submitted.                                                     |
+    | supervisor    | baby_incomplete     | This data entry form is incomplete and can't be submitted.                                                     |
+    | data.provider | baby_incomplete     | This data entry form is incomplete and can't be submitted.                                                     |
+    | data.provider | baby_range_warnings | This data entry form has warnings. Double check them. If you believe them to be correct, contact a supervisor. |
 
   Scenario Outline: superusers never see the submit button and don't see a warning
     Given I am logged in as "<user>@intersect.org.au"

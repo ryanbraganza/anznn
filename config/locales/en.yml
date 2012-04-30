@@ -6,9 +6,10 @@ en:
   activerecord:
     attributes:
       response:
-        survey_id: 'Survey type'
+        survey_id: 'Registration type'
       batch_file:
         file_file_name: 'File'
+        survey_id: 'Registration type'
     errors:
       models:
         response:

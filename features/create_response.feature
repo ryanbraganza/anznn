@@ -17,14 +17,14 @@ Feature: Create Response
 
   Scenario: Creating a response
     When I create a response for "Survey A" with baby code "ABC123" and year of registration "2001"
-    Then I should see "Survey created"
+    Then I should see "Data entry form created"
     And I should see "Survey A - Baby Code ABC123 - Year of Registration 2001"
     And I should see "Question A"
     And I should not see "Question B"
 
   Scenario: Correct survey types are in the dropdown
     When I am on the new response page
-    Then the "Survey" select should contain
+    Then the "Registration type" select should contain
       | Please select |
       | Survey A      |
       | Survey B      |
@@ -47,7 +47,7 @@ Feature: Create Response
 
   Scenario: Try to create without selecting survey type
     When I create a response for "Please select" with baby code "ABC123"
-    Then I should see "Survey type can't be blank" within the form errors
+    Then I should see "Registration type can't be blank" within the form errors
 
   Scenario: Try to create without selecting year of registration
     When I create a response for "Survey A" with baby code "ABC123" and year of registration "Please select"

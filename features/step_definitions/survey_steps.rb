@@ -102,18 +102,18 @@ end
 
 When /^I create a response for "([^"]*)" with baby code "([^"]*)"$/ do |survey, baby_code|
   visit path_to("the home page")
-  click_link "Start New Survey Response"
+  click_link "Start New Data Entry Form"
   fill_in "Baby code", :with => baby_code
-  select survey, :from => "Survey"
+  select survey, :from => "Registration type"
   select "2001", :from => "Year of registration"
   click_button "Save"
 end
 
 When /^I create a response for "([^"]*)" with baby code "([^"]*)" and year of registration "([^"]*)"$/ do |survey, baby_code, year|
   visit path_to("the home page")
-  click_link "Start New Survey Response"
+  click_link "Start New Data Entry Form"
   fill_in "Baby code", :with => baby_code
-  select survey, :from => "Survey"
+  select survey, :from => "Registration type"
   select year, :from => "Year of registration"
   click_button "Save"
 end
@@ -407,7 +407,7 @@ When /^I submit the survey for survey "(.*)" and baby code "(.*)"$/ do |survey, 
 end
 
 Then /^I should see a confirmation message that "([^"]*)" for survey "([^"]*)" has been submitted$/ do |baby_code, survey|
-  find('div.alert-message.info').text.should eq "Response for #{baby_code} to #{survey} was submitted successfully."
+  find('div.alert-message.info').text.should eq "Data Entry Form for #{baby_code} to #{survey} was submitted successfully."
 end
 
 Then /^I can't view response for survey "([^"]*)" and baby code "([^"]*)"$/ do |survey, baby_code|

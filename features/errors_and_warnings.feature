@@ -23,8 +23,8 @@ Feature: Errors and Warnings
   Scenario: Not started yet is considered to be incomplete
     When I am on the homepage
     Then I should see "responses" table with
-      | Baby Code   | Survey Type | Created By  | Status      |
-      | babycode123 | survey      | Fred Bloggs | Incomplete |
+      | Baby Code   | Registration Type | Created By  | Status      |
+      | babycode123 | survey            | Fred Bloggs | Incomplete |
 
   Scenario: Incomplete
     When I am on the edit section 1 page
@@ -34,8 +34,8 @@ Feature: Errors and Warnings
     And I press "Save page"
     When I am on the homepage
     Then I should see "responses" table with
-      | Baby Code   | Survey Type | Created By  | Status     |
-      | babycode123 | survey      | Fred Bloggs | Incomplete |
+      | Baby Code   | Registration Type | Created By  | Status     |
+      | babycode123 | survey            | Fred Bloggs | Incomplete |
 
   Scenario: Complete with warnings
     When I am on the edit section 1 page
@@ -66,8 +66,8 @@ Feature: Errors and Warnings
 
     When I am on the homepage
     Then I should see "responses" table with
-      | Baby Code   | Survey Type | Created By  | Status                 |
-      | babycode123 | survey      | Fred Bloggs | Complete with warnings |
+      | Baby Code   | Registration Type | Created By  | Status                 |
+      | babycode123 | survey            | Fred Bloggs | Complete with warnings |
 
   Scenario: Complete
     When I am on the edit section 1 page
@@ -98,5 +98,5 @@ Feature: Errors and Warnings
 
     When I am on the homepage
     Then I should see "responses" table with
-      | Baby Code   | Survey Type | Created By  | Status   |
-      | babycode123 | survey      | Fred Bloggs | Complete |
+      | Baby Code   | Registration Type | Created By  | Status   |
+      | babycode123 | survey            | Fred Bloggs | Complete |

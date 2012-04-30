@@ -26,7 +26,7 @@ Feature: Download survey data
   Scenario: Download page dropdowns are populated appropriately
     Given I am on the home page
     When I follow "Download Data"
-    Then the "Survey" select should contain
+    Then the "Registration type" select should contain
       | Please select |
       | Survey A      |
       | Survey B      |
@@ -43,11 +43,11 @@ Feature: Download survey data
   Scenario: Must select a survey to get a download
     Given I am on the download page
     When I press "Download"
-    Then I should see "Please select a survey" within the form errors
+    Then I should see "Please select a registration type" within the form errors
 
   Scenario: Message displayed when no data to download
     Given I am on the download page
-    When I select "Survey B" from "Survey"
+    When I select "Survey B" from "Registration type"
     And I select "2009" from "Year of registration"
     And I press "Download"
     Then I should see "No data was found for your search criteria" within the form errors
@@ -56,14 +56,14 @@ Feature: Download survey data
   # however it would be nice to have a full end to end test that checks that
   Scenario: Download all for a survey
     Given I am on the download page
-    When I select "Survey A" from "Survey"
+    When I select "Survey A" from "Registration type"
     And I press "Download"
     Then I should receive a file with name "survey_a.csv" and type "text/csv"
     And the file I received should match "survey_a.csv"
 
   Scenario: Download by hospital for a survey
     Given I am on the download page
-    When I select "Survey A" from "Survey"
+    When I select "Survey A" from "Registration type"
     And I select "Mercy Hospital" from "Hospital"
     And I press "Download"
     Then I should receive a file with name "survey_a_mh.csv" and type "text/csv"
@@ -71,7 +71,7 @@ Feature: Download survey data
 
   Scenario: Download by year of registration for a survey
     Given I am on the download page
-    When I select "Survey A" from "Survey"
+    When I select "Survey A" from "Registration type"
     And I select "2009" from "Year of registration"
     And I press "Download"
     Then I should receive a file with name "survey_a_2009.csv" and type "text/csv"
@@ -79,7 +79,7 @@ Feature: Download survey data
 
   Scenario: Download by hospital and year of registration for a survey
     Given I am on the download page
-    When I select "Survey A" from "Survey"
+    When I select "Survey A" from "Registration type"
     And I select "2009" from "Year of registration"
     And I select "Mercy Hospital" from "Hospital"
     And I press "Download"
@@ -88,11 +88,11 @@ Feature: Download survey data
 
   Scenario: Dropdown selections should be retained on page reload
     Given I am on the download page
-    When I select "Survey B" from "Survey"
+    When I select "Survey B" from "Registration type"
     And I select "Mercy Hospital" from "Hospital"
     And I select "2009" from "Year of registration"
     And I press "Download"
-    Then "Survey B" should be selected in the "Survey" select
+    Then "Survey B" should be selected in the "Registration type" select
     Then "Mercy Hospital" should be selected in the "Hospital" select
     Then "2009" should be selected in the "Year of registration" select
 

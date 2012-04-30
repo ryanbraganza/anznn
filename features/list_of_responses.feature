@@ -20,15 +20,15 @@ Feature: Navigation
     Given I am logged in as "data.provider@intersect.org.au"
     And there are no survey responses
     When I am on the home page
-    Then I should see "There are no surveys in progress."
+    Then I should see "There are no data entry forms in progress."
 
   Scenario Outline: Data providers and data provider supervisors see a list of incomplete surveys from their own hospital
     Given I am logged in as "<user>"
     When I am on the home page
     Then I should see "responses" table with
-      | Baby Code   | Survey Type | Created By  | Year of Registration |
-      | babycode123 | survey      | Fred Bloggs | 2009                 |
-    And I should see link "Start New Survey Response"
+      | Baby Code   | Registration Type | Created By  | Year of Registration |
+      | babycode123 | survey            | Fred Bloggs | 2009                 |
+    And I should see link "Start New Data Entry Form"
   Examples:
     | user                             |
     | data.provider@intersect.org.au   |
@@ -80,10 +80,10 @@ Feature: Navigation
     Given I am logged in as "admin@intersect.org.au"
     When I am on the home page
     Then I should see "responses" table with
-      | Baby Code   | Survey Type | Created By  |
-      | babycode123 | survey      | Fred Bloggs |
+      | Baby Code   | Registration Type | Created By  |
+      | babycode123 | survey            | Fred Bloggs |
       | babyother   | survey      | Fred Bloggs |
-    And I should not see link "Start New Survey Response"
+    And I should not see link "Start New Data Entry Form"
     And I should not see link "Edit"
     And I should see link "Review Answers"
     And I should see link "View Summary"
