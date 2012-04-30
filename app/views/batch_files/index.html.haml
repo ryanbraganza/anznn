@@ -49,3 +49,4 @@
             - if can? :force_submit, batch_file
               = form_tag(force_submit_batch_file_path(batch_file)) do
                 = submit_tag 'Force Submit', class: 'btn', id: "force_submit_#{batch_file.id}"
+  = will_paginate @batch_files, :renderer => BootstrapPagination::Rails
