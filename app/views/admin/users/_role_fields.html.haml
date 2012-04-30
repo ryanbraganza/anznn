@@ -5,7 +5,7 @@
 .clearfix#hospital_fields
   = f.label :hospital_id, "Hospital"
   .input
-    = f.select :hospital_id, grouped_options_for_select(Hospital.hospitals_by_state, @user.hospital_id), {include_blank: ""}, {class: 'large'}
+    = f.select :hospital_id, grouped_options_for_select(Hospital.hospitals_by_state, @user.hospital_id), {include_blank: ""}
 
 
 :javascript
