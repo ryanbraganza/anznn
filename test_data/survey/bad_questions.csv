@@ -1,0 +1,3 @@
+"section","question_order","code","question","question_type","number_min","number_max","number_unknown","string_min","mandatory","string_max","guide_for_use","description"
+0,0,"TextMandatory","TextMandatory?","Text",,,,,true,,"TextMandatory guide","TextMandatory desc"
+0,0,"TextOptional","TextOptional?","Text",,,,,,,"TextOptional guide","TextOptional desc"

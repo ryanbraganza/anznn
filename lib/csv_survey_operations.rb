@@ -12,13 +12,16 @@ module CsvSurveyOperations
   end
 
   def import_questions(survey, questions)
+    order = 0
     questions.each do |hash|
-      section_order = hash.delete('section')
-      section = survey.sections.find_or_create_by_section_order(section_order)
-      if section.name.blank?
-        section.name = "Section #{section_order}"
+      section_name = hash.delete('section')
+      section = survey.sections.find_or_initialize_by_name(section_name)
+      if section.new_record?
+        section.section_order = order
+        section.save!
+
+        order += 1
       end
-      section.save!
       Question.create!(hash.merge(section_id: section.id))
     end
   end
@@ -26,7 +29,7 @@ module CsvSurveyOperations
   def import_question_options(survey, question_options)
     question_options.each do |qo|
       code = qo.delete("code")
-      question = survey.questions.find_by_code(code)
+      question = survey.questions.find_by_code!(code)
       question.question_options.create!(qo)
     end
   end
@@ -52,20 +55,22 @@ module CsvSurveyOperations
   end
 
   def create_survey(name, question_file, options_file=nil, cross_question_validations_file=nil)
+    ActiveRecord::Base.transaction do
 
-    survey = Survey.create!(name: name)
+      survey = Survey.create!(name: name)
 
-    questions = read_hashes_from_csv(question_file)
-    import_questions(survey, questions)
-    if options_file
-      question_options = read_hashes_from_csv(options_file)
-      import_question_options(survey, question_options)
+      questions = read_hashes_from_csv(question_file)
+      import_questions(survey, questions)
+      if options_file
+        question_options = read_hashes_from_csv(options_file)
+        import_question_options(survey, question_options)
+      end
+
+      if cross_question_validations_file
+        cqv_hashes = read_hashes_from_csv(cross_question_validations_file)
+        import_cross_question_validations(survey, cqv_hashes)
+      end
+      survey
     end
-
-    if cross_question_validations_file
-      cqv_hashes = read_hashes_from_csv(cross_question_validations_file)
-      import_cross_question_validations(survey, cqv_hashes)
-    end
-    survey
   end
 end

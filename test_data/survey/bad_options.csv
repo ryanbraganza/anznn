@@ -1,0 +1,4 @@
+"code","option_value","label","hint_text","option_order"
+"Choice",0,"No","No hint",0
+"Choice",1,"Yes","Yes hint",0
+"Choice",99,"Dunno","Dunno hint",2
