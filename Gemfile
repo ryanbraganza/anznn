@@ -38,7 +38,7 @@ gem "therubyracer"
 group :development, :test do
   gem "rspec-rails"
   gem "factory_girl_rails"
-  gem "shoulda"
+  gem "shoulda-matchers"
 
   # cucumber gems
   gem "cucumber"
@@ -69,6 +69,7 @@ gem "cancan"
 gem "capistrano-ext"
 gem "capistrano"
 gem "capistrano_colors"
+gem 'rvm-capistrano'
 gem "colorize"
 gem "metrical"
 gem "simplecov", ">=0.3.8", :require => false, :group => :test

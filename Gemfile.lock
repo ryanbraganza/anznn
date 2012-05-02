@@ -259,6 +259,8 @@ GEM
     ruby_parser (2.0.6)
       sexp_processor (~> 3.0)
     rubyzip (0.9.5)
+    rvm-capistrano (1.0.2)
+      capistrano (>= 2.0.0)
     sass (3.1.12)
     sass-rails (3.1.5)
       actionpack (~> 3.1.0)
@@ -271,7 +273,7 @@ GEM
       multi_json (~> 1.0.4)
       rubyzip
     sexp_processor (3.0.10)
-    shoulda (2.11.3)
+    shoulda-matchers (1.0.0)
     simplecov (0.5.4)
       multi_json (~> 1.0.3)
       simplecov-html (~> 0.5.3)
@@ -345,8 +347,9 @@ DEPENDENCIES
   rails (= 3.1.3)
   rails3-generators
   rspec-rails
+  rvm-capistrano
   sass-rails (~> 3.1.5)
-  shoulda
+  shoulda-matchers
   simplecov (>= 0.3.8)
   spork (~> 0.9.0.rc)
   tabs_on_rails
