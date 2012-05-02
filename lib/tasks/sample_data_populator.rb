@@ -7,8 +7,6 @@ def populate_data
   load_password
   User.delete_all
 
-  puts "Creating hospitals..."
-  create_hospitals
   puts "Creating test users..."
   create_test_users
   puts "Creating surveys..."
@@ -37,16 +35,6 @@ def create_responses
             year_of_registration: year_of_reg)
   end
 end
-
-def create_hospitals
-  Hospital.delete_all
-
-  hospitals = read_hashes_from_csv(Rails.root.join("lib/tasks", "hospitals.csv"))
-  hospitals.each do |hash|
-    Hospital.create!(hash)
-  end
-end
-
 
 def create_surveys
   Response.delete_all
