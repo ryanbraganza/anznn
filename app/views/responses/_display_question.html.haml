@@ -6,7 +6,9 @@
 - classes << 'fatalwarning' if answer.fatal_warnings.any? || (@flag_mandatory && answer.violates_mandatory)
 - data = {description: q.description, guide: q.guide_for_use, name: q.question, code: q.code}
 %div{id: "container_#{q.id}", class: classes}
-  = label_tag field_id, q.question
+  = label_tag field_id, class: 'field_trigger', data: data do
+    = q.question
+    %img{src: '/images/intersect_logo.png', style: 'cursor: pointer;'}
 
   .input
     - case q.question_type
@@ -40,7 +42,7 @@
         %ul.inputs-list
           - q.question_options.each do |qo|
             %li
-              %label.field_trigger
+              %label
                 = radio_button_tag "answers[#{q.id}]", qo.option_value, (answer.answer_value == qo.option_value),
                   class: 'field_trigger',
                   data: data
