@@ -21,7 +21,7 @@
           formatted.find('#help-guide').remove();
         }
 
-        formatted.find('.code-body').html(qn_code);
+        formatted.find('.code-body').text(qn_code);
         $field_info.html(formatted);
         $field_title.text(qn_name);
     };
