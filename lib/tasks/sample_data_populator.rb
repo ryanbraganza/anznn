@@ -121,4 +121,47 @@ def load_password
 
 end
 
+def big_populate
+  User.delete_all
+  Response.delete_all
+  create_hospitals
 
+  create_surveys_big
+  create_responses_big
+
+  @password = "PerformanceTest.2012"
+  create_user(email: "admin@intersect.org.au", first_name: "Admin", last_name: "Istrator")
+  create_unapproved_user(email: "unapproved1@intersect.org.au", first_name: "Unapproved", last_name: "One")
+  create_unapproved_user(email: "unapproved2@intersect.org.au", first_name: "Unapproved", last_name: "Two")
+  set_role("admin@intersect.org.au", "Administrator")
+  create_user(email: "dataprovider@intersect.org.au", first_name: "Data", last_name: "Provider")
+  create_user(email: "supervisor@intersect.org.au", first_name: "Data", last_name: "Supervisor")
+  set_role("dataprovider@intersect.org.au", Role::DATA_PROVIDER, Hospital.first.name)
+  set_role("supervisor@intersect.org.au",Role::DATA_PROVIDER_SUPERVISOR, Hospital.first.name)
+end
+
+def create_surveys_big
+  Response.delete_all
+  BatchFile.delete_all
+  Survey.delete_all
+  Section.delete_all
+  Question.delete_all
+  QuestionOption.delete_all
+  create_survey_from_lib_tasks("ANZNN data form", "main_survey_questions.csv", "main_survey_question_options.csv", "main_cross_question_validations.csv")
+  create_survey_from_lib_tasks("ANZNN follow-up data form", "followup_survey_questions.csv", "followup_survey_question_options.csv", "followup_cross_question_validations.csv")
+  create_survey_from_lib_tasks("Test data form", "test_survey_questions.csv", "test_survey_question_options.csv", "test_cross_question_validations.csv")
+end
+
+def create_responses_big(n=20, level_two_data_providers, surveys)
+  level_two_data_providers.each do |provider|
+    n.times do |i|
+      survey = surveys[i%surveys.length]
+      year_of_registration
+      fake_response(provider, survey, 'babycode???', year_of_registration, answer_fill_rate?, error_fill_rate?)
+    end
+  end
+end
+
+def fake_response(user, survey, baby_code, year_of_registration, answer_fill_rate, error_rate)
+  r = Response.create! user: user, survey: survey, baby_code: baby_code, year_of_registration: year_of_registration
+end
