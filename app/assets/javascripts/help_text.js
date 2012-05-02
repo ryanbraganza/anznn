@@ -14,14 +14,14 @@
               '<div id="help-desc"><h3>Definition</h3><p class="desc-body"></div>' +
               '<div id="help-guide"><h3>Guide For Use</h3><p class="guide-body"></div>' +
             '</div>');
-        formatted.find('.desc-body').text(description);
+        formatted.find('.desc-body').html(description);
         if (guide_for_use != "") {
-          formatted.find('.guide-body').text(guide_for_use);
+          formatted.find('.guide-body').html(guide_for_use);
         } else {
           formatted.find('#help-guide').remove();
         }
 
-        formatted.find('.code-body').text(qn_code);
+        formatted.find('.code-body').html(qn_code);
         $field_info.html(formatted);
         $field_title.text(qn_name);
     };

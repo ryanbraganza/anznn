@@ -4,7 +4,7 @@
 - classes = ['clearfix']
 - classes << 'warning' if answer.warnings.any?
 - classes << 'fatalwarning' if answer.fatal_warnings.any? || (@flag_mandatory && answer.violates_mandatory)
-- data = {description: q.description, guide: q.guide_for_use, name: q.question, code: q.code}
+- data = {description: prep_help(q.description), guide: prep_help(q.guide_for_use), name: q.question, code: prep_help(q.code)}
 %div{id: "container_#{q.id}", class: classes}
   = label_tag field_id, class: 'field_trigger', data: data do
     = q.question
