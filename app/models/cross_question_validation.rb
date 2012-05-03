@@ -1,5 +1,5 @@
 class CrossQuestionValidation < ActiveRecord::Base
-  VALID_RULES = %w(comparison date_implies_constant const_implies_const const_implies_set set_implies_const set_implies_set blank_unless_const blank_unless_set)
+  VALID_RULES = %w(comparison date_implies_constant const_implies_const const_implies_set set_implies_const set_implies_set blank_unless_const blank_unless_set multi_rule_any_pass multi_rule_if_then)
   SAFE_OPERATORS = %w(== <= >= < > !=)
   ALLOWED_SET_OPERATORS = %w(included excluded range between)
 
@@ -11,7 +11,6 @@ class CrossQuestionValidation < ActiveRecord::Base
 
   validates_presence_of :question_id
   validate :one_of_related_or_list_or_labels
-  #validates_presence_of :related_question_id unless :related_question_list_populated?
   validates_presence_of :rule
   validates_presence_of :error_message
 
@@ -21,7 +20,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   serialize :conditional_set, Array
 
   def one_of_related_or_list_or_labels
-    self.related_question_list.present?
+    errors[:base] << "invalid cqv - only one of related question, list of questions or list of rules - #{related_question_id.inspect},#{related_question_ids.inspect},#{related_rule_ids.inspect}" unless [related_question_id, related_question_ids, related_rule_ids].select(&:present?).count == 1
   end
 
   def self.check(answer)
@@ -36,11 +35,19 @@ class CrossQuestionValidation < ActiveRecord::Base
     checker_params = {operator: operator, constant: constant,
                       set_operator: set_operator, set: set,
                       conditional_operator: conditional_operator, conditional_constant: conditional_constant,
-                      conditional_set_operator: conditional_set_operator, conditional_set: conditional_set}
+                      conditional_set_operator: conditional_set_operator, conditional_set: conditional_set,
+                      related_rule_ids: related_rule_ids, related_question_ids: related_question_ids}
 
     # we have to filter the answers on the response rather than using find, as we want to check through as-yet unsaved answers as part of batch processing
-    related_answer = answer.response.answers.find { |a| a.question_id == related_question.id }
-    if answer.nil? or answer.raw_answer or related_answer.nil? or related_answer.raw_answer
+    related_answer = answer.response.answers.find { |a| a.question_id == related_question.id } if related_question
+
+    # if not a primary rule, nil
+    # if we dont have a proper answer, nil
+    # if we only have one related question, if that doesn't have a proper answer: nil
+
+    if answer.nil? or answer.raw_answer
+      nil
+    elsif related_question.present? && (related_answer.nil? or related_answer.raw_answer)
       nil
     else
       error_message unless rule_checkers[rule].call answer, related_answer, checker_params
@@ -150,5 +157,12 @@ class CrossQuestionValidation < ActiveRecord::Base
 
   }
 
+  register_checker 'multi_rule_any_pass', lambda { |answer, related_answer, checker_params|
+    false
+  }
+
+  register_checker 'multi_rule_if_then', lambda { |answer, related_answer, checker_params|
+    false
+  }
 
 end

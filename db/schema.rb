@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120412060904) do
+ActiveRecord::Schema.define(:version => 20120503024359) do
 
   create_table "answers", :force => true do |t|
     t.integer "response_id"
@@ -65,6 +65,8 @@ ActiveRecord::Schema.define(:version => 20120412060904) do
     t.decimal "conditional_constant",     :precision => 65, :scale => 15
     t.string  "conditional_set_operator"
     t.string  "conditional_set"
+    t.string  "related_question_ids"
+    t.string  "related_rule_ids"
   end
 
   create_table "delayed_jobs", :force => true do |t|
