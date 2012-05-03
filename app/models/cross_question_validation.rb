@@ -13,6 +13,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   validate :one_of_related_or_list_or_labels
   validates_presence_of :rule
   validates_presence_of :error_message
+  validates_inclusion_of :primary, in: [true, false]
 
   serialize :related_rule_ids, Array
   serialize :related_question_ids, Array
@@ -31,7 +32,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     warnings.compact
   end
 
-  def check(answer)
+  def check(answer, running_as_secondary = false)
     checker_params = {operator: operator, constant: constant,
                       set_operator: set_operator, set: set,
                       conditional_operator: conditional_operator, conditional_constant: conditional_constant,
@@ -45,6 +46,8 @@ class CrossQuestionValidation < ActiveRecord::Base
     # if we dont have a proper answer, nil
     # if we only have one related question, if that doesn't have a proper answer: nil
 
+    return nil unless self.primary? || running_as_secondary
+
     if answer.nil? or answer.raw_answer
       nil
     elsif related_question.present? && (related_answer.nil? or related_answer.raw_answer)
@@ -57,6 +60,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   private
 
   cattr_accessor(:rule_checkers) { {} }
+
 
   def self.is_operator_safe?(operator)
     SAFE_OPERATORS.include? operator
@@ -158,11 +162,27 @@ class CrossQuestionValidation < ActiveRecord::Base
   }
 
   register_checker 'multi_rule_any_pass', lambda { |answer, related_answer, checker_params|
+    rules = CrossQuestionValidation.find(checker_params[:related_rule_ids])
+
+    rules.each do |rule|
+      err = rule.check(answer, true)
+      return true if !err
+    end
+
     false
   }
 
+  #this only accepts two rules - the IF rule and the THEN rule
   register_checker 'multi_rule_if_then', lambda { |answer, related_answer, checker_params|
-    false
+
+    rules = CrossQuestionValidation.find(checker_params[:related_rule_ids])
+
+    err1 = rules.shift.check(answer, true)
+    return true if err1.present?
+
+    err2 = rules.last.check(answer, true)
+    err2.blank?
+
   }
 
 end

@@ -8,13 +8,13 @@ Given /^I have the following cross question validations$/ do |table|
   # store the labelled (secondary) rules first
   table.hashes.each do |hash|
     related_rule_labels = hash['rule_label_list']
-    make_cqv(label_to_cqv_id, hash) unless related_rule_labels.present?
+    make_cqv(label_to_cqv_id, hash.merge!(primary: false)) unless related_rule_labels.present?
   end
 
   #now store any rules which reference labelled rules
   table.hashes.each do |hash|
     related_rule_labels = hash['rule_label_list']
-    make_cqv(label_to_cqv_id, hash) if related_rule_labels.present?
+    make_cqv(label_to_cqv_id, hash.merge!(primary: true)) if related_rule_labels.present?
   end
 
 end

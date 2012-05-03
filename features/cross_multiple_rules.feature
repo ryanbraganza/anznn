@@ -27,9 +27,9 @@ Feature: Cross Question Conditional Validations
       | Num Q4   |         | if_then1, if_then2   |            | multi_rule_if_then  |          | Rule 1 was true, so Rule 2 must also be true |
       | Num Q4   | Num Q2  |                      | if_then1   | comparison          | ==       | Ignored 1                                    |
       | Num Q4   | Num Q3  |                      | if_then2   | comparison          | ==       | Ignored 2                                    |
+    And I am ready to enter responses as data.provider@intersect.org.au
 
   Scenario: CQV Failure - Any Pass - Rule ONE and TWO fail
-    And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer |
       | Num Q1   | 0      |
@@ -67,7 +67,6 @@ Feature: Cross Question Conditional Validations
 
     ###################
   Scenario: CQV Pass - If Then - Rule ONE fails, TWO isn't processed
-    And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer |
       | Num Q4   | 0      |
@@ -76,10 +75,10 @@ Feature: Cross Question Conditional Validations
     Then I should not see "Rule 1 was true, so Rule 2 must also be true"
     And I should not see "Ignored"
 
-  Scenario: CQV Failure - If Then - Rule TWO fails, ONE PASSES
+  Scenario: CQV Failure - If Then - Rule ONE Passes, TWO fails
     When I store the following answers
       | question | answer |
-      | Num Q4   | 2      |
+      | Num Q4   | 1      |
       | Num Q2   | 1      |
       | Num Q3   | 2      |
     Then I should see "Rule 1 was true, so Rule 2 must also be true"
