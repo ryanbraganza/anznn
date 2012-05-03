@@ -3,6 +3,12 @@ Feature: Cross Question Conditional Validations
   As a system owner
   I want answers to be conditionally validated based the success of one of multiple rules
 
+#  Processing rules
+#    Intersection of multiple rules (||, at least one must pass)
+#      If rule 1 OR rule 2 13 A14 PNS
+#    Implication with multiple rules
+#      If rule 1 passes THEN apply rule 2. failure of rule 1 means rule 2 is skipped and answer is valid 12 A13c, NameSurg2
+
   Background:
     Given I have the usual roles
     And I have a user "data.provider@intersect.org.au" with role "Data Provider"
