@@ -16,6 +16,18 @@ describe CrossQuestionValidation do
       end
       Factory.build(:cross_question_validation, rule: 'Blahblah').should_not be_valid
     end
+    it "should validate only one of related question, related question list, multiple rule list is populated" do
+      Factory.build(:cross_question_validation, related_question_id: nil, related_question_ids: nil, related_rule_ids: nil).should_not be_valid
+      # 0 0 0
+      # 0 0 1
+      # 0 1 0
+      # 0 1 1
+      # 1 0 0
+      # 1 0 1
+      # 1 1 0
+      # 1 1 1
+
+    end
   end
 
   describe "helpers" do

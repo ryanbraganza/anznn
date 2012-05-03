@@ -10,13 +10,19 @@ class CrossQuestionValidation < ActiveRecord::Base
   validates_inclusion_of :operator, in: SAFE_OPERATORS, allow_blank: true
 
   validates_presence_of :question_id
-  validates_presence_of :related_question_id
+  validate :one_of_related_or_list_or_labels
+  #validates_presence_of :related_question_id unless :related_question_list_populated?
   validates_presence_of :rule
   validates_presence_of :error_message
 
+  serialize :related_rule_ids, Array
+  serialize :related_question_ids, Array
   serialize :set, Array
   serialize :conditional_set, Array
 
+  def one_of_related_or_list_or_labels
+    self.related_question_list.present?
+  end
 
   def self.check(answer)
     cqvs = answer.question.cross_question_validations
