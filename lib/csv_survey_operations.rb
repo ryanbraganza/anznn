@@ -5,6 +5,18 @@
 
 module CsvSurveyOperations
   def read_hashes_from_csv(file_name)
+
+    begin
+      line = 1
+      CSV.foreach(file_name) do |row|
+        line+=1
+        # use row here...
+      end
+    rescue
+      puts "Failed on row #{line} of #{file_name}"
+      raise
+    end
+
     csv_data = CSV.read(file_name)
     headers = csv_data.shift.map { |i| i.to_s }
     string_data = csv_data.map { |row| row.map { |cell| cell.to_s } }
@@ -42,7 +54,7 @@ module CsvSurveyOperations
       conditional_set_string = cqv_hash.delete 'conditional_set'
 
       set = set_string.blank? ? nil : eval(set_string)
-      conditional_set =  conditional_set_string.blank? ? nil : eval(conditional_set_string)
+      conditional_set = conditional_set_string.blank? ? nil : eval(conditional_set_string)
 
 
       question = survey.questions.find_by_code!(question_code)
