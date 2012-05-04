@@ -209,7 +209,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   register_checker 'multi_hours_date_to_date', lambda { |answer, unused_related_answer, checker_params|
     answers = collect_multiple_answers(answer, checker_params)
 
-    break true if answers.map { |related_answer| related_answer.nil? or related_answer.raw_answer }.any?
+    break true if answers.any? { |related_answer| related_answer.nil? or related_answer.raw_answer }
 
     date1, time1, date2, time2 = answers
 
@@ -225,7 +225,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   register_checker 'multi_compare_datetime_quad', lambda { |answer, unused_related_answer, checker_params|
     answers = collect_multiple_answers(answer, checker_params)
 
-    break true if answers.map { |related_answer| related_answer.nil? or related_answer.raw_answer }.any?
+    break true if answers.any? { |related_answer| related_answer.nil? or related_answer.raw_answer }
 
     date1, time1, date2, time2 = answers
 
