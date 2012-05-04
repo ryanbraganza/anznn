@@ -117,7 +117,11 @@ module CsvSurveyOperations
 
     hash[:question] = Question.find_by_code! question_question
 
-    validation = Factory(:cross_question_validation, hash)
+    #if I am a cucumber
+    #  Factory
+    # else
+    # blah
+    validation = CrossQuestionValidation.create!(hash)
     label_to_cqv_id[label] = validation.id
   end
 end
