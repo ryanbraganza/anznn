@@ -67,6 +67,8 @@ Feature: Cross Question Blank-Unless Validations
   @wip
   Scenario: CQV Failure - Blank Unless days(Some Qn) >= 60
     Given I have the following cross question validations
+      | question | related | related_question_list | rule_label_list | rule_label | rule                     | error_message                                |
+      | Num Q1   |         | Num Q2, Num Q3        |                 |            | multi_hours_date_to_date | Date entered in Date Q1, this needs to be -1 |
 
       | question | related_question_list | rule                    | conditional_operator | conditional_constant | error_message                 |
       | Num Q1   | DOB Qn, Date Q1       | blank_unless_days_const | >=                   | 60                   | q2 was < 60, q1 must be blank |

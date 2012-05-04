@@ -1,5 +1,5 @@
 class CrossQuestionValidation < ActiveRecord::Base
-  VALID_RULES = %w(comparison date_implies_constant const_implies_const const_implies_set set_implies_const set_implies_set blank_unless_const blank_unless_set multi_rule_any_pass multi_rule_if_then)
+  VALID_RULES = %w(comparison date_implies_constant const_implies_const const_implies_set set_implies_const set_implies_set blank_unless_const blank_unless_set multi_rule_any_pass multi_rule_if_then multi_hours_date_to_date)
   SAFE_OPERATORS = %w(== <= >= < > !=)
   ALLOWED_SET_OPERATORS = %w(included excluded range between)
 
@@ -106,6 +106,10 @@ class CrossQuestionValidation < ActiveRecord::Base
     end
   end
 
+  def self.aggregate_date_time(d, t)
+    Time.utc_time(d.year, d.month, d.day, t.hour, t.min)
+  end
+
 
   register_checker 'comparison', lambda { |answer, related_answer, checker_params|
     break true unless related_answer.answer_value.present?
@@ -178,11 +182,30 @@ class CrossQuestionValidation < ActiveRecord::Base
     rules = CrossQuestionValidation.find(checker_params[:related_rule_ids])
 
     err1 = rules.shift.check(answer, true)
-    return true if err1.present?
+    break true if err1.present?
 
     err2 = rules.last.check(answer, true)
     err2.blank?
 
   }
+
+  register_checker 'multi_hours_date_to_date', lambda { |answer, related_answer, checker_params|
+    answers = answer.response.answers.find_all_by_question_id(checker_params[:related_question_ids]).to_a
+
+    break true unless answers.count == %w(date time date2 time2).count
+    break false if answers.map { | related_answer | related_answer.nil? or related_answer.raw_answer }.any?
+
+    date1, time1, date2, time2 = answers
+
+    offset = checker_params[:constant].blank? ? 0 : checker_params[:constant]
+
+    datetime1 = aggregate_date_time(date1.answer_value, time1.answer_value)
+    datetime2 = aggregate_date_time(date2.answer_value, time2.answer_value)
+
+    hour_difference = (datetime2 - datetime1) / 1.hour
+
+    const_meets_condition?(answer.answer_value, checker_params[:operator], hour_difference + offset)
+  }
+
 
 end
