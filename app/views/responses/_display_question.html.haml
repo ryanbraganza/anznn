@@ -8,7 +8,7 @@
 %div{id: "container_#{q.id}", class: classes}
   = label_tag field_id, class: 'field_trigger', data: data do
     = q.question
-    %img{src: '/images/intersect_logo.png', style: 'cursor: pointer;'}
+    %span.info
 
   .input
     - case q.question_type
