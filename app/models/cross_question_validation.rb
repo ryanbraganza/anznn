@@ -1,5 +1,5 @@
 class CrossQuestionValidation < ActiveRecord::Base
-  VALID_RULES = %w(comparison date_implies_constant const_implies_const const_implies_set set_implies_const set_implies_set blank_unless_const blank_unless_set multi_rule_any_pass multi_rule_if_then multi_hours_date_to_date)
+  VALID_RULES = %w(comparison date_implies_constant const_implies_const const_implies_set set_implies_const set_implies_set blank_unless_const blank_unless_set multi_rule_any_pass multi_rule_if_then multi_hours_date_to_date multi_compare_datetime_quad)
   SAFE_OPERATORS = %w(== <= >= < > !=)
   ALLOWED_SET_OPERATORS = %w(included excluded range between)
 
@@ -21,7 +21,10 @@ class CrossQuestionValidation < ActiveRecord::Base
   serialize :conditional_set, Array
 
   def one_of_related_or_list_or_labels
-    errors[:base] << "invalid cqv - only one of related question, list of questions or list of rules - #{related_question_id.inspect},#{related_question_ids.inspect},#{related_rule_ids.inspect}" unless [related_question_id, related_question_ids, related_rule_ids].select(&:present?).count == 1
+    unless [related_question_id, related_question_ids, related_rule_ids].select(&:present?).count == 1
+      errors[:base] << "invalid cqv - only one of related question, list of questions or list of rules - " +
+          "#{related_question_id.inspect},#{related_question_ids.inspect},#{related_rule_ids.inspect}"
+    end
   end
 
   def self.check(answer)
@@ -113,7 +116,7 @@ class CrossQuestionValidation < ActiveRecord::Base
 
   register_checker 'comparison', lambda { |answer, related_answer, checker_params|
     break true unless related_answer.answer_value.present?
-    offset = checker_params[:constant].blank? ? 0 : checker_params[:constant]
+    offset = sanitise_offset(checker_params)
     const_meets_condition?(answer.answer_value, checker_params[:operator], related_answer.answer_value + offset)
   }
 
@@ -190,21 +193,42 @@ class CrossQuestionValidation < ActiveRecord::Base
   }
 
   register_checker 'multi_hours_date_to_date', lambda { |answer, related_answer, checker_params|
-    answers = answer.response.answers.find_all_by_question_id(checker_params[:related_question_ids]).to_a
+    answers = collect_multiple_answers(answer, checker_params)
 
-    break true unless answers.count == %w(date time date2 time2).count
-    break false if answers.map { | related_answer | related_answer.nil? or related_answer.raw_answer }.any?
+    break true if answers.map { |related_answer| related_answer.nil? or related_answer.raw_answer }.any?
 
     date1, time1, date2, time2 = answers
 
-    offset = checker_params[:constant].blank? ? 0 : checker_params[:constant]
+    offset = sanitise_offset(checker_params)
 
     datetime1 = aggregate_date_time(date1.answer_value, time1.answer_value)
     datetime2 = aggregate_date_time(date2.answer_value, time2.answer_value)
-
     hour_difference = (datetime2 - datetime1) / 1.hour
 
     const_meets_condition?(answer.answer_value, checker_params[:operator], hour_difference + offset)
+  }
+
+  def self.sanitise_offset(checker_params)
+    checker_params[:constant].blank? ? 0 : checker_params[:constant]
+  end
+
+  def self.collect_multiple_answers(answer, checker_params)
+    answers = answer.response.answers.find_all_by_question_id(checker_params[:related_question_ids])
+    answers.sort_by { |a| checker_params[:related_question_ids].index(a.question_id) }
+  end
+
+  register_checker 'multi_compare_datetime_quad', lambda { |answer, related_answer, checker_params|
+    answers = collect_multiple_answers(answer, checker_params)
+
+    break true if answers.map { |related_answer| related_answer.nil? or related_answer.raw_answer }.any?
+
+    date1, time1, date2, time2 = answers
+
+    datetime1 = aggregate_date_time(date1.answer_value, time1.answer_value)
+    datetime2 = aggregate_date_time(date2.answer_value, time2.answer_value)
+    offset = sanitise_offset(checker_params)
+
+    const_meets_condition?(datetime1, checker_params[:operator], datetime2 + offset)
   }
 
 
