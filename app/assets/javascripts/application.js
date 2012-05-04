@@ -10,3 +10,8 @@
 //= require jquery_ujs
 //= require help_text.js
 //= require_tree .
+
+
+$(window).load(function () {
+  $('.row div[class^="span"]:last-child').addClass('last-child');
+});
