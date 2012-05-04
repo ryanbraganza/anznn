@@ -50,8 +50,8 @@ Feature: Cross Multiple Question Validations
       | question | related | related_question_list              | rule                        | operator | constant | error_message                           |
       | Date Q1  |         | Date Q1, Time Q1, Date Q2, Time Q2 | multi_compare_datetime_quad | <=       | 0        | this and TimeQ1 must be <= Date/Time Q2 |
       | Time Q1  |         | Date Q1, Time Q1, Date Q2, Time Q2 | multi_compare_datetime_quad | <=       | 0        | this and DateQ1 must be <= Date/Time Q2 |
-      | Date Q2  |         | Date Q2, Time Q2, Date Q1, Time Q1 | multi_compare_datetime_quad | >=       | 0        | this and TimeQ2 must be > Date/Time Q1  |
-      | Time Q2  |         | Date Q2, Time Q2, Date Q1, Time Q1 | multi_compare_datetime_quad | >=       | 0        | this and DateQ2 must be > Date/Time Q1  |
+      | Date Q2  |         | Date Q1, Time Q1, Date Q2, Time Q2 | multi_compare_datetime_quad | <=       | 0        | this and TimeQ2 must be >= Date/Time Q1 |
+      | Time Q2  |         | Date Q1, Time Q1, Date Q2, Time Q2 | multi_compare_datetime_quad | <=       | 0        | this and DateQ2 must be >= Date/Time Q1 |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer   |
@@ -61,16 +61,16 @@ Feature: Cross Multiple Question Validations
       | Time Q2  | 01:23    |
     Then I should see "this and TimeQ1 must be <= Date/Time Q2"
     And I should see "this and DateQ1 must be <= Date/Time Q2"
-    And I should see "this and TimeQ2 must be > Date/Time Q1"
-    And I should see "this and DateQ2 must be > Date/Time Q1"
+    And I should see "this and TimeQ2 must be >= Date/Time Q1"
+    And I should see "this and DateQ2 must be >= Date/Time Q1"
 
   Scenario: CQV Success - Multiple Questions - This Date+Time <operator> Some Date+Time (where this question is either the date or time component)
     Given I have the following cross question validations
       | question | related | related_question_list              | rule                        | operator | constant | error_message                           |
       | Date Q1  |         | Date Q1, Time Q1, Date Q2, Time Q2 | multi_compare_datetime_quad | <=       | 0        | this and TimeQ1 must be <= Date/Time Q2 |
       | Time Q1  |         | Date Q1, Time Q1, Date Q2, Time Q2 | multi_compare_datetime_quad | <=       | 0        | this and DateQ1 must be <= Date/Time Q2 |
-      | Date Q2  |         | Date Q2, Time Q2, Date Q1, Time Q1 | multi_compare_datetime_quad | >=       | 0        | this and TimeQ2 must be > Date/Time Q1  |
-      | Time Q2  |         | Date Q2, Time Q2, Date Q1, Time Q1 | multi_compare_datetime_quad | >=       | 0        | this and DateQ2 must be > Date/Time Q1  |
+      | Date Q2  |         | Date Q1, Time Q1, Date Q2, Time Q2 | multi_compare_datetime_quad | <=       | 0        | this and TimeQ2 must be >= Date/Time Q1 |
+      | Time Q2  |         | Date Q1, Time Q1, Date Q2, Time Q2 | multi_compare_datetime_quad | <=       | 0        | this and DateQ2 must be >= Date/Time Q1 |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer   |
@@ -80,7 +80,7 @@ Feature: Cross Multiple Question Validations
       | Time Q2  | 01:23    |
     Then I should not see "this and TimeQ1 must be <= Date/Time Q2"
     And I should not see "this and DateQ1 must be <= Date/Time Q2"
-    And I should not see "this and TimeQ2 must be > Date/Time Q1"
-    And I should not see "this and DateQ2 must be > Date/Time Q1"
+    And I should not see "this and TimeQ2 must be >= Date/Time Q1"
+    And I should not see "this and DateQ2 must be >= Date/Time Q1"
 
 
