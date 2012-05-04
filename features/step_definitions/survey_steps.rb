@@ -261,7 +261,7 @@ def create_questions(survey, table)
     section_num ||= 0
     section = survey.sections.find_by_section_order(section_num)
     section = Factory(:section, survey: survey, section_order: section_num) unless section
-    question = Factory(:question, q_attrs.merge(section: section))
+    question = Factory(:question, q_attrs.merge(section: section, code: q_attrs['question']))
     if question.type_choice?
       Factory(:question_option, question: question, label: "Apple", option_value: "A")
       Factory(:question_option, question: question, label: "Bike", option_value: "B")

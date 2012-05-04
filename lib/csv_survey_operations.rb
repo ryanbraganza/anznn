@@ -47,23 +47,16 @@ module CsvSurveyOperations
   end
 
   def import_cross_question_validations(survey, cqv_hashes)
-    cqv_hashes.each do |cqv_hash|
-      question_code = cqv_hash.delete 'question_code'
-      related_question_code = cqv_hash.delete 'related_question_code'
-      set_string = cqv_hash.delete 'set'
-      conditional_set_string = cqv_hash.delete 'conditional_set'
+    cqv_hashes = cqv_hashes.map do |hash|
+      set_string = hash.delete 'set'
+      conditional_set_string = hash.delete 'conditional_set'
 
       set = set_string.blank? ? nil : eval(set_string)
       conditional_set = conditional_set_string.blank? ? nil : eval(conditional_set_string)
 
-
-      question = survey.questions.find_by_code!(question_code)
-      related_question = survey.questions.find_by_code!(related_question_code)
-
-      attrs = cqv_hash.merge(question: question, related_question: related_question, set: set, conditional_set: conditional_set)
-
-      CrossQuestionValidation.create!(attrs)
+      hash.merge(set: set, conditional_set: conditional_set)
     end
+    make_cqvs(cqv_hashes)
   end
 
   def create_survey(name, question_file, options_file=nil, cross_question_validations_file=nil)
@@ -84,5 +77,47 @@ module CsvSurveyOperations
       end
       survey
     end
+  end
+
+  def make_cqvs(hashes)
+    label_to_cqv_id = {}
+
+    # store the labelled (secondary) rules first
+    hashes.each do |hash|
+      rule_label = hash['rule_label']
+      make_cqv(label_to_cqv_id, hash.merge(primary: false)) if rule_label.present?
+    end
+
+    #now store any rules which reference labelled rules
+    hashes.each do |hash|
+      rule_label = hash['rule_label']
+      make_cqv(label_to_cqv_id, hash.merge(primary: true)) unless rule_label.present?
+    end
+  end
+
+  def make_cqv(label_to_cqv_id, hash)
+
+    orig = hash.dup
+    related_question_question = hash.delete 'related_question_code'
+    related_rule_labels = hash.delete 'rule_label_list'
+    question_list = hash.delete 'related_question_list'
+    question_question = hash.delete 'question_code'
+    raise orig.inspect unless question_question
+    label = hash.delete 'rule_label'
+
+    hash[:related_question] = related_question_question.blank? ? nil : Question.find_by_code!(related_question_question)
+
+    if question_list
+      hash[:related_question_ids] = question_list.split(", ").map { |qn_code| Question.find_by_question!(qn_code).id }
+    end
+
+    if related_rule_labels
+      hash[:related_rule_ids] = related_rule_labels.split(', ').map { |related_label| label_to_cqv_id[related_label] }
+    end
+
+    hash[:question] = Question.find_by_code! question_question
+
+    validation = Factory(:cross_question_validation, hash)
+    label_to_cqv_id[label] = validation.id
   end
 end

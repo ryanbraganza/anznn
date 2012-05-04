@@ -64,6 +64,7 @@ Feature: Cross Question Blank-Unless Validations
       | Num Q1   | 5      |
     Then I should not see "q2 was outside 0...99 (exclusive), q1 must be blank"
 
+  @wip
   Scenario: CQV Failure - Blank Unless days(Some Qn) >= 60
     Given I have the following cross question validations
 
@@ -77,6 +78,7 @@ Feature: Cross Question Blank-Unless Validations
       | Date Q1  | 2012/01/31 |
     Then I should see "q2 was < 60, q1 must be blank"
 
+  @wip
   Scenario: CQV Pass - Blank Unless days(Some Qn) >= 60
     Given I have the following cross question validations
       | question | related_question_list | rule                    | conditional_operator | conditional_constant | error_message                 |

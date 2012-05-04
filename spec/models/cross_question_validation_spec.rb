@@ -122,15 +122,6 @@ describe CrossQuestionValidation do
     end
   end
 
-  describe "primary?" do
-    it "should return primary for standard validations" do
-
-    end
-    it "should return primary for rules with related rules" do
-
-    end
-    it "should return false for "
-  end
 
   describe "check" do
     before :each do
