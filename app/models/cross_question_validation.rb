@@ -27,7 +27,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   serialize :conditional_set, Array
 
   def one_of_related_or_list_or_labels
-    unless [related_question_id, related_question_ids, related_rule_ids].select(&:present?).count == 1
+    unless [related_question_id, related_question_ids, related_rule_ids].count(&:present?) == 1
       errors[:base] << "invalid cqv - only one of related question, list of questions or list of rules - " +
           "#{related_question_id.inspect},#{related_question_ids.inspect},#{related_rule_ids.inspect}"
     end
