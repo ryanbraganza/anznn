@@ -1,0 +1,124 @@
+question_code,related_question_code,rule,error_message,operator,constant,set_operator,set,conditional_operator,conditional_constant,conditional_set_operator,conditional_set
+PTL,Other_prob,const_implies_set,"If Other_prob is -1, PTL must be either 0 or -1",,,included,"[-1,0]",==,-1,,
+PET,Other_prob,const_implies_set,"If Other_prob is -1, PET must be either 0 or -1",,,included,"[-1,0]",==,-1,,
+APH,Other_prob,const_implies_set,"If Other_prob is -1, APH must be either 0 or -1",,,included,"[-1,0]",==,-1,,
+IUGR,Other_prob,const_implies_set,"If Other_prob is -1, IUGR must be either 0 or -1",,,included,"[-1,0]",==,-1,,
+F_distress,Other_prob,const_implies_set,"If Other_prob is -1, F_distress must be either 0 or -1",,,included,"[-1,0]",==,-1,,
+Other,Other_prob,const_implies_set,"If Other_prob is -1, Other must be either 0 or -1",,,included,"[-1,0]",==,-1,,
+ANDiag_,Other_prob,const_implies_set,"If Other_prob is -1, ANDiag_ must be either 0 or -1",,,included,"[-1,0]",==,-1,,
+PROMDate,LastO2,comparison,PROMDate must be earlier than or equal to LastO2,<=,,,,,,,
+PROMDate,Date_Linf1,comparison,PROMDate must be earlier than or equal to Date_Linf1,<=,,,,,,,
+PROMDate,Date_Lviralinf1,comparison,PROMDate must be earlier than or equal to Date_Lviralinf1,<=,,,,,,,
+PROMDate,DateSurg1,comparison,PROMDate must be earlier than or equal to DateSurg1,<=,,,,,,,
+PROMDate,DateImmun,comparison,PROMDate must be earlier than DateImmun,<,,,,,,,
+PROMDate,DateBWtg,comparison,PROMDate must be earlier than DateBWtg,<,,,,,,,
+PROMDate,USd6wk,comparison,PROMDate must be earlier than USd6wk,<,,,,,,,
+PROMDate,DiedDate,comparison,PROMDate must be earlier than DiedDate,<,,,,,,,
+PROMDate,T_ferDate,comparison,PROMDate must be earlier than T_ferDate,<,,,,,
+PROMDate,HomeDate,comparison,PROMDate must be earlier than HomeDate,<,,,,,
+BrthOrd,Plurality,comparison,BrthOrd must be less than or equal to Plurality+1,<=,1,,,,
+BrthOrd,Plurality,const_implies_const,"If Plurality is >0, BrthOrd must be >0",>,0,,,!=,0
+DOB,LastO2,comparison,DOB must be earlier than or equal to LastO2,<=,,,,,
+DOB,Date_Linf1,comparison,DOB must be earlier than or equal to Date_Linf1,<=,,,,,
+DOB,Date_Lviralinf1,comparison,DOB must be earlier than or equal to Date_Lviralinf1,<=,,,,,
+DOB,DateSurg1,comparison,DOB must be earlier than or equal to DateSurg1,<=,,,,,
+DOB,DateImmun,comparison,DOB must be earlier than DateImmun,<,,,,,
+DOB,DateBWtg,comparison,DOB must be earlier than DateBWtg,<,,,,,
+DOB,USd6wk,comparison,DOB must be earlier than USd6wk,<,,,,,
+DOB,DiedDate,comparison,DOB must be less than or equal to DiedDate,<=,,,,,
+DOB,T_ferDate,comparison,DOB must be earlier than T_ferDate,<,,,,,
+DOB,HomeDate,comparison,DOB must be less than or equal to HomeDate,<=,,,,,
+DOA,LastO2,comparison,DOA must be earlier than or equal to LastO2,<=,,,,,
+DOA,Date_Linf1,comparison,DOA must be earlier than or equal to Date_Linf1,<=,,,,,
+DOA,Date_Lviralinf1,comparison,DOA must be earlier than or equal to Date_Lviralinf1,<=,,,,,
+DOA,DateSurg1,comparison,DOA must be earlier than or equal to DateSurg1,<=,,,,,
+DOA,DateImmun,comparison,DOA must be earlier than DateImmun,<,,,,,
+DOA,DateBWtg,comparison,DOA must be earlier than DateBWtg,<,,,,,
+DOA,USd6wk,comparison,DOA must be earlier than USd6wk,<,,,,,
+DOA,DiedDate,comparison,DOA must be less than or equal to DiedDate,<=,,,,,
+DOA,T_ferDate,comparison,DOA must be earlier than T_ferDate,<,,,,,
+DOA,HomeDate,comparison,DOA must be less than or equal to HomeDate,<=,,,,,
+SurfDate,DiedDate,comparison,SurfDate must be less than or equal to DiedDate,<=,,,,,
+SurfDate,HomeDate,comparison,SurfDate must be less than or equal to HomeDate,<=,,,,,
+ALDate,DiedDate,comparison,ALDate must be less than or equal to DiedDate,<=,,,,,
+ALDate,HomeDate,comparison,ALDate must be less than or equal to HomeDate,<=,,,,,
+MinHiFlo,HiFlo,comparison,"If HiFlo is -1, MinHiFlo must be greater than 0",>,0,,,==,-1
+MaxHiFlo,HiFlo,comparison,"If HiFlo is -1, MaxHiFlo must be greater than 0",>,0,,,==,-1
+MaxHiFlo,MinHiFlo,comparison,MaxHiFlo must be greater than or equal to MinHiFlo,>=,,,,,
+MinHiFlo,MaxHiFlo,comparison,MinHiFlo must be less than or equal to MaxHiFlo,<=,,,,,
+StartHiFloDate,DiedDate,comparison,StartHiFloDate must be less than or equal to DiedDate,<=,,,,,
+StartHiFloDate,HomeDate,comparison,StartHiFloDate must be less than or equalt to HomeDate,<=,,,,,
+HiFlohrs,HiFlo,const_implies_const,"If HiFlo is -1, HiFlohrs must be greater than 0",>,0,,,==,-1
+StartCPAPDate,DiedDate,comparison,StartCPAPDate must be less than or equal to DiedDate,<=,,,,,
+StartCPAPDate,HomeDate,comparison,StartCPAPDate must be less than or equalt to HomeDate,<=,,,,,
+MVDate,DiedDate,comparison,MVDate must be less than or equal to DiedDate,<=,0,,,==,-1
+MVDate,HomeDate,comparison,MVDate must be less than or equalt to HomeDate,<=,,,,,
+HFOVDate,DiedDate,comparison,HFOVDate must be less than or equal to DiedDate,<=,,,,,
+HFOVDate,HomeDate,comparison,HFOVDate must be less than or equalt to HomeDate,<=,,,,,
+HFOVhrs,HFOV,const_implies_const,"If HFOV is -1, HFOVhrs must be greater than 0",>,0,,,==,-1
+LastO2,PROMDATE,comparison,LastO2 must be greater than or equal to PROMDATE,>=,,,,,
+LastO2,DOB,comparison,LastO2 must be greater than or equal to DOB,>=,,,,,
+LastO2,DOA,comparison,LastO2 must be greater than or equal to DOA,>=,,,,,
+LastO2,DiedDate,comparison,LastO2 must be less than or equal to DiedDate,<=,,,,,
+LastO2,HomeDate,comparison,LastO2 must be less than or equalt to HomeDate,<=
+Date_Linf1,PROMDATE,comparison,Date_Linf1 must be greater than or equal to PROMDATE,>=
+Date_Linf1,DOB,comparison,Date_Linf1 must be greater than or equal to DOB,>=
+Date_Linf1,DOA,comparison,Date_Linf1 must be greater than or equal to DOA,>=
+Date_Linf1,DiedDate,comparison,Date_Linf1 must be less than or equal to DiedDate,<=
+Date_Linf1,HomeDate,comparison,Date_Linf1 must be less than or equalt to HomeDate,<=
+Date_Linf2,Date_Linf1,comparison,Date_Linf2 must be greater than or equal to Date_Linf1,>=
+Date_Linf2,DiedDate,comparison,Date_Linf2 must be less than or equal to DiedDate,<=
+Date_Linf2,HomeDate,comparison,Date_Linf2 must be less than or equal to HomeDate,<=
+Date_Lviralinf1,PROMDATE,comparison,Date_Lviralinf1 must be greater than or equal to PROMDATE,>=
+Date_Lviralinf1,DOB,comparison,Date_Lviralinf1 must be greater than or equal to DOB,>=
+Date_Lviralinf1,DOA,comparison,Date_Lviralinf1 must be greater than or equal to DOA,>=
+Date_Lviralinf1,DiedDate,comparison,Date_Lviralinf1 must be less than or equal to DiedDate,<=
+Date_Lviralinf1,HomeDate,comparison,Date_Lviralinf1 must be less than or equalt to HomeDate,<=
+Date_LviralInf2,Date_Lviralinf1,comparison,Date_Lviralinf2 must be greater than or equal to DateLviralint1,>=
+Date_LviralInf2,DiedDate,comparison,Date_Lviralinf2 must be less than or equal to DiedDate,<=
+Date_LviralInf2,HomeDate,comparison,Date_Lviralinf2 must be less than or equal to HomeDate,<=,,,,,
+DateSurg1,PROMDATE,comparison,DateSurg1 must be greater than or equal to PROMDATE,>=,,,,,
+DateSurg1,DOB,comparison,DateSurg1 must be greater than or equal to DOB,>=,,,,,
+DateSurg1,DOA,comparison,DateSurg1 must be greater than or equal to DOA,>=,,,,,
+DateSurg1,DiedDate,comparison,DateSurg1 must be less than or equal to DiedDate,<=,,,,,
+DateSurg1,HomeDate,comparison,DateSurg1 must be less than or equalt to HomeDate,<=,,,,,
+DateSurg3,DateSurg2,comparison,DateSurg3 must be less than or equal to DateSurg2,<=,,,,,
+DateSurg2,DateSurg1,comparison,DateSurg2 must be less than or equal to DateSurg1,<=,,,,,
+StartPNSDate,DiedDate,comparison,StartPNSDate must be less than or equal to DiedDate,<=,,,,,
+StartPNSDate,HomeDate,comparison,StartPNSDate must be less than or equal to HomeDate,<=,,,,,
+CeasePNSDate,DiedDate,comparison,CeasePNSDate must be less than or equal to DiedDate,<=,,,,,
+CeasePNSDate,HomeDate,comparison,CeasePNSDate must be less than or equalt to HomeDate,<=,,,,,
+hypotherm,temp,const_implies_set,"If Temp is less than 35, hypotherm must be -1 or 0",,,included,"[-1,0]",<,35
+StartCoolDate,DiedDate,comparison,StartCoolDate must be less than or equal to DiedDate,<=
+StartCoolDate,HomeDate,comparison,StartCoolDate must be less than or equal to HomeDate,<=
+CeaseCoolDate,DiedDate,comparison,CeaseCoolDate must be less than or equal to DiedDate,<=
+CeaseCoolDate,HomeDate,comparison,CeaseCoolDate must be less than or equalt to HomeDate,<=
+DateImmun,PROMDATE,comparison,DateImmun must be greater than PROMDATE,>
+DateImmun,DOB,comparison,DateImmun must be greater than DOB,>
+DateImmun,DOA,comparison,DateImmun must be greater than DOA,>
+DateImmun,DiedDate,comparison,DateImmun must be less than or equal to DiedDate,<=
+DateImmun,HomeDate,comparison,DateImmun must be less than or equalt to HomeDate,<=
+DateBWtg,PROMDATE,comparison,DateBWtg must be greater than PROMDATE,>
+DateBWtg,DOB,comparison,DateBWtg must be greater than DOB,>
+DateBWtg,DOA,comparison,DateBWtg must be greater than DOA,>
+DateBWtg,DiedDate,comparison,DateBWtg must be less than or equal to DiedDate,<=
+DateBWtg,HomeDate,comparison,DateBWtg must be less than or equalt to HomeDate,<=
+USd6wk,PROMDATE,comparison,USd6wk must be greater than PROMDATE,>
+USd6wk,DOB,comparison,USd6wk must be greater than DOB,>
+USd6wk,DOA,comparison,USd6wk must be greater than DOA,>,,,,,
+USd6wk,DiedDate,comparison,USd6wk must be less than or equal to DiedDate,<=,,,,,
+USd6wk,HomeDate,comparison,USd6wk must be less than or equalt to HomeDate,<=,,,,,
+DiedDate,PROMDATE,comparison,DiedDate must be greater than PROMDATE,>,,,,,
+DiedDate,DOB,comparison,DiedDate must be greater than DOB,>,,,,,
+DiedDate,DOA,comparison,DiedDate must be greater than or equal to DOA,>=,,,,,
+Autopsy_,Died_,const_implies_const,"If Died_ is -1, Autospy must be -1 or 0",,,included,"[-1,0]",==,-1
+CongAbnmDeath,Died_,const_implies_const,"If Died_ is -1, CongAbnmDeath must be -1 or 0",,,included,"[-1,0]",==,-1
+T_ferDate,PROMDATE,comparison,T_ferDate must be greater than PROMDATE,>,,,,,
+T_ferDate,DOB,comparison,T_ferDate must be greater than or equal to DOB,>=,,,,,
+T_ferDate,DOA,comparison,T_ferDate must be greater than or equal to DOA,>=,,,,,
+T_ferDate,DiedDate,comparison,T_ferDate must be less than or equal to DiedDate,<=,,,,,
+T_ferDate,HomeDate,comparison,T_ferDate must be less than or equal to HomeDate,<=,,,,,
+NursLevel,T_fer_,const_implies_set,"If T_fer_ is -1, NursLevel must be 1 to 3",,,included,"[1,3]",==,-1
+HomeDate,PROMDATE,comparison,HomeDate must be greater than PROMDATE,>,,,,,
+HomeDate,DOB,comparison,HomeDate must be greater than DOB,>,,,,,
+HomeDate,DOA,comparison,HomeDate must be greater than or equal to DOA,>=
