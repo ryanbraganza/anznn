@@ -87,11 +87,6 @@ input.btn, a.btn, button.btn {height:auto;width:auto}
 ul.thumbnails {margin-left:-20px;float:none;display:inline-block;zoom:1;clear:both}
 .thumbnails li {float:left;margin:0 0 18px 20px}
 
-/* Tooltips */
-.tooltip.top .tooltip-arrow, .tooltip.right .tooltip-arrow, .tooltip.bottom .tooltip-arrow, .tooltip.left .tooltip-arrow {display:none}
-.tooltip.top {margin-top:5px}
-.tooltip.bottom {margin-top:-5px}
-
 /* Popover */
 .popover{opacity:1;filter:alpha(opacity=100)}
 .popover.top .arrow, .popover.right .arrow, .popover.bottom .arrow, .popover.left .arrow {display:none}
