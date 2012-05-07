@@ -298,7 +298,12 @@ Then /^I should see the sidebar help for "([^"]*)"$/ do |question_question|
   help_box.should have_content question.question
   help_box.should have_content question.code
   help_box.should have_content question.description
-  help_box.should have_content question.guide_for_use unless question.guide_for_use.blank?
+  if question.guide_for_use.blank?
+    help_box.should_not have_content("Guide For Use")
+  else
+    help_box.should have_content("Guide For Use")
+    help_box.should have_content question.guide_for_use unless question.guide_for_use.blank?
+  end
 end
 
 And /^I should not see the sidebar help for "(.*)"$/ do |question_question|
