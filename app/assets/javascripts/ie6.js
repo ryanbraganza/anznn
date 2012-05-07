@@ -1,3 +1,4 @@
+// ie6.js
 $(function() {
 	if ($.browser.msie && parseInt($.browser.version, 10) === 6) {
 		$('.row div[class^="span"]:last-child').addClass('last-child');

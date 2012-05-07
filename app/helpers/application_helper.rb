@@ -1,23 +1,21 @@
 module ApplicationHelper
+
+  # set the page title to be used as browser title and h1 at the top of the page
   def title(page_title)
     content_for(:title) { page_title }
   end
 
-  #shorthand for the required asterisk
+  # shorthand for the required asterisk
   def required
     "<span class='required' title='Required'>* Required</span>".html_safe
   end
-
-  #when the stylesheets are updated, this will be the class to use
-  #def required
-  #  "<a class='asterisk_icon' title='Required'></a>".html_safe
-  #end
 
   # convenience method to render a field on a view screen - saves repeating the div/span etc each time
   def render_field(label, value)
     render_field_content(label, (h value))
   end
 
+  # as above but only render if the value is not empty
   def render_field_if_not_empty(label, value)
     render_field_content(label, (h value)) if value != nil && !value.empty?
   end
@@ -28,6 +26,7 @@ module ApplicationHelper
     render_field_content(label, content)
   end
 
+  # generate a sorting link for a table of values
   def sortable(column, title = nil)
     title ||= column.humanize
     direction = (column == sort_column && sort_direction == "asc") ? "desc" : "asc"

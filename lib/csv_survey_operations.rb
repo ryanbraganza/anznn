@@ -1,7 +1,4 @@
-# Eventually, there is the plan to import new surveys from file - PERI-29
-#  "As the ANZNN owner I want to manage the questionnaire so I can make changes without needing a developer"
-# This module can be extended to handle that functionality, but for the moment it is just used to populate
-# sample and test surveys
+# This module is used to import questionnaire configuration from CSV files
 
 module CsvSurveyOperations
   def read_hashes_from_csv(file_name)

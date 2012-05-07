@@ -1,3 +1,4 @@
+# Helper class which generates human-readable descriptions of the range rules
 class NumberRangeFormatter
 
   include ActionView::Helpers::NumberHelper

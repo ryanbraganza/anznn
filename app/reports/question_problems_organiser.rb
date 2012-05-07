@@ -1,3 +1,4 @@
+# Class which organises the validation failures for a batch upload into the structures needed for generating the reports
 class QuestionProblemsOrganiser
 
   attr_accessor :aggregated_problems

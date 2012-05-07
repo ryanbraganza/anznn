@@ -1,5 +1,5 @@
 // help_text.js
-
+// Sets up triggers so that the help text for a question shows at the right times
 !function($){
   $(document).ready(function(){
 

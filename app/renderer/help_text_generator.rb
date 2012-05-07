@@ -1,3 +1,4 @@
+# Helper class which generates the help text for a question based on the properties of the question
 class HelpTextGenerator
   attr_accessor :question
 

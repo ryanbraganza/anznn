@@ -1,3 +1,4 @@
+# Utility class for storing the details of a validation failure for a batch upload
 class QuestionProblem
 
   attr_accessor :question_code

@@ -1,3 +1,4 @@
+# Helper class which generates human-readable descriptions of the string length range rules
 class StringLengthFormatter
   include ActionView::Helpers::NumberHelper
 
