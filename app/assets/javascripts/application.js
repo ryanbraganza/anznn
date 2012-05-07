@@ -8,8 +8,9 @@
 
 //= require jquery
 //= require jquery_ujs
-//= require help_text.js
-//= require_tree .
+//= require help_text
+//= require section_navigation
+//= require ie6
 
 
 $(window).load(function () {
