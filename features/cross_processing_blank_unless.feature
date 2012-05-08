@@ -13,11 +13,11 @@ Feature: Cross Question Blank-Unless Validations
     Given I have the usual roles
     And I have a user "data.provider@intersect.org.au" with role "Data Provider"
     And I have a survey with name "MySurvey" and questions
-      | question  | question_type |
-      | Num Q1    | Integer       |
-      | Num Q2    | Integer       |
-      | DOB Qn    | Date          |
-      | Date Qn 1 | Date          |
+      | question | question_type |
+      | Num Q1   | Integer       |
+      | Num Q2   | Integer       |
+      | DOB Qn   | Date          |
+      | Date Q1  | Date          |
 
 
   Scenario: CQV Failure - Blank Unless Constant - This Qn must be blank unless other question is a specified number
@@ -64,23 +64,18 @@ Feature: Cross Question Blank-Unless Validations
       | Num Q1   | 5      |
     Then I should not see "q2 was outside 0...99 (exclusive), q1 must be blank"
 
-  @wip
   Scenario: CQV Failure - Blank Unless days(Some Qn) >= 60
     Given I have the following cross question validations
-      | question | related | related_question_list | rule_label_list | rule_label | rule                     | error_message                                |
-      | Num Q1   |         | Num Q2, Num Q3        |                 |            | multi_hours_date_to_date | Date entered in Date Q1, this needs to be -1 |
-
       | question | related_question_list | rule                    | conditional_operator | conditional_constant | error_message                 |
       | Num Q1   | DOB Qn, Date Q1       | blank_unless_days_const | >=                   | 60                   | q2 was < 60, q1 must be blank |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer     |
       | Num Q1   | 5          |
-      | DOB Qn   | 2012/01/01 |
-      | Date Q1  | 2012/01/31 |
+      | DOB Qn   | 2012/1/1 |
+      | Date Q1  | 2012/1/31 |
     Then I should see "q2 was < 60, q1 must be blank"
 
-  @wip
   Scenario: CQV Pass - Blank Unless days(Some Qn) >= 60
     Given I have the following cross question validations
       | question | related_question_list | rule                    | conditional_operator | conditional_constant | error_message                 |
@@ -89,6 +84,6 @@ Feature: Cross Question Blank-Unless Validations
     When I store the following answers
       | question | answer     |
       | Num Q1   | 5          |
-      | DOB Qn   | 2012/01/01 |
-      | Date Q1  | 2012/04/01 |
+      | DOB Qn   | 2012/1/1 |
+      | Date Q1  | 2012/4/1 |
     Then I should not see "q2 was < 60, q1 must be blank"
