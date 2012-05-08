@@ -1,5 +1,11 @@
 class CrossQuestionValidation < ActiveRecord::Base
-  VALID_RULES = %w(comparison date_implies_constant const_implies_const const_implies_set set_implies_const set_implies_set blank_unless_const blank_unless_set multi_rule_any_pass multi_rule_if_then multi_hours_date_to_date multi_compare_datetime_quad)
+  VALID_RULES =
+      %w(comparison
+    date_implies_constant const_implies_const const_implies_set set_implies_const set_implies_set
+    blank_unless_const blank_unless_set blank_unless_days_const
+    multi_rule_any_pass multi_rule_if_then
+    multi_hours_date_to_date multi_compare_datetime_quad)
+
   SAFE_OPERATORS = %w(== <= >= < > !=)
   ALLOWED_SET_OPERATORS = %w(included excluded range between)
 
@@ -113,6 +119,14 @@ class CrossQuestionValidation < ActiveRecord::Base
     Time.utc_time(d.year, d.month, d.day, t.hour, t.min)
   end
 
+  def self.sanitise_offset(checker_params)
+    checker_params[:constant].blank? ? 0 : checker_params[:constant]
+  end
+
+  def self.collect_multiple_answers(answer, checker_params)
+    answers = answer.response.answers.find_all_by_question_id(checker_params[:related_question_ids])
+    answers.sort_by { |a| checker_params[:related_question_ids].index(a.question_id) }
+  end
 
   register_checker 'comparison', lambda { |answer, related_answer, checker_params|
     break true unless related_answer.answer_value.present?
@@ -192,7 +206,7 @@ class CrossQuestionValidation < ActiveRecord::Base
 
   }
 
-  register_checker 'multi_hours_date_to_date', lambda { |answer, related_answer, checker_params|
+  register_checker 'multi_hours_date_to_date', lambda { |answer, unused_related_answer, checker_params|
     answers = collect_multiple_answers(answer, checker_params)
 
     break true if answers.map { |related_answer| related_answer.nil? or related_answer.raw_answer }.any?
@@ -208,16 +222,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     const_meets_condition?(answer.answer_value, checker_params[:operator], hour_difference + offset)
   }
 
-  def self.sanitise_offset(checker_params)
-    checker_params[:constant].blank? ? 0 : checker_params[:constant]
-  end
-
-  def self.collect_multiple_answers(answer, checker_params)
-    answers = answer.response.answers.find_all_by_question_id(checker_params[:related_question_ids])
-    answers.sort_by { |a| checker_params[:related_question_ids].index(a.question_id) }
-  end
-
-  register_checker 'multi_compare_datetime_quad', lambda { |answer, related_answer, checker_params|
+  register_checker 'multi_compare_datetime_quad', lambda { |answer, unused_related_answer, checker_params|
     answers = collect_multiple_answers(answer, checker_params)
 
     break true if answers.map { |related_answer| related_answer.nil? or related_answer.raw_answer }.any?
@@ -231,5 +236,17 @@ class CrossQuestionValidation < ActiveRecord::Base
     const_meets_condition?(datetime1, checker_params[:operator], datetime2 + offset)
   }
 
+
+  register_checker 'blank_unless_days_const', lambda { |answer, unused_related_answer, checker_params|
+    answers = collect_multiple_answers(answer, checker_params)
+
+    break true if answers.map { |related_answer| related_answer.nil? or related_answer.date_answer.nil? }.any?
+
+    date1, date2 = answers
+
+    day_difference = (date2.answer_value - date1.answer_value).to_i
+
+    const_meets_condition?(day_difference, checker_params[:conditional_operator], checker_params[:conditional_constant])
+  }
 
 end
