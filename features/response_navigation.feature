@@ -10,9 +10,9 @@ Feature: Navigating around the sections of a survey response
     And I have a survey with name "MySurvey"
     And "MySurvey" has sections
       | name | section_order |
-      | Sec1 | 0     |
-      | Sec2 | 1     |
-      | Sec3 | 2     |
+      | Sec1 | 0             |
+      | Sec2 | 1             |
+      | Sec3 | 2             |
     And "MySurvey" has questions
       | question | question_type | section |
       | Sect1 Q1 | Text          | 0       |
@@ -74,6 +74,24 @@ Feature: Navigating around the sections of a survey response
       | Sect2 Q1 |
       | Sect2 Q2 |
 
+  Scenario: Navigating away from a page that only has radio buttons without answering anything should work
+    Given I am logged in as "data.provider@intersect.org.au"
+    And I have a survey with name "MySurvey1"
+    And "MySurvey1" has sections
+      | name | section_order |
+      | Sec1 | 0             |
+      | Sec2 | 1             |
+    And "MySurvey1" has questions
+      | question | question_type | section |
+      | Sect1 Q1 | Choice        | 0       |
+      | Sect1 Q2 | Choice        | 0       |
+      | Sect2 Q1 | Text          | 1       |
+    And I create a response for "MySurvey1" with baby code "ABC123"
+    When I press "Save and go to next section"
+    Then I should have no answers
+    And I should see questions
+      | Sect2 Q1 |
+
   Scenario: Last section should replace save-and-go-next with save and return to summary page
     Given I am logged in as "data.provider@intersect.org.au"
     And I create a response for "MySurvey" with baby code "ABC123"
@@ -83,7 +101,7 @@ Feature: Navigating around the sections of a survey response
     Then the answer to "Sect3 Q2" should be "5678"
     And I should be on the response summary page for ABC123
 
-  Scenario: Cancel button should go to summar page
+  Scenario: Cancel button should go to summary page
     Given I am logged in as "data.provider@intersect.org.au"
     And I create a response for "MySurvey" with baby code "ABC123"
     And I follow "Sec3"

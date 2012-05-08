@@ -40,7 +40,9 @@ class ResponsesController < ApplicationController
   end
 
   def update
-    submitted_answers = params[:answers].map { |id, val| [id.to_i, val] }
+    answers = params[:answers]
+    answers ||= {}
+    submitted_answers = answers.map { |id, val| [id.to_i, val] }
 
     Answer.transaction do
       submitted_answers.each do |q_id, answer_value|
