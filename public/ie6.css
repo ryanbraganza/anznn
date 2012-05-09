@@ -99,3 +99,16 @@ body {
 .topbar {
   position: relative;
 }
+
+/* simplified descendant selectors for ie6 error/warning highlights as child selectors don't seem to work */
+form .clearfix.warning label {
+  color: #c09853;
+}
+
+div.fatalwarning label {
+  color: red;
+}
+
+.label.warning {
+  background: none;
+}

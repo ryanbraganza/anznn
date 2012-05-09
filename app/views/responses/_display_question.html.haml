@@ -47,7 +47,8 @@
                   class: 'field_trigger',
                   data: data
                 %span.radio-label= qo.display_value
-                %span.help-block.radio-description=  qo.hint_text
+                - unless qo.hint_text.blank?
+                  %span.help-block.radio-description= qo.hint_text
       - when 'Decimal'
         = text_field_tag "answers[#{q.id}]", answer.answer_value, id: field_id, maxlength: 15,
           class: 'medium field_trigger',

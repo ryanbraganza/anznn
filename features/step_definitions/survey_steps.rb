@@ -302,7 +302,7 @@ Then /^I should see the sidebar help for "([^"]*)"$/ do |question_question|
     help_box.should_not have_content("Guide For Use")
   else
     help_box.should have_content("Guide For Use")
-    help_box.should have_content question.guide_for_use unless question.guide_for_use.blank?
+    help_box.should have_content question.guide_for_use
   end
 end
 
@@ -310,13 +310,6 @@ And /^I should not see the sidebar help for "(.*)"$/ do |question_question|
   question = Question.find_by_question!(question_question)
   page.should_not have_content question.description
   page.should_not have_content question.guide_for_use
-end
-
-When /^I hover on question label for "(.*)"$/ do |question_question|
-  question = Question.find_by_question!(question_question)
-  page.execute_script <<-endscript
-    jQuery('#container_#{question.id}').find('label').mouseenter();
-  endscript
 end
 
 When /^I follow "([^"]*)" for section "([^"]*)"$/ do |link, section|
@@ -339,7 +332,12 @@ def get_choices_for_question(question_name)
   options_on_page = []
   labels.each do |label_item|
     label_text = label_item.find("span.radio-label").text
-    hint_text = label_item.find("span.help-block").text
+    begin
+      hint_text = label_item.find("span.help-block").text
+    rescue Capybara::ElementNotFound => e
+      hint_text = ''
+    end
+
     checked = label_item.has_selector?("input[type=radio]", :checked => true)
     options_on_page << {"label" => label_text, "hint" => hint_text, "checked" => checked.to_s}
   end
