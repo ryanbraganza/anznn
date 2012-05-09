@@ -131,7 +131,11 @@ class CrossQuestionValidation < ActiveRecord::Base
   register_checker 'comparison', lambda { |answer, related_answer, checker_params|
     break true unless related_answer.answer_value.present?
     offset = sanitise_offset(checker_params)
-    const_meets_condition?(answer.answer_value, checker_params[:operator], related_answer.answer_value + offset)
+    if answer.answer_value.is_a?(String) || related_answer.answer_value.is_a?(String)
+      const_meets_condition?(answer.answer_value.to_i, checker_params[:operator], related_answer.answer_value.to_i + offset)
+    else
+      const_meets_condition?(answer.answer_value, checker_params[:operator], related_answer.answer_value + offset)
+    end
   }
 
   register_checker 'date_implies_constant', lambda { |answer, related_answer, checker_params|
@@ -143,12 +147,20 @@ class CrossQuestionValidation < ActiveRecord::Base
   register_checker 'const_implies_const', lambda { |answer, related_answer, checker_params|
     break true unless answer.answer_value.present? && related_answer.answer_value.present?
     break true unless const_meets_condition?(related_answer.answer_value, checker_params[:conditional_operator], checker_params[:conditional_constant])
-    const_meets_condition?(answer.answer_value, checker_params[:operator], checker_params[:constant])
+    if answer.answer_value.is_a?(String) || related_answer.answer_value.is_a?(String)
+      const_meets_condition?(answer.answer_value.to_i, checker_params[:operator], checker_params[:constant])
+    else
+      const_meets_condition?(answer.answer_value, checker_params[:operator], checker_params[:constant])
+    end
   }
 
   register_checker 'const_implies_set', lambda { |answer, related_answer, checker_params|
     break true unless answer.answer_value.present? && related_answer.answer_value.present?
-    break true unless const_meets_condition?(related_answer.answer_value, checker_params[:conditional_operator], checker_params[:conditional_constant])
+    if answer.answer_value.is_a?(String) || related_answer.answer_value.is_a?(String)
+      break true unless const_meets_condition?(related_answer.answer_value.to_i, checker_params[:conditional_operator], checker_params[:conditional_constant])
+    else
+      break true unless const_meets_condition?(related_answer.answer_value, checker_params[:conditional_operator], checker_params[:conditional_constant])
+    end
     set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.answer_value)
   }
 
