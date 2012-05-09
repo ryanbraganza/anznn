@@ -80,6 +80,43 @@ describe Answer do
     end
   end
 
+  describe "comparable_answer should always return answers that can be compared using standard operators (<, >, ==, != etc)" do
+    describe "answer_with_offset" do
+      it "should return a comparable answer with an added offset" do
+        q_choice = Factory(:answer, question: choice_question, answer_value: "98")
+        q_dec = Factory(:answer, question: decimal_question, answer_value: "98")
+        q_s = Factory(:answer, question: text_question, answer_value: "98")
+        q_s2 = Factory(:answer, question: text_question, answer_value: "98")
+        q_i = Factory(:answer, question: integer_question, answer_value: "98")
+        q_date = Factory(:answer, question: date_question, answer_value: Date.today)
+        q_time = Factory(:answer, question: time_question, answer_value: Time.now)
+
+        #some select cases. the key thing is that they don't explode (but the logic should also never break)
+        (q_choice.answer_with_offset(-1) < q_i.answer_with_offset(0)).should be_true
+        (q_choice.answer_with_offset(-1) > q_i.answer_with_offset(0)).should be_false
+        (q_choice.answer_with_offset(-1) < q_dec.answer_with_offset(0)).should be_true
+        (q_choice.answer_with_offset(-1) > q_dec.answer_with_offset(0)).should be_false
+
+        #offsets ignored for strings
+        (q_s.answer_with_offset(45345) == q_s2.answer_with_offset(-2342323)).should be_true
+        (q_s.answer_with_offset(45345) != q_s2.answer_with_offset(-2342323)).should be_false
+
+        (q_date.answer_with_offset(1) > q_date.answer_with_offset(0)).should be_true
+        (q_date.answer_with_offset(1) < q_date.answer_with_offset(0)).should be_false
+
+        (q_time.answer_with_offset(1) > q_time.answer_with_offset(0)).should be_true
+        (q_time.answer_with_offset(1) < q_time.answer_with_offset(0)).should be_false
+      end
+
+    end
+
+    describe "comparable_answer" do
+      it "should return comparable forms of everything" do
+        #covered in answer_with_offset
+      end
+    end
+  end
+
   describe "accept and sanitise all input (via assignment of answer_value), and have a warning if invalid" do
     describe "Decimal" do
       it "saves a decimal as a decimal" do

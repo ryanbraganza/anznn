@@ -16,6 +16,20 @@ Feature: Cross Question Comparison Validations
       | Integer Q2 | Integer       |
       | Decimal Q1 | Decimal       |
       | Decimal Q2 | Decimal       |
+      | Choice Q1  | Choice        |
+      | Choice Q2  | Choice        |
+      | Text Q1  | Text        |
+      | Text Q2  | Text        |
+    And question "Choice Q1" has question options
+      | option_value | label | hint_text    | option_order |
+      | 99           | Dunno |              | 2            |
+      | 0            | Yes   | this is true | 0            |
+      | 1            | No    | not true     | 1            |
+    And question "Choice Q2" has question options
+      | option_value | label | hint_text    | option_order |
+      | 99           | Dunno |              | 2            |
+      | 0            | Yes   | this is true | 0            |
+      | 1            | No    | not true     | 1            |
 
   Scenario: CQV Pass - Decimal
     Given I have the following cross question validations
@@ -118,7 +132,7 @@ Feature: Cross Question Comparison Validations
 
   Scenario: CQV Failure - date ne
     Given I have the following cross question validations
-      | question | related | rule       | operator | error_message            |
+      | question | related | rule       | operator | error_message         |
       | Date Q1  | Date Q2 | comparison | !=       | date should not be eq |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
@@ -164,3 +178,48 @@ Feature: Cross Question Comparison Validations
     And press "Save page"
   # Then I should not get a "stack level too deep" error
     Then I should be on the edit first response page
+
+
+  Scenario: CQV Fail - Play nice with choice questions
+    Given I have the following cross question validations
+      | question   | related    | rule       | operator | constant | error_message                         |
+      | Integer Q1 | Choice Q1  | comparison | <        | 0        | Should be less than the choice value  |
+      | Choice Q2  | Integer Q2 | comparison | <        | 0        | Should be less than the integer value |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question   | answer |
+      | Choice Q1  | (1) No |
+      | Choice Q2  | (1) No |
+      | Integer Q1 | 2      |
+      | Integer Q2 | 0      |
+    Then I should see "Should be less than the choice value"
+    Then I should see "Should be less than the integer value"
+
+  Scenario: CQV Success - Play nice with choice questions
+    Given I have the following cross question validations
+      | question   | related    | rule       | operator | constant | error_message                      |
+      | Integer Q1 | Choice Q1  | comparison | >        | 0        | Should be > than the choice value  |
+      | Choice Q2  | Integer Q2 | comparison | >        | 0        | Should be > than the integer value |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question   | answer |
+      | Choice Q1  | (1) No |
+      | Choice Q2  | (1) No |
+      | Integer Q1 | 2      |
+      | Integer Q2 | 0      |
+    Then I should not see "Should be > than the choice value"
+    Then I should not see "Should be > than the integer value"
+
+
+  Scenario: Play nice with text questions - constant should be ignored
+    Given I have the following cross question validations
+      | question | related | rule       | operator | constant | error_message                     |
+      | Text Q1  | Text Q2 | comparison | !=       | 1        | this can't be the same as text q2 |
+      | Text Q2  | Text Q1 | comparison | ==       | 1        | this must be the same as text q1  |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer |
+      | Text Q1  | abcde  |
+      | Text Q2  | abcde  |
+    Then I should see "this can't be the same as text q2"
+    And I should not see "this must be the same as text q1"

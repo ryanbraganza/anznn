@@ -75,6 +75,7 @@ Feature: Upload survey responses in a batch file
   Scenario: Supervisors see an extra column
     Given I am logged in as "supervisor@intersect.org.au" and have role "Data Provider Supervisor" and I'm linked to hospital "RPA"
     And I upload batch file as "supervisor@intersect.org.au" "number_out_of_range.csv" for survey "Test Survey"
+    And I sleep for 1
     And I upload batch file as "supervisor@intersect.org.au" "no_errors_or_warnings.csv" for survey "Test Survey"
     When I am on the list of batch uploads page
     Then the "batch_uploads" table should have 10 columns

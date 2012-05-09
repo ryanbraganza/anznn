@@ -129,6 +129,34 @@ class Answer < ActiveRecord::Base
     end
   end
 
+  def answer_with_offset(offset)
+    return nil unless self.raw_answer.blank?
+    return nil if self.answer_value.blank?
+    qn_type = self.question.question_type
+
+    case qn_type
+      when TYPE_TEXT
+        self.text_answer # Offset not applicable
+      when TYPE_DATE
+        self.date_answer + offset
+      when TYPE_TIME
+        self.time_answer + offset
+      when TYPE_CHOICE
+        self.choice_answer.to_i + offset
+      when TYPE_DECIMAL
+        self.decimal_answer + offset
+      when TYPE_INTEGER
+        self.integer_answer + offset
+      else
+        nil
+    end
+
+  end
+
+  def comparable_answer
+    answer_with_offset(0)
+  end
+
   private
 
   attr_accessor :answer_value_set

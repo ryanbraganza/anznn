@@ -105,14 +105,12 @@ describe CrossQuestionValidation do
         CrossQuestionValidation.const_meets_condition?(0, "==", 0).should eq true
         CrossQuestionValidation.const_meets_condition?(5, "!=", 3).should eq true
         CrossQuestionValidation.const_meets_condition?(5, ">=", 3).should eq true
-        CrossQuestionValidation.const_meets_condition?(5, "==", 3, 2).should eq true
       end
 
       it "should reject false statements" do
         CrossQuestionValidation.const_meets_condition?(0, "<", 0).should eq false
         CrossQuestionValidation.const_meets_condition?(5, "==", 3).should eq false
         CrossQuestionValidation.const_meets_condition?(5, "<=", 3).should eq false
-        CrossQuestionValidation.const_meets_condition?(5, "==", 5, 2).should eq false
       end
 
       it "should reject statements with unsafe operators" do

@@ -107,9 +107,9 @@ class CrossQuestionValidation < ActiveRecord::Base
     end
   end
 
-  def self.const_meets_condition?(lhs, operator, rhs, offset = 0)
+  def self.const_meets_condition?(lhs, operator, rhs)
     if is_operator_safe? operator
-      return lhs.send operator, rhs + offset
+      return lhs.send operator, rhs
     else
       return false
     end
@@ -131,57 +131,45 @@ class CrossQuestionValidation < ActiveRecord::Base
   register_checker 'comparison', lambda { |answer, related_answer, checker_params|
     break true unless related_answer.answer_value.present?
     offset = sanitise_offset(checker_params)
-    if answer.answer_value.is_a?(String) || related_answer.answer_value.is_a?(String)
-      const_meets_condition?(answer.answer_value.to_i, checker_params[:operator], related_answer.answer_value.to_i + offset)
-    else
-      const_meets_condition?(answer.answer_value, checker_params[:operator], related_answer.answer_value + offset)
-    end
+    const_meets_condition?(answer.comparable_answer, checker_params[:operator], related_answer.answer_with_offset(offset))
   }
 
   register_checker 'date_implies_constant', lambda { |answer, related_answer, checker_params|
     break true unless related_answer.answer_value.is_a?(Date) || related_answer.answer_value.is_a?(DateInputHandler)
     break true unless answer.answer_value.present?
-    const_meets_condition?(answer.answer_value, checker_params[:operator], checker_params[:constant])
+    const_meets_condition?(answer.comparable_answer, checker_params[:operator], checker_params[:constant])
   }
 
   register_checker 'const_implies_const', lambda { |answer, related_answer, checker_params|
     break true unless answer.answer_value.present? && related_answer.answer_value.present?
     break true unless const_meets_condition?(related_answer.answer_value, checker_params[:conditional_operator], checker_params[:conditional_constant])
-    if answer.answer_value.is_a?(String) || related_answer.answer_value.is_a?(String)
-      const_meets_condition?(answer.answer_value.to_i, checker_params[:operator], checker_params[:constant])
-    else
-      const_meets_condition?(answer.answer_value, checker_params[:operator], checker_params[:constant])
-    end
+    const_meets_condition?(answer.comparable_answer, checker_params[:operator], checker_params[:constant])
   }
 
   register_checker 'const_implies_set', lambda { |answer, related_answer, checker_params|
     break true unless answer.answer_value.present? && related_answer.answer_value.present?
-    if answer.answer_value.is_a?(String) || related_answer.answer_value.is_a?(String)
-      break true unless const_meets_condition?(related_answer.answer_value.to_i, checker_params[:conditional_operator], checker_params[:conditional_constant])
-    else
-      break true unless const_meets_condition?(related_answer.answer_value, checker_params[:conditional_operator], checker_params[:conditional_constant])
-    end
-    set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.answer_value)
+    break true unless const_meets_condition?(related_answer.comparable_answer, checker_params[:conditional_operator], checker_params[:conditional_constant])
+    set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
   }
 
   register_checker 'set_implies_const', lambda { |answer, related_answer, checker_params|
     break true unless answer.answer_value.present? && related_answer.answer_value.present?
-    break true unless set_meets_condition?(checker_params[:conditional_set], checker_params[:conditional_set_operator], related_answer.answer_value)
-    const_meets_condition?(answer.answer_value, checker_params[:operator], checker_params[:constant])
+    break true unless set_meets_condition?(checker_params[:conditional_set], checker_params[:conditional_set_operator], related_answer.comparable_answer)
+    const_meets_condition?(answer.comparable_answer, checker_params[:operator], checker_params[:constant])
   }
 
   register_checker 'set_implies_set', lambda { |answer, related_answer, checker_params|
-    break true unless answer.answer_value.present? && related_answer.answer_value.present?
-    break true unless set_meets_condition?(checker_params[:conditional_set], checker_params[:conditional_set_operator], related_answer.answer_value)
-    set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.answer_value)
+    break true unless answer.comparable_answer.present? && related_answer.comparable_answer.present?
+    break true unless set_meets_condition?(checker_params[:conditional_set], checker_params[:conditional_set_operator], related_answer.comparable_answer)
+    set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
   }
 
   register_checker 'blank_unless_const', lambda { |answer, related_answer, checker_params|
-    break true unless answer.answer_value.present?
-    break false unless related_answer.answer_value.present? # Fails if RHS populated and LHS is blank (hence doesn't meet conditions)
+    break true unless answer.comparable_answer.present?
+    break false unless related_answer.comparable_answer.present? # Fails if RHS populated and LHS is blank (hence doesn't meet conditions)
 
     #we can assume that at this point, we have a value in both, so we just need to see if the lhs rule passes (content in rhs unimportant)
-    const_meets_condition?(related_answer.answer_value, checker_params[:conditional_operator], checker_params[:conditional_constant])
+    const_meets_condition?(related_answer.comparable_answer, checker_params[:conditional_operator], checker_params[:conditional_constant])
 
   }
 
@@ -190,7 +178,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     break false unless related_answer.answer_value.present? # Fails if RHS populated and LHS is blank (hence doesn't meet conditions)
 
     #we can assume that at this point, we have a value in both, so we just need to see if the lhs rule passes (content in rhs unimportant)
-    set_meets_condition?(checker_params[:conditional_set], checker_params[:conditional_set_operator], related_answer.answer_value)
+    set_meets_condition?(checker_params[:conditional_set], checker_params[:conditional_set_operator], related_answer.comparable_answer)
 
   }
 
