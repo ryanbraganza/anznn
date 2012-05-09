@@ -89,3 +89,13 @@ float: left;
 }
 
 .clearfix select { margin: 4px 0 0 0; }
+
+/* make the topbar relative instead of fixed to avoid issues with elements jumping around - this means we don't have
+ a fixed top bar in ie6 but that's better than it jumping all over the place */
+body {
+  padding: 0 0 0 0;
+}
+
+.topbar {
+  position: relative;
+}
