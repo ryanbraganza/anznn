@@ -42,10 +42,11 @@
         %ul.inputs-list
           - q.question_options.each do |qo|
             %li
-              %label
+              %label{for: "radio_#{q.id}_#{qo.id}"}
                 = radio_button_tag "answers[#{q.id}]", qo.option_value, (answer.answer_value == qo.option_value),
                   class: 'field_trigger',
-                  data: data
+                  data: data,
+                  id: "radio_#{q.id}_#{qo.id}"
                 %span.radio-label= qo.display_value
                 - unless qo.hint_text.blank?
                   %span.help-block.radio-description= qo.hint_text
