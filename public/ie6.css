@@ -112,3 +112,14 @@ div.fatalwarning label {
 .label.warning {
   background: none;
 }
+
+/* help box doesn't show in ie6 when the position is fixed */
+#help_box {
+  position: relative;
+  overflow: auto;
+  float: right;
+  top: 110px;
+  bottom: 40px;
+  right: 0;
+  margin-right: 0;
+}
