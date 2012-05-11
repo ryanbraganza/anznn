@@ -21,17 +21,20 @@ unless ARGV.any? { |a| a =~ /^gems/ } # Don't load anything when running the gem
     end
   end
 
-end
-
-namespace :spec do
-  require 'rake'
-  require 'rspec/core/rake_task'
-
-  RSpec::Core::RakeTask.new(:doc) do |t|
-    t.rspec_opts = '--format html --out doc/developer/rspec.html'
+  begin
+    require 'rspec/core/rake_task'
+    namespace :spec do
+      RSpec::Core::RakeTask.new(:doc) do |t|
+        t.rspec_opts = '--format html --out doc/developer/rspec.html'
+      end
+    end
+  rescue LoadError
+    desc 'rspec rake task not available (rspec not installed)'
+    task :spec do
+      abort 'Rspec rake task is not available. Be sure to install rspec as a gem or plugin'
+    end
   end
 
-  task :default  => :spec
+  task :generate_docs => ['cucumber:doc', 'spec:doc']
 end
 
-task :generate_docs => ['cucumber:doc', 'spec:doc']
