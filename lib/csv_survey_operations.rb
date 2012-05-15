@@ -105,7 +105,7 @@ module CsvSurveyOperations
     hash[:related_question] = related_question_question.blank? ? nil : Question.find_by_code!(related_question_question)
 
     if question_list
-      hash[:related_question_ids] = question_list.split(", ").map { |qn_code| Question.find_by_question!(qn_code).id }
+      hash[:related_question_ids] = question_list.split(", ").map { |qn_code| Question.find_by_code!(qn_code).id }
     end
 
     if related_rule_labels
