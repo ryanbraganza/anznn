@@ -1,10 +1,21 @@
 class CrossQuestionValidation < ActiveRecord::Base
   VALID_RULES =
       %w(comparison
-    date_implies_constant const_implies_const const_implies_set set_implies_const set_implies_set
-    blank_unless_const blank_unless_set blank_unless_days_const
-    multi_rule_any_pass multi_rule_if_then
-    multi_hours_date_to_date multi_compare_datetime_quad)
+         date_implies_constant
+         const_implies_const
+         const_implies_set
+         set_implies_const
+         set_implies_set
+         blank_unless_const
+         blank_unless_set
+         blank_unless_days_const
+         multi_rule_any_pass
+         multi_rule_if_then
+         multi_hours_date_to_date
+         multi_compare_datetime_quad
+         present_implies_present)
+
+  RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present)
 
   SAFE_OPERATORS = %w(== <= >= < > !=)
   ALLOWED_SET_OPERATORS = %w(included excluded range between)
@@ -57,13 +68,17 @@ class CrossQuestionValidation < ActiveRecord::Base
 
     return nil unless self.primary? || running_as_secondary
 
-    if answer.nil? or answer.raw_answer
-      nil
-    elsif related_question.present? && (related_answer.nil? or related_answer.raw_answer)
-      nil
-    else
-      error_message unless rule_checkers[rule].call answer, related_answer, checker_params
+    # don't bother checking if the question is unanswered or has an invalid answer
+    return nil if answer.nil? or answer.raw_answer
+
+    # most rules are not run unless the related question has been answered, so unless this is a special rule that runs
+    # regardless, first check if a related question is relevant, then check if its answered
+    if !RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL.include?(rule)
+      return nil if related_question.present? && (related_answer.nil? or related_answer.raw_answer)
     end
+
+    # now actually execute the rule
+    error_message unless rule_checkers[rule].call answer, related_answer, checker_params
   end
 
   private
@@ -193,7 +208,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     false
   }
 
-  #this only accepts two rules - the IF rule and the THEN rule
+#this only accepts two rules - the IF rule and the THEN rule
   register_checker 'multi_rule_if_then', lambda { |answer, related_answer, checker_params|
 
     rules = CrossQuestionValidation.find(checker_params[:related_rule_ids])
@@ -247,6 +262,10 @@ class CrossQuestionValidation < ActiveRecord::Base
     day_difference = (date2.answer_value - date1.answer_value).to_i
 
     const_meets_condition?(day_difference, checker_params[:conditional_operator], checker_params[:conditional_constant])
+  }
+
+  register_checker 'present_implies_present', lambda { |answer, related_answer, checker_params|
+    related_answer && !related_answer.raw_answer
   }
 
 end

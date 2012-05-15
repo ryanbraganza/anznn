@@ -149,7 +149,7 @@ Given /^I answer as follows$/ do |table|
           h, m = answer_value.split ':'
         end
         select h, from: "answers_#{question.id}_hour"
-        select m, from: "answers_#{question.id}_min"
+        select m, from: "answers_#{question.id}_min" unless m.blank?
       else
         fill_in "question_#{question.id}", with: answer_value.to_s
     end
