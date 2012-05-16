@@ -271,8 +271,8 @@ describe CrossQuestionValidation do
       describe 'present implies present' do
         before :each do
           @error_message = 'q2 must be answered if q1 is'
-          @q1 = Factory :question, section: @section, question_type: 'Integer'
-          @q2 = Factory :question, section: @section, question_type: 'Integer'
+          @q1 = Factory :question, section: @section, question_type: 'Date'
+          @q2 = Factory :question, section: @section, question_type: 'Time'
           Factory :cqv_present_implies_present, question: @q1, related_question: @q2, error_message: @error_message
         end
         it "is not run if the question has a badly formed answer" do
@@ -282,12 +282,14 @@ describe CrossQuestionValidation do
           standard_cqv_test("2011-12-12", "11:53", [])
         end
         it "fails if the question is answered and the related question is not" do
-          standard_cqv_test("2011-12-12", nil, [])
+          a1 = Factory :answer, response: @response, question: @q1, answer_value: "2011-12-12"
+          do_cqv_check(a1, [@error_message])
         end
         it "fails if the question is answered and the related question has an invalid answer" do
-          standard_cqv_test("2011-12-12", "11:", [])
+          standard_cqv_test("2011-12-12", "11:", [@error_message])
         end
       end
+
     end
 
     describe "Blank Unless " do
