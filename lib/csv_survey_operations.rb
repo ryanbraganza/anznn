@@ -53,7 +53,7 @@ module CsvSurveyOperations
 
       hash.merge(set: set, conditional_set: conditional_set)
     end
-    make_cqvs(cqv_hashes)
+    make_cqvs(survey, cqv_hashes)
   end
 
   def create_survey(name, question_file, options_file=nil, cross_question_validations_file=nil)
@@ -76,23 +76,23 @@ module CsvSurveyOperations
     end
   end
 
-  def make_cqvs(hashes)
+  def make_cqvs(survey, hashes)
     label_to_cqv_id = {}
 
     # store the labelled (secondary) rules first
     hashes.each do |hash|
       rule_label = hash['rule_label']
-      make_cqv(label_to_cqv_id, hash.merge(primary: false)) if rule_label.present?
+      make_cqv(survey, label_to_cqv_id, hash.merge(primary: false)) if rule_label.present?
     end
 
     #now store any rules which reference labelled rules
     hashes.each do |hash|
       rule_label = hash['rule_label']
-      make_cqv(label_to_cqv_id, hash.merge(primary: true)) unless rule_label.present?
+      make_cqv(survey, label_to_cqv_id, hash.merge(primary: true)) unless rule_label.present?
     end
   end
 
-  def make_cqv(label_to_cqv_id, hash)
+  def make_cqv(survet, label_to_cqv_id, hash)
 
     orig = hash.dup
     related_question_question = hash.delete 'related_question_code'
@@ -102,17 +102,17 @@ module CsvSurveyOperations
     raise orig.inspect unless question_question
     label = hash.delete 'rule_label'
 
-    hash[:related_question] = related_question_question.blank? ? nil : Question.find_by_code!(related_question_question)
+    hash[:related_question] = related_question_question.blank? ? nil : survey.questions.find_by_code!(related_question_question)
 
     if question_list
-      hash[:related_question_ids] = question_list.split(", ").map { |qn_code| Question.find_by_code!(qn_code).id }
+      hash[:related_question_ids] = question_list.split(", ").map { |qn_code| survey.questions.find_by_code!(qn_code).id }
     end
 
     if related_rule_labels
       hash[:related_rule_ids] = related_rule_labels.split(', ').map { |related_label| label_to_cqv_id[related_label] }
     end
 
-    hash[:question] = Question.find_by_code! question_question
+    hash[:question] = survey.questions.find_by_code! question_question
 
     validation = CrossQuestionValidation.create!(hash)
     label_to_cqv_id[label] = validation.id
