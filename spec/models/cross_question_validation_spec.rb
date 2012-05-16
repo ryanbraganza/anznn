@@ -290,6 +290,35 @@ describe CrossQuestionValidation do
         end
       end
 
+      describe 'const implies present' do
+        before :each do
+          @error_message = 'q2 must be answered if q1 is'
+          @q1 = Factory :question, section: @section, question_type: 'Integer'
+          @q2 = Factory :question, section: @section, question_type: 'Date'
+          Factory :cqv_const_implies_present, question: @q1, related_question: @q2, error_message: @error_message, operator: '==', constant: -1
+        end
+        it "is not run if the question has a badly formed answer" do
+          standard_cqv_test("ab", "2011-12-12", [])
+        end
+        it "passes if both are answered and answer to question == constant" do
+          standard_cqv_test("-1", "2011-12-12", [])
+        end
+        it "passes if both are answered and answer to question != constant" do
+          standard_cqv_test("99", "2011-12-12", [])
+        end
+        it "fails if related question not answered and answer to question == constant" do
+          a1 = Factory :answer, response: @response, question: @q1, answer_value: "-1"
+          do_cqv_check(a1, [@error_message])
+        end
+        it "passes if related question not answered and answer to question != constant" do
+          a1 = Factory :answer, response: @response, question: @q1, answer_value: "00"
+          do_cqv_check(a1, [])
+        end
+        it "fails if related question has an invalid answer and answer to question == constant" do
+          standard_cqv_test("-1", "2011-12-", [@error_message])
+        end
+      end
+
     end
 
     describe "Blank Unless " do

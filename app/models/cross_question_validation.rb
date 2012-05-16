@@ -13,9 +13,10 @@ class CrossQuestionValidation < ActiveRecord::Base
          multi_rule_if_then
          multi_hours_date_to_date
          multi_compare_datetime_quad
-         present_implies_present)
+         present_implies_present
+         const_implies_present)
 
-  RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present)
+  RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present)
 
   SAFE_OPERATORS = %w(== <= >= < > !=)
   ALLOWED_SET_OPERATORS = %w(included excluded range between)
@@ -265,6 +266,13 @@ class CrossQuestionValidation < ActiveRecord::Base
   }
 
   register_checker 'present_implies_present', lambda { |answer, related_answer, checker_params|
+    related_answer && !related_answer.raw_answer
+  }
+
+  register_checker 'const_implies_present', lambda { |answer, related_answer, checker_params|
+    answer_meets_condition = const_meets_condition?(answer.comparable_answer, checker_params[:operator], checker_params[:constant])
+    break true unless answer_meets_condition
+    # we know the answer meets the criteria, so now check if related has been answered
     related_answer && !related_answer.raw_answer
   }
 

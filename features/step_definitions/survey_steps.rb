@@ -211,7 +211,7 @@ Given /^question "([^"]*)" has question options$/ do |question_name, table|
   question = Question.find_by_question(question_name)
   question.question_options.delete_all
   table.hashes.each do |qo_attrs|
-    question.question_options.create!(qo_attrs)
+    Factory(:question_option, qo_attrs.merge(question: question))
   end
 end
 
