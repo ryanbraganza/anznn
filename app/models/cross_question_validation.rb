@@ -140,11 +140,6 @@ class CrossQuestionValidation < ActiveRecord::Base
     checker_params[:constant].blank? ? 0 : checker_params[:constant]
   end
 
-  def self.collect_multiple_answers(answer, checker_params)
-    answers = answer.response.answers.find_all_by_question_id(checker_params[:related_question_ids])
-    answers.sort_by { |a| checker_params[:related_question_ids].index(a.question_id) }
-  end
-
   register_checker 'comparison', lambda { |answer, related_answer, checker_params|
     break true unless related_answer.answer_value.present?
     offset = sanitise_offset(checker_params)
@@ -224,11 +219,13 @@ class CrossQuestionValidation < ActiveRecord::Base
   }
 
   register_checker 'multi_hours_date_to_date', lambda { |answer, unused_related_answer, checker_params|
-    answers = collect_multiple_answers(answer, checker_params)
+    related_ids = checker_params[:related_question_ids]
+    date1 = answer.response.get_answer_to(related_ids[0])
+    time1 = answer.response.get_answer_to(related_ids[1])
+    date2 = answer.response.get_answer_to(related_ids[2])
+    time2 = answer.response.get_answer_to(related_ids[3])
 
-    break true if answers.any? { |related_answer| related_answer.nil? or related_answer.raw_answer }
-
-    date1, time1, date2, time2 = answers
+    break true if [date1, time1, date2, time2].any? { |related_answer| related_answer.nil? or related_answer.raw_answer }
 
     offset = sanitise_offset(checker_params)
 
@@ -256,11 +253,11 @@ class CrossQuestionValidation < ActiveRecord::Base
   }
 
   register_checker 'blank_unless_days_const', lambda { |answer, unused_related_answer, checker_params|
-    answers = collect_multiple_answers(answer, checker_params)
+    related_ids = checker_params[:related_question_ids]
+    date1 = answer.response.get_answer_to(related_ids[0])
+    date2 = answer.response.get_answer_to(related_ids[1])
 
-    break true if answers.map { |related_answer| related_answer.nil? or related_answer.date_answer.nil? }.any?
-
-    date1, date2 = answers
+    break true if [date1, date2].any? { |related_answer| related_answer.nil? or related_answer.date_answer.nil? }
 
     day_difference = (date2.answer_value - date1.answer_value).to_i
 
