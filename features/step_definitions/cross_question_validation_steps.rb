@@ -7,7 +7,7 @@ Given /^I have the following cross question validations$/ do |table|
     hash.merge 'question_code' => hash.delete('question'), 'related_question_code' => hash.delete('related')
   end
 
-  make_cqvs(hashes)
+  make_cqvs(Survey.first, hashes)
 
   CrossQuestionValidation.count.should eq table.hashes.count
 

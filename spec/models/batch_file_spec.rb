@@ -34,7 +34,7 @@ describe BatchFile do
     end
     it "returns false for FAILED, SUCCESS, IN_PROGRESS" do
       [BatchFile::STATUS_FAILED, BatchFile::STATUS_SUCCESS, BatchFile::STATUS_IN_PROGRESS].each do |status|
-        batch_file.stub(:status) {status}
+        batch_file.stub(:status) { status }
 
         batch_file.should_not be_force_submittable
       end
@@ -44,14 +44,14 @@ describe BatchFile do
     let(:batch_file) { BatchFile.new }
     it "should die trying to force successful" do
       [BatchFile::STATUS_FAILED, BatchFile::STATUS_SUCCESS, BatchFile::STATUS_IN_PROGRESS].each do |status|
-        batch_file.stub(:status) {status}
+        batch_file.stub(:status) { status }
 
         expect { batch_file.process }.should raise_error
         expect { batch_file.process(:force) }.should raise_error
       end
     end
     it "should needs_review" do
-      batch_file.stub(:status) {BatchFile::STATUS_REVIEW}
+      batch_file.stub(:status) { BatchFile::STATUS_REVIEW }
       expect { batch_file.process }.should raise_error
     end
   end
@@ -153,7 +153,7 @@ describe BatchFile do
         Answer.all.each { |a| a.has_fatal_warning?.should be_false }
         Answer.all.each { |a| a.has_warning?.should be_false }
         batch_file.record_count.should == 3
-        # summary report should exist but not detail report
+                                   # summary report should exist but not detail report
         batch_file.summary_report_path.should_not be_nil
         File.exist?(batch_file.summary_report_path).should be_true
         batch_file.detail_report_path.should be_nil
@@ -191,7 +191,7 @@ describe BatchFile do
         Answer.all.each { |a| a.has_fatal_warning?.should be_false }
         Answer.all.each { |a| a.has_warning?.should be_false }
         batch_file.record_count.should == 3
-        # summary report should exist but not detail report
+                                   # summary report should exist but not detail report
         batch_file.summary_report_path.should_not be_nil
         File.exist?(batch_file.summary_report_path).should be_true
         batch_file.detail_report_path.should be_nil
@@ -334,6 +334,31 @@ describe BatchFile do
         batch_file.problem_record_count.should == 1
         batch_file.summary_report_path.should_not be_nil
         batch_file.detail_report_path.should_not be_nil
+
+        csv_file = batch_file.detail_report_path
+        rows = CSV.read(csv_file)
+        rows.size.should eq(2)
+        rows[0].should eq(['BabyCode', 'Column Name', 'Type', 'Value', 'Message'])
+        rows[1].should eq(['B3', 'Date1', 'Error', '2010-05-29', 'D1 must be >= D2'])
+      end
+
+      it "should reject records which fail cross-question validations - date time quad failure" do
+        batch_file = process_batch_file('cross_question_error_datetime_comparison.csv', survey, user)
+        batch_file.status.should eq("Failed")
+        batch_file.message.should eq("The file you uploaded did not pass validation. Please review the reports for details.")
+        Response.count.should == 0
+        Answer.count.should == 0
+        batch_file.record_count.should == 3
+        batch_file.problem_record_count.should == 1
+        batch_file.summary_report_path.should_not be_nil
+        batch_file.detail_report_path.should_not be_nil
+        File.exist?(batch_file.summary_report_path).should be_true
+
+        csv_file = batch_file.detail_report_path
+        rows = CSV.read(csv_file)
+        rows.size.should eq(2)
+        rows[0].should eq(['BabyCode', 'Column Name', 'Type', 'Value', 'Message'])
+        rows[1].should eq(['B3', 'Date1', 'Error', '2010-05-29', 'D1+T1 must be > D2+T2'])
       end
 
       it "should reject records where the baby code is already in the system" do
@@ -458,7 +483,7 @@ describe BatchFile do
         rows[3].should eq(['B1', 'TextMandatory', 'Error', '', 'This question is mandatory'])
         rows[4].should eq(['B2', 'Integer', 'Warning', '3', 'Answer should be at least 5'])
         rows[5].should eq(['B2', 'Time', 'Error', 'ab:59', 'Answer is invalid (must be a valid time)'])
-        rows[6].should eq(['B3', 'Date1', 'Error', '2010-05-29', 'date prob'])
+        rows[6].should eq(['B3', 'Date1', 'Error', '2010-05-29', 'D1 must be >= D2'])
 
         File.exist?(batch_file.summary_report_path).should be_true
       end

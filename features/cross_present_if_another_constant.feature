@@ -1,7 +1,7 @@
-Feature: Cross Question Comparison Validations
+Feature: Cross Question Present-If-Constant Validations
   In order to ensure data is correct
   As a system owner
-  I want answers to be compared by value to other questions
+  I want answers validated such that Question B must be answered if Question A equals a certain value
 
   Background:
     Given I have the usual roles

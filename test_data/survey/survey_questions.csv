@@ -4,6 +4,7 @@
 0,2,"Date1","Date1?","Date",,,,,,,"Date1 guide","Date1 desc"
 0,3,"Date2","Date2?","Date",,,,,,,"Date2 guide","Date2 desc"
 0,4,"Time","Time?","Time",,,,,,,"Time guide","Time desc"
+0,5,"Time2","Time2?","Time",,,,,,,"Time2 guide","Time2 desc"
 1,0,"Choice","Choice?","Choice",,,,,,,"Choice guide","Choice desc"
 1,1,"Decimal","Decimal?","Decimal",,,,,,,"Decimal guide","Decimal desc"
 1,2,"Integer","Integer?","Integer",5,,,,,,"Integer guide","Integer desc"

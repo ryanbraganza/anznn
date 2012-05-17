@@ -61,7 +61,7 @@ class CrossQuestionValidation < ActiveRecord::Base
                       related_rule_ids: related_rule_ids, related_question_ids: related_question_ids}
 
     # we have to filter the answers on the response rather than using find, as we want to check through as-yet unsaved answers as part of batch processing
-    related_answer = answer.response.answers.find { |a| a.question_id == related_question.id } if related_question
+    related_answer = answer.response.get_answer_to(related_question.id) if related_question
 
     # if not a primary rule, nil
     # if we dont have a proper answer, nil
@@ -239,11 +239,13 @@ class CrossQuestionValidation < ActiveRecord::Base
   }
 
   register_checker 'multi_compare_datetime_quad', lambda { |answer, unused_related_answer, checker_params|
-    answers = collect_multiple_answers(answer, checker_params)
+    related_ids = checker_params[:related_question_ids]
+    date1 = answer.response.get_answer_to(related_ids[0])
+    time1 = answer.response.get_answer_to(related_ids[1])
+    date2 = answer.response.get_answer_to(related_ids[2])
+    time2 = answer.response.get_answer_to(related_ids[3])
 
-    break true if answers.any? { |related_answer| related_answer.nil? or related_answer.raw_answer }
-
-    date1, time1, date2, time2 = answers
+    break true if [date1, time1, date2, time2].any? { |answer| answer.nil? || answer.raw_answer }
 
     datetime1 = aggregate_date_time(date1.answer_value, time1.answer_value)
     datetime2 = aggregate_date_time(date2.answer_value, time2.answer_value)

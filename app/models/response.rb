@@ -141,6 +141,11 @@ class Response < ActiveRecord::Base
     Question.find(missing_mandatory_question_ids)
   end
 
+  def get_answer_to(question_id)
+    # this filter through the answer object rather than using find, as we want to use it when we haven't yet saved the objects - DON'T CHANGE THIS BEHAVIOUR
+    answers.find { |a| a.question_id == question_id }
+  end
+
   private
 
   def answers_to_section(section)

@@ -92,7 +92,7 @@ module CsvSurveyOperations
     end
   end
 
-  def make_cqv(survet, label_to_cqv_id, hash)
+  def make_cqv(survey, label_to_cqv_id, hash)
 
     orig = hash.dup
     related_question_question = hash.delete 'related_question_code'
