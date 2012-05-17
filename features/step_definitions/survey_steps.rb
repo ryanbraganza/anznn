@@ -140,7 +140,7 @@ Given /^I answer as follows$/ do |table|
         end
         select y, from: "answers_#{question.id}_year"
         select m, from: "answers_#{question.id}_month"
-        select d, from: "answers_#{question.id}_day"
+        select d, from: "answers_#{question.id}_day" unless d.blank?
       when 'Time'
         if answer_value.blank?
           h = "Hour"

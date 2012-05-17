@@ -17,8 +17,8 @@ Feature: Cross Question Present-If-Constant Validations
       | -1           | Yes   |
       | 1            | No    |
     And I have the following cross question validations
-      | question  | related | rule                  | error_message                      | conditional_operator | conditional_constant |
-      | Choice Q1 | Date Q1 | const_implies_present | date should be present if q1 is -1 | ==                   | -1                   |
+      | question  | related | rule                  | error_message                      | operator | constant |
+      | Choice Q1 | Date Q1 | const_implies_present | date should be present if q1 is -1 | ==       | -1       |
     And I am ready to enter responses as data.provider@intersect.org.au
 
   Scenario: If one answer = -1, another must also be present (choice and date) - pass (choice is -1 and date is answered)
@@ -52,6 +52,5 @@ Feature: Cross Question Present-If-Constant Validations
       | question  | answer   |
       | Date Q1   | 2009/12/ |
       | Choice Q1 | (-1) Yes |
-    Then show me the page
     Then I should see "date should be present if q1 is -1"
 
