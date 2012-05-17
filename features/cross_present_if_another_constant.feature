@@ -44,7 +44,6 @@ Feature: Cross Question Present-If-Constant Validations
     When I store the following answers
       | question  | answer   |
       | Choice Q1 | (-1) Yes |
-    Then show me the page
     Then I should see "date should be present if q1 is -1"
 
   Scenario: If one answer = -1, another must also be present (choice and date) - fail (choice is -1 and date invalid)
