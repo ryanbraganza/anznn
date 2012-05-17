@@ -7,11 +7,12 @@ Feature: Cross Question Present-If-Present Validations
     Given I have the usual roles
     And I have a user "data.provider@intersect.org.au" with role "Data Provider"
     And I have a survey with name "MySurvey" and questions
-      | question | question_type |
-      | Date Q1  | Date          |
-      | Date Q2  | Date          |
-      | Time Q1  | Time          |
-      | Time Q2  | Time          |
+      | question   | question_type |
+      | Date Q1    | Date          |
+      | Date Q2    | Date          |
+      | Time Q1    | Time          |
+      | Time Q2    | Time          |
+      | Integer Q1 | Integer       |
     And I have the following cross question validations
       | question | related | rule                    | error_message          |
       | Date Q1  | Time Q2 | present_implies_present | time should be present |

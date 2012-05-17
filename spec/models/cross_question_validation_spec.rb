@@ -319,6 +319,46 @@ describe CrossQuestionValidation do
         end
       end
 
+      describe 'set implies present' do
+        before :each do
+          @error_message = 'q2 must be answered if q1 is in [2..7]'
+          @q1 = Factory :question, section: @section, question_type: 'Choice'
+          @q2 = Factory :question, section: @section, question_type: 'Date'
+          Factory :cqv_set_implies_present, question: @q1, related_question: @q2, error_message: @error_message, set_operator: 'range', set: [2, 7]
+        end
+        it "is not run if the question has a badly formed answer" do
+          standard_cqv_test("ab", "2011-12-12", [])
+        end
+        it "passes if both are answered and answer to question is at start of set" do
+          standard_cqv_test("2", "2011-12-12", [])
+        end
+        it "passes if both are answered and answer to question is in middle of set" do
+          standard_cqv_test("5", "2011-12-12", [])
+        end
+        it "passes if both are answered and answer to question is at end of set" do
+          standard_cqv_test("7", "2011-12-12", [])
+        end
+        it "fails if related question not answered and answer to question is at start of set" do
+          a1 = Factory :answer, response: @response, question: @q1, answer_value: "2"
+          do_cqv_check(a1, [@error_message])
+        end
+        it "fails if related question not answered and answer to question is in middle of set" do
+          a1 = Factory :answer, response: @response, question: @q1, answer_value: "5"
+          do_cqv_check(a1, [@error_message])
+        end
+        it "fails if related question not answered and answer to question is at end of set" do
+          a1 = Factory :answer, response: @response, question: @q1, answer_value: "7"
+          do_cqv_check(a1, [@error_message])
+        end
+        it "passes if related question not answered and answer to question is outside range" do
+          a1 = Factory :answer, response: @response, question: @q1, answer_value: "8"
+          do_cqv_check(a1, [])
+        end
+        it "fails if related question has an invalid answer and answer to question in range" do
+          standard_cqv_test("3", "2011-12-", [@error_message])
+        end
+      end
+
     end
 
     describe "Blank Unless " do

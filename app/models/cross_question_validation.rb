@@ -14,9 +14,10 @@ class CrossQuestionValidation < ActiveRecord::Base
          multi_hours_date_to_date
          multi_compare_datetime_quad
          present_implies_present
-         const_implies_present)
+         const_implies_present
+         set_implies_present)
 
-  RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present)
+  RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present)
 
   SAFE_OPERATORS = %w(== <= >= < > !=)
   ALLOWED_SET_OPERATORS = %w(included excluded range between)
@@ -254,7 +255,6 @@ class CrossQuestionValidation < ActiveRecord::Base
     const_meets_condition?(datetime1, checker_params[:operator], datetime2 + offset)
   }
 
-
   register_checker 'blank_unless_days_const', lambda { |answer, unused_related_answer, checker_params|
     answers = collect_multiple_answers(answer, checker_params)
 
@@ -272,9 +272,14 @@ class CrossQuestionValidation < ActiveRecord::Base
   }
 
   register_checker 'const_implies_present', lambda { |answer, related_answer, checker_params|
-    answer_meets_condition = const_meets_condition?(answer.comparable_answer, checker_params[:operator], checker_params[:constant])
-    break true unless answer_meets_condition
-    # we know the answer meets the criteria, so now check if related has been answered
+    break true unless const_meets_condition?(answer.comparable_answer, checker_params[:operator], checker_params[:constant])
+    # we know the answer meets the criteria, so now just check if related has been answered
+    related_answer && !related_answer.raw_answer
+  }
+
+  register_checker 'set_implies_present', lambda { |answer, related_answer, checker_params|
+    break true unless set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
+    # we know the answer meets the criteria, so now just check if related has been answered
     related_answer && !related_answer.raw_answer
   }
 
