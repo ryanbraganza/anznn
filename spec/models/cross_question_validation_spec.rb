@@ -8,12 +8,15 @@ describe CrossQuestionValidation do
   describe "Validations" do
     it { should validate_presence_of :question_id }
     it { should validate_presence_of :rule }
-    it { should validate_presence_of :error_message }
     it "should validate that the rule is one of the allowed rules" do
       CrossQuestionValidation::VALID_RULES.each do |value|
         should allow_value(value).for(:rule)
       end
       Factory.build(:cross_question_validation, rule: 'Blahblah').should_not be_valid
+    end
+    it "should validate that error is required unless the rule is not a primary" do
+      Factory.build(:cross_question_validation, primary: false, error_message: nil).should be_valid
+      Factory.build(:cross_question_validation, primary: true, error_message: nil).should_not be_valid
     end
     it "should validate only one of related question, related question list, multiple rule list is populated" do
       # 0 0 0 F
@@ -580,5 +583,77 @@ describe CrossQuestionValidation do
         end
       end
     end
+
+    describe "Special rules " do
+      before :each do
+        @response = Factory :response, survey: @survey
+      end
+
+      describe 'special_dual_comparison' do
+        before :each do
+          @error_message = 'neither q1 was < 32 or q1  < 1500'
+          @q1 = Factory :question, section: @section, question_type: 'Integer'
+          @q2 = Factory :question, section: @section, question_type: 'Integer'
+          Factory :cqv_special_dual_comparison, question: @q1, related_question: @q2, error_message: @error_message
+          #operator "<"
+          #constant 32
+          #conditional_operator "<"
+          #conditional_constant 1500
+        end
+        it "handles nils - failure" do
+          standard_cqv_test({}, {}, [@error_message])
+        end
+        it "passes when only one value is entered but valid (a)" do
+          standard_cqv_test(5, {}, [])
+        end
+        it "passes when only one value is entered but valid (b)" do
+          standard_cqv_test({}, 5, [])
+        end
+        it "passes when both are entered but only one value is valid (a)" do
+          standard_cqv_test(5, 2000, [])
+        end
+        it "passes when both are entered but only one value is valid (b)" do
+          standard_cqv_test(50, 5, [])
+        end
+        it "fails when only one value is entered but not valid (a)" do
+          standard_cqv_test(50, {}, [@error_message])
+        end
+        it "fails when only one value is entered but not valid (b)" do
+          standard_cqv_test({}, 2000, [@error_message])
+        end
+        it "fails when both are entered and neither are valid (a)" do
+          standard_cqv_test(50, 2000, [@error_message])
+        end
+        it "fails when both are entered and neither are valid (b)" do
+          standard_cqv_test(50, 2000, [@error_message])
+        end
+      end
+
+      describe 'self_comparison' do
+        def self_comparison_check (val, err)
+          first = Factory :answer, response: @response, question: @q1, answer_value: val
+          do_cqv_check(first, err)
+        end
+
+        before :each do
+          @error_message = 'didn\'t meet condition'
+          @q1 = Factory :question, section: @section, question_type: 'Integer'
+          Factory :cqv_self_comparison, question: @q1, related_question: @q1, error_message: @error_message
+          #operator "=="
+          #constant -1
+        end
+        it "handles nils - failure" do
+          self_comparison_check({}, [@error_message])
+        end
+        it "fails when val doesn't meet conditions" do
+          self_comparison_check(50, [@error_message])
+        end
+        it "passes when val does meet conditions" do
+          self_comparison_check(-1, [])
+        end
+      end
+
+    end
+
   end
 end

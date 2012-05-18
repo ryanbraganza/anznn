@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120503062034) do
+ActiveRecord::Schema.define(:version => 20120511024018) do
 
   create_table "answers", :force => true do |t|
     t.integer "response_id"
@@ -68,6 +68,7 @@ ActiveRecord::Schema.define(:version => 20120503062034) do
     t.string  "related_question_ids"
     t.string  "related_rule_ids"
     t.boolean "primary"
+    t.text    "comments"
   end
 
   create_table "delayed_jobs", :force => true do |t|

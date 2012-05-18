@@ -15,9 +15,14 @@ class CrossQuestionValidation < ActiveRecord::Base
          multi_compare_datetime_quad
          present_implies_present
          const_implies_present
-         set_implies_present)
+         set_implies_present
+         special_dual_comparison
+         self_comparison
+         special_o2_a)
 
-  RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present)
+
+  RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL = %w(special_dual_comparison)
+  RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present special_dual_comparison)
 
   SAFE_OPERATORS = %w(== <= >= < > !=)
   ALLOWED_SET_OPERATORS = %w(included excluded range between)
@@ -31,7 +36,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   validates_presence_of :question_id
   validate :one_of_related_or_list_or_labels
   validates_presence_of :rule
-  validates_presence_of :error_message
+  validates_presence_of :error_message, :if => :primary?
   validates_inclusion_of :primary, in: [true, false]
 
   serialize :related_rule_ids, Array
@@ -71,7 +76,9 @@ class CrossQuestionValidation < ActiveRecord::Base
     return nil unless self.primary? || running_as_secondary
 
     # don't bother checking if the question is unanswered or has an invalid answer
-    return nil if answer.nil? or answer.raw_answer
+    if !RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL.include?(rule)
+      return nil if answer.nil? or answer.raw_answer
+    end
 
     # most rules are not run unless the related question has been answered, so unless this is a special rule that runs
     # regardless, first check if a related question is relevant, then check if its answered
@@ -79,8 +86,11 @@ class CrossQuestionValidation < ActiveRecord::Base
       return nil if related_question.present? && (related_answer.nil? or related_answer.raw_answer)
     end
 
+    # Auto-generate an error message if secondary rules don't have one:
+    sanitised_error = error_message.present? ? error_message : "Failure in #{rule}"
+
     # now actually execute the rule
-    error_message unless rule_checkers[rule].call answer, related_answer, checker_params
+    sanitised_error unless rule_checkers[rule].call answer, related_answer, checker_params
   end
 
   private
@@ -208,12 +218,16 @@ class CrossQuestionValidation < ActiveRecord::Base
 #this only accepts two rules - the IF rule and the THEN rule
   register_checker 'multi_rule_if_then', lambda { |answer, related_answer, checker_params|
 
-    rules = CrossQuestionValidation.find(checker_params[:related_rule_ids])
+    rule1 = CrossQuestionValidation.find(checker_params[:related_rule_ids].first)
+    rule2 = CrossQuestionValidation.find(checker_params[:related_rule_ids].last)
 
-    err1 = rules.shift.check(answer, true)
+    answer1 = answer.response.get_answer_to(rule1.question.id) if rule1.question
+    answer2 = answer.response.get_answer_to(rule2.question.id) if rule2.question
+
+    err1 = rule1.check(answer1, true)
     break true if err1.present?
 
-    err2 = rules.last.check(answer, true)
+    err2 = rule2.check(answer2, true)
     err2.blank?
 
   }
@@ -279,5 +293,47 @@ class CrossQuestionValidation < ActiveRecord::Base
     # we know the answer meets the criteria, so now just check if related has been answered
     related_answer && !related_answer.raw_answer
   }
+
+  # special rules
+
+  register_checker 'special_dual_comparison', lambda { |answer, related_answer, checker_params|
+    first = answer.comparable_answer.blank? ? false : const_meets_condition?(answer.comparable_answer,
+                                                                             checker_params[:operator],
+                                                                             checker_params[:constant])
+    second = related_answer.comparable_answer.blank? ? false : const_meets_condition?(related_answer.comparable_answer,
+                                                                                      checker_params[:conditional_operator],
+                                                                                      checker_params[:conditional_constant])
+    (first || second)
+  }
+
+  register_checker 'self_comparison', lambda { |answer, unused_related_answer, checker_params|
+    const_meets_condition?(answer.comparable_answer, checker_params[:operator], checker_params[:constant])
+  }
+
+
+  register_checker 'special_o2_a', lambda { |answer, unused_related_answer, checker_params|
+#    if is -1 then: Gest+Gestdays + weeks(DOB and the latest date of (LastO2|CeaseCPAPDate|CeaseHiFloDate))) >36 [multi_if_then (comparison,special_o2_a)**]
+
+    related_ids = checker_params[:related_question_ids]
+
+    gest = answer.response.get_answer_to(related_ids[0])
+    gest_days = answer.response.get_answer_to(related_ids[1])
+    dob = answer.response.get_answer_to(related_ids[2])
+
+    last_o2 = answer.response.get_answer_to(related_ids[3])
+    cease_cpap_date = answer.response.get_answer_to(related_ids[4])
+    cease_hi_flo_date = answer.response.get_answer_to(related_ids[5])
+
+    break true unless gest.comparable_answer.present? && gest_days.comparable_answer.present? && dob.comparable_answer.present?
+    break true unless last_o2.comparable_answer.present? || cease_cpap_date.comparable_answer.present || cease_hi_flo_date.comparable_answer.present?
+
+    dates = [last_o2.comparable_answer, cease_cpap_date.comparable_answer, cease_hi_flo_date.comparable_answer]
+    dates.sort!
+    max_elapsed = dates.last - dob.comparable_answer
+
+    #The actual test (gest in in weeks)
+    gest.comparable_answer.weeks + gest_days.comparable_answer.days + max_elapsed.to_i.days > 36.weeks
+  }
+
 
 end

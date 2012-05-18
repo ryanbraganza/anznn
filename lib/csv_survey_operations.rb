@@ -103,7 +103,12 @@ module CsvSurveyOperations
     end
 
     if related_rule_labels
-      hash[:related_rule_ids] = related_rule_labels.split(', ').map { |related_label| label_to_cqv_id[related_label] }
+      hash[:related_rule_ids] = related_rule_labels.split(', ').map do |related_label|
+        if label_to_cqv_id[related_label].blank?
+          raise ActiveRecord::RecordNotSaved, "Couldn't find a Cross Question Validation Rule with label '#{related_label}'"
+        end
+        label_to_cqv_id[related_label]
+        end
     end
 
     hash[:question] = survey.questions.find_by_code! question_question
