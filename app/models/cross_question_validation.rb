@@ -16,9 +16,10 @@ class CrossQuestionValidation < ActiveRecord::Base
          present_implies_present
          const_implies_present
          set_implies_present
-         special_dual_comparison
          self_comparison
-         special_o2_a)
+         special_dual_comparison
+         special_o2_a
+         special_dob)
 
 
   RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL = %w(special_dual_comparison)
@@ -335,5 +336,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     gest.comparable_answer.weeks + gest_days.comparable_answer.days + max_elapsed.to_i.days > 36.weeks
   }
 
-
+  register_checker 'special_dob', lambda { |answer, unused_related_answer, checker_params|
+    answer.date_answer.year == answer.response.year_of_registration
+  }
 end

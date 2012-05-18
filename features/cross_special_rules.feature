@@ -107,6 +107,33 @@ Feature: Cross Question Special Rules
 
 
 #################
+  Scenario:  CQV Failure - DOB out of year
+    Given I have the following cross question validations
+      | question | related | rule        | error_message                   |
+      | dob      | dob     | special_dob | DOB not in year of registration |
+    And I am logged in as "data.provider@intersect.org.au"
+    And "data.provider@intersect.org.au" created a response to the "MySurvey" survey with babycode "babycode456" and year of registration "2012"
+    And I am on the response page for babycode456
+      When I store the following answers
+      | question | answer   |
+      | DOB      | 2011/1/1 |
+
+    Then I should see "DOB not in year of registration"
+
+
+  Scenario:  CQV Pass - DOB in year
+    Given I have the following cross question validations
+      | question | related | rule        | error_message                   |
+      | dob      | dob     | special_dob | DOB not in year of registration |
+    And I am logged in as "data.provider@intersect.org.au"
+    And "data.provider@intersect.org.au" created a response to the "MySurvey" survey with babycode "babycode456" and year of registration "2012"
+    And I am on the response page for babycode456
+    When I store the following answers
+      | question | answer   |
+      | DOB      | 2012/1/1 |
+    Then I should not see "DOB not in year of registration"
+
+###################
 
   @wip
   Scenario: CQV Failure - Blank Unless Within Range N...M (exclusive) - This Qn must be blank unless other answer between N...M
