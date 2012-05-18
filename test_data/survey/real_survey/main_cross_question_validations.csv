@@ -1,0 +1,238 @@
+question_code,related_question_code,related_question_list,rule_label_list,rule_label,rule,error_message,operator,constant,set_operator,set,conditional_operator,conditional_constant,conditional_set_operator,conditional_set
+PROMDATE,LastO2,,,,comparison,PROMDate must be earlier than or equal to LastO2,<=,,,,,,,
+PROMDATE,Date_Linf1,,,,comparison,PROMDate must be earlier than or equal to Date_Linf1,<=,,,,,,,
+PROMDATE,Date_Lviralinf1,,,,comparison,PROMDate must be earlier than or equal to Date_Lviralinf1,<=,,,,,,,
+PROMDATE,DateSurg1,,,,comparison,PROMDate must be earlier than or equal to DateSurg1,<=,,,,,,,
+PROMDATE,DateImmun,,,,comparison,PROMDate must be earlier than DateImmun,<,,,,,,,
+PROMDATE,DateBWtg,,,,comparison,PROMDate must be earlier than DateBWtg,<,,,,,,,
+PROMDATE,USd6wk,,,,comparison,PROMDate must be earlier than USd6wk,<,,,,,,,
+PROMDATE,DiedDate,,,,comparison,PROMDate must be earlier than DiedDate,<,,,,,,,
+PROMDATE,T_ferDate,,,,comparison,PROMDate must be earlier than T_ferDate,<,,,,,,,
+PROMDATE,HomeDate,,,,comparison,PROMDate must be earlier than HomeDate,<,,,,,,,
+BrthOrd,Plurality,,,,comparison,BrthOrd must be less than or equal to Plurality+1,<=,1,,,,,,
+DOB,LastO2,,,,comparison,DOB must be earlier than or equal to LastO2,<=,,,,,,,
+DOB,Date_Linf1,,,,comparison,DOB must be earlier than or equal to Date_Linf1,<=,,,,,,,
+DOB,Date_Lviralinf1,,,,comparison,DOB must be earlier than or equal to Date_Lviralinf1,<=,,,,,,,
+DOB,DateSurg1,,,,comparison,DOB must be earlier than or equal to DateSurg1,<=,,,,,,,
+DOB,DateImmun,,,,comparison,DOB must be earlier than DateImmun,<
+DOB,DateBWtg,,,,comparison,DOB must be earlier than DateBWtg,<
+DOB,USd6wk,,,,comparison,DOB must be earlier than USd6wk,<
+DOB,DiedDate,,,,comparison,DOB must be less than or equal to DiedDate,<=
+DOB,T_ferDate,,,,comparison,DOB must be earlier than T_ferDate,<
+DOB,HomeDate,,,,comparison,DOB must be less than or equal to HomeDate,<=
+DOA,LastO2,,,,comparison,DOA must be earlier than or equal to LastO2,<=
+DOA,Date_Linf1,,,,comparison,DOA must be earlier than or equal to Date_Linf1,<=
+DOA,Date_Lviralinf1,,,,comparison,DOA must be earlier than or equal to Date_Lviralinf1,<=
+DOA,DateSurg1,,,,comparison,DOA must be earlier than or equal to DateSurg1,<=
+DOA,DateImmun,,,,comparison,DOA must be earlier than DateImmun,<
+DOA,DateBWtg,,,,comparison,DOA must be earlier than DateBWtg,<
+DOA,USd6wk,,,,comparison,DOA must be earlier than USd6wk,<
+DOA,DiedDate,,,,comparison,DOA must be less than or equal to DiedDate,<=
+DOA,T_ferDate,,,,comparison,DOA must be earlier than T_ferDate,<
+DOA,HomeDate,,,,comparison,DOA must be less than or equal to HomeDate,<=
+SurfDate,DiedDate,,,,comparison,SurfDate must be less than or equal to DiedDate,<=,,,,,
+SurfDate,HomeDate,,,,comparison,SurfDate must be less than or equal to HomeDate,<=,,,,,
+ALDate,DiedDate,,,,comparison,ALDate must be less than or equal to DiedDate,<=,,,,,
+ALDate,HomeDate,,,,comparison,ALDate must be less than or equal to HomeDate,<=,,,,,
+MaxHiFlo,MinHiFlo,,,,comparison,MaxHiFlo must be greater than or equal to MinHiFlo,>=,,,,,
+MinHiFlo,MaxHiFlo,,,,comparison,MinHiFlo must be less than or equal to MaxHiFlo,<=,,,,,
+StartHiFloDate,DiedDate,,,,comparison,StartHiFloDate must be less than or equal to DiedDate,<=,,,,,
+StartHiFloDate,HomeDate,,,,comparison,StartHiFloDate must be less than or equalt to HomeDate,<=,,,,,
+StartCPAPDate,DiedDate,,,,comparison,StartCPAPDate must be less than or equal to DiedDate,<=,,,,,
+StartCPAPDate,HomeDate,,,,comparison,StartCPAPDate must be less than or equalt to HomeDate,<=,,,,,
+MVDate,DiedDate,,,,comparison,MVDate must be less than or equal to DiedDate,<=,0,,,==,-1
+MVDate,HomeDate,,,,comparison,MVDate must be less than or equalt to HomeDate,<=,,,,,
+HFOVDate,DiedDate,,,,comparison,HFOVDate must be less than or equal to DiedDate,<=,,,,,
+HFOVDate,HomeDate,,,,comparison,HFOVDate must be less than or equalt to HomeDate,<=,,,,,
+LastO2,PROMDATE,,,,comparison,LastO2 must be greater than or equal to PROMDATE,>=,,,,,
+LastO2,DOB,,,,comparison,LastO2 must be greater than or equal to DOB,>=,,,,,
+LastO2,DOA,,,,comparison,LastO2 must be greater than or equal to DOA,>=
+LastO2,DiedDate,,,,comparison,LastO2 must be less than or equal to DiedDate,<=
+LastO2,HomeDate,,,,comparison,LastO2 must be less than or equalt to HomeDate,<=
+Date_Linf1,PROMDATE,,,,comparison,Date_Linf1 must be greater than or equal to PROMDATE,>=
+Date_Linf1,DOB,,,,comparison,Date_Linf1 must be greater than or equal to DOB,>=
+Date_Linf1,DOA,,,,comparison,Date_Linf1 must be greater than or equal to DOA,>=
+Date_Linf1,DiedDate,,,,comparison,Date_Linf1 must be less than or equal to DiedDate,<=
+Date_Linf1,HomeDate,,,,comparison,Date_Linf1 must be less than or equalt to HomeDate,<=
+Date_Linf2,Date_Linf1,,,,comparison,Date_Linf2 must be greater than or equal to Date_Linf1,>=
+Date_Linf2,DiedDate,,,,comparison,Date_Linf2 must be less than or equal to DiedDate,<=
+Date_Linf2,HomeDate,,,,comparison,Date_Linf2 must be less than or equal to HomeDate,<=
+Date_Lviralinf1,PROMDATE,,,,comparison,Date_Lviralinf1 must be greater than or equal to PROMDATE,>=
+Date_Lviralinf1,DOB,,,,comparison,Date_Lviralinf1 must be greater than or equal to DOB,>=
+Date_Lviralinf1,DOA,,,,comparison,Date_Lviralinf1 must be greater than or equal to DOA,>=
+Date_Lviralinf1,DiedDate,,,,comparison,Date_Lviralinf1 must be less than or equal to DiedDate,<=
+Date_Lviralinf1,HomeDate,,,,comparison,Date_Lviralinf1 must be less than or equalt to HomeDate,<=
+Date_LviralInf2,Date_Lviralinf1,,,,comparison,Date_Lviralinf2 must be greater than or equal to DateLviralint1,>=
+Date_LviralInf2,DiedDate,,,,comparison,Date_Lviralinf2 must be less than or equal to DiedDate,<=
+Date_LviralInf2,HomeDate,,,,comparison,Date_Lviralinf2 must be less than or equal to HomeDate,<=
+DateSurg1,PROMDATE,,,,comparison,DateSurg1 must be greater than or equal to PROMDATE,>=
+DateSurg1,DOB,,,,comparison,DateSurg1 must be greater than or equal to DOB,>=
+DateSurg1,DOA,,,,comparison,DateSurg1 must be greater than or equal to DOA,>=
+DateSurg1,DiedDate,,,,comparison,DateSurg1 must be less than or equal to DiedDate,<=
+DateSurg1,HomeDate,,,,comparison,DateSurg1 must be less than or equalt to HomeDate,<=
+DateSurg3,DateSurg2,,,,comparison,DateSurg3 must be less than or equal to DateSurg2,<=
+DateSurg2,DateSurg1,,,,comparison,DateSurg2 must be less than or equal to DateSurg1,<=
+StartPNSDate,DiedDate,,,,comparison,StartPNSDate must be less than or equal to DiedDate,<=
+StartPNSDate,HomeDate,,,,comparison,StartPNSDate must be less than or equal to HomeDate,<=
+CeasePNSDate,DiedDate,,,,comparison,CeasePNSDate must be less than or equal to DiedDate,<=
+CeasePNSDate,HomeDate,,,,comparison,CeasePNSDate must be less than or equalt to HomeDate,<=
+StartCoolDate,DiedDate,,,,comparison,StartCoolDate must be less than or equal to DiedDate,<=
+StartCoolDate,HomeDate,,,,comparison,StartCoolDate must be less than or equal to HomeDate,<=
+CeaseCoolDate,DiedDate,,,,comparison,CeaseCoolDate must be less than or equal to DiedDate,<=
+CeaseCoolDate,HomeDate,,,,comparison,CeaseCoolDate must be less than or equalt to HomeDate,<=
+DateImmun,PROMDATE,,,,comparison,DateImmun must be greater than PROMDATE,>
+DateImmun,DOB,,,,comparison,DateImmun must be greater than DOB,>
+DateImmun,DOA,,,,comparison,DateImmun must be greater than DOA,>
+DateImmun,DiedDate,,,,comparison,DateImmun must be less than or equal to DiedDate,<=
+DateImmun,HomeDate,,,,comparison,DateImmun must be less than or equalt to HomeDate,<=
+DateBWtg,PROMDATE,,,,comparison,DateBWtg must be greater than PROMDATE,>
+DateBWtg,DOB,,,,comparison,DateBWtg must be greater than DOB,>
+DateBWtg,DOA,,,,comparison,DateBWtg must be greater than DOA,>
+DateBWtg,DiedDate,,,,comparison,DateBWtg must be less than or equal to DiedDate,<=
+DateBWtg,HomeDate,,,,comparison,DateBWtg must be less than or equalt to HomeDate,<=
+USd6wk,PROMDATE,,,,comparison,USd6wk must be greater than PROMDATE,>
+USd6wk,DOB,,,,comparison,USd6wk must be greater than DOB,>
+USd6wk,DOA,,,,comparison,USd6wk must be greater than DOA,>
+USd6wk,DiedDate,,,,comparison,USd6wk must be less than or equal to DiedDate,<=
+USd6wk,HomeDate,,,,comparison,USd6wk must be less than or equalt to HomeDate,<=,,,,,
+DiedDate,PROMDATE,,,,comparison,DiedDate must be greater than PROMDATE,>,,,,,
+DiedDate,DOB,,,,comparison,DiedDate must be greater than DOB,>,,,,,
+DiedDate,DOA,,,,comparison,DiedDate must be greater than or equal to DOA,>=,,,,,
+T_ferDate,PROMDATE,,,,comparison,T_ferDate must be greater than PROMDATE,>,,,,,
+T_ferDate,DOB,,,,comparison,T_ferDate must be greater than or equal to DOB,>=,,,,,
+T_ferDate,DOA,,,,comparison,T_ferDate must be greater than or equal to DOA,>=,,,,,
+T_ferDate,DiedDate,,,,comparison,T_ferDate must be less than or equal to DiedDate,<=,,,,,
+T_ferDate,HomeDate,,,,comparison,T_ferDate must be less than or equal to HomeDate,<=,,,,,
+HomeDate,PROMDATE,,,,comparison,HomeDate must be greater than PROMDATE,>,,,,,
+HomeDate,DOB,,,,comparison,HomeDate must be greater than DOB,>,,,,,
+HomeDate,DOA,,,,comparison,HomeDate must be greater than or equal to DOA,>=,,,,,
+MinHiFlo,HiFlo,,,,const_implies_const,"If HiFlo is -1, MinHiFlo must be greater than 0",>,0,,,==,-1
+MaxHiFlo,HiFlo,,,,const_implies_const,"If HiFlo is -1, MaxHiFlo must be greater than 0",>,0,,,==,-1
+BrthOrd,Plurality,,,,const_implies_const,"If Plurality is >0, BrthOrd must be >0",>,0,,,!=,0
+HiFlohrs,HiFlo,,,,const_implies_const,"If HiFlo is -1, HiFlohrs must be greater than 0",>,0,,,==,-1
+HFOVhrs,HFOV,,,,const_implies_const,"If HFOV is -1, HFOVhrs must be greater than 0",>,0,,,==,-1
+Autopsy_,Died_,,,,const_implies_const,"If Died_ is -1, Autospy must be -1 or 0",,,included,"[-1,0]",==,-1
+CongAbnmDeath,Died_,,,,const_implies_const,"If Died_ is -1, CongAbnmDeath must be -1 or 0",,,included,"[-1,0]",==,-1
+Anom,Anomdesc,,,,const_implies_present,"If Anom is -1, Anomdesc must not be blank",==,-1,,,,
+ALLeak,ALDate,,,,const_implies_present,"If ALLeak is -1, ALDate must be a date",==,-1,,,,
+ALLeak,ALTime,,,,const_implies_present,"If ALLeak is -1, ALTime must be a date",==,-1,,,,
+HiFlo,StartHiFloDate,,,,const_implies_present,"If HiFlo is -1, StartHiFloDate must be a date",==,-1,,,,
+HiFlo,StartHiFloTime,,,,const_implies_present,"If HiFlo is -1, StartHiFloTime must be a time",==,-1,,,,
+HiFlo,CeaseHiFloDate,,,,const_implies_present,"If HiFlo is -1, CeaseHiFloDate must be a date",==,-1,,,,
+HiFlo,CeaseHiFloTime,,,,const_implies_present,"If HiFlo is -1, CeaseHiFloTime must be a time",==,-1,,,,
+HFOV,HFOVDate,,,,const_implies_present,"If HFOV is -1, HFOVDate must be a date",==,-1,,,,
+HFOV,HFOVTime,,,,const_implies_present,"If HFOV is -1, HFOVTime must be a date",==,-1,,,,
+Early_infection,Name_Einf,,,,const_implies_present,"If Early_infection is -1, Name_Einf must not be blank",==,-1,,,,
+Surgery_,DateSurg1,,,,const_implies_present,"If Surgery_ is -1, DateSurg1 must be a date",==,-1,,,,
+Surgery_,NameSurg1,,,,const_implies_present,"If Surgery_ is -1, NameSurg1 must not be blank",==,-1,,,,
+PNS,StartPNSDate,,,,const_implies_present,"If PNS is -1, StartPNSDate must be a date",==,-1,,,,
+PNS,StartPNSTime,,,,const_implies_present,"If PNS is -1, StartPNSTime must be a time",==,-1,,,,
+PNS,CeasePNSDate,,,,const_implies_present,"If PNS is -1, CeasePNSDate must be a date",==,-1,,,,
+PNS,CeasePNSTime,,,,const_implies_present,"If PNS is -1, CeasePNSTime must be a time",==,-1,,,,
+hypotherm,StartCoolDate,,,,const_implies_present,"If hypotherm is -1, StartCoolDate must be a date",==,-1,,,,
+hypotherm,StartCoolTime,,,,const_implies_present,"If hypotherm is -1, StartCoolTime must be a time",==,-1,,,,
+hypotherm,CeaseCoolDate,,,,const_implies_present,"If hypotherm is -1, CeaseCoolDate must be a date",==,-1,,,,
+hypotherm,CeaseCoolTime,,,,const_implies_present,"If hypotherm is -1, CeaseCoolTime must be a time",==,-1,,,,
+Died_,DiedDate,,,,const_implies_present,"If Died_ is -1, DiedDate must be a date",==,-1,,,,
+Died_,Cause_Death,,,,const_implies_present,"If Died_ is -1, Cause_Death must not be blank",==,-1,,,,
+T_fer_,T_ferDate,,,,const_implies_present,"If T_fer_ is -1, T_ferDate must be a date",==,-1,,,,
+T_fer_,T_ferHosp,,,,const_implies_present,"If T_fer_ is -1, T_ferHosp must not be blank",==,-1,,,,
+PTL,Other_prob,,,,const_implies_set,"If Other_prob is -1, PTL must be either 0 or -1",,,included,"[-1,0]",==,-1
+PET,Other_prob,,,,const_implies_set,"If Other_prob is -1, PET must be either 0 or -1",,,included,"[-1,0]",==,-1
+APH,Other_prob,,,,const_implies_set,"If Other_prob is -1, APH must be either 0 or -1",,,included,"[-1,0]",==,-1
+IUGR,Other_prob,,,,const_implies_set,"If Other_prob is -1, IUGR must be either 0 or -1",,,included,"[-1,0]",==,-1
+F_distress,Other_prob,,,,const_implies_set,"If Other_prob is -1, F_distress must be either 0 or -1",,,included,"[-1,0]",==,-1
+Other,Other_prob,,,,const_implies_set,"If Other_prob is -1, Other must be either 0 or -1",,,included,"[-1,0]",==,-1
+ANDiag_,Other_prob,,,,const_implies_set,"If Other_prob is -1, ANDiag_ must be either 0 or -1",,,included,"[-1,0]",==,-1
+hypotherm,temp,,,,const_implies_set,"If Temp is less than 35, hypotherm must be -1 or 0",,,included,"[-1,0]",<,35
+NursLevel,T_fer_,,,,const_implies_set,"If T_fer_ is -1, NursLevel must be 1 to 3",,,included,"[1,3]",==,-1
+CPAPhrs,StartCPAPDate,,,,date_implies_constant,"If StartCPAPDate is a date, CPAPhrs must be greater than 0",>,0,,,,
+IPPVhrs,MVDate,,,,date_implies_constant,"If MVDate is a date, IPPVhrs must be greater than 0",>,0,,,,
+Surgery_,DateSurg2,,,,date_implies_constant,"If DateSurg2 is a date, Surgery_ must be -1",==,-1,,,,
+Surgery_,DateSurg3,,,,date_implies_constant,"If DateSurg3 is a date, Surgery_ must be -1",==,-1,,,,
+Hmegavage,HomeDate,,,,date_implies_constant,"If HomeDate is a date, Hmegavage must be -1",==,1,,,,
+PROMDATE,,"PROMDATE, PROMTime, DOB, DOBTime",,,multi_compare_datetime_quad,PROMDate+PROMTime must be earlier than or equal to DOB+DOBTime,<=,,,,,
+PROMDATE,,"PROMDATE, PROMTime, DOA, DOATime",,,multi_compare_datetime_quad,PROMDate+PROMTime must be earlier than or equal to DOA+DOATime,<=,,,,,
+PROMDATE,,"PROMDATE, PROMTime, SurfDate, SurfTime",,,multi_compare_datetime_quad,PROMDate+PROMTime must be earlier than or equal to SurfDate+SurfTime,<=,,,,,
+PROMDATE,,"PROMDATE, PROMTime, ALDate, ALTime",,,multi_compare_datetime_quad,PROMDate+PROMTime must be earlier than or equal to ALDate+ALTime,<=,,,,,
+PROMDATE,,"PROMDATE, PROMTime, StartHiFloDate, StartHiFloTime",,,multi_compare_datetime_quad,PROMDate+PROMTime must be earlier than or equal to StartHiFloDate+StartHiFloTime,<=,,,,,
+PROMDATE,,"PROMDATE, PROMTime, CeaseHiFloDate, CeaseHiFloTime",,,multi_compare_datetime_quad,PROMDate+PROMTime must be earlier than CeaseHiFloDate+CeaseHiFloTime,<,,,,,
+PROMDATE,,"PROMDATE, PROMTime, StartCPAPDate, StartCPAPTime",,,multi_compare_datetime_quad,PROMDate+PROMTime must be earlier than or equal to StartCPAPDate+StartCPAPTime,<=,,,,,
+PROMDATE,,"PROMDATE, PROMTime, CeaseCPAPDate, CeaseCPAPTime",,,multi_compare_datetime_quad,PROMDate+PROMTime must be earlier than CeaseCPAPDate+CeaseCPAPTime,<
+PROMDATE,,"PROMDATE, PROMTIME, MVDate, MVTime",,,multi_compare_datetime_quad,PROMDate+PROMTime must be earlier than or equal to MVDate+MVTime,<=
+PROMDATE,,"PROMDATE, PROMTIME, HFOVDate, HFOVTime",,,multi_compare_datetime_quad,PROMDate+PROMTime must be earlier than or equal to HFOVDate+HFOVTime,<=
+PROMDATE,,"PROMDate, PROMTIME, StartPNSDate, StartPNSTime",,,multi_compare_datetime_quad,PROMDate+PROMTime must be earlier than or equal to StartPNSDate+StartPNSTime,<=
+PROMDATE,,"PROMDate, PROMTIME, CeasePNSDate, CeasePNSTime",,,multi_compare_datetime_quad,PROMDate+PROMTime must be earlier than CeasePNSDate+CeasePNSTime,<
+PROMDATE,,"PROMDate, PROMTIME, StartCoolDate, StartCoolTime",,,multi_compare_datetime_quad,PROMDate+PROMTime must be earlier than or equal to StartCoolDate+StartCoolTime,<=
+PROMDATE,,"PROMDate, PROMTIME, CeaseCoolDate, CeaseCoolTime",,,multi_compare_datetime_quad,PROMDate+PROMTime must be earlier than CeaseCoolDate+CeaseCoolTime,<
+DOB,,"DOB, DOBTime, PROMDATE, PROMTIME",,,multi_compare_datetime_quad,DOB+DOBTime must be later than or equal to PROMDate+PROMTime,>=
+DOB,,"DOB, DOBTime, DOA, DOATime",,,multi_compare_datetime_quad,DOB+DOBTime must be earlier than or equal to DOA+DOATime,<=
+DOB,,"DOB, DOBTime, SurfDate, SurfTime",,,multi_compare_datetime_quad,DOB+DOBTime must be earlier than or equal to SurfDate+SurfTime,<=
+DOB,,"DOB, DOBTime, ALDate, ALTime",,,multi_compare_datetime_quad,DOB+DOBTime must be earlier than or equal to ALDate+ALTime,<=
+DOB,,"DOB, DOBTime, StartHiFloDate, StartHiFloTime",,,multi_compare_datetime_quad,DOB+DOBTime must be earlier than or equal to StartHiFloDate+StartHiFloTime,<=
+DOB,,"DOB, DOBTime, CeaseHiFloDate, CeaseHiFloTime",,,multi_compare_datetime_quad,DOB+DOBTime must be earlier than CeaseHiFloDate+CeaseHiFloTime,<
+DOB,,"DOB, DOBTime, StartCPAPDate, StartCPAPTime",,,multi_compare_datetime_quad,DOB+DOBTime must be earlier than or equal to StartCPAPDate+StartCPAPTime,<=
+DOB,,"DOB, DOBTime, CeaseCPAPDate, CeaseCPAPTime",,,multi_compare_datetime_quad,DOB+DOBTime must be earlier than CeaseCPAPDate+CeaseCPAPTime,<
+DOB,,"DOB, DOBTime, MVDate, MVTime",,,multi_compare_datetime_quad,DOB+DOBTime must be earlier than or equal to MVDate+MVTime,<=
+DOB,,"DOB, DOBTime, HFOVDate, HFOVTime",,,multi_compare_datetime_quad,DOB+DOBTime must be earlier than or equal to HFOVDate+HFOVTime,<=
+DOB,,"DOB, DOBTime, StartPNSDate, StartPNSTime",,,multi_compare_datetime_quad,DOB+DOBTime must be earlier than or equal to StartPNSDate+StartPNSTime,<=
+DOB,,"DOB, DOBTime, CeasePNSDate, CeasePNSTime",,,multi_compare_datetime_quad,DOB+DOBTime must be earlier than CeasePNSDate+CeasePNSTime,<
+DOB,,"DOB, DOBTime, StartCoolDate, StartCoolTime",,,multi_compare_datetime_quad,DOB+DOBTime must be earlier than or equal to StartCoolDate+StartCoolTime,<=
+DOB,,"DOB, DOBTime, CeaseCoolDate, CeaseCoolTime",,,multi_compare_datetime_quad,DOB+DOBTime must be earlier than CeaseCoolDate+CeaseCoolTime,<
+DOA,,"DOA, DOATime, PROMDATE, PROMTIME",,,multi_compare_datetime_quad,DOA+DOATime must be later than or equal to PROMDate+PROMTime,>=
+DOA,,"DOA, DOATime, DOB, DOBTime",,,multi_compare_datetime_quad,DOA+DOATime must be later than or equal to DOB+DOBTime,>=
+DOA,,"DOA, DOATime, SurfDate, SurfTime",,,multi_compare_datetime_quad,DOA+DOATime must be earlier than or equal to SurfDate+SurfTime,<=
+DOA,,"DOA, DOATime, ALDate, ALTime",,,multi_compare_datetime_quad,DOA+DOATime must be earlier than or equal to ALDate+ALTime,<=
+DOA,,"DOA, DOATime, StartHiFloDate, StartHiFloTime",,,multi_compare_datetime_quad,DOA+DOATime must be earlier than or equal to StartHiFloDate+StartHiFloTime,<=
+DOA,,"DOA, DOATime, CeaseHiFloDate, CeaseHiFloTime",,,multi_compare_datetime_quad,DOA+DOATime must be earlier than CeaseHiFloDate+CeaseHiFloTime,<
+DOA,,"DOA, DOATime, StartCPAPDate, StartCPAPTime",,,multi_compare_datetime_quad,DOA+DOATime must be earlier than or equal to StartCPAPDate+StartCPAPTime,<=
+DOA,,"DOA, DOATime, CeaseCPAPDate, CeaseCPAPTime",,,multi_compare_datetime_quad,DOA+DOATime must be earlier than CeaseCPAPDate+CeaseCPAPTime,<
+DOA,,"DOA, DOATime, MVDate, MVTime",,,multi_compare_datetime_quad,DOA+DOATime must be earlier than or equal to MVDate+MVTime,<=
+DOA,,"DOA, DOATime, HFOVDate, HFOVTime",,,multi_compare_datetime_quad,DOA+DOATime must be earlier than or equal to HFOVDate+HFOVTime,<=
+DOA,,"DOA, DOATime, StartPNSDate, StartPNSTime",,,multi_compare_datetime_quad,DOA+DOATime must be earlier than or equal to StartPNSDate+StartPNSTime,<=
+DOA,,"DOA, DOATime, CeasePNSDate, CeasePNSTime",,,multi_compare_datetime_quad,DOA+DOATime must be earlier than CeasePNSDate+CeasePNSTime,<
+DOA,,"DOA, DOATime, StartCoolDate, StartCoolTime",,,multi_compare_datetime_quad,DOA+DOATime must be earlier than or equal to StartCoolDate+StartCoolTime,<=
+DOA,,"DOA, DOATime, CeaseCoolDate, CeaseCoolTime",,,multi_compare_datetime_quad,DOA+DOATime must be earlier than CeaseCoolDate+CeaseCoolTime,<
+SurfDate,,"SurfDate, SurfTime, PROMDATE, PROMTIME",,,multi_compare_datetime_quad,SurfDate+SurfTime must be later than PROMDate+PROMTime,>
+SurfDate,,"SurfDate, SurfTime, DOB, DOBTime",,,multi_compare_datetime_quad,SurfDate+SurfTime must be later than or equal to DOB+DOBTime,>=
+ALDate,,"ALDate, ALTime, PROMDATE, PROMTIME",,,multi_compare_datetime_quad,ALDate+ALTime must be later than PROMDate+PROMTime,>
+ALDate,,"ALDate, ALTime, DOB, DOBTime",,,multi_compare_datetime_quad,ALDate+ALTime must be later than or equal to DOB+DOBTime,>=
+StartHiFloDate,,"StartHiFloDate, StartHiFloTime, CeaseHiFloDate, CeaseHiFloTime",,,multi_compare_datetime_quad,StartHiFloDate+StartHiFloTime must be earlier than CeaseHiFloDate+CeaseHiFloTime,<
+StartHiFloDate,,"StartHiFloDate, StartHiFloTime, PROMDATE, PROMTIME",,,multi_compare_datetime_quad,StartHiFloDate+StartHiFloTime must be later than PROMDate+PROMTime,>
+CeaseHiFloDate,,"CeaseHiFloDate, CeaseHiFloTime, PROMDATE, PROMTIME",,,multi_compare_datetime_quad,CeaseHiFloDate+CeaseHiFloTime must be later than PROMDate+PROMTime,>
+StartHiFloDate,,"StartHiFloDate, StartHiFloTime, DOB, DOBTime",,,multi_compare_datetime_quad,StartHiFloDate+StartHiFloTime must be later than or equal to DOB+DOBTime,>=
+CeaseHiFloDate,,"CeaseHiFloDate, CeaseHiFloTime, DOB, DOBTime",,,multi_compare_datetime_quad,CeaseHiFloDate+CeaseHiFloTime must be later than DOB+DOBTime,>
+StartCPAPDate,,"StartCPAPDate, StartCPAPTime, CeaseCPAPDate, CeaseCPAPTime",,,multi_compare_datetime_quad,StartCPAPDate+StartCPAPTime must be earlier than CeaseCPAPDate+CeaseCPAPTime,<
+StartCPAPDate,,"StartCPAPDate, StartCPAPTime, PROMDATE, PROMTIME",,,multi_compare_datetime_quad,StartCPAPDate+StartCPAPTime must be later than PROMDate+PROMTime,>
+CeaseCPAPDate,,"CeaseCPAPDate, CeaseCPAPTime, PROMDATE, PROMTIME",,,multi_compare_datetime_quad,CeaseCPAPDate+CeaseCPAPTime must be later than PROMDate+PROMTime,>
+StartCPAPDate,,"StartCPAPDate, StartCPAPTime, DOB, DOBTime",,,multi_compare_datetime_quad,StartCPAPDate+StartCPAPTime must be later than or equal to DOB+DOBTime,>=
+CeaseCPAPDate,,"CeaseCPAPDate, CeaseCPAPTime, DOB, DOBTime",,,multi_compare_datetime_quad,CeaseCPAPDate+CeaseCPAPTime must be later than DOB+DOBTime,>
+MVDate,,"MVDate, MVTime, PROMDATE, PROMTIME",,,multi_compare_datetime_quad,MVDate+MVTime must be later than or equal to PROMDate+PROMTime,>=
+MVDate,,"MVDate, MVTime, DOB, DOBTime",,,multi_compare_datetime_quad,MVDate+MVTime must be later than or equal to DOB+DOBTime,>=
+HFOVDate,,"HFOVDate, HFOVTime, PROMDATE, PROMTIME",,,multi_compare_datetime_quad,HFOVDate+HFOVTime must be later than PROMDate+PROMTime,>
+HFOVDate,,"HFOVDate, HFOVTime, DOB, DOBTime",,,multi_compare_datetime_quad,HFOVDate+HFOVTime must be later than or equHFOV to DOB+DOBTime,>=
+StartPNSDate,,"StartPNSDate, StartPNSTime, CeasePNSDate, CeasePNSTime",,,multi_compare_datetime_quad,StartPNSDate+StartPNSTime must be earlier than CeasePNSDate+CeasePNSTime,<
+StartPNSDate,,"StartPNSDate, StartPNSTime, PROMDATE, PROMTIME",,,multi_compare_datetime_quad,StartPNSDate+StartPNSTime must be later than PROMDate+PROMTime,>
+StartPNSDate,,"StartPNSDate, StartPNSTime, DOB, DOBTime",,,multi_compare_datetime_quad,StartPNSDate+StartPNSTime must be later than or equal to DOB+DOBTime,>=
+CeasePNSDate,,"CeasePNSDate, CeasePNSTime, PROMDATE, PROMTIME",,,multi_compare_datetime_quad,CeasePNSDate+CeasePNSTime must be later than PROMDate+PROMTime,>
+CeasePNSDate,,"CeasePNSDate, CeasePNSTime, DOB, DOBTime",,,multi_compare_datetime_quad,CeasePNSDate+CeasePNSTime must be later than DOB+DOBTime,>
+StartCoolDate,,"StartCoolDate, StartCoolTime, PROMDATE, PROMTIME",,,multi_compare_datetime_quad,StartCoolDate+StartCoolTime must be later than PROMDate+PROMTime,>
+StartCoolDate,,"StartCoolDate, StartCoolTime, DOB, DOBTime",,,multi_compare_datetime_quad,StartCoolDate+StartCoolTime must be later than or equal to DOB+DOBTime,>=
+StartCoolDate,,"StartCoolDate, StartCoolTime, DOA, DOATime",,,multi_compare_datetime_quad,StartCoolDate+StartCoolTime must be later than or equal to DOA+DOATime,>=
+CeaseCoolDate,,"CeaseCoolDate, CeaseCoolTime, PROMDATE, PROMTime",,,multi_compare_datetime_quad,CeaseCoolDate+CeaseCoolTime must be later than PROMDate+PROMTime,>
+CeaseCoolDate,,"CeaseCoolDate, CeaseCoolTime, DOB, DOBTime",,,multi_compare_datetime_quad,CeaseCoolDate+CeaseCoolTime must be later than DOB+DOBTime,>
+CeaseCoolDate,,"CeaseCoolDate, CeaseCoolTime, DOA, DOATime",,,multi_compare_datetime_quad,CeaseCoolDate+CeaseCoolTime must be later than DOA+DOATime,>
+StartCoolDate,,"StartCoolDate, StartCoolTime, CeaseCoolDate, CeaseCoolTime",,,multi_compare_datetime_quad,StartCoolDate+StartCoolTime must be earlier than CeaseCoolDate+CeaseCoolTime,,,,
+SurfDate,SurfTime,,,,present_implies_present,"If SurfDate is a date, SurfTime must be a time",,,,
+ALDate,ALTime,,,,present_implies_present,"If ALDate is a date, ALTime must be a time",,,,
+StartCPAPDate,StartCPAPTime,,,,present_implies_present,"If StartCPAPDate is a date, StartCPAPTime must be a time",,,,
+StartCPAPDate,CeaseCPAPDate,,,,present_implies_present,"If StartCPAPDate is a date, CeaseCPAPDate must be a date",,,,
+StartCPAPDate,CeaseCPAPTime,,,,present_implies_present,"If StartCPAPDate is a date, CeaseCPAPTime must be a time",,,,
+MVDate,MVTime,,,,present_implies_present,"If MVDate is a date, MVTime must be a time",,,,
+HFOVDate,HFOVTime,,,,present_implies_present,"If HFOVDate is a date, HFOVTime must be a time",,,,
+Date_Linf2,Name_Linf2,,,,present_implies_present,"If Date_Linf2 is a date, Name_Linf2 must not be blank",,,,
+Date_Lviralinf2,Name_Lviralinf2,,,,present_implies_present,"If Date_Lviralinf2 is a date, Name_Linf2 must not be blank",,,,
+SurfDate,Surf,,,,set_implies_present,"If Surf is 2-7, SurfDate must be a date",,,range,"[2,7]"
+SurfTime ,Surf,,,,set_implies_present,"If Surf is 2-7, SurfTime must be a time",,,range,"[2,7]"
+Late_infection,Date_Linf1,,,,set_implies_present,"If Late_infection is not 0 or 99, Date_Linf1 must be a date",,,between,"[0,99]"
+Late_infection,Name_Linf1,,,,set_implies_present,"If Late_infection is not 0 or 99, Name_Linf1 must not be blank",,,between,"[0,99]"

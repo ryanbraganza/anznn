@@ -1,0 +1,56 @@
+question_code,related_question_code,rule,error_message,operator,constant,set_operator,set,conditional_operator,conditional_constant,conditional_set_operator,conditional_set
+Heartest,Hearage,set_implies_present,"If Heartest is between 1 and 4, Hearage must be a date",,,range,"[1,4]",,,,
+Blind,Vision,set_implies_set,"If Vision is 0 or 1, Blind must be between 0 and 2",,,between,"[0,2]",,,included,"[0,1]"
+Respfup1,Respfup,set_implies_set,"If Respful is 1 or 2, Respfup1 must be between 0 and 3",,,between,"[0,3]",,,included,"[1,2]"
+RespSprt,Respfup,set_implies_set,"If Respful is 1 or 2, RespSprt must be between 0 and 3",,,between,"[0,3]",,,included,"[1,2]"
+GITfeed,GIT,const_implies_set,"If GIT is 1, GITfeed must be 0 or 1",,,included,"[0,1]",==,1,,
+RenalDis,Renal,const_implies_const,"If Renal is 0, RenalDis must be 0",==,0,,,==,0,,
+RenalDis,Renal,const_implies_set,"If Renal is 1, RenalDis must be 1-3 or 99",,,included,"[1,2,3,99]",==,1,,
+Motorwalk,Motor,const_implies_set,"If Motor is 1, Motorwalk must be 1-3 or 99",,,included,"[1,2,3,99]",==,1,,
+TypeCP,Motor,const_implies_set,"If Motor is 1, TypeCP must be 1-11 or 99",,,included,"[1,2,3,4,5,6,7,8,9,10,11,99]",==,1,,
+GMFCS,Motor,const_implies_set,"If Motor is 1, GMFCS must be between 1 and 5",,,between,"[1,5]",==,1,,
+CognScale,BayleyDevTest,const_implies_set,"If BayleyDevTest is -1, CognScale must be between 1 and 19",,,between,"[1,19]",==,-1,,
+CognComp,BayleyDevTest,const_implies_set,"If BayleyDevTest is -1, CognComp must be between 0 and 500",,,between,"[0,500]",==,-1,,
+CognPercent,BayleyDevTest,const_implies_set,"If BayleyDevTest is -1, CognPercent must be between 0 and 90",,,between,"[0,90]",==,-1,,
+ResScale,BayleyDevTest,const_implies_set,"If BayleyDevTest is -1, ResScale must be between 0 and 500",,,between,"[0,500]",==,-1,,
+ExpScale,BayleyDevTest,const_implies_set,"If BayleyDevTest is -1, ExpScale must be between 0 and 500",,,between,"[0,500]",==,-1,,
+LangSumScale,BayleyDevTest,const_implies_set,"If BayleyDevTest is -1, LanSumScale must be between 1 and 19",,,between,"[1,19]",==,-1
+langSumComp,BayleyDevTest,const_implies_set,"If BayleyDevTest is -1, LangSumComp must be between 40 and 160",,,between,"[40,160]",==,-1
+langSumPercent,BayleyDevTest,const_implies_set,"If BayleyDevTest is -1, LangSumPercent must be between 0 and 90",,,between,"[0,90]",==,-1
+FinMotScale,BayleyDevTest,const_implies_set,"If BayleyDevTest is -1, FinMotScale must be between 0 and 500",,,between,"[0,500]",==,-1
+GrossMotScale,BayleyDevTest,const_implies_set,"If BayleyDevTest is -1, GrossMotScale must be between 0 and 500",,,between,"[0,500]",==,-1
+MotSumScale,BayleyDevTest,const_implies_set,"If BayleyDevTest is -1, MotSumScale must be between 1 and 19",,,between,"[1,19]",==,-1
+MotSumComp,BayleyDevTest,const_implies_set,"If BayleyDevTest is -1, MotSumComp must be between 40 and 160",,,between,"[40,160]",==,-1
+MotSumPercent,BayleyDevTest,const_implies_set,"If BayleyDevTest is -1, MotSumPercent must be between 0 and 90",,,between,"[0,90]",==,-1
+LocRawScore,GMDS_ER,const_implies_set,"If GMDS_ER is -1, LocRawScore must be between 0 and 500",,,between,"[0,500]",==,-1
+LocStandScore,GMDS_ER,const_implies_set,"If GMDS_ER is -1, LocStandScore must be between 0 and 500",,,between,"[0,500]",==,-1
+LocAgeEquiv,GMDS_ER,const_implies_set,"If GMDS_ER is -1, LocAgeEquiv must be between 1 and 48",,,between,"[1,48]",==,-1
+LocPercent,GMDS_ER,const_implies_set,"If GMDS_ER is -1, LocPercent must be between 0 and 100",,,between,"[0,100]",==,-1
+PersocRawScore,GMDS_ER,const_implies_set,"If GMDS_ER is -1, PersocRawScore must be between 0 and 500",,,between,"[0,500]",==,-1
+PersocStandScore,GMDS_ER,const_implies_set,"If GMDS_ER is -1, PersocStandScore must be between 0 and 500",,,between,"[0,500]",==,-1
+PersocAgeEquiv,GMDS_ER,const_implies_set,"If GMDS_ER is -1, PersocAgeEquiv must be between 1 and 48",,,between,"[1,48]",==,-1
+PersocPercent,GMDS_ER,const_implies_set,"If GMDS_ER is -1, PersocPercent must be between 0 and 100",,,between,"[0,100]",==,-1
+HearSpeRawScore,GMDS_ER,const_implies_set,"If GMDS_ER is -1, HearSpeRawScore must be between 0 and 500",,,between,"[0,500]",==,-1
+HearSpeStandScore,GMDS_ER,const_implies_set,"If GMDS_ER is -1, HearSpeStandScore must be between 0 and 500",,,between,"[0,500]",==,-1
+HearSpeAgeEquiv,GMDS_ER,const_implies_set,"If GMDS_ER is -1, HearSpeAgeEquiv must be between 1 and 48",,,between,"[1,48]",==,-1
+HearSpepercent,GMDS_ER,const_implies_set,"If GMDS_ER is -1, HearSpePercent must be between 0 and 100",,,between,"[0,100]",==,-1
+EyeHandRawScore,GMDS_ER,const_implies_set,"If GMDS_ER is -1, EyeHandRawScore must be between 0 and 500",,,between,"[0,500]",==,-1
+EyeHandStandScore,GMDS_ER,const_implies_set,"If GMDS_ER is -1, EyeHandStandScore must be between 0 and 500",,,between,"[0,500]",==,-1
+EyeHandAgeEquiv,GMDS_ER,const_implies_set,"If GMDS_ER is -1, EyeHandAgeEquiv must be between 1 and 48",,,between,"[1,48]",==,-1
+EyeHandPercent,GMDS_ER,const_implies_set,"If GMDS_ER is -1, EyeHandPercent must be between 0 and 100",,,between,[0.100],==,-1
+PerfRawScore,GMDS_ER,const_implies_set,"If GMDS_ER is -1, PerfRawScore must be between 0 and 500",,,between,"[0,500]",==,-1
+PerfStandScore,GMDS_ER,const_implies_set,"If GMDS_ER is -1, PerfStandScore must be between 0 and 500",,,between,"[0,500]",==,-1
+PerfAgeEquiv,GMDS_ER,const_implies_set,"If GMDS_ER is -1, PerfAgeEquiv must be between 1 and 48",,,between,"[1,48]",==,-1
+PerfPercent,GMDS_ER,const_implies_set,"If GMDS_ER is -1, PerfPercent must be between 0 and 100",,,between,"[0,100]",==,-1
+PractReasRawScore,GMDS_ER,const_implies_set,"If GMDS_ER is -1, PractReasRawScore must be between 0 and 500",,,between,"[0,500]",==,-1
+PractReasStandScore,GMDS_ER,const_implies_set,"If GMDS_ER is -1, PractReasStandScore must be between 0 and 500",,,between,"[0,500]",==,-1
+PracReasAgeEquiv,GMDS_ER,const_implies_set,"If GMDS_ER is -1, PractReasAgeEquiv must be between 1 and 48",,,between,"[1,48]",==,-1
+PracReasPercent,GMDS_ER,const_implies_set,"If GMDS_ER is -1, PractReasPercent must be between 0 and 100",,,between,"[0,100]",==,-1
+GQRawScore,GMDS_ER,const_implies_set,"If GMDS_ER is -1, GQRawScore must be between 0 and 500",,,between,"[0,500]",==,-1
+GQStandScore,GMDS_ER,const_implies_set,"If GMDS_ER is -1, GQStandScore must be between 0 and 500",,,between,"[0,500]",==,-1
+GQAgeEquiv,GMDS_ER,const_implies_set,"If GMDS_ER is -1, GQAgeEquiv must be between 1 and 48",,,between,"[1,48]",==,-1
+GQPercent,GMDS_ER,const_implies_set,"If GMDS_ER is -1, GQPercent must be between 0 and 100",,,between,"[0,100]",==,-1
+OthDevTests,DateTest,const_implies_present,"If OthDevTests is -1, DateTest must be a date",==,-1,,,,
+OthDevTests,NameTest,const_implies_present,"If OthDevTests is -1, NameTest must not be blank",==,-1,,,,
+OthSubScales,OthDevTests,const_implies_set,"If OthDevTests is -1, OthSubScales must be between 0 and 100",,,between,"[0,100]",==,-1
+OthlevDevlp,OthDevTests,const_implies_set,"If OthDevTests is -1, OthlevDevlp must be between 1 and 48",,,between,"[1,48]",==,-1

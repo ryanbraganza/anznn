@@ -3,17 +3,6 @@
 module CsvSurveyOperations
   def read_hashes_from_csv(file_name)
 
-    begin
-      line = 1
-      CSV.foreach(file_name) do |row|
-        line+=1
-        # use row here...
-      end
-    rescue
-      puts "Failed on row #{line} of #{file_name}"
-      raise
-    end
-
     csv_data = CSV.read(file_name)
     headers = csv_data.shift.map { |i| i.to_s }
     string_data = csv_data.map { |row| row.map { |cell| cell.to_s } }
@@ -31,7 +20,12 @@ module CsvSurveyOperations
 
         order += 1
       end
-      Question.create!(hash.merge(section_id: section.id))
+      begin
+        Question.create!(hash.merge(section_id: section.id))
+      rescue
+        puts "Failed to create question #{hash}"
+        raise
+      end
     end
   end
 

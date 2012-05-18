@@ -43,14 +43,13 @@ def create_surveys
   Section.delete_all
   Question.delete_all
   QuestionOption.delete_all
-  create_survey_from_lib_tasks("ANZNN data form (test)", "main_survey_questions.csv", "main_survey_question_options.csv", "main_cross_question_validations.csv")
-  create_survey_from_lib_tasks("ANZNN data form (real)", "real_main_questions.csv", "real_main_question_options.csv", "real_main_cross_question_validations.csv")
-  create_survey_from_lib_tasks("ANZNN follow-up data form", "followup_survey_questions.csv", "followup_survey_question_options.csv", "followup_cross_question_validations.csv")
+  create_survey_from_lib_tasks("ANZNN data form (real)", "main_questions.csv", "main_question_options.csv", "main_cross_question_validations.csv", 'test_data/survey/real_survey')
+  create_survey_from_lib_tasks("ANZNN follow-up data form (real)", "followup_questions.csv", "followup_question_options.csv", "followup_cross_question_validations.csv", 'test_data/survey/real_survey')
   create_survey_from_lib_tasks("Test data form", "test_survey_questions.csv", "test_survey_question_options.csv", "test_cross_question_validations.csv")
 end
 
-def create_survey_from_lib_tasks(name, question_file, options_file, cross_question_validations_file)
-  path_to = ->(filename){Rails.root.join 'lib/tasks', filename}
+def create_survey_from_lib_tasks(name, question_file, options_file, cross_question_validations_file, dir='lib/tasks')
+  path_to = ->(filename){Rails.root.join dir, filename}
   create_survey(name, path_to[question_file], path_to[options_file], path_to[cross_question_validations_file])
 end
 

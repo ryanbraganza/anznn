@@ -1,0 +1,129 @@
+code,option_value,label,hint_text,option_order
+Sex,1,Male,,0
+Sex,2,Female,,1
+Sex,3,Ambiguous - or indeterminate.,,2
+Sex,0,Unknown ,Information not available.,3
+Plurality,0,Singleton,Only one baby born.,0
+Plurality,1,Twins,Two babies,1
+Plurality,2,Triplets,Three babies,2
+Plurality,3,Quads,Four babies,3
+Plurality,4,Quintuplets,Five babies,4
+Plurality,5,Sextuplets,Six babies,5
+Plurality,6,Other,,6
+Plurality,99,Not stated,,7
+BrthOrd,0,Singleton,,0
+BrthOrd,1,First of a multiple birth,,1
+BrthOrd,2,Second of a multiple birth,,2
+BrthOrd,3,Third of a multiple birth,,3
+BrthOrd,4,Fourth of a multiple birth,,4
+BrthOrd,5,Fifth of a multiple birth,,5
+BrthOrd,6,Sixth of a multiple birth,,6
+BrthOrd,7,Other,,7
+BrthOrd,99,Not stated,,8
+Outcm2or3,0,"No, child died after discharge from hospital to home and prior to the 2 to 3 year follow-up",,0
+Outcm2or3,-1,"Yes, survived to the 2 to 3 year follow-up",,1
+Outcm2or3,99,Unknown ,Outcome is unknown,2
+Outcmfup,1,Formal assessment using Bayley III or Griffiths,,0
+Outcmfup,2,Information obtained but a formal assessment not done,,1
+Outcmfup,3,Child is unable to be assessed due to severe developmental delay,,2
+Outcmfup,4,Child is unable to be assessed due to no-compliance,,3
+Outcmfup,5,Lost,The child has been lost to follow-up,4
+EnglstLang,0,"No, English is not the first language spoken at home",,0
+EnglstLang,-1,"Yes, English is the first language at home",,1
+EnglstLang,99,Unknown ,,2
+Heartest,0,Not tested,,0
+Heartest,1,Normal hearing result (no hearing aid),,1
+Heartest,2,Normal hearing result with hearing aid,,2
+Heartest,3,Abnormal hearing result (no hearing aid),,3
+Heartest,4,Abnormal hearing result with hearing aid,,4
+Heartest,99,Result unknown,,5
+Hearaid,0,No hearing aid prescribed,,0
+Hearaid,1,Unilateral hearing aid prescribed,,1
+Hearaid,2,Bilateral hearing aid prescribed,,2
+Hearaid,99,Unknown ,,3
+CochImplt,0,No cochlear implant,,0
+CochImplt,1,Unilateral cochlear implant,,1
+CochImplt,2,Bilateral cochlear implants,,2
+CochImplt,99,Unknown ,,3
+Vision,0,Normal Ophthalmologist assessment,,0
+Vision,1,Abnormal Ophthalmologist assessment,,1
+Vision,2,Eyes not examined,,2
+Vision,99,Unknown ,,3
+Blind,0,No blindness (>=6/60 in both eyes),,0
+Blind,1,"Yes, blind in one eye (<6/60 in one eye)",,1
+Blind,2,"Yes, blind in both eyes (<6/60 in both eye)",,2
+Blind,99,Vision status is unknown,,3
+SpchDis,0,Normal speech at 2-3 years,,0
+SpchDis,1,Mostly intelligible speech but not normal,,1
+SpchDis,2,Some intelligible speech but not normal,,2
+SpchDis,3,Little or no intelligible speech,,3
+SpchDis,99,Unknown ,,4
+SpchDel,0,Uses phrases and sentences normally for age 2-3 years,,0
+SpchDel,1,Limited use of phrases and sentences for age (delayed language development),,1
+SpchDel,2,Uses single or two word phrases or signs (moderate to severe delay),,2
+SpchDel,3,No meaningful words or phrases (profound delay),,3
+SpchDel,99,Unknown ,,4
+Respfup,0,Normal,No problems,0
+Respfup,1,Recurrent wheeze +/- medications,,1
+Respfup,2,Chronic wheeze +/- medications,,2
+Respfup,99,Unknown ,,3
+Respfup1,0,No airway injury present,,0
+Respfup1,1,Abnormal voice,"Raspy, soft voice, cannot shout",1
+Respfup1,2,Tracheal stenosis or stridor,,2
+Respfup1,3,Nasal-septal injury,,3
+Respfup1,99,Unknown ,,4
+RespSprt,0,No respiratory support,,0
+RespSprt,1,Continued ventilator support,,1
+RespSprt,2,Oxygen,,2
+RespSprt,3,Tracheotomy,,3
+RespSprt,99,Unknown ,,4
+GIT,0,Normal gastrointestinal status,No problems with feeding,0
+GIT,1,Abnormal gastrointestinal status,Long term problems since discharge from hospital,1
+GIT,99,Unknown ,,2
+GITfeed,0,No therapy,,0
+GITfeed,1,Nasogastric tube (NGT),,1
+GITfeed,2,Parenteral nutrition (PN),,2
+GITfeed,3,Percutaneous endoscopic gastrostomy (PEG) feeding,,3
+GITfeed,99,Unknown ,,4
+Renal,0,Normal renal function,,0
+Renal,1,Abnormal renal function,,1
+Renal,99,Unknown ,,2
+RenalDis,0,No renal disease,,0
+RenalDis,1,Dialysis,,1
+RenalDis,2,Awaiting a transplant,,2
+RenalDis,3,Completed transplant,,3
+RenalDis,99,Unknown ,,4
+Motor,0,Normal motor assessment,,0
+Motor,1,Abnormal motor assessment,,1
+Motor,99,Unknown ,,2
+Motorwalk,0,Normal/minimal delay,walking by 15 months,0
+Motorwalk,1,Mild delay,walking independently by 2 years,1
+Motorwalk,2,Moderate delay,presumed will walk by 4 years,2
+Motorwalk,3,Severe delay,unlikely to ever walk,3
+Motorwalk,99,Unknown ,,4
+TypeCP,1,Spastic monoplegia,,0
+TypeCP,2,Spastic hemiplegia,,1
+TypeCP,3,Spastic diplegia,,2
+TypeCP,4,Spastic triplegia,,3
+TypeCP,5,Spastic quadriplegia,,4
+TypeCP,6,Ataxic,,5
+TypeCP,7,"Dyskinetic CP, mainly athetoid",,6
+TypeCP,8,"Dyskinetic CP, mainly dystonic",,7
+TypeCP,9,Hypotonic CP,,8
+TypeCP,10,Dystonesia (2-3 yrs only),,9
+TypeCP,11,Mixed ataxia (2-3 yrs only),,10
+TypeCP,99,Unknown ,,11
+GMFCS,1,Level I,Children floor sit with both hands free to manipulate objects. Movements in and out of floor sitting and standing are performed without adult assistance. Children walk as the preferred method of mobility without the need for any assistive mobility device.,0
+GMFCS,2,Level II,"Children floor sit but may have difficulty with balance when both hands are free to manipulate objects. Movements in and out of sitting are performed without adult assistance. Children pull to stand on a stable surface. Children crawl on hands and knees with a reciprocal pattern, cruise holding not furniture and walk using an assistive mobility device as preferred methods of mobility.",1
+GMFCS,3,Level III,"Children maintain floor sitting often by ""W-sitting"" (sitting between flexed and internally rotated hips and knees) and may require adult assistance to assume sitting. Children creep on their stomach or crawl on hands and knees (often without reciprocal leg movements) as their primary methods of self-mobility. Children may pull to stand on a stable surface and cruise short distances. Children may walk short distances indoors using a hand-held mobility device (walker) and adult assistance for steering and turning.",2
+GMFCS,4,Level IV,"Children floor sit when placed, but are unable to maintain alignment and balance without use of their hands for support. Children frequently require adaptive equipment for sitting and standing. Self-mobility for short distances (within a room) is achieved through rolling, creeping on stomach, or crawling on hands and knees without reciprocal leg movement.",3
+GMFCS,5,Level V,"Physical impairments restrict voluntary control of movement and the ability to maintain antigravity head and trunk postures. All areas of motor function are limited. Functional limitations in sitting and standing are not fully compensated for through the use of adaptive equipment and assistive technology. At level V, children have no means of independent movement and are transported. Some children achieve self-mobility using a powered wheelchair with extensive adaptations.",4
+BayleyDevTest,0,No,,0
+BayleyDevTest,-1,Yes,,1
+BayleyDevTest,99,Unknown ,,2
+GMDS_ER,0,No,,0
+GMDS_ER,-1,Yes,,1
+GMDS_ER,99,Unknown ,,2
+OthDevTests,0,No,,0
+OthDevTests,-1,Yes,,1
+OthDevTests,99,Unknown ,,2

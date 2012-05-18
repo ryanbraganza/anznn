@@ -1,8 +1,0 @@
-code,option_value,label,hint_text,option_order
-SEX,1,Male,,0
-SEX,2,Female,,1
-SEX,3,Ambiguous - or indeterminate.,,2
-SEX,0,Unknown - Information not available.,,3
-Outcm2or3,-1,"Yes, survived to the two or three year checkup",,0
-Outcm2or3,0,"No, child died after discharge from hospital to home",,1
-Outcm2or3,99,Uknown,,2
