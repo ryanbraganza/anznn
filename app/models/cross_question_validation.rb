@@ -295,7 +295,21 @@ class CrossQuestionValidation < ActiveRecord::Base
     related_answer && !related_answer.raw_answer
   }
 
-  # special rules
+  register_checker 'const_implies_one_of_const', lambda { |answer, related_answer, checker_params|
+    break true unless const_meets_condition?(answer.comparable_answer, checker_params[:operator], checker_params[:constant])
+    # we know the answer meets the criteria, so now check if any of the related ones have the correct value
+    results = checker_params[:related_question_ids].collect do |question_id|
+      related_answer = answer.response.get_answer_to(question_id)
+      if related_answer
+        const_meets_condition?(related_answer.comparable_answer, checker_params[:conditional_operator], checker_params[:conditional_constant])
+      else
+        false
+      end
+    end
+    results.include?(true)
+  }
+
+# special rules
 
   register_checker 'special_dual_comparison', lambda { |answer, related_answer, checker_params|
     first = answer.comparable_answer.blank? ? false : const_meets_condition?(answer.comparable_answer,

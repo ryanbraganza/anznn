@@ -236,3 +236,4 @@ SurfDate,Surf,,,,set_implies_present,"If Surf is 2-7, SurfDate must be a date",,
 SurfTime ,Surf,,,,set_implies_present,"If Surf is 2-7, SurfTime must be a time",,,range,"[2,7]"
 Late_infection,Date_Linf1,,,,set_implies_present,"If Late_infection is not 0 or 99, Date_Linf1 must be a date",,,between,"[0,99]"
 Late_infection,Name_Linf1,,,,set_implies_present,"If Late_infection is not 0 or 99, Name_Linf1 must not be blank",,,between,"[0,99]"
+Other_prob,,"PTL, PET, APH, IUGR, F_distress, Other, ANDiag_",,,const_implies_one_of_const,"If Other_prob is -1, at least one of PTL, PET, APH, IUGR, F_distress, Other, ANDiag_ must be -1",==,-1,,,==,-1

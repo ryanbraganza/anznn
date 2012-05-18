@@ -362,6 +362,18 @@ describe CrossQuestionValidation do
         end
       end
 
+     describe 'const implies one of const' do
+        before :each do
+          @error_message = 'q2 or q3 must be -1 if q1 is 99'
+          @q1 = Factory :question, section: @section, question_type: 'Choice'
+          @q2 = Factory :question, section: @section, question_type: 'Integer'
+          @q2 = Factory :question, section: @section, question_type: 'Choice'
+          Factory :cross_question_validation, question: @q1, related_question_ids: [@q2.id, @q3.id], error_message: @error_message, operator: '==', constant: 99, conditional_operator: '==', conditional_constant: -1
+        end
+        it "write some tests" do
+          pending
+        end
+      end
     end
 
     describe "Blank Unless " do
