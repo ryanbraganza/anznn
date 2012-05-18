@@ -113,13 +113,23 @@ div.fatalwarning label {
   background: none;
 }
 
+#content_wrapper .container { position: relative; }
+
 /* help box doesn't show in ie6 when the position is fixed */
 #help_box {
-  position: relative;
+  position: fixed;
   overflow: auto;
   float: right;
   top: 110px;
   bottom: 40px;
   right: 0;
   margin-right: 0;
+  margin-top: 50px;
+  height: 500px;
 }
+
+* html #help_box { 
+  position:absolute; bottom:auto; top:expression(eval(document.documentElement.scrollTop));
+}
+
+
