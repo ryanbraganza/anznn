@@ -141,9 +141,19 @@ class Response < ActiveRecord::Base
     Question.find(missing_mandatory_question_ids)
   end
 
+  #TODO: test me
   def get_answer_to(question_id)
     # this filter through the answer object rather than using find, as we want to use it when we haven't yet saved the objects - DON'T CHANGE THIS BEHAVIOUR
     answers.find { |a| a.question_id == question_id }
+  end
+
+  #TODO: test me
+  def comparable_answer_or_nil_for_question_with_code(question_code)
+    question = survey.questions.where(:code => question_code).first
+    raise "No question with code #{question_code}" unless question
+    answer = get_answer_to(question.id)
+    return nil unless answer
+    answer.comparable_answer
   end
 
   private

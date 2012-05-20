@@ -20,9 +20,10 @@ class CrossQuestionValidation < ActiveRecord::Base
          self_comparison
          special_dual_comparison
          special_o2_a
-         special_dob)
+         special_dob
+         special_rop_prem_rop_vegf)
 
-  RULES_WITH_NO_RELATED = 'special_dob'
+  RULES_WITH_NO_RELATED = %w(special_dob special_rop_prem_rop_vegf)
 
   RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL = %w(special_dual_comparison)
   RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present special_dual_comparison)
@@ -357,4 +358,21 @@ class CrossQuestionValidation < ActiveRecord::Base
   register_checker 'special_dob', lambda { |answer, unused_related_answer, checker_params|
     answer.date_answer.year == answer.response.year_of_registration
   }
+
+  register_checker 'special_rop_prem_rop_vegf', lambda { |answer, ununused_related_answer, checker_params|
+    #If ROPeligibleExam is -1 and (Gest is <32|Wght is <1500) and ROP is 0, ROP_VEGF must be 0
+
+    # if the answer is 0, no need to check further
+    break true if answer.comparable_answer == 0
+
+    break true unless answer.response.comparable_answer_or_nil_for_question_with_code('ROPeligibleExam') == -1
+    break true unless answer.response.comparable_answer_or_nil_for_question_with_code('ROP') == 0
+    gest = answer.response.comparable_answer_or_nil_for_question_with_code('Gest')
+    weight = answer.response.comparable_answer_or_nil_for_question_with_code('Wght')
+    break true unless gest < 32 || weight < 1500
+    # if we get here, all the conditions are met, and ROP_VEGF is not 0, so its an error
+    false
+  }
+
+
 end
