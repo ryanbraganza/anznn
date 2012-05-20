@@ -16,11 +16,13 @@ class CrossQuestionValidation < ActiveRecord::Base
          present_implies_present
          const_implies_present
          set_implies_present
+         const_implies_one_of_const
          self_comparison
          special_dual_comparison
          special_o2_a
          special_dob)
 
+  RULES_WITH_NO_RELATED = 'special_dob'
 
   RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL = %w(special_dual_comparison)
   RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present special_dual_comparison)
@@ -46,6 +48,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   serialize :conditional_set, Array
 
   def one_of_related_or_list_or_labels
+    return if RULES_WITH_NO_RELATED.include?(rule)
     unless [related_question_id, related_question_ids, related_rule_ids].count(&:present?) == 1
       errors[:base] << "invalid cqv - only one of related question, list of questions or list of rules - " +
           "#{related_question_id.inspect},#{related_question_ids.inspect},#{related_rule_ids.inspect}"
