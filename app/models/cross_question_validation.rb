@@ -1,4 +1,12 @@
 class CrossQuestionValidation < ActiveRecord::Base
+
+  RULES_WITH_NO_RELATED = %w(special_dob
+                             special_rop_prem_rop_vegf_1
+                             special_rop_prem_rop_vegf_2
+                             special_rop_prem_rop
+                             special_rop_prem_rop_retmaturity
+                             special_rop_prem_rop_roprx_1
+                             special_rop_prem_rop_roprx_2)
   VALID_RULES =
       %w(comparison
          present_implies_constant
@@ -19,11 +27,7 @@ class CrossQuestionValidation < ActiveRecord::Base
          const_implies_one_of_const
          self_comparison
          special_dual_comparison
-         special_o2_a
-         special_dob
-         special_rop_prem_rop_vegf)
-
-  RULES_WITH_NO_RELATED = %w(special_dob special_rop_prem_rop_vegf)
+         special_o2_a) + RULES_WITH_NO_RELATED
 
   RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL = %w(special_dual_comparison)
   RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present special_dual_comparison)
@@ -359,7 +363,22 @@ class CrossQuestionValidation < ActiveRecord::Base
     answer.date_answer.year == answer.response.year_of_registration
   }
 
-  register_checker 'special_rop_prem_rop_vegf', lambda { |answer, ununused_related_answer, checker_params|
+  register_checker 'special_rop_prem_rop_vegf_1', lambda { |answer, ununused_related_answer, checker_params|
+    #If ROPeligibleExam is -1 and (Gest is <32|Wght is <1500) and ROP is between 1 and 4, ROP_VEGF must be 0 or -1
+
+    # if the answer is 0 or -1, no need to check further
+    break true if [0, -1].include?(answer.comparable_answer)
+
+    break true unless answer.response.comparable_answer_or_nil_for_question_with_code('ROPeligibleExam') == -1
+    break true unless (1..4).include?(answer.response.comparable_answer_or_nil_for_question_with_code('ROP'))
+    gest = answer.response.comparable_answer_or_nil_for_question_with_code('Gest')
+    weight = answer.response.comparable_answer_or_nil_for_question_with_code('Wght')
+    break true unless (gest && gest < 32) || (weight && weight < 1500)
+    # if we get here, all the conditions are met, and ROP_VEGF is not 0 or -1, so its an error
+    false
+  }
+
+  register_checker 'special_rop_prem_rop_vegf_2', lambda { |answer, ununused_related_answer, checker_params|
     #If ROPeligibleExam is -1 and (Gest is <32|Wght is <1500) and ROP is 0, ROP_VEGF must be 0
 
     # if the answer is 0, no need to check further
@@ -369,10 +388,67 @@ class CrossQuestionValidation < ActiveRecord::Base
     break true unless answer.response.comparable_answer_or_nil_for_question_with_code('ROP') == 0
     gest = answer.response.comparable_answer_or_nil_for_question_with_code('Gest')
     weight = answer.response.comparable_answer_or_nil_for_question_with_code('Wght')
-    break true unless gest < 32 || weight < 1500
+    break true unless (gest && gest < 32) || (weight && weight < 1500)
     # if we get here, all the conditions are met, and ROP_VEGF is not 0, so its an error
     false
   }
 
+  register_checker 'special_rop_prem_rop', lambda { |answer, ununused_related_answer, checker_params|
+    #If ROPeligibleExam is -1 and (Gest is <32|Wght is <1500), ROP must be between 0 and 4
 
+    # if the answer is 1..4, no need to check further
+    break true if (0..4).include?(answer.comparable_answer)
+
+    break true unless answer.response.comparable_answer_or_nil_for_question_with_code('ROPeligibleExam') == -1
+    gest = answer.response.comparable_answer_or_nil_for_question_with_code('Gest')
+    weight = answer.response.comparable_answer_or_nil_for_question_with_code('Wght')
+    break true unless (gest && gest < 32) || (weight && weight < 1500)
+    # if we get here, all the conditions are met, and ROP is not 0..4, so its an error
+    false
+  }
+
+  register_checker 'special_rop_prem_rop_retmaturity', lambda { |answer, ununused_related_answer, checker_params|
+    #If ROPeligibleExam is -1 and (Gest is <32|Wght is <1500) and ROP is between 0 and 4, Retmaturity must be -1 or 0
+
+    # if the answer is -1 or 0, no need to check further
+    break true if [0, -1].include?(answer.comparable_answer)
+
+    break true unless answer.response.comparable_answer_or_nil_for_question_with_code('ROPeligibleExam') == -1
+    break true unless (0..4).include?(answer.response.comparable_answer_or_nil_for_question_with_code('ROP'))
+    gest = answer.response.comparable_answer_or_nil_for_question_with_code('Gest')
+    weight = answer.response.comparable_answer_or_nil_for_question_with_code('Wght')
+    break true unless (gest && gest < 32) || (weight && weight < 1500)
+    # if we get here, all the conditions are met, and ROP is not 1..4, so its an error
+    false
+  }
+
+  register_checker 'special_rop_prem_rop_roprx_1', lambda { |answer, ununused_related_answer, checker_params|
+    #If ROPeligibleExam is -1 and (Gest is <32|Wght is <1500) and ROP is 0 or 1 or 5, ROPRx must be 0
+
+    # if the answer is -1 or 0, no need to check further
+    break true if answer.comparable_answer == 0
+
+    break true unless answer.response.comparable_answer_or_nil_for_question_with_code('ROPeligibleExam') == -1
+    break true unless [0, 1, 5].include?(answer.response.comparable_answer_or_nil_for_question_with_code('ROP'))
+    gest = answer.response.comparable_answer_or_nil_for_question_with_code('Gest')
+    weight = answer.response.comparable_answer_or_nil_for_question_with_code('Wght')
+    break true unless (gest && gest < 32) || (weight && weight < 1500)
+    # if we get here, all the conditions are met, and ROP is not 1..4, so its an error
+    false
+  }
+
+  register_checker 'special_rop_prem_rop_roprx_2', lambda { |answer, ununused_related_answer, checker_params|
+    #If ROPeligibleExam is -1 and (Gest is <32|Wght is <1500) and ROP is 3 or 4, ROPRx must be -1
+
+    # if the answer is -1 or 0, no need to check further
+    break true if answer.comparable_answer == -1
+
+    break true unless answer.response.comparable_answer_or_nil_for_question_with_code('ROPeligibleExam') == -1
+    break true unless [3, 4].include?(answer.response.comparable_answer_or_nil_for_question_with_code('ROP'))
+    gest = answer.response.comparable_answer_or_nil_for_question_with_code('Gest')
+    weight = answer.response.comparable_answer_or_nil_for_question_with_code('Wght')
+    break true unless (gest && gest < 32) || (weight && weight < 1500)
+    # if we get here, all the conditions are met, and ROP is not 1..4, so its an error
+    false
+  }
 end
