@@ -6,7 +6,9 @@ class CrossQuestionValidation < ActiveRecord::Base
                              special_rop_prem_rop
                              special_rop_prem_rop_retmaturity
                              special_rop_prem_rop_roprx_1
-                             special_rop_prem_rop_roprx_2)
+                             special_rop_prem_rop_roprx_2
+                             special_namesurg2
+                             special_namesurg3)
   VALID_RULES =
       %w(comparison
          present_implies_constant
@@ -461,5 +463,26 @@ class CrossQuestionValidation < ActiveRecord::Base
     set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
   }
 
+  register_checker 'special_namesurg2', lambda { |answer, ununused_related_answer, checker_params|
+    #If DateSurg2=DateSurg1, NameSurg2 must not be the same as NameSurg1 (rule is on NameSurg2)
+    raise 'Can only be used on question NameSurg2' unless answer.question.code == 'NameSurg2'
+
+    datesurg1 = answer.response.comparable_answer_or_nil_for_question_with_code('DateSurg1')
+    datesurg2 = answer.response.comparable_answer_or_nil_for_question_with_code('DateSurg2')
+    break true unless (datesurg1 && datesurg2 && (datesurg1 == datesurg2))
+    namesurg1 = answer.response.comparable_answer_or_nil_for_question_with_code('NameSurg1')
+    break true unless namesurg1 == answer.comparable_answer
+  }
+
+  register_checker 'special_namesurg3', lambda { |answer, ununused_related_answer, checker_params|
+    #If DateSurg3=DateSurg2, NameSurg3 must not be the same as NameSurg2 (rule is on NameSurg3)
+    raise 'Can only be used on question NameSurg3' unless answer.question.code == 'NameSurg3'
+
+    datesurg2 = answer.response.comparable_answer_or_nil_for_question_with_code('DateSurg2')
+    datesurg3 = answer.response.comparable_answer_or_nil_for_question_with_code('DateSurg3')
+    break true unless (datesurg2 && datesurg3 && (datesurg2 == datesurg3))
+    namesurg2 = answer.response.comparable_answer_or_nil_for_question_with_code('NameSurg2')
+    break true unless namesurg2 == answer.comparable_answer
+  }
 
 end
