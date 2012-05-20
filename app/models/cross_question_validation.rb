@@ -168,7 +168,7 @@ class CrossQuestionValidation < ActiveRecord::Base
 
   register_checker 'const_implies_const', lambda { |answer, related_answer, checker_params|
     break true unless answer.answer_value.present? && related_answer.answer_value.present?
-    break true unless const_meets_condition?(related_answer.answer_value, checker_params[:conditional_operator], checker_params[:conditional_constant])
+    break true unless const_meets_condition?(related_answer.comparable_answer, checker_params[:conditional_operator], checker_params[:conditional_constant])
     const_meets_condition?(answer.comparable_answer, checker_params[:operator], checker_params[:constant])
   }
 
