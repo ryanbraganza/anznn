@@ -155,7 +155,7 @@ describe CrossQuestionValidation do
           @error_message = 'q2 was date, q1 was not expected constant (-1)'
           @q1 = Factory :question, section: @section, question_type: 'Integer'
           @q2 = Factory :question, section: @section, question_type: 'Date'
-          Factory :cqv_date_implies_constant, question: @q1, related_question: @q2, error_message: @error_message, operator: '==', constant: -1
+          Factory :cqv_present_implies_constant, question: @q1, related_question: @q2, error_message: @error_message, operator: '==', constant: -1
         end
         it "handles nils" do
           standard_cqv_test({}, {}, [])

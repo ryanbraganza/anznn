@@ -1,7 +1,7 @@
 class CrossQuestionValidation < ActiveRecord::Base
   VALID_RULES =
       %w(comparison
-         date_implies_constant
+         present_implies_constant
          const_implies_const
          const_implies_set
          set_implies_const
@@ -160,9 +160,10 @@ class CrossQuestionValidation < ActiveRecord::Base
     const_meets_condition?(answer.comparable_answer, checker_params[:operator], related_answer.answer_with_offset(offset))
   }
 
-  register_checker 'date_implies_constant', lambda { |answer, related_answer, checker_params|
-    break true unless related_answer.answer_value.is_a?(Date) || related_answer.answer_value.is_a?(DateInputHandler)
-    break true unless answer.answer_value.present?
+  register_checker 'present_implies_constant', lambda { |answer, related_answer, checker_params|
+    # e.g. If StartCPAPDate is a date, CPAPhrs must be greater than 0 (answer = CPAPhrs, related = StartCPAPDate)
+    # return if related is not present (i.e. not answered or not answered correctly)
+    break true unless related_answer && !related_answer.raw_answer
     const_meets_condition?(answer.comparable_answer, checker_params[:operator], checker_params[:constant])
   }
 
