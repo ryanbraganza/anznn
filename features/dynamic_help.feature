@@ -23,6 +23,7 @@ Feature: Dynamic Help
       | 1            | No    | not true     | 1            |
     And I am ready to enter responses as data.provider@intersect.org.au
 
+    @wip
   Scenario Outline: Viewing the help text for a question
     When I focus on question "<question>"
     Then I should see the sidebar help for "<question>"
@@ -36,6 +37,7 @@ Feature: Dynamic Help
     | Time Q    |
     | No Guide Q    |
 
+      @wip
   Scenario Outline: Viewing and hiding the help text for a question
     When I focus on question "<question>"
     Then I focus on question "<question_2>"
