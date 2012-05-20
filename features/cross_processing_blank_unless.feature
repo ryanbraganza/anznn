@@ -18,6 +18,7 @@ Feature: Cross Question Blank-Unless Validations
       | Num Q2   | Integer       |
       | DOB Qn   | Date          |
       | Date Q1  | Date          |
+      | Date Q2  | Date          |
 
 
   Scenario: CQV Failure - Blank Unless Constant - This Qn must be blank unless other question is a specified number
@@ -64,15 +65,51 @@ Feature: Cross Question Blank-Unless Validations
       | Num Q1   | 5      |
     Then I should not see "q2 was outside 0...99 (exclusive), q1 must be blank"
 
+######
+
+  Scenario: CQV Pass - Blank Unless Present - This Qn must be blank unless other question is present (testing with dates)
+    Given I have the following cross question validations
+      | question | related | rule                 | error_message                  |
+      | Date Q1  | Date Q2 | blank_unless_present | q2 was blank, q1 must be blank |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer   |
+      | Date Q2  | 2012/1/1 |
+      | Date Q1  | 2012/1/1 |
+    Then I should not see "q2 was blank, q1 must be blank"
+
+  Scenario: CQV Pass - Blank Unless Present - This Qn must be blank unless other question is present (testing with dates) - invalid date
+    Given I have the following cross question validations
+      | question | related | rule                 | error_message                  |
+      | Date Q1  | Date Q2 | blank_unless_present | q2 was blank, q1 must be blank |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer   |
+      | Date Q2  | 2012/2/31 |
+      | Date Q1  | 2012/1/1 |
+    Then I should not see "q2 was blank, q1 must be blank"
+
+ Scenario: CQV Failure - Blank Unless Present - This Qn must be blank unless other question is present (testing with dates) - blank date
+    Given I have the following cross question validations
+      | question | related | rule                 | error_message                  |
+      | Date Q1  | Date Q2 | blank_unless_present | q2 was blank, q1 must be blank |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer   |
+      | Date Q1  | 2012/1/1 |
+    Then I should see "q2 was blank, q1 must be blank"
+
+######
+
   Scenario: CQV Failure - Blank Unless days(Some Qn) >= 60
     Given I have the following cross question validations
       | question | related_question_list | rule                    | conditional_operator | conditional_constant | error_message                 |
       | Num Q1   | DOB Qn, Date Q1       | blank_unless_days_const | >=                   | 60                   | q2 was < 60, q1 must be blank |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
-      | question | answer     |
-      | Num Q1   | 5          |
-      | DOB Qn   | 2012/1/1 |
+      | question | answer    |
+      | Num Q1   | 5         |
+      | DOB Qn   | 2012/1/1  |
       | Date Q1  | 2012/1/31 |
     Then I should see "q2 was < 60, q1 must be blank"
 
@@ -82,8 +119,8 @@ Feature: Cross Question Blank-Unless Validations
       | Num Q1   | DOB Qn, Date Q1       | blank_unless_days_const | >=                   | 60                   | q2 was < 60, q1 must be blank |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
-      | question | answer     |
-      | Num Q1   | 5          |
+      | question | answer   |
+      | Num Q1   | 5        |
       | DOB Qn   | 2012/1/1 |
       | Date Q1  | 2012/4/1 |
     Then I should not see "q2 was < 60, q1 must be blank"

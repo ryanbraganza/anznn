@@ -35,6 +35,8 @@ Feature: Cross Question Special Rules
       | CeaseCPAPDate  | Date          |
       | CeaseHiFloDate | Date          |
       | USd6wk         | Date          |
+      | Date Q1        | Date          |
+      | Date Q2        | Date          |
 
 
 
@@ -266,10 +268,47 @@ Feature: Cross Question Special Rules
       | Num Q2   | Num Q1, USd6wk        | set_present_implies_set | Err - set_present_implies_set | range        | [0,4] | range                    | [1,4]           |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
-      | question | answer   |
-      | Num Q1   | 1        |
-      | Num Q2   | 5        |
+      | question | answer |
+      | Num Q1   | 1      |
+      | Num Q2   | 5      |
     Then I should not see "Err - set_present_implies_set"
 
 
 ###################
+
+
+  Scenario: CQV Fail - comparison_const_days - out of range
+  # days between Date_Linf1 and Date_Linf2 >14
+    Given I have the following cross question validations
+      | question | related_question_list | rule                  | error_message               | operator | constant |
+      | Num Q2   | Num Q1, USd6wk        | comparison_const_days | Err - comparison_const_days | >        | 14       |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer   |
+      | Date Q1  | 2012/1/1 |
+      | Date Q2  | 2012/1/2 |
+    Then I should not see "Err - comparison_const_days"
+
+  Scenario: CQV Fail - comparison_const_days - out of range (switched order)
+  # days between Date_Linf1 and Date_Linf2 >14
+    Given I have the following cross question validations
+      | question | related_question_list | rule                  | error_message               | operator | constant |
+      | Num Q2   | Num Q1, USd6wk        | comparison_const_days | Err - comparison_const_days | >        | 14       |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer   |
+      | Date Q1  | 2012/1/2 |
+      | Date Q2  | 2012/1/1 |
+    Then I should not see "Err - comparison_const_days"
+
+  Scenario: CQV Pass - comparison_const_days - in range
+  # days between Date_Linf1 and Date_Linf2 >14
+    Given I have the following cross question validations
+      | question | related_question_list | rule                  | error_message               | operator | constant |
+      | Num Q2   | Num Q1, USd6wk        | comparison_const_days | Err - comparison_const_days | >        | 14       |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer   |
+      | Date Q1  | 2012/2/1 |
+      | Date Q2  | 2012/1/1 |
+    Then I should not see "Err - comparison_const_days"

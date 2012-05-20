@@ -19,6 +19,7 @@ class CrossQuestionValidation < ActiveRecord::Base
          blank_unless_const
          blank_unless_set
          blank_unless_days_const
+         blank_unless_present
          multi_rule_any_pass
          multi_rule_if_then
          multi_hours_date_to_date
@@ -31,10 +32,11 @@ class CrossQuestionValidation < ActiveRecord::Base
          special_dual_comparison
          special_o2_a
          set_gest_wght_implies_set
-         set_present_implies_set) + RULES_WITH_NO_RELATED
+         set_present_implies_set
+         comparison_const_days) + RULES_WITH_NO_RELATED
 
   RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL = %w(special_dual_comparison)
-  RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present special_dual_comparison)
+  RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present special_dual_comparison blank_unless_present)
 
   SAFE_OPERATORS = %w(== <= >= < > !=)
   ALLOWED_SET_OPERATORS = %w(included excluded range between)
@@ -228,6 +230,11 @@ class CrossQuestionValidation < ActiveRecord::Base
     #we can assume that at this point, we have a value in both, so we just need to see if the lhs rule passes (content in rhs unimportant)
     set_meets_condition?(checker_params[:conditional_set], checker_params[:conditional_set_operator], related_answer.comparable_answer)
 
+  }
+
+  register_checker 'blank_unless_present', lambda { |answer, related_answer, checker_params|
+    break true unless answer.answer_value.present?
+    related_answer.present? && related_answer.answer_value.present?
   }
 
   register_checker 'multi_rule_any_pass', lambda { |answer, related_answer, checker_params|
@@ -496,5 +503,13 @@ class CrossQuestionValidation < ActiveRecord::Base
     namesurg2 = answer.response.comparable_answer_or_nil_for_question_with_code('NameSurg2')
     break true unless namesurg2 == answer.comparable_answer
   }
+
+
+  register_checker 'comparison_const_days', lambda { |answer, related_answer, checker_params|
+    break true unless related_answer.date_answer.present? && answer.date_answer.present?
+    delta_days = (related_answer.date_answer - answer.date_answer).to_i.abs
+    const_meets_condition?(delta_days, checker_params[:operator], checker_params[:constant])
+  }
+
 
 end
