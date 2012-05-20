@@ -218,12 +218,12 @@ class CrossQuestionValidation < ActiveRecord::Base
   }
 
   register_checker 'blank_unless_const', lambda { |answer, related_answer, checker_params|
-    break true unless answer.comparable_answer.present?
-    break false unless related_answer.comparable_answer.present? # Fails if RHS populated and LHS is blank (hence doesn't meet conditions)
+    # E.g. If Died_ is 0, DiedDate must be blank (rule on DiedDate)
 
-    #we can assume that at this point, we have a value in both, so we just need to see if the lhs rule passes (content in rhs unimportant)
-    const_meets_condition?(related_answer.comparable_answer, checker_params[:conditional_operator], checker_params[:conditional_constant])
-
+    related_meets_condition = const_meets_condition?(related_answer.comparable_answer, checker_params[:conditional_operator], checker_params[:conditional_constant])
+    break true unless related_meets_condition
+    # now fail if answer is present
+    !answer.comparable_answer.present?
   }
 
   register_checker 'blank_unless_set', lambda { |answer, related_answer, checker_params|
