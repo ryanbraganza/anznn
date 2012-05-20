@@ -47,7 +47,9 @@ module CsvSurveyOperations
 
       hash.merge(set: set, conditional_set: conditional_set)
     end
-    make_cqvs(survey, cqv_hashes)
+    failing_items = []
+    make_cqvs(survey, cqv_hashes, failing_items)
+    puts "FAILING ITEMS #{failing_items.sort}"
   end
 
   def create_survey(name, question_file, options_file=nil, cross_question_validations_file=nil)
@@ -70,32 +72,35 @@ module CsvSurveyOperations
     end
   end
 
-  def make_cqvs(survey, hashes)
+  def make_cqvs(survey, hashes, failing_items)
     label_to_cqv_id = {}
 
     # store the labelled (secondary) rules first
     hashes.each do |hash|
       rule_label = hash['rule_label']
-      make_cqv(survey, label_to_cqv_id, hash.merge(primary: false)) if rule_label.present?
+      make_cqv(survey, label_to_cqv_id, hash.merge(primary: false), failing_items) if rule_label.present?
     end
 
     #now store any rules which reference labelled rules
     hashes.each do |hash|
       rule_label = hash['rule_label']
-      make_cqv(survey, label_to_cqv_id, hash.merge(primary: true)) unless rule_label.present?
+      make_cqv(survey, label_to_cqv_id, hash.merge(primary: true), failing_items) unless rule_label.present?
     end
   end
 
-  def make_cqv(survey, label_to_cqv_id, hash)
+  def make_cqv(survey, label_to_cqv_id, hash, failing_items)
 
+    orig = hash.dup
     begin
-      orig = hash.dup
       related_question_question = hash.delete 'related_question_code'
       related_rule_labels = hash.delete 'rule_label_list'
       question_list = hash.delete 'related_question_list'
       question_question = hash.delete 'question_code'
       raise orig.inspect unless question_question
       label = hash.delete 'rule_label'
+      hash.delete 'itemnum'
+      hash.delete 'pass validation?'
+      hash.delete 'reviewed by Kali'
 
       hash[:related_question] = related_question_question.blank? ? nil : survey.questions.find_by_code!(related_question_question)
 
@@ -117,8 +122,11 @@ module CsvSurveyOperations
       validation = CrossQuestionValidation.create!(hash)
       label_to_cqv_id[label] = validation.id
     rescue
-      puts "Failed to create cqv #{hash}"
-      raise
+      puts "Failed to create cqv #{orig}, continuing anyway"
+      failing_items << orig['itemnum']
+      puts $!
+      #TODO: temporary measure while we're building the rules: add back later
+      #raise
     end
 
   end

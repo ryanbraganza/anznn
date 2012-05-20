@@ -22,8 +22,8 @@ FactoryGirl.define do
     end
 
     #Implecations
-    factory :cqv_date_implies_constant do
-      sequence(:rule) { 'date_implies_constant' }
+    factory :cqv_present_implies_constant do
+      sequence(:rule) { 'present_implies_constant' }
       operator "=="
       constant -1
     end

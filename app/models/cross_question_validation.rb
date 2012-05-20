@@ -1,7 +1,15 @@
 class CrossQuestionValidation < ActiveRecord::Base
+
+  RULES_WITH_NO_RELATED = %w(special_dob
+                             special_rop_prem_rop_vegf_1
+                             special_rop_prem_rop_vegf_2
+                             special_rop_prem_rop
+                             special_rop_prem_rop_retmaturity
+                             special_rop_prem_rop_roprx_1
+                             special_rop_prem_rop_roprx_2)
   VALID_RULES =
       %w(comparison
-         date_implies_constant
+         present_implies_constant
          const_implies_const
          const_implies_set
          set_implies_const
@@ -20,11 +28,7 @@ class CrossQuestionValidation < ActiveRecord::Base
          self_comparison
          special_dual_comparison
          special_o2_a
-         special_dob
-         special_usd6wk_a)
-
-  RULES_WITH_NO_RELATED = 'special_dob'
-  RULES_WITH_MULTIPLE_OF_RELATED_OR_LIST_OR_RULES = 'special_dob'
+         special_usd6wk_a) + RULES_WITH_NO_RELATED
 
   RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL = %w(special_dual_comparison)
   RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present special_dual_comparison)
@@ -174,9 +178,10 @@ class CrossQuestionValidation < ActiveRecord::Base
     const_meets_condition?(answer.comparable_answer, checker_params[:operator], related_answer.answer_with_offset(offset))
   }
 
-  register_checker 'date_implies_constant', lambda { |answer, related_answer, checker_params|
-    break true unless related_answer.answer_value.is_a?(Date) || related_answer.answer_value.is_a?(DateInputHandler)
-    break true unless answer.answer_value.present?
+  register_checker 'present_implies_constant', lambda { |answer, related_answer, checker_params|
+    # e.g. If StartCPAPDate is a date, CPAPhrs must be greater than 0 (answer = CPAPhrs, related = StartCPAPDate)
+    # return if related is not present (i.e. not answered or not answered correctly)
+    break true unless related_answer && !related_answer.raw_answer
     const_meets_condition?(answer.comparable_answer, checker_params[:operator], checker_params[:constant])
   }
 
@@ -369,6 +374,83 @@ class CrossQuestionValidation < ActiveRecord::Base
 
   register_checker 'special_dob', lambda { |answer, unused_related_answer, checker_params|
     answer.date_answer.year == answer.response.year_of_registration
+  }
+
+  register_checker 'special_rop_prem_rop_vegf_1', lambda { |answer, ununused_related_answer, checker_params|
+    #If ROPeligibleExam is -1 and (Gest is <32|Wght is <1500) and ROP is between 1 and 4, ROP_VEGF must be 0 or -1
+
+    # if the answer is 0 or -1, no need to check further
+    break true if [0, -1].include?(answer.comparable_answer)
+
+    break true unless answer.response.comparable_answer_or_nil_for_question_with_code('ROPeligibleExam') == -1
+    break true unless (1..4).include?(answer.response.comparable_answer_or_nil_for_question_with_code('ROP'))
+    break true unless check_gest_wght(answer)
+    # if we get here, all the conditions are met, and ROP_VEGF is not 0 or -1, so its an error
+    false
+  }
+
+  register_checker 'special_rop_prem_rop_vegf_2', lambda { |answer, ununused_related_answer, checker_params|
+    #If ROPeligibleExam is -1 and (Gest is <32|Wght is <1500) and ROP is 0, ROP_VEGF must be 0
+
+    # if the answer is 0, no need to check further
+    break true if answer.comparable_answer == 0
+
+    break true unless answer.response.comparable_answer_or_nil_for_question_with_code('ROPeligibleExam') == -1
+    break true unless answer.response.comparable_answer_or_nil_for_question_with_code('ROP') == 0
+    break true unless check_gest_wght(answer)
+    # if we get here, all the conditions are met, and ROP_VEGF is not 0, so its an error
+    false
+  }
+
+  register_checker 'special_rop_prem_rop', lambda { |answer, ununused_related_answer, checker_params|
+    #If ROPeligibleExam is -1 and (Gest is <32|Wght is <1500), ROP must be between 0 and 4
+
+    # if the answer is 1..4, no need to check further
+    break true if (0..4).include?(answer.comparable_answer)
+
+    break true unless answer.response.comparable_answer_or_nil_for_question_with_code('ROPeligibleExam') == -1
+    break true unless check_gest_wght(answer)
+    # if we get here, all the conditions are met, and ROP is not 0..4, so its an error
+    false
+  }
+
+  register_checker 'special_rop_prem_rop_retmaturity', lambda { |answer, ununused_related_answer, checker_params|
+    #If ROPeligibleExam is -1 and (Gest is <32|Wght is <1500) and ROP is between 0 and 4, Retmaturity must be -1 or 0
+
+    # if the answer is -1 or 0, no need to check further
+    break true if [0, -1].include?(answer.comparable_answer)
+
+    break true unless answer.response.comparable_answer_or_nil_for_question_with_code('ROPeligibleExam') == -1
+    break true unless (0..4).include?(answer.response.comparable_answer_or_nil_for_question_with_code('ROP'))
+    break true unless check_gest_wght(answer)
+    # if we get here, all the conditions are met, and ROP is not 1..4, so its an error
+    false
+  }
+
+  register_checker 'special_rop_prem_rop_roprx_1', lambda { |answer, ununused_related_answer, checker_params|
+    #If ROPeligibleExam is -1 and (Gest is <32|Wght is <1500) and ROP is 0 or 1 or 5, ROPRx must be 0
+
+    # if the answer is -1 or 0, no need to check further
+    break true if answer.comparable_answer == 0
+
+    break true unless answer.response.comparable_answer_or_nil_for_question_with_code('ROPeligibleExam') == -1
+    break true unless [0, 1, 5].include?(answer.response.comparable_answer_or_nil_for_question_with_code('ROP'))
+    break true unless check_gest_wght(answer)
+    # if we get here, all the conditions are met, and ROP is not 1..4, so its an error
+    false
+  }
+
+  register_checker 'special_rop_prem_rop_roprx_2', lambda { |answer, ununused_related_answer, checker_params|
+    #If ROPeligibleExam is -1 and (Gest is <32|Wght is <1500) and ROP is 3 or 4, ROPRx must be -1
+
+    # if the answer is -1 or 0, no need to check further
+    break true if answer.comparable_answer == -1
+
+    break true unless answer.response.comparable_answer_or_nil_for_question_with_code('ROPeligibleExam') == -1
+    break true unless [3, 4].include?(answer.response.comparable_answer_or_nil_for_question_with_code('ROP'))
+    break true unless check_gest_wght(answer)
+    # if we get here, all the conditions are met, and ROP is not 1..4, so its an error
+    false
   }
 
   register_checker 'special_usd6wk_a', lambda { |answer, related_answer, checker_params|
