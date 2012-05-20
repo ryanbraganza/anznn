@@ -1,6 +1,7 @@
 class CrossQuestionValidation < ActiveRecord::Base
 
   RULES_WITH_NO_RELATED = %w(special_dob
+                             self_comparison
                              special_rop_prem_rop_vegf_1
                              special_rop_prem_rop_vegf_2
                              special_rop_prem_rop
@@ -31,7 +32,6 @@ class CrossQuestionValidation < ActiveRecord::Base
          const_implies_present
          set_implies_present
          const_implies_one_of_const
-         self_comparison
          special_dual_comparison
          special_o2_a
          set_gest_wght_implies_set
