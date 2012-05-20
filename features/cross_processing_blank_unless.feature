@@ -24,7 +24,7 @@ Feature: Cross Question Blank-Unless Validations
   Scenario: CQV Failure - Blank Unless Constant - This Qn must be blank unless other question is a specified number
     Given I have the following cross question validations
       | question | related | rule               | conditional_operator | conditional_constant | error_message                  |
-      | Num Q1   | Num Q2  | blank_unless_const | ==                   | -1                   | q2 was != -1, q1 must be blank |
+      | Num Q1   | Num Q2  | blank_unless_const | !=                   | -1                   | q2 was != -1, q1 must be blank |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer |
@@ -46,7 +46,7 @@ Feature: Cross Question Blank-Unless Validations
   Scenario: CQV Pass - Blank Unless Constant - This Qn must be blank unless other question is a specified number
     Given I have the following cross question validations
       | question | related | rule               | conditional_operator | conditional_constant | error_message                  |
-      | Num Q1   | Num Q2  | blank_unless_const | ==                   | -1                   | q2 was != -1, q1 must be blank |
+      | Num Q1   | Num Q2  | blank_unless_const | !=                   | -1                   | q2 was != -1, q1 must be blank |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer |
