@@ -48,10 +48,10 @@ Feature: Cross Question Special Rules
 
   Scenario: CQV Failure - Special_O2_A -  Gest must be <32 or Wght must be <1500  when this = -1
     Given I have the following cross question validations
-      | question | related | related_question_list | rule_label_list                 | rule_label      | rule                    | error_message                            | operator | constant | conditional_operator | conditional_constant | comments                                                                                              |
-      | Gest     | Wght    |                       |                                 | gest_wght_comp  | special_dual_comparison |                                          | <        | 32       | <                    | 1500                 | only needs to be implemented once, both are required fields so survey can't be submitted if one blank |
-      | Num Q1   | Num Q1  |                       |                                 | special_o2_a_if | self_comparison         |                                          | ==       | -1       |                      |                      |                                                                                                       |
-      | Num Q1   |         |                       | special_o2_a_if, gest_wght_comp |                 | multi_rule_if_then      | this was -1; gest/weight don't meet reqs |          |          |                      |                      |                                                                                                       |
+      | question | related | related_question_list | rule_label_list                 | rule_label      | rule                    | error_message                            | operator | constant | conditional_operator | conditional_constant |
+      | Gest     | Wght    |                       |                                 | gest_wght_comp  | special_dual_comparison |                                          | <        | 32       | <                    | 1500                 |
+      | Num Q1   | Num Q1  |                       |                                 | special_o2_a_if | self_comparison         |                                          | ==       | -1       |                      |                      |
+      | Num Q1   |         |                       | special_o2_a_if, gest_wght_comp |                 | multi_rule_if_then      | this was -1; gest/weight don't meet reqs |          |          |                      |                      |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer |
@@ -62,10 +62,10 @@ Feature: Cross Question Special Rules
 
   Scenario: CQV Failure - Special_O2_A - (Gest+Gestdays + weeks(DOB and the latest date of (LastO2|CeaseCPAPDate|CeaseHiFloDate))) >36 when this = -1
     Given I have the following cross question validations
-      | question | related | related_question_list                                      | rule_label_list                    | rule_label        | rule               | error_message                  | operator | constant | conditional_operator | conditional_constant | comments |
-      | Num Q1   | Num Q1  |                                                            |                                    | special_o2_a_if   | self_comparison    |                                | ==       | -1       |                      |                      |          |
-      | Num Q1   |         | Gest, GestDays, DOB, LastO2, CeaseCPAPDate, CeaseHiFloDate |                                    | special_o2_a_then | special_o2_a       |                                |          |          |                      |                      |          |
-      | Num Q1   |         |                                                            | special_o2_a_if, special_o2_a_then |                   | multi_rule_if_then | this was -1; special_o2_a fail |          |          |                      |                      |          |
+      | question | related | related_question_list                                      | rule_label_list                    | rule_label        | rule               | error_message                  | operator | constant | conditional_operator | conditional_constant |
+      | Num Q1   | Num Q1  |                                                            |                                    | special_o2_a_if   | self_comparison    |                                | ==       | -1       |                      |                      |
+      | Num Q1   |         | Gest, GestDays, DOB, LastO2, CeaseCPAPDate, CeaseHiFloDate |                                    | special_o2_a_then | special_o2_a       |                                |          |          |                      |                      |
+      | Num Q1   |         |                                                            | special_o2_a_if, special_o2_a_then |                   | multi_rule_if_then | this was -1; special_o2_a fail |          |          |                      |                      |
 
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
@@ -81,12 +81,12 @@ Feature: Cross Question Special Rules
 
   Scenario: CQV Pass - Special_O2_A - Both cases
     Given I have the following cross question validations
-      | question | related | related_question_list                                      | rule_label_list                    | rule_label        | rule                    | error_message                            | operator | constant | conditional_operator | conditional_constant | comments                                                                                              |
-      | Num Q1   | Num Q1  |                                                            |                                    | special_o2_a_if   | self_comparison         |                                          | ==       | -1       |                      |                      |                                                                                                       |
-      | Gest     | Wght    |                                                            |                                    | gest_wght_comp    | special_dual_comparison |                                          | <        | 32       | <                    | 1500                 | only needs to be implemented once, both are required fields so survey can't be submitted if one blank |
-      | Num Q1   |         | Gest, GestDays, DOB, LastO2, CeaseCPAPDate, CeaseHiFloDate |                                    | special_o2_a_then | special_o2_a            |                                          |          |          |                      |                      |                                                                                                       |
-      | Num Q1   |         |                                                            | special_o2_a_if, gest_wght_comp    |                   | multi_rule_if_then      | this was -1; gest/weight don't meet reqs |          |          |                      |                      |                                                                                                       |
-      | Num Q1   |         |                                                            | special_o2_a_if, special_o2_a_then |                   | multi_rule_if_then      | this was -1; special_o2_a fail           |          |          |                      |                      |                                                                                                       |
+      | question | related | related_question_list                                      | rule_label_list                    | rule_label        | rule                    | error_message                            | operator | constant | conditional_operator | conditional_constant |
+      | Num Q1   | Num Q1  |                                                            |                                    | special_o2_a_if   | self_comparison         |                                          | ==       | -1       |                      |                      |
+      | Gest     | Wght    |                                                            |                                    | gest_wght_comp    | special_dual_comparison |                                          | <        | 32       | <                    | 1500                 |
+      | Num Q1   |         | Gest, GestDays, DOB, LastO2, CeaseCPAPDate, CeaseHiFloDate |                                    | special_o2_a_then | special_o2_a            |                                          |          |          |                      |                      |
+      | Num Q1   |         |                                                            | special_o2_a_if, gest_wght_comp    |                   | multi_rule_if_then      | this was -1; gest/weight don't meet reqs |          |          |                      |                      |
+      | Num Q1   |         |                                                            | special_o2_a_if, special_o2_a_then |                   | multi_rule_if_then      | this was -1; special_o2_a fail           |          |          |                      |                      |
 
 
     And I am ready to enter responses as data.provider@intersect.org.au
@@ -134,10 +134,10 @@ Feature: Cross Question Special Rules
 
 ###################
 
-  Scenario: CQV Fail - special_usd6wk_a - out of range (low)
+  Scenario: CQV Fail - set_gest_wght_implies_set - out of range (low)
     Given I have the following cross question validations
-      | question | related | rule                    | error_message          | set_operator | set   | conditional_set_operator | conditional_set |
-      | USd6wk   | Num Q1  | special_usd6wk_a        | Err - special_usd6wk_a | range        | [4,8] | range                    | [0,4]           |
+      | question | related | rule                      | error_message                   | set_operator | set   | conditional_set_operator | conditional_set |
+      | USd6wk   | Num Q1  | set_gest_wght_implies_set | Err - set_gest_wght_implies_set | range        | [4,8] | range                    | [0,4]           |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer   |
@@ -146,12 +146,12 @@ Feature: Cross Question Special Rules
       | DOB      | 2012/1/2 |
       | Wght     | 1499     |
       | Gest     | 31       |
-    Then I should see "Err - special_usd6wk_a"
+    Then I should see "Err - set_gest_wght_implies_set"
 
-  Scenario: CQV Fail - special_usd6wk_a - out of range (high)
+  Scenario: CQV Fail - set_gest_wght_implies_set - out of range (high)
     Given I have the following cross question validations
-      | question | related | rule                    | error_message          | set_operator | set   | conditional_set_operator | conditional_set |
-      | USd6wk   | Num Q1  | special_usd6wk_a        | Err - special_usd6wk_a | range        | [4,8] | range                    | [0,4]           |
+      | question | related | rule                      | error_message                   | set_operator | set   | conditional_set_operator | conditional_set |
+      | USd6wk   | Num Q1  | set_gest_wght_implies_set | Err - set_gest_wght_implies_set | range        | [4,8] | range                    | [0,4]           |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer    |
@@ -160,12 +160,12 @@ Feature: Cross Question Special Rules
       | DOB      | 2012/12/1 |
       | Wght     | 1499      |
       | Gest     | 31        |
-    Then I should see "Err - special_usd6wk_a"
+    Then I should see "Err - set_gest_wght_implies_set"
 
-  Scenario: CQV Pass - special_usd6wk_a - out of range but Num Q1 not in range
+  Scenario: CQV Pass - set_gest_wght_implies_set - out of range but Num Q1 not in range
     Given I have the following cross question validations
-      | question | related | rule                    | error_message          | set_operator | set   | conditional_set_operator | conditional_set |
-      | USd6wk   | Num Q1  | special_usd6wk_a        | Err - special_usd6wk_a | range        | [4,8] | range                    | [0,4]           |
+      | question | related | rule                      | error_message                   | set_operator | set   | conditional_set_operator | conditional_set |
+      | USd6wk   | Num Q1  | set_gest_wght_implies_set | Err - set_gest_wght_implies_set | range        | [4,8] | range                    | [0,4]           |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer    |
@@ -174,12 +174,12 @@ Feature: Cross Question Special Rules
       | DOB      | 2012/12/1 |
       | Wght     | 1499      |
       | Gest     | 31        |
-    Then I should not see "Err - special_usd6wk_a"
+    Then I should not see "Err - set_gest_wght_implies_set"
 
-  Scenario: CQV Pass - special_usd6wk_a - out of range, Num Q1 in range but wght/gest don't meet conds
+  Scenario: CQV Pass - set_gest_wght_implies_set - out of range, Num Q1 in range but wght/gest don't meet conds
     Given I have the following cross question validations
-      | question | related | rule                    | error_message          | set_operator | set   | conditional_set_operator | conditional_set |
-      | USd6wk   | Num Q1  | special_usd6wk_a        | Err - special_usd6wk_a | range        | [4,8] | range                    | [0,4]           |
+      | question | related | rule                      | error_message                   | set_operator | set   | conditional_set_operator | conditional_set |
+      | USd6wk   | Num Q1  | set_gest_wght_implies_set | Err - set_gest_wght_implies_set | range        | [4,8] | range                    | [0,4]           |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer    |
@@ -188,12 +188,12 @@ Feature: Cross Question Special Rules
       | DOB      | 2012/12/1 |
       | Wght     | 1600      |
       | Gest     | 33        |
-    Then I should not see "Err - special_usd6wk_a"
+    Then I should not see "Err - set_gest_wght_implies_set"
 
-  Scenario: CQV Pass - special_usd6wk_a - everything meets conds
+  Scenario: CQV Pass - set_gest_wght_implies_set - everything meets conds
     Given I have the following cross question validations
-      | question | related | rule                    | error_message          | set_operator | set   | conditional_set_operator | conditional_set |
-      | USd6wk   | Num Q1  | special_usd6wk_a        | Err - special_usd6wk_a | range        | [4,8] | range                    | [0,4]           |
+      | question | related | rule                      | error_message                   | set_operator | set   | conditional_set_operator | conditional_set |
+      | USd6wk   | Num Q1  | set_gest_wght_implies_set | Err - set_gest_wght_implies_set | range        | [4,8] | range                    | [0,4]           |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer   |
@@ -202,8 +202,74 @@ Feature: Cross Question Special Rules
       | DOB      | 2012/2/1 |
       | Wght     | 1500     |
       | Gest     | 32       |
-    Then I should not see "Err - special_usd6wk_a"
+    Then I should not see "Err - set_gest_wght_implies_set"
 
 
 #####################
 
+
+  Scenario: CQV Fail - set_present_implies_set - conditions met, out of range
+  # If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4
+    Given I have the following cross question validations
+      | question | related_question_list | rule                    | error_message                 | set_operator | set   | conditional_set_operator | conditional_set |
+      | Num Q2   | Num Q1, USd6wk        | set_present_implies_set | Err - set_present_implies_set | range        | [0,4] | range                    | [1,4]           |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer   |
+      | Num Q1   | 1        |
+      | Num Q2   | 5        |
+      | USd6wk   | 2012/1/1 |
+    Then I should see "Err - set_present_implies_set"
+
+  Scenario: CQV Pass - set_present_implies_set - conditions met, in range
+  # If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4
+    Given I have the following cross question validations
+      | question | related_question_list | rule                    | error_message                 | set_operator | set   | conditional_set_operator | conditional_set |
+      | Num Q2   | Num Q1, USd6wk        | set_present_implies_set | Err - set_present_implies_set | range        | [0,4] | range                    | [1,4]           |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer   |
+      | Num Q1   | 1        |
+      | Num Q2   | 4        |
+      | USd6wk   | 2012/1/1 |
+    Then I should not see "Err - set_present_implies_set"
+
+  Scenario: CQV Pass - set_present_implies_set - conditions not met (first blank), out of range
+  # If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4
+    Given I have the following cross question validations
+      | question | related_question_list | rule                    | error_message                 | set_operator | set   | conditional_set_operator | conditional_set |
+      | Num Q2   | Num Q1, USd6wk        | set_present_implies_set | Err - set_present_implies_set | range        | [0,4] | range                    | [1,4]           |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer   |
+      | Num Q2   | 5        |
+      | USd6wk   | 2012/1/1 |
+    Then I should not see "Err - set_present_implies_set"
+
+  Scenario: CQV Pass - set_present_implies_set - conditions not met (first out of range), out of range
+  # If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4
+    Given I have the following cross question validations
+      | question | related_question_list | rule                    | error_message                 | set_operator | set   | conditional_set_operator | conditional_set |
+      | Num Q2   | Num Q1, USd6wk        | set_present_implies_set | Err - set_present_implies_set | range        | [0,4] | range                    | [1,4]           |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer   |
+      | Num Q1   | 5        |
+      | Num Q2   | 5        |
+      | USd6wk   | 2012/1/1 |
+    Then I should not see "Err - set_present_implies_set"
+
+  Scenario: CQV Pass - set_present_implies_set - conditions not met (second blank), out of range
+  # If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4
+    Given I have the following cross question validations
+      | question | related_question_list | rule                    | error_message                 | set_operator | set   | conditional_set_operator | conditional_set |
+      | Num Q2   | Num Q1, USd6wk        | set_present_implies_set | Err - set_present_implies_set | range        | [0,4] | range                    | [1,4]           |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer   |
+      | Num Q1   | 1        |
+      | Num Q2   | 5        |
+    Then I should not see "Err - set_present_implies_set"
+
+
+###################

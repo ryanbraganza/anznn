@@ -30,7 +30,8 @@ class CrossQuestionValidation < ActiveRecord::Base
          self_comparison
          special_dual_comparison
          special_o2_a
-         special_usd6wk_a) + RULES_WITH_NO_RELATED
+         set_gest_wght_implies_set
+         set_present_implies_set) + RULES_WITH_NO_RELATED
 
   RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL = %w(special_dual_comparison)
   RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present special_dual_comparison)
@@ -455,10 +456,21 @@ class CrossQuestionValidation < ActiveRecord::Base
     false
   }
 
-  register_checker 'special_usd6wk_a', lambda { |answer, related_answer, checker_params|
+  register_checker 'set_gest_wght_implies_set', lambda { |answer, related_answer, checker_params|
     break true unless related_answer.comparable_answer.present?
     break true unless set_meets_condition?(checker_params[:conditional_set], checker_params[:conditional_set_operator], related_answer.comparable_answer)
     break true unless check_gest_wght(answer)
+    break false unless answer.comparable_answer.present? # Fail if all conditions have been met so far, but we don't have an answer yet.
+    set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
+  }
+
+  register_checker 'set_present_implies_set', lambda { |answer, related_answer, checker_params|
+    related_ids = checker_params[:related_question_ids]
+    set = answer.response.get_answer_to(related_ids[0])
+    date = answer.response.get_answer_to(related_ids[1])
+
+    break true if [set, date].any? { |related_answer| related_answer.nil? or related_answer.raw_answer }
+    break true unless set_meets_condition?(checker_params[:conditional_set], checker_params[:conditional_set_operator], set.comparable_answer)
     break false unless answer.comparable_answer.present? # Fail if all conditions have been met so far, but we don't have an answer yet.
     set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
   }
