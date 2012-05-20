@@ -11,7 +11,11 @@ class CrossQuestionValidation < ActiveRecord::Base
                              special_namesurg2
                              special_namesurg3
                              special_immun
-                             special_cool_hours)
+                             special_cool_hours
+                             special_date_of_assess
+                             special_height
+                             special_length
+                             special_cochimplt)
 
   VALID_RULES =
       %w(comparison
@@ -555,4 +559,54 @@ class CrossQuestionValidation < ActiveRecord::Base
     true
   }
 
+  register_checker 'special_date_of_assess', lambda { |answer, ununused_related_answer, checker_params|
+    #DateOfAssess must be greater than DOB+24 months (rule is on DateOfAssess)
+    raise 'Can only be used on question DateOfAssess' unless answer.question.code == 'DateOfAssess'
+
+    dob = answer.response.comparable_answer_or_nil_for_question_with_code('DOB')
+
+    break true unless dob
+    answer.answer_value >= (dob + 24.months)
+  }
+
+  register_checker 'special_height', lambda { |answer, ununused_related_answer, checker_params|
+    #If years between DOB and DateOfAssess is greater than 3, Hght must be between 50 and 100 (rule on Hght)
+    raise 'Can only be used on question Hght' unless answer.question.code == 'Hght'
+
+    dob = answer.response.comparable_answer_or_nil_for_question_with_code('DOB')
+    doa = answer.response.comparable_answer_or_nil_for_question_with_code('DateOfAssess')
+    break true unless dob && doa
+
+    if doa > (dob + 3.years)
+      answer.comparable_answer >= 50 && answer.comparable_answer <= 100
+    else
+      true
+    end
+  }
+
+
+  register_checker 'special_length', lambda { |answer, ununused_related_answer, checker_params|
+    #If years between DOB and DateOfAssess is less than or equal to 3, than Length must be between 50 and 100 (rule on Length)
+    raise 'Can only be used on question Length' unless answer.question.code == 'Length'
+
+    dob = answer.response.comparable_answer_or_nil_for_question_with_code('DOB')
+    doa = answer.response.comparable_answer_or_nil_for_question_with_code('DateOfAssess')
+    break true unless dob && doa
+
+    if doa <= (dob + 3.years)
+      answer.comparable_answer >= 50 && answer.comparable_answer <= 100
+    else
+      true
+    end
+  }
+
+  register_checker 'special_cochimplt', lambda { |answer, ununused_related_answer, checker_params|
+    #If Heartest is 2 or 4 and Hearaid is 1 or 2, Cochlmplt must be 1 or 2 (rule on CochImplt)
+    raise 'Can only be used on question CochImplt' unless answer.question.code == 'CochImplt'
+
+    heartest = answer.response.comparable_answer_or_nil_for_question_with_code('Heartest')
+    hearaid = answer.response.comparable_answer_or_nil_for_question_with_code('Hearaid')
+    break true unless heartest && [2, 4].include?(heartest) && hearaid && [1, 2].include?(hearaid)
+    [1, 2].include(answer.comparable_answer)
+  }
 end
