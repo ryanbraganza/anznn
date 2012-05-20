@@ -79,10 +79,7 @@ describe CrossQuestionValidation do
         CrossQuestionValidation.set_meets_condition?([1, 5], "range", 1).should eq true
         CrossQuestionValidation.set_meets_condition?([1, 5], "range", 5).should eq true
         CrossQuestionValidation.set_meets_condition?([1, 5], "range", 4.9).should eq true
-        CrossQuestionValidation.set_meets_condition?([1, 5], "between", 1.1).should eq true
-        CrossQuestionValidation.set_meets_condition?([1, 5], "between", 2).should eq true
-        CrossQuestionValidation.set_meets_condition?([1, 5], "between", 4).should eq true
-        CrossQuestionValidation.set_meets_condition?([1, 5], "between", 4.9).should eq true
+        CrossQuestionValidation.set_meets_condition?([1, 5], "range", 1.1).should eq true
       end
 
       it "should reject false statements" do
@@ -91,10 +88,6 @@ describe CrossQuestionValidation do
         CrossQuestionValidation.set_meets_condition?([1, 5], "range", 0).should eq false
         CrossQuestionValidation.set_meets_condition?([1, 5], "range", 6).should eq false
         CrossQuestionValidation.set_meets_condition?([1, 5], "range", 5.1).should eq false
-        CrossQuestionValidation.set_meets_condition?([1, 5], "between", 0).should eq false
-        CrossQuestionValidation.set_meets_condition?([1, 5], "between", 6).should eq false
-        CrossQuestionValidation.set_meets_condition?([1, 5], "between", 1).should eq false
-        CrossQuestionValidation.set_meets_condition?([1, 5], "between", 5).should eq false
       end
 
       it "should reject statements with invalid operators" do
@@ -432,10 +425,10 @@ describe CrossQuestionValidation do
 
       describe 'blank unless Qx is between N annd M' do
         before :each do
-          @error_message = 'q2 was not between 0...99 (exclusive), q1 must be blank'
+          @error_message = 'q2 was not between 0...99 (inclusive), q1 must be blank'
           @q1 = Factory :question, section: @section, question_type: 'Integer'
           @q2 = Factory :question, section: @section, question_type: 'Decimal'
-          Factory :cqv_blank_unless_set, question: @q1, related_question: @q2, error_message: @error_message, conditional_set_operator: "between"
+          Factory :cqv_blank_unless_set, question: @q1, related_question: @q2, error_message: @error_message, conditional_set_operator: "range"
           #conditional_set [0,99]
         end
         it "handles nils" do
@@ -445,10 +438,10 @@ describe CrossQuestionValidation do
           standard_cqv_test(-1, 1, [])
         end
         it "rejects when RHS isn't expected value (lower) and LHS isn't blank" do
-          standard_cqv_test(-1, 0, [@error_message])
+          standard_cqv_test(-1, -1, [@error_message])
         end
         it "rejects when RHS isn't expected value (higher) and LHS isn't blank" do
-          standard_cqv_test(-1, 99, [@error_message])
+          standard_cqv_test(-1, 100, [@error_message])
         end
         it "rejects when RHS is blank value and LHS isn't blank" do
           standard_cqv_test(-1, {}, [@error_message])

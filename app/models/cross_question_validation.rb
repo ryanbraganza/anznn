@@ -42,7 +42,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present special_dual_comparison blank_unless_present)
 
   SAFE_OPERATORS = %w(== <= >= < > !=)
-  ALLOWED_SET_OPERATORS = %w(included excluded range between)
+  ALLOWED_SET_OPERATORS = %w(included excluded range)
 
   GEST_CODE = 'Gest'
   WGHT_CODE = 'Wght'
@@ -150,8 +150,6 @@ class CrossQuestionValidation < ActiveRecord::Base
         return (!set.include?(value))
       when 'range' # inclusive
         return (value >= set.first && value <= set.last)
-      when 'between' #exclusive
-        return (value > set.first && value < set.last)
       else
         return false
     end
