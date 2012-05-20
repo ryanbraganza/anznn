@@ -8,7 +8,10 @@ class CrossQuestionValidation < ActiveRecord::Base
                              special_rop_prem_rop_roprx_1
                              special_rop_prem_rop_roprx_2
                              special_namesurg2
-                             special_namesurg3)
+                             special_namesurg3
+                             special_immun
+                             special_cool_hours)
+
   VALID_RULES =
       %w(comparison
          present_implies_constant
@@ -504,12 +507,54 @@ class CrossQuestionValidation < ActiveRecord::Base
     break true unless namesurg2 == answer.comparable_answer
   }
 
-
   register_checker 'comparison_const_days', lambda { |answer, related_answer, checker_params|
     break true unless related_answer.date_answer.present? && answer.date_answer.present?
     delta_days = (related_answer.date_answer - answer.date_answer).to_i.abs
     const_meets_condition?(delta_days, checker_params[:operator], checker_params[:constant])
   }
 
+  register_checker 'special_cool_hours', lambda { |answer, ununused_related_answer, checker_params|
+    #hours between |StartCoolDate+StartCoolTime - CeaseCoolDate+CeaseCoolTime| <=72
+    raise 'Can only be used on question StartCoolDate' unless answer.question.code == 'StartCoolDate'
+
+    start_cool_date = answer.response.comparable_answer_or_nil_for_question_with_code('StartCoolDate')
+    start_cool_time = answer.response.comparable_answer_or_nil_for_question_with_code('StartCoolTime')
+    cease_cool_date = answer.response.comparable_answer_or_nil_for_question_with_code('CeaseCoolDate')
+    cease_cool_time = answer.response.comparable_answer_or_nil_for_question_with_code('CeaseCoolTime')
+    break true unless start_cool_date && start_cool_time && cease_cool_date && cease_cool_time
+
+    datetime1 = aggregate_date_time(start_cool_date.answer_value, start_cool_time.answer_value)
+    datetime2 = aggregate_date_time(cease_cool_date.answer_value, cease_cool_time.answer_value)
+    hour_difference = (datetime2 - datetime1) / 1.hour
+
+    hour_difference <= 72
+  }
+
+  register_checker 'special_immun', lambda { |answer, ununused_related_answer, checker_params|
+    #If Gest<32|Wght<1500 and days(DOB and HomeDate|DiedDate)>=60, DateImmun must be a date
+    # dob is the best place to put this, even though its a bit weird
+    raise 'Can only be used on question DOB' unless answer.question.code == 'DOB'
+
+    # we're ok if DateImmun is filled
+    break true if answer.response.comparable_answer_or_nil_for_question_with_code('DateImmun')
+    # ok if not premature
+    break true unless check_gest_wght(answer)
+    home_date = answer.response.comparable_answer_or_nil_for_question_with_code('HomeDate')
+    # if home date is filled, use that
+    if home_date
+      days_diff = (home_date - answer.answer_value).to_i
+      break days_diff >= 60
+    end
+
+    # if died date is filled, use that
+    died_date = answer.response.comparable_answer_or_nil_for_question_with_code('HomeDate')
+    if died_date
+      days_diff = (died_date - answer.answer_value).to_i
+      break days_diff >= 60
+    end
+
+    # if neither is filled, consider it ok
+    true
+  }
 
 end
