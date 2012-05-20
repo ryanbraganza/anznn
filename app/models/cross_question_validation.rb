@@ -20,15 +20,22 @@ class CrossQuestionValidation < ActiveRecord::Base
          self_comparison
          special_dual_comparison
          special_o2_a
-         special_dob)
+         special_dob
+         special_usd6wk_a)
 
   RULES_WITH_NO_RELATED = 'special_dob'
+  RULES_WITH_MULTIPLE_OF_RELATED_OR_LIST_OR_RULES = 'special_dob'
 
   RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL = %w(special_dual_comparison)
   RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present special_dual_comparison)
 
   SAFE_OPERATORS = %w(== <= >= < > !=)
   ALLOWED_SET_OPERATORS = %w(included excluded range between)
+
+  GEST_CODE = 'Gest'
+  WGHT_CODE = 'Wght'
+  GEST_LT = 32
+  WGHT_LT = 1500
 
   belongs_to :question
   belongs_to :related_question, class_name: 'Question'
@@ -152,6 +159,13 @@ class CrossQuestionValidation < ActiveRecord::Base
 
   def self.sanitise_offset(checker_params)
     checker_params[:constant].blank? ? 0 : checker_params[:constant]
+  end
+
+  def self.check_gest_wght(answer)
+    #TODO Tests kthx
+    gest = answer.response.comparable_answer_or_nil_for_question_with_code(GEST_CODE)
+    weight = answer.response.comparable_answer_or_nil_for_question_with_code(WGHT_CODE)
+    (gest && gest < GEST_LT) || (weight && weight < WGHT_LT)
   end
 
   register_checker 'comparison', lambda { |answer, related_answer, checker_params|
@@ -356,4 +370,14 @@ class CrossQuestionValidation < ActiveRecord::Base
   register_checker 'special_dob', lambda { |answer, unused_related_answer, checker_params|
     answer.date_answer.year == answer.response.year_of_registration
   }
+
+  register_checker 'special_usd6wk_a', lambda { |answer, related_answer, checker_params|
+    break true unless related_answer.comparable_answer.present?
+    break true unless set_meets_condition?(checker_params[:conditional_set], checker_params[:conditional_set_operator], related_answer.comparable_answer)
+    break true unless check_gest_wght(answer)
+    break false unless answer.comparable_answer.present? # Fail if all conditions have been met so far, but we don't have an answer yet.
+    set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
+  }
+
+
 end

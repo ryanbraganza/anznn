@@ -34,6 +34,7 @@ Feature: Cross Question Special Rules
       | LastO2         | Date          |
       | CeaseCPAPDate  | Date          |
       | CeaseHiFloDate | Date          |
+      | USd6wk         | Date          |
 
 
 
@@ -104,6 +105,7 @@ Feature: Cross Question Special Rules
 
 
 #################
+
   Scenario:  CQV Failure - DOB out of year
     Given I have the following cross question validations
       | question | related | rule        | error_message                   |
@@ -111,7 +113,7 @@ Feature: Cross Question Special Rules
     And I am logged in as "data.provider@intersect.org.au"
     And "data.provider@intersect.org.au" created a response to the "MySurvey" survey with babycode "babycode456" and year of registration "2012"
     And I am on the response page for babycode456
-      When I store the following answers
+    When I store the following answers
       | question | answer   |
       | DOB      | 2011/1/1 |
 
@@ -132,64 +134,77 @@ Feature: Cross Question Special Rules
 
 ###################
 
-  @wip
-  Scenario: CQV Failure - Blank Unless Within Range N...M (exclusive) - This Qn must be blank unless other answer between N...M
+  Scenario: CQV Fail - special_usd6wk_a - out of range (low)
     Given I have the following cross question validations
-      | question | related | rule             | conditional_set_operator | conditional_set | error_message                                       |
-      | Num Q1   | Num Q2  | blank_unless_set | between                  | [2,4,6,8]       | q2 was outside 0...99 (exclusive), q1 must be blank |
+      | question | related | rule                    | error_message          | set_operator | set   | conditional_set_operator | conditional_set |
+      | USd6wk   | Num Q1  | special_usd6wk_a        | Err - special_usd6wk_a | range        | [4,8] | range                    | [0,4]           |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
-      | question | answer |
-      | Num Q2   | -1     |
-      | Num Q1   | 5      |
-    Then I should see "q2 was outside 0...99 (exclusive), q1 must be blank"
+      | question | answer   |
+      | Num Q1   | 0        |
+      | USd6wk   | 2012/1/1 |
+      | DOB      | 2012/1/2 |
+      | Wght     | 1499     |
+      | Gest     | 31       |
+    Then I should see "Err - special_usd6wk_a"
 
-  @wip
-  Scenario: CQV Pass - Blank Unless Constant - This Qn must be blank unless other question is a specified number
+  Scenario: CQV Fail - special_usd6wk_a - out of range (high)
     Given I have the following cross question validations
-      | question | related | rule               | conditional_operator | conditional_constant | error_message                  |
-      | Num Q1   | Num Q2  | blank_unless_const | ==                   | -1                   | q2 was != -1, q1 must be blank |
+      | question | related | rule                    | error_message          | set_operator | set   | conditional_set_operator | conditional_set |
+      | USd6wk   | Num Q1  | special_usd6wk_a        | Err - special_usd6wk_a | range        | [4,8] | range                    | [0,4]           |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
-      | question | answer |
-      | Num Q2   | -1     |
-      | Num Q1   | 5      |
-    Then I should not see "q2 was != -1, q1 must be blank"
+      | question | answer    |
+      | Num Q1   | 0         |
+      | USd6wk   | 2012/1/1  |
+      | DOB      | 2012/12/1 |
+      | Wght     | 1499      |
+      | Gest     | 31        |
+    Then I should see "Err - special_usd6wk_a"
 
-  @wip
-  Scenario: CQV Pass - Blank Unless Within Range N...M (exclusive) - This Qn must be blank unless other answer between N...M
+  Scenario: CQV Pass - special_usd6wk_a - out of range but Num Q1 not in range
     Given I have the following cross question validations
-      | question | related | rule             | conditional_set_operator | conditional_set | error_message                                       |
-      | Num Q1   | Num Q2  | blank_unless_set | between                  | [2,4,6,8]       | q2 was outside 0...99 (exclusive), q1 must be blank |
-    And I am ready to enter responses as data.provider@intersect.org.au
-    When I store the following answers
-      | question | answer |
-      | Num Q2   | 6      |
-      | Num Q1   | 5      |
-    Then I should not see "q2 was outside 0...99 (exclusive), q1 must be blank"
-
-  @wip
-  Scenario: CQV Failure - Blank Unless days(Some Qn) >= 60
-    Given I have the following cross question validations
-      | question | related_question_list | rule                    | conditional_operator | conditional_constant | error_message                 |
-      | Num Q1   | DOB Qn, Date Q1       | blank_unless_days_const | >=                   | 60                   | q2 was < 60, q1 must be blank |
+      | question | related | rule                    | error_message          | set_operator | set   | conditional_set_operator | conditional_set |
+      | USd6wk   | Num Q1  | special_usd6wk_a        | Err - special_usd6wk_a | range        | [4,8] | range                    | [0,4]           |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer    |
       | Num Q1   | 5         |
-      | DOB Qn   | 2012/1/1  |
-      | Date Q1  | 2012/1/31 |
-    Then I should see "q2 was < 60, q1 must be blank"
+      | USd6wk   | 2012/1/1  |
+      | DOB      | 2012/12/1 |
+      | Wght     | 1499      |
+      | Gest     | 31        |
+    Then I should not see "Err - special_usd6wk_a"
 
-  @wip
-  Scenario: CQV Pass - Blank Unless days(Some Qn) >= 60
+  Scenario: CQV Pass - special_usd6wk_a - out of range, Num Q1 in range but wght/gest don't meet conds
     Given I have the following cross question validations
-      | question | related_question_list | rule                    | conditional_operator | conditional_constant | error_message                 |
-      | Num Q1   | DOB Qn, Date Q1       | blank_unless_days_const | >=                   | 60                   | q2 was < 60, q1 must be blank |
+      | question | related | rule                    | error_message          | set_operator | set   | conditional_set_operator | conditional_set |
+      | USd6wk   | Num Q1  | special_usd6wk_a        | Err - special_usd6wk_a | range        | [4,8] | range                    | [0,4]           |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer    |
+      | Num Q1   | 4         |
+      | USd6wk   | 2012/1/1  |
+      | DOB      | 2012/12/1 |
+      | Wght     | 1600      |
+      | Gest     | 33        |
+    Then I should not see "Err - special_usd6wk_a"
+
+  Scenario: CQV Pass - special_usd6wk_a - everything meets conds
+    Given I have the following cross question validations
+      | question | related | rule_label_list | rule_label     | rule                    | error                  | set_operator | set   | conditional_set_operator | conditional_set | set | operator | constant | conditional_operator | conditional_constant |
+      | USd6wk   | Num Q1  | gest_wght_comp  |                | special_usd6wk_a        | Err - special_usd6wk_a | range        | [4,8] | range                    | [0,4]           |     |          |          |                      |                      |
+      | Gest     | Wght    |                 | gest_wght_comp | special_dual_comparison |                        |              |       |                          |                 |     | <        | 32       | <                    | 1500                 |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer   |
-      | Num Q1   | 5        |
-      | DOB Qn   | 2012/1/1 |
-      | Date Q1  | 2012/4/1 |
-    Then I should not see "q2 was < 60, q1 must be blank"
+      | Num Q1   | 4        |
+      | USd6wk   | 2012/1/1 |
+      | DOB      | 2012/2/1 |
+      | Wght     | 1500     |
+      | Gest     | 32       |
+    Then I should not see "Err - special_usd6wk_a"
+
+
+#####################
+
