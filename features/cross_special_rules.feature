@@ -192,9 +192,8 @@ Feature: Cross Question Special Rules
 
   Scenario: CQV Pass - special_usd6wk_a - everything meets conds
     Given I have the following cross question validations
-      | question | related | rule_label_list | rule_label     | rule                    | error                  | set_operator | set   | conditional_set_operator | conditional_set | set | operator | constant | conditional_operator | conditional_constant |
-      | USd6wk   | Num Q1  | gest_wght_comp  |                | special_usd6wk_a        | Err - special_usd6wk_a | range        | [4,8] | range                    | [0,4]           |     |          |          |                      |                      |
-      | Gest     | Wght    |                 | gest_wght_comp | special_dual_comparison |                        |              |       |                          |                 |     | <        | 32       | <                    | 1500                 |
+      | question | related | rule                    | error_message          | set_operator | set   | conditional_set_operator | conditional_set |
+      | USd6wk   | Num Q1  | special_usd6wk_a        | Err - special_usd6wk_a | range        | [4,8] | range                    | [0,4]           |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer   |

@@ -72,7 +72,7 @@ module CsvSurveyOperations
     end
   end
 
-  def make_cqvs(survey, hashes, failing_items)
+  def make_cqvs(survey, hashes, failing_items = [])
     label_to_cqv_id = {}
 
     # store the labelled (secondary) rules first
