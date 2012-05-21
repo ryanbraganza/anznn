@@ -8,9 +8,6 @@ Feature: Cross Question Validations - compare 2 pairs of date+time
     And I have a user "data.provider@intersect.org.au" with role "Data Provider"
     And I have a survey with name "MySurvey" and questions
       | question | question_type |
-      | Num Q1   | Integer       |
-      | Num Q2   | Integer       |
-      | Num Q3   | Integer       |
       | Date Q1  | Date          |
       | Time Q1  | Time          |
       | Date Q2  | Date          |

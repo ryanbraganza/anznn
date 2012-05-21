@@ -113,13 +113,12 @@ describe CsvSurveyOperations do
     end
     it 'should accept if it can map question lists to questions' do
       run_make_cqv_test(@survey, {}, @multi_related_hash).should be_true
-
     end
+
     it 'should reject if it can\'t map question lists to questions' do
       new_hash = @multi_related_hash
       new_hash['related_question_list'] = "q2, q3, q4"
       run_make_cqv_test(@survey, {}, new_hash).should be_false
-
     end
 
     it "should accept if it can map related rule labels to rules" do

@@ -230,8 +230,6 @@ itemnum,reviewed by Kali,comments,question_code,related_question_code,related_qu
 232.1,,split in 2,Bmonset,Wght,,,,const_implies_set,"If Gest<32|Wght<1500, Bmonset must be -1 or 0",,,included,"[-1,0]",<,1500,,
 233,,split in 2,Bmdischarge,Gest,,,,const_implies_set,"If Gest<32|Wght<1500, Bmdischarge must be -1 or 0",,,included,"[-1,0]",<,32,,
 233.1,,split in 2,Bmdischarge,Wght,,,,const_implies_set,"If Gest<32|Wght<1500, Bmdischarge must be -1 or 0",,,included,"[-1,0]",<,1500,,
-234,,split in 2,BmBWtg,Gest,,,,const_implies_set,"If Gest<32|Wght<1500, BmBWtg must be -1 or 0",,,included,"[-1,0]",<,32,,
-234.1,,split in 2,BmBWtg,Wght,,,,const_implies_set,"If Gest<32|Wght<1500, BmBWtg must be -1 or 0",,,included,"[-1,0]",<,1500,,
 235,OK,"Extra ""t in the error message",DateBWtg,PROMDATE,,,,comparison,DateBWtg must be greater than PROMDATE,>,,,,,,,
 236,Y,,DateBWtg,DOB,,,,comparison,DateBWtg must be greater than DOB,>,,,,,,,
 237,Y,,DateBWtg,DOA,,,,comparison,DateBWtg must be greater than DOA,>,,,,,,,

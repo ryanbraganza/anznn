@@ -47,9 +47,7 @@ module CsvSurveyOperations
 
       hash.merge(set: set, conditional_set: conditional_set)
     end
-    failing_items = []
-    make_cqvs(survey, cqv_hashes, failing_items)
-    puts "FAILING ITEMS #{failing_items.sort}"
+    make_cqvs(survey, cqv_hashes)
   end
 
   def create_survey(name, question_file, options_file=nil, cross_question_validations_file=nil)
@@ -72,23 +70,23 @@ module CsvSurveyOperations
     end
   end
 
-  def make_cqvs(survey, hashes, failing_items = [])
+  def make_cqvs(survey, hashes)
     label_to_cqv_id = {}
 
     # store the labelled (secondary) rules first
     hashes.each do |hash|
       rule_label = hash['rule_label']
-      make_cqv(survey, label_to_cqv_id, hash.merge(primary: false), failing_items) if rule_label.present?
+      make_cqv(survey, label_to_cqv_id, hash.merge(primary: false)) if rule_label.present?
     end
 
     #now store any rules which reference labelled rules
     hashes.each do |hash|
       rule_label = hash['rule_label']
-      make_cqv(survey, label_to_cqv_id, hash.merge(primary: true), failing_items) unless rule_label.present?
+      make_cqv(survey, label_to_cqv_id, hash.merge(primary: true)) unless rule_label.present?
     end
   end
 
-  def make_cqv(survey, label_to_cqv_id, hash, failing_items)
+  def make_cqv(survey, label_to_cqv_id, hash)
 
     orig = hash.dup
     begin
@@ -122,10 +120,8 @@ module CsvSurveyOperations
       label_to_cqv_id[label] = validation.id
     rescue
       puts "Failed to create cqv #{orig}, continuing anyway"
-      failing_items << orig['itemnum']
       puts $!
-      #TODO: temporary measure while we're building the rules: add back later
-      #raise
+      raise
     end
 
   end

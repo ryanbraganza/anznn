@@ -360,8 +360,8 @@ describe CrossQuestionValidation do
           @error_message = 'q2 or q3 must be -1 if q1 is 99'
           @q1 = Factory :question, section: @section, question_type: 'Choice'
           @q2 = Factory :question, section: @section, question_type: 'Integer'
-          @q2 = Factory :question, section: @section, question_type: 'Choice'
-          Factory :cross_question_validation, question: @q1, related_question_ids: [@q2.id, @q3.id], error_message: @error_message, operator: '==', constant: 99, conditional_operator: '==', conditional_constant: -1
+          @q3 = Factory :question, section: @section, question_type: 'Choice'
+          Factory :cross_question_validation, question: @q1, related_question: nil, related_question_ids: [@q2.id, @q3.id], error_message: @error_message, operator: '==', constant: 99, conditional_operator: '==', conditional_constant: -1
         end
         it "write some tests" do
           pending
@@ -374,26 +374,32 @@ describe CrossQuestionValidation do
         @response = Factory :response, survey: @survey
       end
 
-      describe 'blank unless Qx = N' do
+      describe 'blank if constant (q must be blank if related q == constant)' do
+        # e.g. If Died_ is 0, DiedDate must be blank (rule is on DiedDate)
         before :each do
-          @error_message = 'q2 was != -1, q1 must be blank'
+          @error_message = 'if q2 == -1, q1 must be blank'
           @q1 = Factory :question, section: @section, question_type: 'Integer'
           @q2 = Factory :question, section: @section, question_type: 'Integer'
-          Factory :cqv_blank_if_const, question: @q1, related_question: @q2, error_message: @error_message
-          #conditional_operator "=="
-          #conditional_constant -1
+          Factory :cqv_blank_if_const, question: @q1, related_question: @q2, error_message: @error_message, conditional_operator: '==', conditional_constant: -1
         end
-        it "handles nils" do
-          standard_cqv_test({}, {}, [])
+        it "passes if q2 not answered but q1 is" do
+          a1 = Factory :answer, response: @response, question: @q1, answer_value: "7"
+          do_cqv_check(a1, [])
         end
-        it "doesn't reject a non-blank LHS when RHS meets requirements" do
-          standard_cqv_test("12345", -1, [])
+        it "passes if q2 not answered and q1 not answered" do
+          # rule won't be run
         end
-        it "rejects when RHS isn't expected value and LHS isn't blank" do
-          standard_cqv_test("12345", 0, [@error_message])
+        it "passes if q2 is not -1 and q1 is blank" do
+          # rule won't be run
         end
-        it "rejects when RHS is blank value and LHS isn't blank" do
-          standard_cqv_test("12345", {}, [@error_message])
+        it "passes if q2 is not -1 and q1 is not blank" do
+          standard_cqv_test(123, 0, [])
+        end
+        it "passes when q2 is -1 and q1 is blank" do
+          # rule won't be run
+        end
+        it "fails when q2 is -1 and q1 is not blank" do
+          standard_cqv_test(123, -1, [@error_message])
         end
       end
 

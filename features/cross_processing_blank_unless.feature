@@ -21,17 +21,6 @@ Feature: Cross Question Blank-Unless Validations
       | Date Q2  | Date          |
 
 
-  Scenario: CQV Failure - Blank Unless Constant - This Qn must be blank unless other question is a specified number
-    Given I have the following cross question validations
-      | question | related | rule           | conditional_operator | conditional_constant | error_message                  |
-      | Num Q1   | Num Q2  | blank_if_const | !=                   | -1                   | q2 was != -1, q1 must be blank |
-    And I am ready to enter responses as data.provider@intersect.org.au
-    When I store the following answers
-      | question | answer |
-      | Num Q2   | 2      |
-      | Num Q1   | 5      |
-    Then I should see "q2 was != -1, q1 must be blank"
-
   Scenario: CQV Failure - Blank Unless Within Range N...M (exclusive) - This Qn must be blank unless other answer between N...M
     Given I have the following cross question validations
       | question | related | rule             | conditional_set_operator | conditional_set | error_message                                       |
@@ -42,17 +31,6 @@ Feature: Cross Question Blank-Unless Validations
       | Num Q2   | -1     |
       | Num Q1   | 5      |
     Then I should see "q2 was outside 0...99 (exclusive), q1 must be blank"
-
-  Scenario: CQV Pass - Blank If Constant - This Qn must be blank if other question is a specified number
-    Given I have the following cross question validations
-      | question | related | rule           | conditional_operator | conditional_constant | error_message                  |
-      | Num Q1   | Num Q2  | blank_if_const | !=                   | -1                   | q2 was != -1, q1 must be blank |
-    And I am ready to enter responses as data.provider@intersect.org.au
-    When I store the following answers
-      | question | answer |
-      | Num Q2   | -1     |
-      | Num Q1   | 5      |
-    Then I should not see "q2 was != -1, q1 must be blank"
 
   Scenario: CQV Pass - Blank Unless Within Range N...M (exclusive) - This Qn must be blank unless other answer between N...M
     Given I have the following cross question validations
