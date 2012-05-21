@@ -489,20 +489,17 @@ class CrossQuestionValidation < ActiveRecord::Base
   }
 
   register_checker 'special_usd6wk_dob_weeks', lambda { |answer, related_answer, checker_params|
+    puts 'begin usd6wk'
     break true unless related_answer.comparable_answer.present?
+    puts 'related answer found'
     dob = answer.response.comparable_answer_or_nil_for_question_with_code(DOB_CODE)
     break true unless dob
     break true unless set_meets_condition?(checker_params[:conditional_set], checker_params[:conditional_set_operator], related_answer.comparable_answer)
     break true unless check_gest_wght(answer)
     break false unless answer.comparable_answer.present? # Fail if all conditions have been met so far, but we don't have an answer yet.
 
-    max_elapsed = (answer.comparable_answer - dob).abs
-
-    set_meets_condition?(checker_params[:set], checker_params[:set_operator], max_elapsed.to_i)
-
-
-
-    set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
+    elapsed_weeks = (answer.comparable_answer - dob).abs.days / 1.week
+    set_meets_condition?(checker_params[:set], checker_params[:set_operator], elapsed_weeks)
   }
 
   register_checker 'set_gest_wght_implies_present', lambda { |answer, related_answer, checker_params|

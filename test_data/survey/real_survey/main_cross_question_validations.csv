@@ -130,7 +130,7 @@ itemnum,reviewed by Kali,comments,question_code,related_question_code,related_qu
 129,Y,,MVDate,,"MVDate, MVTime, PROMDATE, PROMTIME",,,multi_compare_datetime_quad,MVDate+MVTime must be later than or equal to PROMDate+PROMTime,>=,,,,,,,
 130,Y,,MVDate,,"MVDate, MVTime, DOB, DOBTime",,,multi_compare_datetime_quad,MVDate+MVTime must be later than or equal to DOB+DOBTime,>=,,,,,,,
 131,Y,,MVDate,DiedDate,,,,comparison,MVDate must be less than or equal to DiedDate,<=,0,,,==,-1,,
-132,Y,,MVDate,HomeDate,,,,comparison,MVDate must be less than or equal to HomeDate,<=,,,,,,,
+132,Y,,MVDate,HomeDate,,,,comparison,MVDate must be less than or equalt to HomeDate,<=,,,,,,,
 133,Y,,IPPVhrs,MVDate,,,,present_implies_constant,"If MVDate is a date, IPPVhrs must be greater than 0",>,0,,,,,,
 134,Y,,HFOV,HFOVDate,,,,const_implies_present,"If HFOV is -1, HFOVDate must be a date",==,-1,,,,,,
 135,Y,,HFOV,HFOVTime,,,,const_implies_present,"If HFOV is -1, HFOVTime must be a time",==,-1,,,,,,
