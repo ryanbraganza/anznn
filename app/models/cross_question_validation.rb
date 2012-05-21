@@ -39,11 +39,12 @@ class CrossQuestionValidation < ActiveRecord::Base
          special_dual_comparison
          special_o2_a
          set_gest_wght_implies_set
+         set_gest_wght_implies_present
          set_present_implies_present
          comparison_const_days) + RULES_WITH_NO_RELATED
 
   RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL = %w(special_dual_comparison)
-  RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present special_dual_comparison blank_unless_present)
+  RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present special_dual_comparison blank_unless_present set_gest_wght_implies_present)
 
   SAFE_OPERATORS = %w(== <= >= < > !=)
   ALLOWED_SET_OPERATORS = %w(included excluded range)
@@ -482,6 +483,14 @@ class CrossQuestionValidation < ActiveRecord::Base
     break true unless check_gest_wght(answer)
     break false unless answer.comparable_answer.present? # Fail if all conditions have been met so far, but we don't have an answer yet.
     set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
+  }
+
+  register_checker 'set_gest_wght_implies_present', lambda { |answer, related_answer, checker_params|
+    # e.g. If IVH is 1-4 and (Gest is <32|Wght is <1500), Ventricles must be between 0 and 3
+    # Q = IVH, related = Ventricles
+    break true unless set_meets_condition?(checker_params[:set], checker_params[:set_operator], related_answer.comparable_answer)
+    break true unless check_gest_wght(answer)
+    related_answer && !related_answer.raw_answer
   }
 
   register_checker 'special_namesurg2', lambda { |answer, ununused_related_answer, checker_params|
