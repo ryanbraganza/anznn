@@ -208,6 +208,78 @@ Feature: Cross Question Special Rules
 
 
 #####################
+  Scenario: CQV Fail - special_usd6wk_dob_weeks - out of range (low)
+    Given I have the following cross question validations
+      | question | related | rule                      | error_message                   | set_operator | set   | conditional_set_operator | conditional_set |
+      | USd6wk   | Num Q1  | special_usd6wk_dob_weeks | Err - special_usd6wk_dob_weeks | range        | [4,8] | range                    | [0,4]           |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer   |
+      | Num Q1   | 0        |
+      | USd6wk   | 2012/1/1 |
+      | DOB      | 2012/1/2 |
+      | Wght     | 1499     |
+      | Gest     | 31       |
+    Then I should see "Err - special_usd6wk_dob_weeks"
+
+  Scenario: CQV Fail - special_usd6wk_dob_weeks - out of range (high)
+    Given I have the following cross question validations
+      | question | related | rule                      | error_message                   | set_operator | set   | conditional_set_operator | conditional_set |
+      | USd6wk   | Num Q1  | special_usd6wk_dob_weeks | Err - special_usd6wk_dob_weeks | range        | [4,8] | range                    | [0,4]           |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer    |
+      | Num Q1   | 0         |
+      | USd6wk   | 2012/1/1  |
+      | DOB      | 2012/12/1 |
+      | Wght     | 1499      |
+      | Gest     | 31        |
+    Then I should see "Err - special_usd6wk_dob_weeks"
+
+  Scenario: CQV Pass - special_usd6wk_dob_weeks - out of range but Num Q1 not in range
+    Given I have the following cross question validations
+      | question | related | rule                      | error_message                   | set_operator | set   | conditional_set_operator | conditional_set |
+      | USd6wk   | Num Q1  | special_usd6wk_dob_weeks | Err - special_usd6wk_dob_weeks | range        | [4,8] | range                    | [0,4]           |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer    |
+      | Num Q1   | 5         |
+      | USd6wk   | 2012/1/1  |
+      | DOB      | 2012/12/1 |
+      | Wght     | 1499      |
+      | Gest     | 31        |
+    Then I should not see "Err - special_usd6wk_dob_weeks"
+
+  Scenario: CQV Pass - special_usd6wk_dob_weeks - out of range, Num Q1 in range but wght/gest don't meet conds
+    Given I have the following cross question validations
+      | question | related | rule                      | error_message                   | set_operator | set   | conditional_set_operator | conditional_set |
+      | USd6wk   | Num Q1  | special_usd6wk_dob_weeks | Err - special_usd6wk_dob_weeks | range        | [4,8] | range                    | [0,4]           |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer    |
+      | Num Q1   | 4         |
+      | USd6wk   | 2012/1/1  |
+      | DOB      | 2012/12/1 |
+      | Wght     | 1600      |
+      | Gest     | 33        |
+    Then I should not see "Err - special_usd6wk_dob_weeks"
+
+  Scenario: CQV Pass - special_usd6wk_dob_weeks - everything meets conds
+    Given I have the following cross question validations
+      | question | related | rule                      | error_message                   | set_operator | set   | conditional_set_operator | conditional_set |
+      | USd6wk   | Num Q1  | special_usd6wk_dob_weeks | Err - special_usd6wk_dob_weeks | range        | [4,8] | range                    | [0,4]           |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer   |
+      | Num Q1   | 4        |
+      | USd6wk   | 2012/1/1 |
+      | DOB      | 2012/2/1 |
+      | Wght     | 1500     |
+      | Gest     | 32       |
+    Then I should not see "Err - special_usd6wk_dob_weeks"
+
+
+#####################
 
 
   Scenario: CQV Fail - set_present_implies_present - conditions met, out of range

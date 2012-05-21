@@ -38,6 +38,7 @@ class CrossQuestionValidation < ActiveRecord::Base
          const_implies_one_of_const
          special_dual_comparison
          special_o2_a
+         special_usd6wk_dob_weeks
          set_gest_wght_implies_set
          set_gest_wght_implies_present
          set_present_implies_present
@@ -51,6 +52,7 @@ class CrossQuestionValidation < ActiveRecord::Base
 
   GEST_CODE = 'Gest'
   WGHT_CODE = 'Wght'
+  DOB_CODE = 'DOB'
   GEST_LT = 32
   WGHT_LT = 1500
 
@@ -482,6 +484,23 @@ class CrossQuestionValidation < ActiveRecord::Base
     break true unless set_meets_condition?(checker_params[:conditional_set], checker_params[:conditional_set_operator], related_answer.comparable_answer)
     break true unless check_gest_wght(answer)
     break false unless answer.comparable_answer.present? # Fail if all conditions have been met so far, but we don't have an answer yet.
+    set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
+  }
+
+  register_checker 'special_usd6wk_dob_weeks', lambda { |answer, related_answer, checker_params|
+    break true unless related_answer.comparable_answer.present?
+    dob = answer.response.comparable_answer_or_nil_for_question_with_code(DOB_CODE)
+    break true unless dob
+    break true unless set_meets_condition?(checker_params[:conditional_set], checker_params[:conditional_set_operator], related_answer.comparable_answer)
+    break true unless check_gest_wght(answer)
+    break false unless answer.comparable_answer.present? # Fail if all conditions have been met so far, but we don't have an answer yet.
+
+    max_elapsed = (answer.comparable_answer - dob).abs
+
+    set_meets_condition?(checker_params[:set], checker_params[:set_operator], max_elapsed.to_i)
+
+
+
     set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
   }
 
