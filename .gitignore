@@ -20,3 +20,6 @@ rerun.txt
 
 # Ignore .idea directory
 /.idea
+
+# Ignore generated user manual
+/public/manual

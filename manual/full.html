@@ -1,0 +1,13 @@
+---
+layout: page
+title: All On One Page
+header: All On One Page
+group: none
+---
+{% include JB/setup %}
+
+{% for post in site.posts %}
+  <h1 class="all-in-one-header"><a href="{{ post.url }}">{{ post.title }}</a></h1>
+  {{ post.content }}
+  <hr/>
+{% endfor %}

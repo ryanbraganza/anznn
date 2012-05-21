@@ -81,3 +81,5 @@ gem 'prawn'
 gem 'decent_exposure'
 gem 'will_paginate', '> 3.0'
 gem 'will_paginate-bootstrap'
+
+gem 'jekyll', :require => false

@@ -1,0 +1,8 @@
+{% capture jbcache %}
+  <!--
+  - Dynamically set liquid variables for working with URLs/paths
+  -->
+  {% assign BASE_PATH = site.JB.BASE_PATH %}
+  {% assign HOME_PATH = site.JB.BASE_PATH %}
+  {% assign ASSET_PATH = site.JB.ASSET_PATH %}
+{% endcapture %}{% assign jbcache = nil %}

@@ -79,6 +79,7 @@ after 'deploy:update' do
   server_setup.config.apache
   deploy.restart
   deploy.additional_symlinks
+  #deploy.generate_user_manual
 end
 
 after 'deploy:finalize_update' do
@@ -165,6 +166,11 @@ namespace :deploy do
     else
       puts "Skipping database nuke"
     end
+  end
+
+  task :generate_user_manual do
+    run("cd #{current_path} && rm -rf public/manual/*")
+    run("cd #{current_path} && jekyll manual public/manual")
   end
 end
 
