@@ -99,7 +99,6 @@ module CsvSurveyOperations
       raise orig.inspect unless question_question
       label = hash.delete 'rule_label'
       hash.delete 'itemnum'
-      hash.delete 'pass validation?'
       hash.delete 'reviewed by Kali'
 
       hash[:related_question] = related_question_question.blank? ? nil : survey.questions.find_by_code!(related_question_question)
