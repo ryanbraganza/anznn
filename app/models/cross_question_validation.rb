@@ -489,9 +489,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   }
 
   register_checker 'special_usd6wk_dob_weeks', lambda { |answer, related_answer, checker_params|
-    puts 'begin usd6wk'
     break true unless related_answer.comparable_answer.present?
-    puts 'related answer found'
     dob = answer.response.comparable_answer_or_nil_for_question_with_code(DOB_CODE)
     break true unless dob
     break true unless set_meets_condition?(checker_params[:conditional_set], checker_params[:conditional_set_operator], related_answer.comparable_answer)
