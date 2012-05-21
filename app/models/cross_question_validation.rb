@@ -331,14 +331,15 @@ class CrossQuestionValidation < ActiveRecord::Base
   }
 
   register_checker 'set_present_implies_present', lambda { |answer, unused_related_answer, checker_params|
+    # e.g If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4 [which really means cysts must be answered]
+    # rule on IVH, related are Usd6wk and Cysts
     related_ids = checker_params[:related_question_ids]
     date = answer.response.get_answer_to(related_ids[0])
     required = answer.response.get_answer_to(related_ids[1])
 
-    break true unless date.comparable_answer.present?
     break true unless set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
-    required.comparable_answer.present? # Fail if all conditions have been met so far, but we don't have an answer yet.
-
+    break true unless date && !date.raw_answer
+    required && !required.raw_answer
   }
 
   register_checker 'const_implies_one_of_const', lambda { |answer, related_answer, checker_params|
@@ -488,7 +489,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   register_checker 'set_gest_wght_implies_present', lambda { |answer, related_answer, checker_params|
     # e.g. If IVH is 1-4 and (Gest is <32|Wght is <1500), Ventricles must be between 0 and 3
     # Q = IVH, related = Ventricles
-    break true unless set_meets_condition?(checker_params[:set], checker_params[:set_operator], related_answer.comparable_answer)
+    break true unless set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
     break true unless check_gest_wght(answer)
     related_answer && !related_answer.raw_answer
   }
