@@ -538,22 +538,21 @@ class CrossQuestionValidation < ActiveRecord::Base
     break true if answer.response.comparable_answer_or_nil_for_question_with_code('DateImmun')
     # ok if not premature
     break true unless check_gest_wght(answer)
+
     home_date = answer.response.comparable_answer_or_nil_for_question_with_code('HomeDate')
+    died_date = answer.response.comparable_answer_or_nil_for_question_with_code('DiedDate')
     # if home date is filled, use that
     if home_date
       days_diff = (home_date - answer.answer_value).to_i
-      break days_diff >= 60
-    end
-
+      days_diff < 60
+    elsif died_date
     # if died date is filled, use that
-    died_date = answer.response.comparable_answer_or_nil_for_question_with_code('HomeDate')
-    if died_date
       days_diff = (died_date - answer.answer_value).to_i
-      break days_diff >= 60
+      days_diff < 60
+    else
+      # neither is filled, its ok
+      true
     end
-
-    # if neither is filled, consider it ok
-    true
   }
 
   register_checker 'special_date_of_assess', lambda { |answer, ununused_related_answer, checker_params|
