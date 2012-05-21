@@ -379,7 +379,7 @@ describe CrossQuestionValidation do
           @error_message = 'q2 was != -1, q1 must be blank'
           @q1 = Factory :question, section: @section, question_type: 'Integer'
           @q2 = Factory :question, section: @section, question_type: 'Integer'
-          Factory :cqv_blank_unless_const, question: @q1, related_question: @q2, error_message: @error_message
+          Factory :cqv_blank_if_const, question: @q1, related_question: @q2, error_message: @error_message
           #conditional_operator "=="
           #conditional_constant -1
         end

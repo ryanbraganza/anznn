@@ -280,7 +280,7 @@ itemnum,pass validation?,reviewed by Kali,comments,question_code,related_questio
 270,,Y,,T_fer_,T_ferHosp,,,,const_implies_present,"If T_fer_ is -1, T_ferHosp must not be blank",==,-1,,,,,,
 271,,,,NursLevel,T_fer_,,,,const_implies_set,"If T_fer_ is -1, NursLevel must be 1 to 3",,,included,"[1,3]",==,-1,,
 272,,,simplified and added the next one,Died_,HomeDate,,,,const_implies_present,"If Died_ is 0, HomeDate must be a date",==,0,,,,,,
-272.2,,,ditto,DiedDate,Died_,,,,blank_unless_const,"If Died_ is 0, DiedDate must be blank",,,,,==,0,,
+272.2,,,ditto,DiedDate,Died_,,,,blank_if_const,"If Died_ is 0, DiedDate must be blank",,,,,==,0,,
 273,,Y,,HomeDate,PROMDATE,,,,comparison,HomeDate must be greater than PROMDATE,>,,,,,,,
 274,,Y,,HomeDate,DOB,,,,comparison,HomeDate must be greater than DOB,>,,,,,,,
 275,,Y,,HomeDate,DOA,,,,comparison,HomeDate must be greater than or equal to DOA,>=,,,,,,,

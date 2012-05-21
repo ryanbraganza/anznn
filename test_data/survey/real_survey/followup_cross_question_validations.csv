@@ -1,12 +1,12 @@
 itemnum,question_code,related_question_code,rule,error_message,operator,constant,set_operator,set,conditional_operator,conditional_constant,conditional_set_operator,conditional_set
-1,DateOfAssess,DOB,special_date_of_assess,DateOfAssess must be greater than DOB+24 months,>=,24,,,,,,
-2,Hght,,special_height,"If years between DOB and DateOfAssess is greater than 3, Hght must be between 50 and 100",,,range,"[50,100]",,,,
-3,Length,,special_length,"If years between DOB and DateOfAssess is less than or equal to 3, than Length must be between 50 and 100",,,range,"[50,100]",,,,
+1,DateOfAssess,DOB,special_date_of_assess,DateOfAssess must be greater than DOB+24 months,,,,,,,,
+2,Hght,,special_height,"If years between DOB and DateOfAssess is greater than 3, Hght must be between 50 and 100",,,,,,,,
+3,Length,,special_length,"If years between DOB and DateOfAssess is less than or equal to 3, than Length must be between 50 and 100",,,,,,,,
 4,Heartest,Hearage,set_implies_present,"If Heartest is between 1 and 4, Hearage must be a date",,,range,"[1,4]",,,,
-5,CochImplt,,special_cochimplt,"If Heartest is 2 or 4 and Hearaid is 1 or 2, Cochlmplt must be 1 or 2",,,included,"[1,2]",,,,
+5,CochImplt,,special_cochimplt,"If Heartest is 2 or 4 and Hearaid is 1 or 2, Cochlmplt must be 1 or 2",,,,,,,,
 6,Blind,Vision,set_implies_set,"If Vision is 0 or 1, Blind must be between 0 and 2",,,range,"[0,2]",,,included,"[0,1]"
-7,Respfup1,Respfup,set_implies_set,"If Respful is 1 or 2, Respfup1 must be between 0 and 3",,,range,"[0,3]",,,included,"[1,2]"
-8,RespSprt,Respfup,set_implies_set,"If Respful is 1 or 2, RespSprt must be between 0 and 3",,,range,"[0,3]",,,included,"[1,2]"
+7,Respfup1,Respfup,set_implies_set,"If Respfup is 1 or 2, Respfup1 must be between 0 and 3",,,range,"[0,3]",,,included,"[1,2]"
+8,RespSprt,Respfup,set_implies_set,"If Respfup is 1 or 2, RespSprt must be between 0 and 3",,,range,"[0,3]",,,included,"[1,2]"
 9,GITfeed,GIT,const_implies_set,"If GIT is 1, GITfeed must be 0 or 1",,,included,"[0,1]",==,1,,
 10,RenalDis,Renal,const_implies_const,"If Renal is 0, RenalDis must be 0",==,0,,,==,0,,
 11,RenalDis,Renal,const_implies_set,"If Renal is 1, RenalDis must be 1-3 or 99",,,included,"[1,2,3,99]",==,1,,

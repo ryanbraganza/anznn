@@ -24,7 +24,7 @@ class CrossQuestionValidation < ActiveRecord::Base
          const_implies_set
          set_implies_const
          set_implies_set
-         blank_unless_const
+         blank_if_const
          blank_unless_set
          blank_unless_days_const
          blank_unless_present
@@ -93,19 +93,16 @@ class CrossQuestionValidation < ActiveRecord::Base
                       conditional_set_operator: conditional_set_operator, conditional_set: conditional_set,
                       related_rule_ids: related_rule_ids, related_question_ids: related_question_ids}
 
-    # we have to filter the answers on the response rather than using find, as we want to check through as-yet unsaved answers as part of batch processing
-    related_answer = answer.response.get_answer_to(related_question.id) if related_question
-
-    # if not a primary rule, nil
-    # if we dont have a proper answer, nil
-    # if we only have one related question, if that doesn't have a proper answer: nil
-
-    return nil unless self.primary? || running_as_secondary
-
     # don't bother checking if the question is unanswered or has an invalid answer
-    if !RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL.include?(rule)
+    if !RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL.include?(rule)
       return nil if answer.nil? or answer.raw_answer
     end
+
+    # if not a primary rule, nil
+    return nil unless self.primary? || running_as_secondary
+
+    # we have to filter the answers on the response rather than using find, as we want to check through as-yet unsaved answers as part of batch processing
+    related_answer = answer.response.get_answer_to(related_question.id) if related_question
 
     # most rules are not run unless the related question has been answered, so unless this is a special rule that runs
     # regardless, first check if a related question is relevant, then check if its answered
@@ -219,7 +216,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
   }
 
-  register_checker 'blank_unless_const', lambda { |answer, related_answer, checker_params|
+  register_checker 'blank_if_const', lambda { |answer, related_answer, checker_params|
     # E.g. If Died_ is 0, DiedDate must be blank (rule on DiedDate)
 
     related_meets_condition = const_meets_condition?(related_answer.comparable_answer, checker_params[:conditional_operator], checker_params[:conditional_constant])
@@ -525,8 +522,8 @@ class CrossQuestionValidation < ActiveRecord::Base
     cease_cool_time = answer.response.comparable_answer_or_nil_for_question_with_code('CeaseCoolTime')
     break true unless start_cool_date && start_cool_time && cease_cool_date && cease_cool_time
 
-    datetime1 = aggregate_date_time(start_cool_date.answer_value, start_cool_time.answer_value)
-    datetime2 = aggregate_date_time(cease_cool_date.answer_value, cease_cool_time.answer_value)
+    datetime1 = aggregate_date_time(start_cool_date, start_cool_time)
+    datetime2 = aggregate_date_time(cease_cool_date, cease_cool_time)
     hour_difference = (datetime2 - datetime1) / 1.hour
 
     hour_difference <= 72
@@ -566,7 +563,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     dob = answer.response.comparable_answer_or_nil_for_question_with_code('DOB')
 
     break true unless dob
-    answer.answer_value >= (dob + 24.months)
+    answer.answer_value > (dob + 24.months)
   }
 
   register_checker 'special_height', lambda { |answer, ununused_related_answer, checker_params|
@@ -607,6 +604,6 @@ class CrossQuestionValidation < ActiveRecord::Base
     heartest = answer.response.comparable_answer_or_nil_for_question_with_code('Heartest')
     hearaid = answer.response.comparable_answer_or_nil_for_question_with_code('Hearaid')
     break true unless heartest && [2, 4].include?(heartest) && hearaid && [1, 2].include?(hearaid)
-    [1, 2].include(answer.comparable_answer)
+    [1, 2].include?(answer.comparable_answer)
   }
 end

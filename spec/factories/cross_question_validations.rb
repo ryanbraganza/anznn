@@ -77,8 +77,8 @@ FactoryGirl.define do
       set [1, 3, 5, 7]
     end
 
-    factory :cqv_blank_unless_const do
-      sequence(:rule) { 'blank_unless_const' }
+    factory :cqv_blank_if_const do
+      sequence(:rule) { 'blank_if_const' }
       conditional_operator "=="
       conditional_constant -1
     end
