@@ -253,8 +253,8 @@ itemnum,pass validation?,reviewed by Kali,comments,question_code,related_questio
 244,,Y,,USd6wk,DOA,,,,comparison,USd6wk must be greater than DOA,>,,,,,,,
 245,,Y,,USd6wk,DiedDate,,,,comparison,USd6wk must be less than or equal to DiedDate,<=,,,,,,,
 246,,Fixed,"Extra ""t in the error message",USd6wk,HomeDate,,,,comparison,USd6wk must be less than or equal to HomeDate,<=,,,,,,,
-247,No,NEW,,Ventricles,IVH,,,,set_gest_wght_implies_set,"If IVH is 1-4 and (Gest is <32|Wght is <1500), Ventricles must be between 0 and 3",,,range,"[0,3]",,,range,"[1,4]"
-248,No,NEW,,VI6wk,IVH,,,,set_gest_wght_implies_set,"If IVH is 2-3 and (Gest is <32|Wght is <1500), VI6wk must be between 0 and 25",,,range,"[0,25]",,,range,"[2,3]"
+247,No,NEW,,IVH,Ventricles,,,,set_gest_wght_implies_present,"If IVH is 1-4 and (Gest is <32|Wght is <1500), Ventricles must be between 0 and 3",,,range,"[1,4]",,,,
+248,No,NEW,,IVH,VI6wk,,,,set_gest_wght_implies_present,"If IVH is 2-3 and (Gest is <32|Wght is <1500), VI6wk must be between 0 and 25",,,range,"[2,3]",,,,
 249,No,NEW,,IVH,,"USd6wk, Cysts",,,set_present_implies_present,"If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4",,,range,"[1,4]",,,,
 250,,,split in 2,ROPeligibleExam,Gest,,,,const_implies_set,"If Gest is <32|Wght is <1500, ROPeligibleExam must be -1 or 0",,,included,"[-1,0]",<,32,,
 250.1,,,split in 2,ROPeligibleExam,Wght,,,,const_implies_set,"If Gest is <32|Wght is <1500, ROPeligibleExam must be -1 or 0",,,included,"[-1,0]",<,1500,,
