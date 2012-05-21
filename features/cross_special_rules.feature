@@ -210,68 +210,67 @@ Feature: Cross Question Special Rules
 #####################
 
 
-  Scenario: CQV Fail - set_present_implies_set - conditions met, out of range
+  Scenario: CQV Fail - set_present_implies_present - conditions met, out of range
   # If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4
     Given I have the following cross question validations
-      | question | related_question_list | rule                    | error_message                 | set_operator | set   | conditional_set_operator | conditional_set |
-      | Num Q2   | Num Q1, USd6wk        | set_present_implies_set | Err - set_present_implies_set | range        | [0,4] | range                    | [1,4]           |
+      | question | related_question_list | rule                        | error_message                     | set_operator | set   |
+      | Num Q1   | USd6wk, Num Q2        | set_present_implies_present | Err - set_present_implies_present | range        | [1,4] |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer   |
       | Num Q1   | 1        |
       | Num Q2   | 5        |
       | USd6wk   | 2012/1/1 |
-    Then I should see "Err - set_present_implies_set"
+    Then I should see "Err - set_present_implies_present"
 
-  Scenario: CQV Pass - set_present_implies_set - conditions met, in range
+  Scenario: CQV Pass - set_present_implies_present - conditions met, in range
   # If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4
     Given I have the following cross question validations
-      | question | related_question_list | rule                    | error_message                 | set_operator | set   | conditional_set_operator | conditional_set |
-      | Num Q2   | Num Q1, USd6wk        | set_present_implies_set | Err - set_present_implies_set | range        | [0,4] | range                    | [1,4]           |
+      | question | related_question_list | rule                        | error_message                     | set_operator | set   |
+      | Num Q1   | USd6wk, Num Q2        | set_present_implies_present | Err - set_present_implies_present | range        | [1,4] |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer   |
       | Num Q1   | 1        |
       | Num Q2   | 4        |
       | USd6wk   | 2012/1/1 |
-    Then I should not see "Err - set_present_implies_set"
+    Then I should not see "Err - set_present_implies_present"
 
-  Scenario: CQV Pass - set_present_implies_set - conditions not met (first blank), out of range
+  Scenario: CQV Pass - set_present_implies_present - conditions not met (first blank), out of range
   # If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4
     Given I have the following cross question validations
-      | question | related_question_list | rule                    | error_message                 | set_operator | set   | conditional_set_operator | conditional_set |
-      | Num Q2   | Num Q1, USd6wk        | set_present_implies_set | Err - set_present_implies_set | range        | [0,4] | range                    | [1,4]           |
+      | question | related_question_list | rule                        | error_message                     | set_operator | set   |
+      | Num Q1   | USd6wk, Num Q2        | set_present_implies_present | Err - set_present_implies_present | range        | [1,4] |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer   |
       | Num Q2   | 5        |
       | USd6wk   | 2012/1/1 |
-    Then I should not see "Err - set_present_implies_set"
+    Then I should not see "Err - set_present_implies_present"
 
-  Scenario: CQV Pass - set_present_implies_set - conditions not met (first out of range), out of range
+  Scenario: CQV Pass - set_present_implies_present - conditions not met (first out of range), out of range
   # If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4
     Given I have the following cross question validations
-      | question | related_question_list | rule                    | error_message                 | set_operator | set   | conditional_set_operator | conditional_set |
-      | Num Q2   | Num Q1, USd6wk        | set_present_implies_set | Err - set_present_implies_set | range        | [0,4] | range                    | [1,4]           |
-    And I am ready to enter responses as data.provider@intersect.org.au
+      | question | related_question_list | rule                        | error_message                     | set_operator | set   |
+      | Num Q1   | USd6wk, Num Q2        | set_present_implies_present | Err - set_present_implies_present | range        | [1,4] |
     When I store the following answers
       | question | answer   |
       | Num Q1   | 5        |
       | Num Q2   | 5        |
       | USd6wk   | 2012/1/1 |
-    Then I should not see "Err - set_present_implies_set"
+    Then I should not see "Err - set_present_implies_present"
 
-  Scenario: CQV Pass - set_present_implies_set - conditions not met (second blank), out of range
+  Scenario: CQV Pass - set_present_implies_present - conditions not met (second blank), out of range
   # If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4
     Given I have the following cross question validations
-      | question | related_question_list | rule                    | error_message                 | set_operator | set   | conditional_set_operator | conditional_set |
-      | Num Q2   | Num Q1, USd6wk        | set_present_implies_set | Err - set_present_implies_set | range        | [0,4] | range                    | [1,4]           |
+      | question | related_question_list | rule                        | error_message                     | set_operator | set   |
+      | Num Q1   | USd6wk, Num Q2        | set_present_implies_present | Err - set_present_implies_present | range        | [1,4] |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer |
       | Num Q1   | 1      |
       | Num Q2   | 5      |
-    Then I should not see "Err - set_present_implies_set"
+    Then I should not see "Err - set_present_implies_present"
 
 
 ###################
