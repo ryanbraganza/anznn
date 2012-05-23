@@ -6,4 +6,7 @@ group: manual
 ---
 {% include JB/setup %}
 
-Content goes here
+Content goes here. Should include
+* Main site elements
+* Tabs on home page
+* Logging out
