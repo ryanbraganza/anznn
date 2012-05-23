@@ -29,5 +29,17 @@ class Survey < ActiveRecord::Base
             "Destroying a survey would destroy *all* of the questions and answers that have been associated with it."
     end
   end
+
+  def question_with_code(code)
+    # optimisation used by batch processing - load all the questions once and store them in a hash keyed by question code
+    if @question_map.nil?
+      @question_map = {}
+      the_questions = questions.includes(:cross_question_validations)
+      the_questions.each do |question|
+        @question_map[question.code.downcase] = question
+      end
+    end
+    @question_map[code.downcase]
+  end
   
 end

@@ -59,7 +59,9 @@ class BatchFile < ActiveRecord::Base
   def process(force=false)
     raise "Batch has already been processed, cannot reprocess" unless status == STATUS_IN_PROGRESS or force
     raise "Can't force with status #{status}" unless !force or force_submittable?
+
     BatchFile.transaction do
+      start = Time.now
       begin
         can_generate_report = process_batch(force)
         if can_generate_report
@@ -81,7 +83,8 @@ class BatchFile < ActiveRecord::Base
           set_outcome(STATUS_FAILED, MESSAGE_BAD_FORMAT)
         end
       rescue
-        logger.info("Unexpected processing error while reading / processing file")
+        logger.error("Unexpected processing error while reading / processing file: Exception: #{$!.class}, Message: #{$!.message}")
+        logger.error $!.backtrace
         if @csv_row_count.present?
           set_outcome(STATUS_FAILED, MESSAGE_UNEXPECTED_ERROR + MESSAGE_CSV_STOP_LINE + @csv_row_count.to_s)
         else
@@ -90,7 +93,7 @@ class BatchFile < ActiveRecord::Base
         raise
       end
       save!
-      logger.info("Finished processing file with id #{id}, status is now #{status}")
+      logger.info("Finished processing file with id #{id}, status is now #{status}, processing took #{Time.now - start}")
     end
   end
 
