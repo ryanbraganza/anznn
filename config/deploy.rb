@@ -77,9 +77,10 @@ end
 after 'deploy:update' do
   server_setup.logging.rotation
   server_setup.config.apache
-  deploy.restart
   deploy.additional_symlinks
+  deploy.restart
   #deploy.generate_user_manual
+  
 end
 
 after 'deploy:finalize_update' do
@@ -218,4 +219,7 @@ end
 
 after "deploy:stop",    "delayed_job:stop"
 after "deploy:start",   "delayed_job:start"
-after "deploy:restart", "delayed_job:restart"
+after "deploy:restart" do
+  delayed_job.stop
+  delayed_job.start
+end
