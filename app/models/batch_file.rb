@@ -9,13 +9,15 @@ class BatchFile < ActiveRecord::Base
   STATUS_IN_PROGRESS = "In Progress"
 
   MESSAGE_WARNINGS = "The file you uploaded has one or more warnings. Please review the reports for details."
-  MESSAGE_NO_BABY_CODE = "The file you uploaded did not contain a BabyCode column"
+  MESSAGE_NO_BABY_CODE = "The file you uploaded did not contain a BabyCode column."
   MESSAGE_MISSING_BABY_CODES = "The file you uploaded is missing one or more baby codes. Each record must have a baby code."
-  MESSAGE_EMPTY = "The file you uploaded did not contain any data"
+  MESSAGE_EMPTY = "The file you uploaded did not contain any data."
   MESSAGE_FAILED_VALIDATION = "The file you uploaded did not pass validation. Please review the reports for details."
-  MESSAGE_SUCCESS = "Your file has been processed successfully"
-  MESSAGE_BAD_FORMAT = "The file you uploaded was not a valid CSV file"
+  MESSAGE_SUCCESS = "Your file has been processed successfully."
+  MESSAGE_BAD_FORMAT = "The file you uploaded was not a valid CSV file."
   MESSAGE_DUPLICATE_BABY_CODES = "The file you uploaded contained duplicate baby codes. Each baby code can only be used once."
+  MESSAGE_UNEXPECTED_ERROR = "Processing failed due to an unexpected error."
+  MESSAGE_CSV_STOP_LINE = " Processing stopped on CSV row "
 
   belongs_to :survey
   belongs_to :user
@@ -66,10 +68,26 @@ class BatchFile < ActiveRecord::Base
       rescue ArgumentError
         logger.info("Argument error while reading file")
         # Note: Catching ArgumentError seems a bit odd, but CSV throws it when the file is not UTF-8 which happens if you upload an xls file
-        set_outcome(STATUS_FAILED, MESSAGE_BAD_FORMAT)
+        if @csv_row_count.present?
+          set_outcome(STATUS_FAILED, MESSAGE_BAD_FORMAT + MESSAGE_CSV_STOP_LINE + @csv_row_count.to_s)
+        else
+          set_outcome(STATUS_FAILED, MESSAGE_BAD_FORMAT)
+        end
       rescue CSV::MalformedCSVError
         logger.info("Malformed CSV error while reading file")
-        set_outcome(STATUS_FAILED, MESSAGE_BAD_FORMAT)
+        if @csv_row_count.present?
+          set_outcome(STATUS_FAILED, MESSAGE_BAD_FORMAT + MESSAGE_CSV_STOP_LINE + @csv_row_count.to_s)
+        else
+          set_outcome(STATUS_FAILED, MESSAGE_BAD_FORMAT)
+        end
+      rescue
+        logger.info("Unexpected processing error while reading / processing file")
+        if @csv_row_count.present?
+          set_outcome(STATUS_FAILED, MESSAGE_UNEXPECTED_ERROR + MESSAGE_CSV_STOP_LINE + @csv_row_count.to_s)
+        else
+          set_outcome(STATUS_FAILED, MESSAGE_UNEXPECTED_ERROR)
+        end
+        raise
       end
       save!
       logger.info("Finished processing file with id #{id}, status is now #{status}")
@@ -109,12 +127,12 @@ class BatchFile < ActiveRecord::Base
       return
     end
 
-    count = 0
+    @csv_row_count = 0
     failures = false
     warnings = false
     responses = []
     CSV.foreach(file.path, {headers: true}) do |row|
-      count += 1
+      @csv_row_count += 1
       baby_code = row[BABY_CODE_COLUMN]
       baby_code.strip! unless baby_code.nil?
       response = Response.new(survey: survey, baby_code: baby_code, user: user, hospital: hospital, year_of_registration: year_of_registration, submitted_status: Response::STATUS_UNSUBMITTED, batch_file: self)
@@ -125,7 +143,8 @@ class BatchFile < ActiveRecord::Base
       responses << response
     end
 
-    self.record_count = count
+    self.record_count = @csv_row_count
+    @csv_row_count = nil
     if failures
       set_outcome(STATUS_FAILED, MESSAGE_FAILED_VALIDATION)
     elsif warnings and !force
@@ -144,22 +163,22 @@ class BatchFile < ActiveRecord::Base
 
   def pre_process_file
     # do basic checks that can result in the file failing completely and not being validated
-    count = 0
+    @csv_row_count = 0
     baby_codes = []
     CSV.foreach(file.path, {headers: true}) do |row|
       unless row.headers.include?(BABY_CODE_COLUMN)
-        set_outcome(STATUS_FAILED, MESSAGE_NO_BABY_CODE)
+        set_outcome(STATUS_FAILED, MESSAGE_NO_BABY_CODE + MESSAGE_CSV_STOP_LINE + @csv_row_count.to_s)
         return false
       end
-      count += 1
+      @csv_row_count += 1
       baby_code = row[BABY_CODE_COLUMN]
       if baby_code.blank?
-        set_outcome(STATUS_FAILED, MESSAGE_MISSING_BABY_CODES)
+        set_outcome(STATUS_FAILED, MESSAGE_MISSING_BABY_CODES + MESSAGE_CSV_STOP_LINE + @csv_row_count.to_s)
         return false
       else
         baby_code.strip!
         if baby_codes.include?(baby_code)
-          set_outcome(STATUS_FAILED, MESSAGE_DUPLICATE_BABY_CODES)
+          set_outcome(STATUS_FAILED, MESSAGE_DUPLICATE_BABY_CODES + MESSAGE_CSV_STOP_LINE + @csv_row_count.to_s)
           return false
         else
           baby_codes << baby_code
@@ -167,11 +186,12 @@ class BatchFile < ActiveRecord::Base
       end
     end
 
-    if count == 0
+    if @csv_row_count == 0
       set_outcome(STATUS_FAILED, MESSAGE_EMPTY)
       return false
     end
 
+    @csv_row_count = nil
     true
   end
 

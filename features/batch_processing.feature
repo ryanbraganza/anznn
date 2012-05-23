@@ -15,23 +15,23 @@ Feature: Processing batch files
       | Registration Type | Num records | Status | Details   | Reports |
       | MySurvey          |             | Failed | <message> |         |
   Examples:
-    | file                    | message                                                                                     |
-    | not_csv.xls             | The file you uploaded was not a valid CSV file                                              |
-    | invalid_csv.csv         | The file you uploaded was not a valid CSV file                                              |
-    | no_baby_code_column.csv | The file you uploaded did not contain a BabyCode column                                     |
-    | missing_baby_code.csv   | The file you uploaded is missing one or more baby codes. Each record must have a baby code. |
-    | blank_rows.csv          | The file you uploaded is missing one or more baby codes. Each record must have a baby code. |
-    | empty.csv               | The file you uploaded did not contain any data                                              |
-    | headers_only.csv        | The file you uploaded did not contain any data                                              |
-    | duplicate_baby_code.csv | The file you uploaded contained duplicate baby codes. Each baby code can only be used once. |
+    | file                    | message                                                                                                                     |
+    | not_csv.xls             | The file you uploaded was not a valid CSV file. Processing stopped on CSV row 0                                             |
+    | invalid_csv.csv         | The file you uploaded was not a valid CSV file. Processing stopped on CSV row 2                                             |
+    | no_baby_code_column.csv | The file you uploaded did not contain a BabyCode column. Processing stopped on CSV row 0                                    |
+    | missing_baby_code.csv   | The file you uploaded is missing one or more baby codes. Each record must have a baby code. Processing stopped on CSV row 2 |
+    | blank_rows.csv          | The file you uploaded is missing one or more baby codes. Each record must have a baby code. Processing stopped on CSV row 1 |
+    | empty.csv               | The file you uploaded did not contain any data.                                                                             |
+    | headers_only.csv        | The file you uploaded did not contain any data.                                                                             |
+    | duplicate_baby_code.csv | The file you uploaded contained duplicate baby codes. Each baby code can only be used once. Processing stopped on CSV row 3 |
 
   Scenario: Valid file with no errors or warnings
     Given I upload batch file "no_errors_or_warnings.csv" for survey "MySurvey"
     And the system processes the latest upload
     When I am on the list of batch uploads page
     Then I should see "batch_uploads" table with
-      | Registration Type | Num records | Status                 | Details                                   | Reports        |
-      | MySurvey          | 3           | Processed Successfully | Your file has been processed successfully | Summary Report |
+      | Registration Type | Num records | Status                 | Details                                    | Reports        |
+      | MySurvey          | 3           | Processed Successfully | Your file has been processed successfully. | Summary Report |
 
   Scenario Outline: Well formed files that get rejected for validation errors
     Given I upload batch file "<file>" for survey "MySurvey"

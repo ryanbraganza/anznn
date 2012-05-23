@@ -71,7 +71,7 @@ describe BatchFile do
       it "should reject binary files such as xls" do
         batch_file = process_batch_file('not_csv.xls', survey, user)
         batch_file.status.should eq("Failed")
-        batch_file.message.should eq("The file you uploaded was not a valid CSV file")
+        batch_file.message.should eq("The file you uploaded was not a valid CSV file. Processing stopped on CSV row 0")
         batch_file.record_count.should be_nil
         batch_file.problem_record_count.should be_nil
         batch_file.summary_report_path.should be_nil
@@ -81,7 +81,7 @@ describe BatchFile do
       it "should reject files that are text but have malformed csv" do
         batch_file = process_batch_file('invalid_csv.csv', survey, user)
         batch_file.status.should eq("Failed")
-        batch_file.message.should eq("The file you uploaded was not a valid CSV file")
+        batch_file.message.should eq("The file you uploaded was not a valid CSV file. Processing stopped on CSV row 2")
         batch_file.record_count.should be_nil
         batch_file.problem_record_count.should be_nil
         batch_file.summary_report_path.should be_nil
@@ -91,7 +91,7 @@ describe BatchFile do
       it "should reject file without a baby code column" do
         batch_file = process_batch_file('no_baby_code_column.csv', survey, user)
         batch_file.status.should eq("Failed")
-        batch_file.message.should eq("The file you uploaded did not contain a BabyCode column")
+        batch_file.message.should eq("The file you uploaded did not contain a BabyCode column. Processing stopped on CSV row 0")
         batch_file.record_count.should be_nil
         batch_file.problem_record_count.should be_nil
         batch_file.summary_report_path.should be_nil
@@ -101,7 +101,7 @@ describe BatchFile do
       it "should reject files that are empty" do
         batch_file = process_batch_file('empty.csv', survey, user)
         batch_file.status.should eq("Failed")
-        batch_file.message.should eq("The file you uploaded did not contain any data")
+        batch_file.message.should eq("The file you uploaded did not contain any data.")
         batch_file.record_count.should be_nil
         batch_file.problem_record_count.should be_nil
         batch_file.summary_report_path.should be_nil
@@ -111,7 +111,7 @@ describe BatchFile do
       it "should reject files that have a header row only" do
         batch_file = process_batch_file('headers_only.csv', survey, user)
         batch_file.status.should eq("Failed")
-        batch_file.message.should eq("The file you uploaded did not contain any data")
+        batch_file.message.should eq("The file you uploaded did not contain any data.")
         batch_file.record_count.should be_nil
         batch_file.problem_record_count.should be_nil
         batch_file.summary_report_path.should be_nil
@@ -123,7 +123,7 @@ describe BatchFile do
       it "file with no errors or warnings - should create the survey responses and answers" do
         batch_file = process_batch_file('no_errors_or_warnings.csv', survey, user, 2008)
         batch_file.status.should eq("Processed Successfully")
-        batch_file.message.should eq("Your file has been processed successfully")
+        batch_file.message.should eq("Your file has been processed successfully.")
         Response.count.should == 3
         Answer.count.should eq(21) #3x8 questions = 24, 3 not answered
         batch_file.problem_record_count.should == 0
@@ -162,7 +162,7 @@ describe BatchFile do
       it "file with no errors or warnings - should create the survey responses and answers and should strip leading/trailing whitespace" do
         batch_file = process_batch_file('no_errors_or_warnings_whitespace.csv', survey, user)
         batch_file.status.should eq("Processed Successfully")
-        batch_file.message.should eq("Your file has been processed successfully")
+        batch_file.message.should eq("Your file has been processed successfully.")
         Response.count.should == 3
         Answer.count.should eq(21) #3x8 questions = 24, 3 not answered
         batch_file.problem_record_count.should == 0
@@ -202,7 +202,7 @@ describe BatchFile do
       it "file that just has blank rows fails on baby code since baby codes are missing" do
         batch_file = process_batch_file('blank_rows.csv', survey, user)
         batch_file.status.should eq("Failed")
-        batch_file.message.should eq("The file you uploaded is missing one or more baby codes. Each record must have a baby code.")
+        batch_file.message.should eq("The file you uploaded is missing one or more baby codes. Each record must have a baby code. Processing stopped on CSV row 1")
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should be_nil
@@ -214,7 +214,7 @@ describe BatchFile do
       it "file with missing baby codes should be rejected completely and no reports generated" do
         batch_file = process_batch_file('missing_baby_code.csv', survey, user)
         batch_file.status.should eq("Failed")
-        batch_file.message.should eq("The file you uploaded is missing one or more baby codes. Each record must have a baby code.")
+        batch_file.message.should eq("The file you uploaded is missing one or more baby codes. Each record must have a baby code. Processing stopped on CSV row 2")
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should be_nil
@@ -226,7 +226,7 @@ describe BatchFile do
       it "file with duplicate baby codes within the file should be rejected completely and no reports generated" do
         batch_file = process_batch_file('duplicate_baby_code.csv', survey, user)
         batch_file.status.should eq("Failed")
-        batch_file.message.should eq("The file you uploaded contained duplicate baby codes. Each baby code can only be used once.")
+        batch_file.message.should eq("The file you uploaded contained duplicate baby codes. Each baby code can only be used once. Processing stopped on CSV row 3")
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should be_nil
@@ -238,7 +238,7 @@ describe BatchFile do
       it "file with duplicate baby codes within the file (with whitespace padding) should be rejected completely and no reports generated" do
         batch_file = process_batch_file('duplicate_baby_code_whitespace.csv', survey, user)
         batch_file.status.should eq("Failed")
-        batch_file.message.should eq("The file you uploaded contained duplicate baby codes. Each baby code can only be used once.")
+        batch_file.message.should eq("The file you uploaded contained duplicate baby codes. Each baby code can only be used once. Processing stopped on CSV row 3")
         Response.count.should == 0
         Answer.count.should == 0
         batch_file.record_count.should be_nil
@@ -452,7 +452,7 @@ describe BatchFile do
         batch_file.reload
 
         batch_file.status.should eq("Processed Successfully")
-        batch_file.message.should eq("Your file has been processed successfully")
+        batch_file.message.should eq("Your file has been processed successfully.")
         Response.count.should == 3
         Answer.count.should == 20
         batch_file.record_count.should == 3
