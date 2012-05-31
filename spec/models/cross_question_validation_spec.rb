@@ -150,18 +150,10 @@ describe CrossQuestionValidation do
           @q2 = Factory :question, section: @section, question_type: 'Date'
           Factory :cqv_present_implies_constant, question: @q1, related_question: @q2, error_message: @error_message, operator: '==', constant: -1
         end
-        it "handles nils" do
-          standard_cqv_test({}, {}, [])
-        end
-        it "doesn't reject the LHS when RHS not a date" do
-          standard_cqv_test({}, "5", [])
-        end
-        it "rejects when RHS is date and LHS is not expected constant" do
-          standard_cqv_test(5, Date.new(2012, 2, 3), [@error_message])
-        end
-        it "accepts when RHS is date and LHS is expected constant" do
-          standard_cqv_test(-1, Date.new(2012, 2, 1), [])
-        end
+        it("handles nils") { standard_cqv_test({}, {}, []) }
+        it("doesn't reject the LHS when RHS not a date") { standard_cqv_test({}, "5", []) }
+        it("rejects when RHS is date and LHS is not expected constant") { standard_cqv_test(5, Date.new(2012, 2, 3), [@error_message]) }
+        it("accepts when RHS is date and LHS is expected constant") { standard_cqv_test(-1, Date.new(2012, 2, 1), []) }
       end
 
       describe 'constant implies constant' do
@@ -175,18 +167,10 @@ describe CrossQuestionValidation do
           #operator ">"
           #constant 0
         end
-        it "handles nils" do
-          standard_cqv_test({}, {}, [])
-        end
-        it "doesn't reject the LHS when RHS not expected constant" do
-          standard_cqv_test(-1, 0, [])
-        end
-        it "rejects when RHS is specified constant and LHS is not expected constant" do
-          standard_cqv_test(-1, 1, [@error_message])
-        end
-        it "accepts when RHS is specified constant and LHS is expected constant" do
-          standard_cqv_test(1, 1, [])
-        end
+        it("handles nils") { standard_cqv_test({}, {}, []) }
+        it("doesn't reject the LHS when RHS not expected constant") { standard_cqv_test(-1, 0, []) }
+        it("rejects when RHS is specified constant and LHS is not expected constant") { standard_cqv_test(-1, 1, [@error_message]) }
+        it("accepts when RHS is specified constant and LHS is expected constant") { standard_cqv_test(1, 1, []) }
       end
 
       describe 'constant implies set' do
@@ -200,18 +184,10 @@ describe CrossQuestionValidation do
           #set_operator "included"
           #set [1,3,5,7]
         end
-        it "handles nils" do
-          standard_cqv_test({}, {}, [])
-        end
-        it "doesn't reject the LHS when RHS not expected constant" do
-          standard_cqv_test(-1, 0, [])
-        end
-        it "rejects when RHS is specified const and LHS is not in expected set" do
-          standard_cqv_test(0, 1, [@error_message])
-        end
-        it "accepts when RHS is specified const and LHS is in expected set" do
-          standard_cqv_test(1, 1, [])
-        end
+        it("handles nils") { standard_cqv_test({}, {}, []) }
+        it("doesn't reject the LHS when RHS not expected constant") { standard_cqv_test(-1, 0, []) }
+        it("rejects when RHS is specified const and LHS is not in expected set") { standard_cqv_test(0, 1, [@error_message]) }
+        it("accepts when RHS is specified const and LHS is in expected set") { standard_cqv_test(1, 1, []) }
       end
 
       describe 'set implies const' do
@@ -225,18 +201,10 @@ describe CrossQuestionValidation do
           #operator ">"
           #constant 0
         end
-        it "handles nils" do
-          standard_cqv_test({}, {}, [])
-        end
-        it "doesn't reject the LHS when RHS not in expected set" do
-          standard_cqv_test(-1, 0, [])
-        end
-        it "rejects when RHS is in specified set and LHS is not expected constant" do
-          standard_cqv_test(0, 2, [@error_message])
-        end
-        it "accepts when RHS is in specified set and LHS is expected constant" do
-          standard_cqv_test(1, 2, [])
-        end
+        it("handles nils") { standard_cqv_test({}, {}, []) }
+        it("doesn't reject the LHS when RHS not in expected set") { standard_cqv_test(-1, 0, []) }
+        it("rejects when RHS is in specified set and LHS is not expected constant") { standard_cqv_test(0, 2, [@error_message]) }
+        it("accepts when RHS is in specified set and LHS is expected constant") { standard_cqv_test(1, 2, []) }
       end
 
       describe 'set implies set' do
@@ -250,18 +218,10 @@ describe CrossQuestionValidation do
           #set_operator "included"
           #set [1,3,5,7]
         end
-        it "handles nils" do
-          standard_cqv_test({}, {}, [])
-        end
-        it "doesn't reject the LHS when RHS not in expected set" do
-          standard_cqv_test(-1, 0, [])
-        end
-        it "rejects when RHS is in specified set and LHS is in expected set" do
-          standard_cqv_test(0, 2, [@error_message])
-        end
-        it "accepts when RHS is in specified set and LHS is in expected set" do
-          standard_cqv_test(1, 2, [])
-        end
+        it("handles nils") { standard_cqv_test({}, {}, []) }
+        it("doesn't reject the LHS when RHS not in expected set") { standard_cqv_test(-1, 0, []) }
+        it("rejects when RHS is in specified set and LHS is in expected set") { standard_cqv_test(0, 2, [@error_message]) }
+        it("accepts when RHS is in specified set and LHS is in expected set") { standard_cqv_test(1, 2, []) }
       end
 
       describe 'present implies present' do
@@ -271,19 +231,13 @@ describe CrossQuestionValidation do
           @q2 = Factory :question, section: @section, question_type: 'Time'
           Factory :cqv_present_implies_present, question: @q1, related_question: @q2, error_message: @error_message
         end
-        it "is not run if the question has a badly formed answer" do
-          standard_cqv_test("2011-12-", "11:53", [])
-        end
-        it "passes if both are answered" do
-          standard_cqv_test("2011-12-12", "11:53", [])
-        end
+        it("is not run if the question has a badly formed answer") { standard_cqv_test("2011-12-", "11:53", []) }
+        it("passes if both are answered") { standard_cqv_test("2011-12-12", "11:53", []) }
         it "fails if the question is answered and the related question is not" do
           a1 = Factory :answer, response: @response, question: @q1, answer_value: "2011-12-12"
           do_cqv_check(a1, [@error_message])
         end
-        it "fails if the question is answered and the related question has an invalid answer" do
-          standard_cqv_test("2011-12-12", "11:", [@error_message])
-        end
+        it("fails if the question is answered and the related question has an invalid answer") { standard_cqv_test("2011-12-12", "11:", [@error_message]) }
       end
 
       describe 'const implies present' do
@@ -293,15 +247,9 @@ describe CrossQuestionValidation do
           @q2 = Factory :question, section: @section, question_type: 'Date'
           Factory :cqv_const_implies_present, question: @q1, related_question: @q2, error_message: @error_message, operator: '==', constant: -1
         end
-        it "is not run if the question has a badly formed answer" do
-          standard_cqv_test("ab", "2011-12-12", [])
-        end
-        it "passes if both are answered and answer to question == constant" do
-          standard_cqv_test("-1", "2011-12-12", [])
-        end
-        it "passes if both are answered and answer to question != constant" do
-          standard_cqv_test("99", "2011-12-12", [])
-        end
+        it("is not run if the question has a badly formed answer") { standard_cqv_test("ab", "2011-12-12", []) }
+        it("passes if both are answered and answer to question == constant") { standard_cqv_test("-1", "2011-12-12", []) }
+        it("passes if both are answered and answer to question != constant") { standard_cqv_test("99", "2011-12-12", []) }
         it "fails if related question not answered and answer to question == constant" do
           a1 = Factory :answer, response: @response, question: @q1, answer_value: "-1"
           do_cqv_check(a1, [@error_message])
@@ -310,9 +258,7 @@ describe CrossQuestionValidation do
           a1 = Factory :answer, response: @response, question: @q1, answer_value: "00"
           do_cqv_check(a1, [])
         end
-        it "fails if related question has an invalid answer and answer to question == constant" do
-          standard_cqv_test("-1", "2011-12-", [@error_message])
-        end
+        it("fails if related question has an invalid answer and answer to question == constant") { standard_cqv_test("-1", "2011-12-", [@error_message]) }
       end
 
       describe 'set implies present' do
@@ -322,18 +268,10 @@ describe CrossQuestionValidation do
           @q2 = Factory :question, section: @section, question_type: 'Date'
           Factory :cqv_set_implies_present, question: @q1, related_question: @q2, error_message: @error_message, set_operator: 'range', set: [2, 7]
         end
-        it "is not run if the question has a badly formed answer" do
-          standard_cqv_test("ab", "2011-12-12", [])
-        end
-        it "passes if both are answered and answer to question is at start of set" do
-          standard_cqv_test("2", "2011-12-12", [])
-        end
-        it "passes if both are answered and answer to question is in middle of set" do
-          standard_cqv_test("5", "2011-12-12", [])
-        end
-        it "passes if both are answered and answer to question is at end of set" do
-          standard_cqv_test("7", "2011-12-12", [])
-        end
+        it("is not run if the question has a badly formed answer") { standard_cqv_test("ab", "2011-12-12", []) }
+        it("passes if both are answered and answer to question is at start of set") { standard_cqv_test("2", "2011-12-12", []) }
+        it("passes if both are answered and answer to question is in middle of set") { standard_cqv_test("5", "2011-12-12", []) }
+        it("passes if both are answered and answer to question is at end of set") { standard_cqv_test("7", "2011-12-12", []) }
         it "fails if related question not answered and answer to question is at start of set" do
           a1 = Factory :answer, response: @response, question: @q1, answer_value: "2"
           do_cqv_check(a1, [@error_message])
@@ -350,12 +288,10 @@ describe CrossQuestionValidation do
           a1 = Factory :answer, response: @response, question: @q1, answer_value: "8"
           do_cqv_check(a1, [])
         end
-        it "fails if related question has an invalid answer and answer to question in range" do
-          standard_cqv_test("3", "2011-12-", [@error_message])
-        end
+        it("fails if related question has an invalid answer and answer to question in range") { standard_cqv_test("3", "2011-12-", [@error_message]) }
       end
 
-     describe 'const implies one of const' do
+      describe 'const implies one of const' do
         before :each do
           @error_message = 'q2 or q3 must be -1 if q1 is 99'
           @q1 = Factory :question, section: @section, question_type: 'Choice'
@@ -363,8 +299,16 @@ describe CrossQuestionValidation do
           @q3 = Factory :question, section: @section, question_type: 'Choice'
           Factory :cross_question_validation, question: @q1, related_question: nil, related_question_ids: [@q2.id, @q3.id], error_message: @error_message, operator: '==', constant: 99, conditional_operator: '==', conditional_constant: -1
         end
-        it "write some tests" do
-          pending
+        it("handles nils") do
+          v1 = 99
+          v2 = nil
+          v3 = nil
+
+          first = Factory :answer, response: @response, question: @q1, answer_value: v1
+          second = Factory :answer, response: @response, question: @q2, answer_value: v2
+          third = Factory :answer, response: @response, question: @q3, answer_value: v3
+
+          do_cqv_check(first, @error_message)
         end
       end
     end
@@ -386,21 +330,11 @@ describe CrossQuestionValidation do
           a1 = Factory :answer, response: @response, question: @q1, answer_value: "7"
           do_cqv_check(a1, [])
         end
-        it "passes if q2 not answered and q1 not answered" do
-          # rule won't be run
-        end
-        it "passes if q2 is not -1 and q1 is blank" do
-          # rule won't be run
-        end
-        it "passes if q2 is not -1 and q1 is not blank" do
-          standard_cqv_test(123, 0, [])
-        end
-        it "passes when q2 is -1 and q1 is blank" do
-          # rule won't be run
-        end
-        it "fails when q2 is -1 and q1 is not blank" do
-          standard_cqv_test(123, -1, [@error_message])
-        end
+        it("passes if q2 not answered and q1 not answered") {} # rule won't be run
+        it("passes if q2 is not -1 and q1 is blank") {} # rule won't be run }
+        it("passes if q2 is not -1 and q1 is not blank") { standard_cqv_test(123, 0, []) }
+        it("passes when q2 is -1 and q1 is blank") {} # rule won't be run }
+        it("fails when q2 is -1 and q1 is not blank") { standard_cqv_test(123, -1, [@error_message]) }
       end
 
       describe 'blank unless Qx is within range N..M (inclusive)' do
@@ -412,21 +346,11 @@ describe CrossQuestionValidation do
           #conditional_set_operator "range"
           #conditional_set [0,99]
         end
-        it "handles nils" do
-          standard_cqv_test({}, {}, [])
-        end
-        it "doesn't reject the LHS when RHS expected" do
-          standard_cqv_test(-1, 0, [])
-        end
-        it "rejects when RHS isn't expected value (lower) and LHS isn't blank" do
-          standard_cqv_test(-1, -1, [@error_message])
-        end
-        it "rejects when RHS isn't expected value (higher) and LHS isn't blank" do
-          standard_cqv_test(-1, 100, [@error_message])
-        end
-        it "rejects when RHS is blank value and LHS isn't blank" do
-          standard_cqv_test(-1, {}, [@error_message])
-        end
+        it("handles nils") { standard_cqv_test({}, {}, []) }
+        it("doesn't reject the LHS when RHS expected") { standard_cqv_test(-1, 0, []) }
+        it("rejects when RHS isn't expected value (lower) and LHS isn't blank") { standard_cqv_test(-1, -1, [@error_message]) }
+        it("rejects when RHS isn't expected value (higher) and LHS isn't blank") { standard_cqv_test(-1, 100, [@error_message]) }
+        it("rejects when RHS is blank value and LHS isn't blank") { standard_cqv_test(-1, {}, [@error_message]) }
       end
 
       describe 'blank unless Qx is between N annd M' do
@@ -437,21 +361,11 @@ describe CrossQuestionValidation do
           Factory :cqv_blank_unless_set, question: @q1, related_question: @q2, error_message: @error_message, conditional_set_operator: "range"
           #conditional_set [0,99]
         end
-        it "handles nils" do
-          standard_cqv_test({}, {}, [])
-        end
-        it "doesn't reject the LHS when RHS expected" do
-          standard_cqv_test(-1, 1, [])
-        end
-        it "rejects when RHS isn't expected value (lower) and LHS isn't blank" do
-          standard_cqv_test(-1, -1, [@error_message])
-        end
-        it "rejects when RHS isn't expected value (higher) and LHS isn't blank" do
-          standard_cqv_test(-1, 100, [@error_message])
-        end
-        it "rejects when RHS is blank value and LHS isn't blank" do
-          standard_cqv_test(-1, {}, [@error_message])
-        end
+        it("handles nils") { standard_cqv_test({}, {}, []) }
+        it("doesn't reject the LHS when RHS expected") { standard_cqv_test(-1, 1, []) }
+        it("rejects when RHS isn't expected value (lower) and LHS isn't blank") { standard_cqv_test(-1, -1, [@error_message]) }
+        it("rejects when RHS isn't expected value (higher) and LHS isn't blank") { standard_cqv_test(-1, 100, [@error_message]) }
+        it("rejects when RHS is blank value and LHS isn't blank") { standard_cqv_test(-1, {}, [@error_message]) }
       end
 
     end
@@ -467,108 +381,60 @@ describe CrossQuestionValidation do
           @error_message = 'not lte'
           Factory :cross_question_validation, rule: 'comparison', operator: '<=', question: @q1, related_question: @q2, error_message: @error_message
         end
-        it "handles nils" do
-          standard_cqv_test({}, {}, [])
-        end
-        it "rejects gt" do
-          standard_cqv_test(Date.new(2012, 2, 3), Date.new(2012, 2, 2), [@error_message])
-        end
-        it "accepts lt" do
-          standard_cqv_test(Date.new(2012, 2, 1), Date.new(2012, 2, 2), [])
-        end
-        it "accepts eq" do
-          standard_cqv_test(Date.new(2012, 2, 2), Date.new(2012, 2, 2), [])
-        end
+        it("handles nils") { standard_cqv_test({}, {}, []) }
+        it("rejects gt") { standard_cqv_test(Date.new(2012, 2, 3), Date.new(2012, 2, 2), [@error_message]) }
+        it("accepts lt") { standard_cqv_test(Date.new(2012, 2, 1), Date.new(2012, 2, 2), []) }
+        it("accepts eq") { standard_cqv_test(Date.new(2012, 2, 2), Date.new(2012, 2, 2), []) }
       end
       describe "date_gte" do
         before :each do
           @error_message = 'not gte'
           Factory :cross_question_validation, rule: 'comparison', operator: '>=', question: @q1, related_question: @q2, error_message: @error_message
         end
-        it "handles nils" do
-          standard_cqv_test({}, {}, [])
-        end
-        it "accepts gt" do
-          standard_cqv_test(Date.new(2012, 2, 3), Date.new(2012, 2, 2), [])
-        end
-        it "rejects lt" do
-          standard_cqv_test(Date.new(2012, 2, 1), Date.new(2012, 2, 2), [@error_message])
-        end
-        it "accepts eq" do
-          standard_cqv_test(Date.new(2012, 2, 2), Date.new(2012, 2, 2), [])
-        end
+        it("handles nils") { standard_cqv_test({}, {}, []) }
+        it("accepts gt") { standard_cqv_test(Date.new(2012, 2, 3), Date.new(2012, 2, 2), []) }
+        it("rejects lt") { standard_cqv_test(Date.new(2012, 2, 1), Date.new(2012, 2, 2), [@error_message]) }
+        it("accepts eq") { standard_cqv_test(Date.new(2012, 2, 2), Date.new(2012, 2, 2), []) }
       end
       describe "date_gt" do
         before :each do
           @error_message = 'not gt'
           Factory :cross_question_validation, rule: 'comparison', operator: '>', question: @q1, related_question: @q2, error_message: @error_message
         end
-        it "handles nils" do
-          standard_cqv_test({}, {}, [])
-        end
-        it "accepts gt" do
-          standard_cqv_test(Date.new(2012, 2, 3), Date.new(2012, 2, 2), [])
-        end
-        it "rejects lt" do
-          standard_cqv_test(Date.new(2012, 2, 1), Date.new(2012, 2, 2), [@error_message])
-        end
-        it "rejects eq" do
-          standard_cqv_test(Date.new(2012, 2, 2), Date.new(2012, 2, 2), [@error_message])
-        end
+        it("handles nils") { standard_cqv_test({}, {}, []) }
+        it("accepts gt") { standard_cqv_test(Date.new(2012, 2, 3), Date.new(2012, 2, 2), []) }
+        it("rejects lt") { standard_cqv_test(Date.new(2012, 2, 1), Date.new(2012, 2, 2), [@error_message]) }
+        it("rejects eq") { standard_cqv_test(Date.new(2012, 2, 2), Date.new(2012, 2, 2), [@error_message]) }
       end
       describe "date_lt" do
         before :each do
           @error_message = 'not lt'
           Factory :cross_question_validation, rule: 'comparison', operator: '<', question: @q1, related_question: @q2, error_message: @error_message
         end
-        it "handles nils" do
-          standard_cqv_test({}, {}, [])
-        end
-        it "rejects gt" do
-          standard_cqv_test(Date.new(2012, 2, 3), Date.new(2012, 2, 2), [@error_message])
-        end
-        it "accepts lt" do
-          standard_cqv_test(Date.new(2012, 2, 1), Date.new(2012, 2, 2), [])
-        end
-        it "rejects eq" do
-          standard_cqv_test(Date.new(2012, 2, 2), Date.new(2012, 2, 2), [@error_message])
-        end
+        it("handles nils") { standard_cqv_test({}, {}, []) }
+        it("rejects gt") { standard_cqv_test(Date.new(2012, 2, 3), Date.new(2012, 2, 2), [@error_message]) }
+        it("accepts lt") { standard_cqv_test(Date.new(2012, 2, 1), Date.new(2012, 2, 2), []) }
+        it("rejects eq") { standard_cqv_test(Date.new(2012, 2, 2), Date.new(2012, 2, 2), [@error_message]) }
       end
       describe "date_eq" do
         before :each do
           @error_message = 'not eq'
           Factory :cross_question_validation, rule: 'comparison', operator: '==', question: @q1, related_question: @q2, error_message: @error_message
         end
-        it "handles nils" do
-          standard_cqv_test({}, {}, [])
-        end
-        it "rejects gt" do
-          standard_cqv_test(Date.new(2012, 2, 3), Date.new(2012, 2, 2), [@error_message])
-        end
-        it "rejects lt" do
-          standard_cqv_test(Date.new(2012, 2, 1), Date.new(2012, 2, 2), [@error_message])
-        end
-        it "accepts eq" do
-          standard_cqv_test(Date.new(2012, 2, 2), Date.new(2012, 2, 2), [])
-        end
+        it("handles nils") { standard_cqv_test({}, {}, []) }
+        it("rejects gt") { standard_cqv_test(Date.new(2012, 2, 3), Date.new(2012, 2, 2), [@error_message]) }
+        it("rejects lt") { standard_cqv_test(Date.new(2012, 2, 1), Date.new(2012, 2, 2), [@error_message]) }
+        it("accepts eq") { standard_cqv_test(Date.new(2012, 2, 2), Date.new(2012, 2, 2), []) }
       end
       describe "date_ne" do
         before :each do
           @error_message = 'are eq'
           Factory :cross_question_validation, rule: 'comparison', operator: '!=', question: @q1, related_question: @q2, error_message: @error_message
         end
-        it "handles nils" do
-          standard_cqv_test({}, {}, [])
-        end
-        it "accepts gt" do
-          standard_cqv_test(Date.new(2012, 2, 3), Date.new(2012, 2, 2), [])
-        end
-        it "accepts lt" do
-          standard_cqv_test(Date.new(2012, 2, 1), Date.new(2012, 2, 2), [])
-        end
-        it "rejects eq" do
-          standard_cqv_test(Date.new(2012, 2, 2), Date.new(2012, 2, 2), [@error_message])
-        end
+        it("handles nils") { standard_cqv_test({}, {}, []) }
+        it("accepts gt") { standard_cqv_test(Date.new(2012, 2, 3), Date.new(2012, 2, 2), []) }
+        it("accepts lt") { standard_cqv_test(Date.new(2012, 2, 1), Date.new(2012, 2, 2), []) }
+        it("rejects eq") { standard_cqv_test(Date.new(2012, 2, 2), Date.new(2012, 2, 2), [@error_message]) }
       end
       describe "comparisons with offsets function normally" do
         #This isn't much to test here: We're utilising the other class' ability to use +/-, so as long
@@ -611,33 +477,15 @@ describe CrossQuestionValidation do
           #conditional_operator "<"
           #conditional_constant 1500
         end
-        it "handles nils - failure" do
-          standard_cqv_test({}, {}, [@error_message])
-        end
-        it "passes when only one value is entered but valid (a)" do
-          standard_cqv_test(5, {}, [])
-        end
-        it "passes when only one value is entered but valid (b)" do
-          standard_cqv_test({}, 5, [])
-        end
-        it "passes when both are entered but only one value is valid (a)" do
-          standard_cqv_test(5, 2000, [])
-        end
-        it "passes when both are entered but only one value is valid (b)" do
-          standard_cqv_test(50, 5, [])
-        end
-        it "fails when only one value is entered but not valid (a)" do
-          standard_cqv_test(50, {}, [@error_message])
-        end
-        it "fails when only one value is entered but not valid (b)" do
-          standard_cqv_test({}, 2000, [@error_message])
-        end
-        it "fails when both are entered and neither are valid (a)" do
-          standard_cqv_test(50, 2000, [@error_message])
-        end
-        it "fails when both are entered and neither are valid (b)" do
-          standard_cqv_test(50, 2000, [@error_message])
-        end
+        it("handles nils - failure") { standard_cqv_test({}, {}, [@error_message]) }
+        it("passes when only one value is entered but valid (a)") { standard_cqv_test(5, {}, []) }
+        it("passes when only one value is entered but valid (b)") { standard_cqv_test({}, 5, []) }
+        it("passes when both are entered but only one value is valid (a)") { standard_cqv_test(5, 2000, []) }
+        it("passes when both are entered but only one value is valid (b)") { standard_cqv_test(50, 5, []) }
+        it("fails when only one value is entered but not valid (a)") { standard_cqv_test(50, {}, [@error_message]) }
+        it("fails when only one value is entered but not valid (b)") { standard_cqv_test({}, 2000, [@error_message]) }
+        it("fails when both are entered and neither are valid (a)") { standard_cqv_test(50, 2000, [@error_message]) }
+        it("fails when both are entered and neither are valid (b)") { standard_cqv_test(50, 2000, [@error_message]) }
       end
 
       describe 'self_comparison' do
@@ -653,15 +501,9 @@ describe CrossQuestionValidation do
           #operator "=="
           #constant -1
         end
-        it "handles nils - failure" do
-          self_comparison_check({}, [@error_message])
-        end
-        it "fails when val doesn't meet conditions" do
-          self_comparison_check(50, [@error_message])
-        end
-        it "passes when val does meet conditions" do
-          self_comparison_check(-1, [])
-        end
+        it("handles nils - failure") { self_comparison_check({}, [@error_message]) }
+        it("fails when val doesn't meet conditions") { self_comparison_check(50, [@error_message]) }
+        it("passes when val does meet conditions") { self_comparison_check(-1, []) }
       end
 
     end
