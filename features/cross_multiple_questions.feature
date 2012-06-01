@@ -44,3 +44,17 @@ Feature: Cross Multiple Question Validations
       | Time Q2  | 01:23    |
       | Num Q1   | 24       |
     Then I should not see "this must be <= Hours (Date+Time1 to Date+Time2)"
+
+  Scenario: CQV Success - Multiple Questions - time interval comparison (in hours) but questions around the wrong way
+    Given I have the following cross question validations
+      | question | related | related_question_list              | rule                     | operator | constant | error_message                                    |
+      | Num Q1   |         | Date Q1, Time Q1, Date Q2, Time Q2 | multi_hours_date_to_date | <=       | 0        | this must be <= Hours (Date+Time1 to Date+Time2) |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer   |
+      | Date Q2  | 2012/2/1 |
+      | Time Q2  | 01:23    |
+      | Date Q1  | 2012/2/2 |
+      | Time Q1  | 01:23    |
+      | Num Q1   | 24       |
+    Then I should not see "this must be <= Hours (Date+Time1 to Date+Time2)"

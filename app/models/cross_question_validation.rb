@@ -295,8 +295,8 @@ class CrossQuestionValidation < ActiveRecord::Base
 
     datetime1 = aggregate_date_time(date1.answer_value, time1.answer_value)
     datetime2 = aggregate_date_time(date2.answer_value, time2.answer_value)
-    hour_difference = (datetime2 - datetime1) / 1.hour
 
+    hour_difference = (datetime2 - datetime1).abs / 1.hour
     const_meets_condition?(answer.answer_value, checker_params[:operator], hour_difference + offset)
   }
 
