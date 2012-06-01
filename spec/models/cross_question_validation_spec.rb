@@ -297,7 +297,7 @@ describe CrossQuestionValidation do
           @q1 = Factory :question, section: @section, question_type: 'Choice'
           @q2 = Factory :question, section: @section, question_type: 'Integer'
           @q3 = Factory :question, section: @section, question_type: 'Choice'
-          Factory :cross_question_validation, question: @q1, related_question: nil, related_question_ids: [@q2.id, @q3.id], error_message: @error_message, operator: '==', constant: 99, conditional_operator: '==', conditional_constant: -1
+          @cqv1 = Factory :cross_question_validation, question: @q1, related_question: nil, related_question_ids: [@q2.id, @q3.id], error_message: @error_message, operator: '==', constant: 99, conditional_operator: '==', conditional_constant: -1
         end
         it("handles nils") do
           v1 = 99
@@ -308,7 +308,8 @@ describe CrossQuestionValidation do
           second = Factory :answer, response: @response, question: @q2, answer_value: v2
           third = Factory :answer, response: @response, question: @q3, answer_value: v3
 
-          do_cqv_check(first, @error_message)
+          err = @cqv1.check first
+          err.should eq @error_message
         end
       end
     end

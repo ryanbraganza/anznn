@@ -37,26 +37,22 @@ Feature: Cross Question Special Rules
       | USd6wk         | Date          |
       | Date Q1        | Date          |
       | Date Q2        | Date          |
-      | O2_36_wk_      | Integer       |
+      | O2_36wk_      | Integer       |
+      | HmeO2          | Integer       |
 
 
 
 ####################
-
-#      | question | related | related_question_list                                      | rule_label_list                | rule_label        | rule                    | error_message                            | operator | constant | conditional_operator | conditional_constant | comments                                                                                              |
-#      | Gest     | Wght    |                                                            |                                | gest_wght_comp    | special_dual_comparison |                                          | <        | 32       | <                    | 1500                 | only needs to be implemented once, both are required fields so survey can't be submitted if one blank |
-#      | DOB      | DOB     |                                                            |                                |                   | special_dob             | dob must be in reg year                  |          |          |                      |                      |                                                                                                       |
-#      | Num Q1   |         | Gest, GestDays, DOB, LastO2, CeaseCPAPDate, CeaseHiFloDate |                                | special_o2_a_if   | self_comparison         |                                          |          |          |                      |                      |                                                                                                       |
-#      | Num Q1   |         | Gest, GestDays, DOB, LastO2, CeaseCPAPDate, CeaseHiFloDate |                                | special_o2_a_then | special_o2_a            |                                          |          |          |                      |                      |                                                                                                       |
+# If O2_36wk_ is -1 and (Gest must be <32 or Wght must be <1500) then (Gest+Gestdays + weeks(DOB and the latest date of (LastO2|CeaseCPAPDate|CeaseHiFloDate))) >36
 
   Scenario: CQV Pass - Special_O2_A - if this = -1, process iff (Gest <32 or Wght  <1500 )
     Given I have the following cross question validations
       | question  | related   | rule         | error_message |
-      | O2_36_wk_ | O2_36_wk_ | special_o2_a | o2a_err       |
+      | O2_36wk_ | O2_36wk_ | special_o2_a | o2a_err       |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question  | answer |
-      | O2_36_wk_ | -1     |
+      | O2_36wk_ | -1     |
       | Wght      | 1599   |
       | Gest      | 33     |
     Then I should not see "o2a_err"
@@ -64,12 +60,12 @@ Feature: Cross Question Special Rules
   Scenario: CQV Failure - Special_O2_A - (Gest+Gestdays + weeks(DOB and the latest date of (LastO2|CeaseCPAPDate|CeaseHiFloDate))) >36 when this = -1
     Given I have the following cross question validations
       | question  | related   | rule         | error_message |
-      | O2_36_wk_ | O2_36_wk_ | special_o2_a | o2a_err       |
+      | O2_36wk_ | O2_36wk_ | special_o2_a | o2a_err       |
 
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question       | answer   |
-      | O2_36_wk_         | -1       |
+      | O2_36wk_      | -1       |
       | DOB            | 2012/1/1 |
       | Gest           | 1        |
       | Wght           | 1        |
@@ -82,20 +78,106 @@ Feature: Cross Question Special Rules
   Scenario: CQV Pass - Special_O2_A - Both cases
     Given I have the following cross question validations
       | question  | related   | rule         | error_message |
-      | O2_36_wk_ | O2_36_wk_ | special_o2_a | o2a_err       |
+      | O2_36wk_ | O2_36wk_ | special_o2_a | o2a_err       |
 
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question       | answer   |
-      | O2_36_wk_         | -1       |
+      | O2_36wk_      | -1       |
       | DOB            | 2012/1/1 |
       | Wght           | 1499     |
       | Gest           | 31       |
       | Gestdays       | 6        |
       | LastO2         | 2012/1/2 |
-      | CeaseCPAPDate  | 2012/1/3 |
-      | CeaseHiFloDate | 2012/3/4 |
+      | CeaseCPAPDate  | 2012/3/4 |
+      | CeaseHiFloDate | 2012/1/2 |
     Then I should not see "o2a_err"
+
+
+#################
+# If HmeO2 is -1 and (Gest must be <32 or Wght must be <1500) and HomeDate must be a date and HomeDate must be the same as LastO2
+
+  Scenario: CQV Pass - Special_HmeO2 - if this != -1 all is fine
+    Given I have the following cross question validations
+      | question | related | rule          | error_message |
+      | HmeO2    | HmeO2   | special_hmeo2 | o2b_err       |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer |
+      | HmeO2    | 1      |
+      | Wght     | 1499   |
+      | Gest     | 31     |
+    Then I should not see "oba_err"
+
+  Scenario: CQV Pass - Special_HmeO2 - if this = -1, process iff (Gest <32 or Wght  <1500 )
+    Given I have the following cross question validations
+      | question | related | rule          | error_message |
+      | HmeO2    | HmeO2   | special_hmeo2 | o2b_err       |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer |
+      | HmeO2    | -1     |
+      | Wght     | 1599   |
+      | Gest     | 33     |
+    Then I should not see "oba_err"
+
+  Scenario: CQV Failure - Special_HmeO2 - If HmeO2 is -1 and (Gest must be <32 or Wght must be <1500) then HomeDate must be present
+    Given I have the following cross question validations
+      | question | related | rule          | error_message |
+      | HmeO2    | HmeO2   | special_hmeo2 | o2b_err       |
+
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer |
+      | HmeO2    | -1     |
+      | Gest     | 1      |
+      | Wght     | 1      |
+    Then I should see "o2b_err"
+
+
+  Scenario: CQV Failure - Special_HmeO2 - If HmeO2 is -1 and (Gest must be <32 or Wght must be <1500) then HomeDate must be a valid date
+    Given I have the following cross question validations
+      | question | related | rule          | error_message |
+      | HmeO2    | HmeO2   | special_hmeo2 | o2b_err       |
+
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer    |
+      | HmeO2    | -1        |
+      | HomeDate | 2012/2/31 |
+      | Gest     | 1         |
+      | Wght     | 1         |
+    Then I should see "o2b_err"
+
+  Scenario: CQV Failure - Special_HmeO2 - If HmeO2 is -1 and (Gest must be <32 or Wght must be <1500) then HomeDate must be the same as LastO2
+    Given I have the following cross question validations
+      | question | related | rule          | error_message |
+      | HmeO2    | HmeO2   | special_hmeo2 | o2b_err       |
+
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer   |
+      | HmeO2    | -1       |
+      | HomeDate | 2012/1/1 |
+      | LastO2   | 2012/1/2 |
+      | Gest     | 1        |
+      | Wght     | 1        |
+    Then I should see "o2b_err"
+
+  Scenario: CQV Pass - Special_HmeO2 -  If HmeO2 is -1 and (Gest must be <32 or Wght must be <1500) and HomeDate must be a date and HomeDate must be the same as LastO2
+    Given I have the following cross question validations
+      | question | related | rule          | error_message |
+      | HmeO2    | HmeO2   | special_hmeo2 | o2b_err       |
+
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers
+      | question | answer   |
+      | HmeO2    | -1       |
+      | HomeDate | 2012/1/1 |
+      | LastO2   | 2012/1/1 |
+      | Gest     | 1        |
+      | Wght     | 1        |
+    Then I should not see "o2b_err"
 
 
 #################
@@ -273,9 +355,11 @@ Feature: Cross Question Special Rules
 
 
 #####################
+# set_present_implies_present
+#####################
 
 
-  Scenario: CQV Fail - set_present_implies_present - conditions met, out of range
+  Scenario: CQV Fail - set_present_implies_present - conditions met, blank
   # If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4
     Given I have the following cross question validations
       | question | related_question_list | rule                        | error_message                     | set_operator | set   |
@@ -284,11 +368,10 @@ Feature: Cross Question Special Rules
     When I store the following answers
       | question | answer   |
       | Num Q1   | 1        |
-      | Num Q2   | 5        |
       | USd6wk   | 2012/1/1 |
     Then I should see "Err - set_present_implies_present"
 
-  Scenario: CQV Pass - set_present_implies_present - conditions met, in range
+  Scenario: CQV Pass - set_present_implies_present - conditions met, present
   # If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4
     Given I have the following cross question validations
       | question | related_question_list | rule                        | error_message                     | set_operator | set   |
@@ -296,12 +379,12 @@ Feature: Cross Question Special Rules
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer   |
-      | Num Q1   | 1        |
-      | Num Q2   | 4        |
+      | Num Q1   | 4        |
+      | Num Q2   | 1        |
       | USd6wk   | 2012/1/1 |
     Then I should not see "Err - set_present_implies_present"
 
-  Scenario: CQV Pass - set_present_implies_present - conditions not met (first blank), out of range
+  Scenario: CQV Pass - set_present_implies_present - conditions not met (first blank), blank
   # If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4
     Given I have the following cross question validations
       | question | related_question_list | rule                        | error_message                     | set_operator | set   |
@@ -309,23 +392,22 @@ Feature: Cross Question Special Rules
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer   |
-      | Num Q2   | 5        |
       | USd6wk   | 2012/1/1 |
     Then I should not see "Err - set_present_implies_present"
 
-  Scenario: CQV Pass - set_present_implies_present - conditions not met (first out of range), out of range
+  Scenario: CQV Pass - set_present_implies_present - conditions not met (first out of range), blank
   # If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4
     Given I have the following cross question validations
       | question | related_question_list | rule                        | error_message                     | set_operator | set   |
       | Num Q1   | USd6wk, Num Q2        | set_present_implies_present | Err - set_present_implies_present | range        | [1,4] |
+    And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer   |
       | Num Q1   | 5        |
-      | Num Q2   | 5        |
       | USd6wk   | 2012/1/1 |
     Then I should not see "Err - set_present_implies_present"
 
-  Scenario: CQV Pass - set_present_implies_present - conditions not met (second blank), out of range
+  Scenario: CQV Pass - set_present_implies_present - conditions not met (second blank), blank
   # If IVH is 1-4 and USd6wk is a date, Cysts must be between 0 and 4
     Given I have the following cross question validations
       | question | related_question_list | rule                        | error_message                     | set_operator | set   |
@@ -334,10 +416,11 @@ Feature: Cross Question Special Rules
     When I store the following answers
       | question | answer |
       | Num Q1   | 1      |
-      | Num Q2   | 5      |
     Then I should not see "Err - set_present_implies_present"
 
 
+###################
+#  comparison_const_days
 ###################
 
 

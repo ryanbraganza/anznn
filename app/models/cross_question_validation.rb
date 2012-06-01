@@ -15,7 +15,9 @@ class CrossQuestionValidation < ActiveRecord::Base
                              special_date_of_assess
                              special_height
                              special_length
-                             special_cochimplt)
+                             special_cochimplt
+                             special_o2_a
+                             special_hmeo2)
 
   VALID_RULES =
       %w(comparison
@@ -37,7 +39,6 @@ class CrossQuestionValidation < ActiveRecord::Base
          set_implies_present
          const_implies_one_of_const
          special_dual_comparison
-         special_o2_a
          special_usd6wk_dob_weeks
          set_gest_wght_implies_set
          set_gest_wght_implies_present
@@ -57,6 +58,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   LAST_O2_CODE = 'LastO2'
   CEASE_CPAP_DATE_CODE = 'CeaseCPAPDate'
   CEASE_HI_FLO_DATE_CODE = 'CeaseHiFloDate'
+  HOME_DATE_CODE = 'HomeDate'
 
 
   GEST_LT = 32
@@ -90,11 +92,11 @@ class CrossQuestionValidation < ActiveRecord::Base
   def self.check(answer)
     cqvs = answer.question.cross_question_validations
     warnings = cqvs.map do |cqv|
-      begin
-        cqv.check answer
-      rescue NoMethodError => err
-        raise NoMethodError, "#{err.message}, Response: #{answer.response.id}, Question: #{answer.question.code}, Answer: #{answer.comparable_answer}, CQV: #{cqv.id} - #{cqv.rule}", caller
-      end
+      #begin
+      cqv.check answer
+      #rescue NoMethodError => err
+      #  raise NoMethodError, "#{err.message}, Response: #{answer.response.id}, Question: #{answer.question.code}, Answer: #{answer.comparable_answer}, CQV: #{cqv.id} - #{cqv.rule}", caller
+      #end
     end
     warnings.compact
   end
@@ -347,11 +349,14 @@ class CrossQuestionValidation < ActiveRecord::Base
     # rule on IVH, related are Usd6wk and Cysts
     related_ids = checker_params[:related_question_ids]
     date = answer.response.get_answer_to(related_ids[0])
-    required = answer.response.get_answer_to(related_ids[1])
+    required_answer = answer.response.get_answer_to(related_ids[1])
 
+    #Conditions (IF)
     break true unless set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
     break true unless date && !date.raw_answer
-    required && !required.raw_answer
+
+    #Requirements (THEN)
+    required_answer.present? && required_answer.raw_answer.blank?
   }
 
   register_checker 'const_implies_one_of_const', lambda { |answer, related_answer, checker_params|
@@ -386,7 +391,7 @@ class CrossQuestionValidation < ActiveRecord::Base
 
 
   register_checker 'special_o2_a', lambda { |answer, unused_related_answer, checker_params|
-    raise 'Can only be used on question O2_36_wk_' unless answer.question.code == 'O2_36_wk_'
+    raise 'Can only be used on question O2_36wk_' unless answer.question.code == 'O2_36wk_'
 
     #If O2_36wk_ is -1 and (Gest must be <32 or Wght must be <1500) and (Gest+Gestdays + weeks(DOB and the latest date of (LastO2|CeaseCPAPDate|CeaseHiFloDate))) >36
     break true unless (answer.comparable_answer == -1)
@@ -408,11 +413,33 @@ class CrossQuestionValidation < ActiveRecord::Base
     break false unless last_o2.present? || cease_cpap_date.present || cease_hi_flo_date.present?
 
     dates = [last_o2, cease_cpap_date, cease_hi_flo_date]
-    dates.compact.sort!
-    max_elapsed = dates.last - dob
+    last_date = dates.compact.sort.last
+    max_elapsed = last_date - dob
 
     #The actual test (gest in in weeks)
+
     gest.weeks + gest_days.days + max_elapsed.to_i.days > 36.weeks
+
+  }
+  register_checker 'special_hmeo2', lambda { |answer, unused_related_answer, checker_params|
+    raise 'Can only be used on question HmeO2' unless answer.question.code == 'HmeO2'
+    # If HmeO2 is -1 and (Gest must be <32 or Wght must be <1500) and HomeDate must be a date and HomeDate must be the same as LastO2
+
+    home_date = answer.response.comparable_answer_or_nil_for_question_with_code(HOME_DATE_CODE)
+    last_o2 = answer.response.comparable_answer_or_nil_for_question_with_code(LAST_O2_CODE)
+
+    #Conditions (IF)
+
+    break true unless (answer.comparable_answer == -1) # ok if not -1
+    break true unless check_gest_wght(answer)     # ok if not premature
+
+    #Requirements (THEN)
+
+    break false unless home_date.present? # bad if homedate blank
+    break false unless last_o2.present?
+    break false unless last_o2.eql? home_date
+
+    true
   }
 
   register_checker 'special_dob', lambda { |answer, unused_related_answer, checker_params|
