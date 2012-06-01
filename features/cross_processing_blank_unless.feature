@@ -21,27 +21,27 @@ Feature: Cross Question Blank-Unless Validations
       | Date Q2  | Date          |
 
 
-  Scenario: CQV Failure - Blank Unless Within Range N...M (exclusive) - This Qn must be blank unless other answer between N...M
+  Scenario: CQV Failure - Blank Unless Within Range N...M (inclusive) - This Qn must be blank unless other answer range N...M
     Given I have the following cross question validations
-      | question | related | rule             | conditional_set_operator | conditional_set | error_message                                       |
-      | Num Q1   | Num Q2  | blank_unless_set | between                  | [2,4,6,8]       | q2 was outside 0...99 (exclusive), q1 must be blank |
+      | question | related | rule             | conditional_set_operator | conditional_set | error_message |
+      | Num Q1   | Num Q2  | blank_unless_set | range                    | [2,4,6,8]       | err1          |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer |
       | Num Q2   | -1     |
       | Num Q1   | 5      |
-    Then I should see "q2 was outside 0...99 (exclusive), q1 must be blank"
+    Then I should see "err1"
 
-  Scenario: CQV Pass - Blank Unless Within Range N...M (exclusive) - This Qn must be blank unless other answer between N...M
+  Scenario: CQV Pass - Blank Unless Within Range N...M (inclusive) - This Qn must be blank unless other answer range N...M
     Given I have the following cross question validations
-      | question | related | rule             | conditional_set_operator | conditional_set | error_message                                       |
-      | Num Q1   | Num Q2  | blank_unless_set | between                  | [2,4,6,8]       | q2 was outside 0...99 (exclusive), q1 must be blank |
+      | question | related | rule             | conditional_set_operator | conditional_set | error_message |
+      | Num Q1   | Num Q2  | blank_unless_set | included                 | [2,4,6,8]       | err1          |
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question | answer |
       | Num Q2   | 6      |
       | Num Q1   | 5      |
-    Then I should not see "q2 was outside 0...99 (exclusive), q1 must be blank"
+    Then I should not see "err1"
 
 ######
 
