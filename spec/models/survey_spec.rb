@@ -5,6 +5,14 @@ describe Survey do
     it { should have_many :responses }
     it { should have_many :sections }
   end
+  describe "Validations" do
+    before :each do
+      Factory :survey
+    end
+    it { should validate_presence_of(:name) }
+    it { should validate_uniqueness_of(:name) }
+  end
+
   describe :ordered_questions do
     it "should retrieve questions ordered by section.order, question.order" do
       survey = Factory(:survey)

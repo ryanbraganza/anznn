@@ -5,7 +5,7 @@ class Survey < ActiveRecord::Base
   
   scope :by_name, order(:name)
 
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: {case_sensitive: false}
 
   def ordered_questions
     Question.joins(section: :survey).where(sections: {survey_id: id}).order(:section_order, :question_order)
