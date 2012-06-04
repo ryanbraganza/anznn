@@ -2,6 +2,6 @@
 
 FactoryGirl.define do
   factory :survey do
-    name "mysurvey"
+    sequence(:name) { |n| "mysurvey #{n}" }
   end
 end
