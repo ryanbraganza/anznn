@@ -17,6 +17,7 @@ describe CsvSurveyOperations do
 
     let(:good_question_file) { fqn('survey_questions.csv') }
     let(:bad_question_file) { fqn('bad_questions.csv') }
+    let(:duplicate_name_question_file) { fqn('duplicate_name_questions.csv') }
     let(:good_options_file) { fqn('survey_options.csv') }
     let(:bad_options_file) { fqn('bad_options.csv') }
     let(:good_cqv_file) { fqn('cross_question_validations.csv') }
@@ -33,35 +34,35 @@ describe CsvSurveyOperations do
     end
 
     it "should be transactional with a bad cqv file" do
-      begin
+      lambda {
         create_survey('some name', good_question_file, good_options_file, bad_cqv_file)
-        raise 'not supposed to get here'
-      rescue ActiveRecord::RecordNotFound
-        # expected due to incorrect question code
-      end
+        }.should raise_error(ActiveRecord::RecordNotFound)
       counts_should_eq_0 Survey, Question, CrossQuestionValidation, Answer, Response, QuestionOption
 
     end
 
     it "should be transactional with a bad options file" do
-      begin
+      lambda {
         create_survey('some name', good_question_file, bad_options_file, good_cqv_file)
-        raise 'not supposed to get here'
-      rescue ActiveRecord::RecordInvalid
-        # expected due to duplicate option order
-      end
+        }.should raise_error(ActiveRecord::RecordInvalid)
       counts_should_eq_0 Survey, Question, CrossQuestionValidation, Answer, Response, QuestionOption
 
     end
     it "should be transactional with a bad question file" do
-      begin
+      lambda {
         create_survey('some name', bad_question_file, good_options_file, good_cqv_file)
-        raise 'not supposed to get here'
-      rescue ActiveRecord::RecordInvalid
-        # expected due to duplicate question order
-      end
+        }.should raise_error(ActiveRecord::RecordInvalid)
       counts_should_eq_0 Survey, Question, CrossQuestionValidation, Answer, Response, QuestionOption
     end
+
+    it 'should reject if there are multiple questions with the same code' do
+      lambda {
+        create_survey('some name', duplicate_name_question_file, good_options_file, good_cqv_file)
+      }.should raise_error(InputError)
+
+      counts_should_eq_0 Survey, Question, CrossQuestionValidation, Answer, Response, QuestionOption
+    end
+
   end
 
   describe "make_cqvs" do

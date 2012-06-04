@@ -11,7 +11,13 @@ module CsvSurveyOperations
 
   def import_questions(survey, questions)
     order = 0
+    question_codes = []
     questions.each do |hash|
+      if hash["code"].present? && question_codes.include?(hash["code"].downcase)
+        raise InputError, "Question Code #{hash["code"]} exists more than once"
+      end
+      question_codes << hash["code"].downcase unless hash["code"].blank?
+
       section_name = hash.delete('section')
       section = survey.sections.find_or_initialize_by_name(section_name)
       if section.new_record?
