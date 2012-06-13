@@ -79,7 +79,7 @@ after 'deploy:update' do
   server_setup.config.apache
   deploy.additional_symlinks
   deploy.restart
-  deploy.generate_user_manual
+  #deploy.generate_user_manual
 end
 
 after 'deploy:finalize_update' do
