@@ -15,6 +15,32 @@ describe BatchFile do
     it { should validate_presence_of(:year_of_registration) }
   end
 
+  describe "Scopes" do
+    describe "Failed" do
+      it "should only include failed batches" do
+        d1 = Factory(:batch_file, status: BatchFile::STATUS_FAILED)
+        Factory(:batch_file, status: BatchFile::STATUS_SUCCESS)
+        Factory(:batch_file, status: BatchFile::STATUS_REVIEW)
+        Factory(:batch_file, status: BatchFile::STATUS_IN_PROGRESS)
+        d5 = Factory(:batch_file, status: BatchFile::STATUS_FAILED)
+        BatchFile.failed.collect(&:id).sort.should eq([d1.id, d5.id])
+      end
+    end
+
+    describe "Older than" do
+      it "should only return files older than the specified date" do
+        time = Time.new(2011, 4, 14, 0, 30)
+        d1 = Factory(:batch_file, updated_at: Time.new(2011, 4, 14, 1, 2))
+        d2 = Factory(:batch_file, updated_at: Time.new(2011, 4, 13, 23, 59))
+        d3 = Factory(:batch_file, updated_at: Time.new(2011, 4, 14, 0, 30))
+        d4 = Factory(:batch_file, updated_at: Time.new(2011, 1, 1, 14, 24))
+        d5 = Factory(:batch_file, updated_at: Time.new(2011, 4, 15, 0, 0))
+        d6 = Factory(:batch_file, updated_at: Time.new(2011, 5, 15, 0, 0))
+        BatchFile.older_than(time).collect(&:id).should eq([d2.id, d4.id])
+      end
+    end
+  end
+
   describe "New object should have status set to 'In Progress'" do
     it "Should set the status on a new object" do
       Factory(:batch_file).status.should eq("In Progress")
@@ -489,7 +515,31 @@ describe BatchFile do
       end
 
     end
+    describe "Destroy" do
+      it "should remove the associated data file and any reports" do
+        batch_file = process_batch_file('a_range_of_problems.csv', survey, user)
+        puts batch_file.status
+        puts batch_file.message
+        path = batch_file.file.path
+        summary_path = batch_file.summary_report_path
+        detail_path = batch_file.detail_report_path
+
+        path.should_not be_nil
+        summary_path.should_not be_nil
+        detail_path.should_not be_nil
+
+        File.exist?(path).should be_true
+        File.exist?(summary_path).should be_true
+        File.exist?(detail_path).should be_true
+
+        batch_file.destroy
+        File.exist?(path).should be_false
+        File.exist?(summary_path).should be_false
+        File.exist?(detail_path).should be_false
+      end
+    end
   end
+
 
   def process_batch_file(file_name, survey, user, year_of_registration=2009)
     batch_file = BatchFile.create!(file: Rack::Test::UploadedFile.new('test_data/survey/batch_files/' + file_name, 'text/csv'), survey: survey, user: user, hospital: hospital, year_of_registration: year_of_registration)

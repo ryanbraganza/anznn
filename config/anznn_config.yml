@@ -4,6 +4,7 @@ defaults: &defaults
   account_request_admin_notification_sender: account-request@intersect.org.au
   batch_files_root: "/data/anznn-uploads"
   batch_reports_path: "/data/anznn-uploads/reports"
+  days_of_failed_batches_to_keep: 15
 
 development:
   <<: *defaults

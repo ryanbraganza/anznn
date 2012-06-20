@@ -26,6 +26,7 @@ class BatchFile < ActiveRecord::Base
   has_attached_file :file, :styles => {}, :path => :make_file_path
 
   before_validation :set_status
+  before_destroy :delete_data_file_and_reports
 
   validates_presence_of :survey_id
   validates_presence_of :user_id
@@ -34,6 +35,9 @@ class BatchFile < ActiveRecord::Base
   validates_presence_of :year_of_registration
 
   attr_accessor :responses
+
+  scope :failed, where(:status => STATUS_FAILED)
+  scope :older_than, lambda {|date| where("updated_at < ?", date)}
 
   def make_file_path
     # this is a method so that APP_CONFIG has been loaded by the time is executes
@@ -120,6 +124,12 @@ class BatchFile < ActiveRecord::Base
   end
 
   private
+
+  def delete_data_file_and_reports
+    file.destroy
+    File.delete(self.summary_report_path)
+    File.delete(self.detail_report_path)
+  end
 
   def process_batch(force)
     logger.info("Processing batch file with id #{id}")
