@@ -71,7 +71,6 @@ gem "capistrano"
 gem "capistrano_colors"
 gem 'rvm-capistrano'
 gem "colorize"
-gem "metrical"
 gem "simplecov", ">=0.3.8", :require => false, :group => :test
 gem "bootstrap-sass", '~> 1.4.4'
 gem "paperclip", "~> 2.0"
@@ -81,5 +80,6 @@ gem 'prawn'
 gem 'decent_exposure'
 gem 'will_paginate', '> 3.0'
 gem 'will_paginate-bootstrap'
+gem 'whenever', require: false
 
 gem 'jekyll', :require => false

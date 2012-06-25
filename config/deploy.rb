@@ -3,6 +3,10 @@ require 'capistrano/ext/multistage'
 require 'capistrano_colors'
 require 'rvm/capistrano'
 require "delayed/recipes"
+require "bundler/capistrano"
+
+set :whenever_command, "bundle exec whenever"
+require 'whenever/capistrano'
 
 set :application, 'anznn'
 set :stages, %w(qa staging production)
