@@ -14,6 +14,8 @@ Anznn::Application.routes.draw do
       get :stats
       get :prepare_download
       get :download
+      get :batch_delete
+      put :confirm_batch_delete
     end
   end
 

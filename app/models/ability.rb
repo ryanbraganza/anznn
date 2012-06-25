@@ -42,6 +42,8 @@ class Ability
         can :read, Response
         can :stats, Response
         can :download, Response
+        can :batch_delete, Response
+        can :confirm_batch_delete, Response
         can :read, BatchFile
 
         can :manage, ConfigurationItem

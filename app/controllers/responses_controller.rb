@@ -92,6 +92,16 @@ class ResponsesController < ApplicationController
     end
   end
 
+  def batch_delete
+    set_tab :admin, :delete_responses
+    @years = Response.existing_years_of_registration
+    @surveys = Survey.all
+  end
+
+  def confirm_batch_delete
+
+  end
+
   private
 
   def blank_answer?(value)
