@@ -149,7 +149,7 @@ class Response < ActiveRecord::Base
 
   #TODO: test me
   def comparable_answer_or_nil_for_question_with_code(question_code)
-    question = survey.questions.where(:code => question_code).first
+    question = survey.question_with_code(question_code)
     raise "No question with code #{question_code}" unless question
     answer = get_answer_to(question.id)
     return nil unless answer

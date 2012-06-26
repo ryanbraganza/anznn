@@ -17,7 +17,8 @@ class CrossQuestionValidation < ActiveRecord::Base
                              special_length
                              special_cochimplt
                              special_o2_a
-                             special_hmeo2)
+                             special_hmeo2
+                             special_same_name_linf)
 
   VALID_RULES =
       %w(comparison
@@ -118,11 +119,8 @@ class CrossQuestionValidation < ActiveRecord::Base
       return nil if related_question.present? && (related_answer.nil? or related_answer.raw_answer)
     end
 
-    # Auto-generate an error message if secondary rules don't have one:
-    sanitised_error = error_message.present? ? error_message : "Failure in #{rule}"
-
     # now actually execute the rule
-    sanitised_error unless rule_checkers[rule].call answer, related_answer, checker_params
+    error_message unless rule_checkers[rule].call answer, related_answer, checker_params
   end
 
   private
@@ -636,5 +634,20 @@ class CrossQuestionValidation < ActiveRecord::Base
     hearaid = answer.response.comparable_answer_or_nil_for_question_with_code('Hearaid')
     break true unless heartest && [2, 4].include?(heartest) && hearaid && [1, 2].include?(hearaid)
     [1, 2].include?(answer.comparable_answer)
+  }
+
+  register_checker 'special_same_name_linf', lambda { |answer, ununused_related_answer, checker_params|
+    #If Name_Linf2=Name_Linf1, days between Date_Linf1 and Date_Linf2 >14
+    raise 'Can only be used on question Date_Linf2' unless answer.question.code == 'Date_Linf2'
+
+    name1 = answer.response.comparable_answer_or_nil_for_question_with_code('Name_Linf1')
+    name2 = answer.response.comparable_answer_or_nil_for_question_with_code('Name_Linf2')
+    date1 = answer.response.comparable_answer_or_nil_for_question_with_code('Date_Linf1')
+    date2 = answer.response.comparable_answer_or_nil_for_question_with_code('Date_Linf2')
+
+    break true unless name1 && name2 && date1 && date2
+    break true unless name1 == name2
+    delta_days = (date1 - date2).to_i.abs
+    delta_days > 14
   }
 end
