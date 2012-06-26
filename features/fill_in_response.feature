@@ -69,3 +69,9 @@ Feature: Fill in a survey response
     And I press "Save page"
   # its not possible to blank out choices
     Then I should have 1 answer
+
+  Scenario: Date questions should have year range of allowed years of registration +/- 2 years
+    Given I have year of registration range configured as "2004" to "2014"
+    Given I am on the edit first response page
+    Then the year select for question "Date Qn" should have range "2002" to "2016"
+

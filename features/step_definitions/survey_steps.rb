@@ -484,12 +484,13 @@ end
 
 def setup_year_of_reg(from, to)
   if ConfigurationItem.all.empty?
-    Factory(:configuration_item, name: ConfigurationItem::YEAR_OF_REGISTRATION_START, configuration_value: from)
-    Factory(:configuration_item, name: ConfigurationItem::YEAR_OF_REGISTRATION_END, configuration_value: to)
-  end
+  Factory(:configuration_item, name: ConfigurationItem::YEAR_OF_REGISTRATION_START, configuration_value: from)
+  Factory(:configuration_item, name: ConfigurationItem::YEAR_OF_REGISTRATION_END, configuration_value: to)
+end
 end
 
 Given /^I have year of registration range configured as "([^"]*)" to "([^"]*)"$/ do |from, to|
+  ConfigurationItem.delete_all
   setup_year_of_reg(from, to)
 end
 
@@ -570,4 +571,16 @@ end
 When /^the response for baby "([^"]*)" should have (\d+) answers$/ do |babycode, expected_answers|
   response = Response.find_by_baby_code!(babycode)
   response.answers.count.should eq(expected_answers.to_i)
+end
+
+Then /^the year select for question "([^"]*)" should have range "([^"]*)" to "([^"]*)"$/ do |question_label, expected_start, expected_end|
+  expected_values = (expected_start.to_i..expected_end.to_i).to_a
+  question = Question.find_by_question!(question_label)
+  select_id = "answers_#{question.id}_year"
+
+  field = find_field(select_id)
+  options = field.all("option")
+  actual_options = options.collect(&:text)
+  expected_options = ["Year"] + expected_values.collect(&:to_s)
+  actual_options.should eq(expected_options)
 end

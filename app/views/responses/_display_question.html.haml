@@ -26,7 +26,7 @@
         = select_month(month, {field_name: "#{q.id}][month", prompt: true, prefix: "answers", use_month_numbers: true},
           class: "small field_trigger",
           data: data)
-        = select_year(year, {field_name: "#{q.id}][year", prompt: true, prefix: "answers"},
+        = select_year(year, {field_name: "#{q.id}][year", prompt: true, prefix: "answers", :start_year => (year_of_registration_range.first - 2), :end_year => (year_of_registration_range.last + 2)},
           class: "small field_trigger",
           data: data)
       - when 'Time'
