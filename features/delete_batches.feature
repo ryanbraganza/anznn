@@ -28,3 +28,7 @@ Feature: Delete batches of responses
     And I select "Survey A" from "Registration Type"
     And I press "Next"
     Then I should see "WARNING"
+    And I should see "This will affect 20 records."
+    When I press "confirm_delete"
+    Then survey "Survey A" should have no responses for year "2009"
+    And I should see "The records where deleted"

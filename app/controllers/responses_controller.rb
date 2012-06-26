@@ -93,20 +93,46 @@ class ResponsesController < ApplicationController
   end
 
   def batch_delete
-    set_tab :admin, :delete_responses
+    set_tab :delete_responses, :admin_navigation
     @years = Response.existing_years_of_registration
     @surveys = Survey.all
   end
 
   def confirm_batch_delete
-    #TODO: Validate parameters
-    @year = params[:year_of_registration]
-    registration_type_id = params[:registration_type]
-    @registration_type = Survey.find(registration_type_id)
-    @count = Response.count_per_survey_and_year_of_registration(@year, registration_type_id)
+    @year = params[:year_of_registration] || ""
+    @registration_type_id = params[:registration_type] || ""
+
+    @errors = validate_batch_delete_form(@year, @registration_type_id)
+    if @errors.empty?
+      @registration_type = Survey.find(@registration_type_id)
+      @count = Response.count_per_survey_and_year_of_registration(@registration_type_id, @year)
+    else
+      batch_delete
+      render :batch_delete
+    end
+  end
+
+  def perform_batch_delete
+    @year = params[:year_of_registration] || ""
+    @registration_type_id = params[:registration_type] || ""
+
+    @errors = validate_batch_delete_form(@year, @registration_type_id)
+    if @errors.empty?
+      Response.delete_by_survey_and_year_of_registration(@registration_type_id, @year)
+      redirect_to batch_delete_responses_path, :notice => "The records where deleted"
+    else
+      redirect_to batch_delete_responses_path
+    end
   end
 
   private
+
+  def validate_batch_delete_form(year, registration_type_id)
+    errors = []
+    errors << "Year of Registration is required" if year.blank?
+    errors << "Registration Type is required" if registration_type_id.blank?
+    errors
+  end
 
   def blank_answer?(value)
     value.is_a?(Hash) ? !hash_values_present?(value) : value.blank?
