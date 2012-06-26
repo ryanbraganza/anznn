@@ -30,8 +30,6 @@ class CrossQuestionValidation < ActiveRecord::Base
          blank_unless_set
          blank_unless_days_const
          blank_unless_present
-         multi_rule_any_pass
-         multi_rule_if_then
          multi_hours_date_to_date
          multi_compare_datetime_quad
          present_implies_present
@@ -71,21 +69,19 @@ class CrossQuestionValidation < ActiveRecord::Base
   validates_inclusion_of :operator, in: SAFE_OPERATORS, allow_blank: true
 
   validates_presence_of :question_id
-  validate :one_of_related_or_list_or_labels
+  validate :one_of_related_question_or_list_of_questions
   validates_presence_of :rule
-  validates_presence_of :error_message, :if => :primary?
-  validates_inclusion_of :primary, in: [true, false]
+  validates_presence_of :error_message
 
-  serialize :related_rule_ids, Array
   serialize :related_question_ids, Array
   serialize :set, Array
   serialize :conditional_set, Array
 
-  def one_of_related_or_list_or_labels
+  def one_of_related_question_or_list_of_questions
     return if RULES_WITH_NO_RELATED.include?(rule)
-    unless [related_question_id, related_question_ids, related_rule_ids].count(&:present?) == 1
-      errors[:base] << "invalid cqv - only one of related question, list of questions or list of rules - " +
-          "#{related_question_id.inspect},#{related_question_ids.inspect},#{related_rule_ids.inspect}"
+    unless [related_question_id, related_question_ids].count(&:present?) == 1
+      errors[:base] << "invalid cqv - exactly one of related question or list of related questions must be supplied - " +
+          "#{related_question_id.inspect},#{related_question_ids.inspect}"
     end
   end
 
@@ -101,20 +97,17 @@ class CrossQuestionValidation < ActiveRecord::Base
     warnings.compact
   end
 
-  def check(answer, running_as_secondary = false)
+  def check(answer)
     checker_params = {operator: operator, constant: constant,
                       set_operator: set_operator, set: set,
                       conditional_operator: conditional_operator, conditional_constant: conditional_constant,
                       conditional_set_operator: conditional_set_operator, conditional_set: conditional_set,
-                      related_rule_ids: related_rule_ids, related_question_ids: related_question_ids}
+                      related_question_ids: related_question_ids}
 
     # don't bother checking if the question is unanswered or has an invalid answer
     if !RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL.include?(rule)
       return nil if answer.nil? or answer.raw_answer
     end
-
-    # if not a primary rule, nil
-    return nil unless self.primary? || running_as_secondary
 
     # we have to filter the answers on the response rather than using find, as we want to check through as-yet unsaved answers as part of batch processing
     related_answer = answer.response.get_answer_to(related_question.id) if related_question
@@ -252,34 +245,6 @@ class CrossQuestionValidation < ActiveRecord::Base
   register_checker 'blank_unless_present', lambda { |answer, related_answer, checker_params|
     break true unless answer.answer_value.present?
     related_answer.present? && related_answer.answer_value.present?
-  }
-
-  register_checker 'multi_rule_any_pass', lambda { |answer, related_answer, checker_params|
-    rules = CrossQuestionValidation.find(checker_params[:related_rule_ids])
-
-    rules.each do |rule|
-      err = rule.check(answer, true)
-      return true if !err
-    end
-
-    false
-  }
-
-#this only accepts two rules - the IF rule and the THEN rule
-  register_checker 'multi_rule_if_then', lambda { |answer, related_answer, checker_params|
-
-    rule1 = CrossQuestionValidation.find(checker_params[:related_rule_ids].first)
-    rule2 = CrossQuestionValidation.find(checker_params[:related_rule_ids].last)
-
-    answer1 = answer.response.get_answer_to(rule1.question.id) if rule1.question
-    answer2 = answer.response.get_answer_to(rule2.question.id) if rule2.question
-
-    err1 = rule1.check(answer1, true)
-    break true if err1.present?
-
-    err2 = rule2.check(answer2, true)
-    err2.blank?
-
   }
 
   register_checker 'multi_hours_date_to_date', lambda { |answer, unused_related_answer, checker_params|
@@ -431,7 +396,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     #Conditions (IF)
 
     break true unless (answer.comparable_answer == -1) # ok if not -1
-    break true unless check_gest_wght(answer)     # ok if not premature
+    break true unless check_gest_wght(answer) # ok if not premature
 
     #Requirements (THEN)
 

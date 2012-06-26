@@ -77,31 +77,19 @@ module CsvSurveyOperations
   end
 
   def make_cqvs(survey, hashes)
-    label_to_cqv_id = {}
-
-    # store the labelled (secondary) rules first
     hashes.each do |hash|
-      rule_label = hash['rule_label']
-      make_cqv(survey, label_to_cqv_id, hash.merge(primary: false)) if rule_label.present?
-    end
-
-    #now store any rules which reference labelled rules
-    hashes.each do |hash|
-      rule_label = hash['rule_label']
-      make_cqv(survey, label_to_cqv_id, hash.merge(primary: true)) unless rule_label.present?
+      make_cqv(survey, hash)
     end
   end
 
-  def make_cqv(survey, label_to_cqv_id, hash)
+  def make_cqv(survey, hash)
 
     orig = hash.dup
     begin
       related_question_question = hash.delete 'related_question_code'
-      related_rule_labels = hash.delete 'rule_label_list'
       question_list = hash.delete 'related_question_list'
       question_question = hash.delete 'question_code'
       raise orig.inspect unless question_question
-      label = hash.delete 'rule_label'
       hash.delete 'itemnum'
       hash.delete 'reviewed by Kali'
 
@@ -111,19 +99,9 @@ module CsvSurveyOperations
         hash[:related_question_ids] = question_list.split(", ").map { |qn_code| survey.questions.find_by_code!(qn_code).id }
       end
 
-      if related_rule_labels
-        hash[:related_rule_ids] = related_rule_labels.split(', ').map do |related_label|
-          if label_to_cqv_id[related_label].blank?
-            raise ActiveRecord::RecordNotSaved, "Couldn't find a Cross Question Validation Rule with label '#{related_label}'"
-          end
-          label_to_cqv_id[related_label]
-        end
-      end
-
       hash[:question] = survey.questions.find_by_code! question_question
 
-      validation = CrossQuestionValidation.create!(hash)
-      label_to_cqv_id[label] = validation.id
+      CrossQuestionValidation.create!(hash)
     rescue
       puts "Failed to create cqv #{orig}, continuing anyway"
       puts $!

@@ -13,7 +13,6 @@ FactoryGirl.define do
     conditional_constant nil
     conditional_set_operator nil
     conditional_set nil
-    primary true
 
     #Comparisons
     factory :cqv_comparison do

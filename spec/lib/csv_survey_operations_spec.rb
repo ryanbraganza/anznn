@@ -70,9 +70,9 @@ describe CsvSurveyOperations do
   end
 
   describe "make_cqv" do
-    def run_make_cqv_test(survey, label_to_cqv_id, hash)
+    def run_make_cqv_test(survey, hash)
       begin
-        make_cqv(survey, label_to_cqv_id, hash)
+        make_cqv(survey, hash)
         continued = true
       rescue
         continued = false
@@ -94,42 +94,24 @@ describe CsvSurveyOperations do
                              "operator" => "<=",
                              "constant" => "0",
                              "error_message" => "Err",
-                             "question_code" => "q1",
-                             "primary" => true}
+                             "question_code" => "q1"}
 
-      @multi_rule_secondary_hash = {"primary" => false,
-                                    "rule_label" => "secondary",
+      @multi_rule_secondary_hash = {"rule_label" => "secondary",
                                     "rule" => "comparison",
                                     "operator" => "==",
                                     "question_code" => "q1",
                                     "related_question_code" => "q2"}
 
-
-      @multi_rule_primary_hash = {"primary" => true,
-                                  "rule_label_list" => "secondary, secondary",
-                                  "rule" => "multi_rule_any_pass",
-                                  "error_message" => "Err",
-                                  "question_code" => "q1"}
-
     end
     it 'should accept if it can map question lists to questions' do
-      run_make_cqv_test(@survey, {}, @multi_related_hash).should be_true
+      run_make_cqv_test(@survey, @multi_related_hash).should be_true
     end
 
     it 'should reject if it can\'t map question lists to questions' do
       new_hash = @multi_related_hash
       new_hash['related_question_list'] = "q2, q3, q4"
-      run_make_cqv_test(@survey, {}, new_hash).should be_false
+      run_make_cqv_test(@survey, new_hash).should be_false
     end
 
-    it "should accept if it can map related rule labels to rules" do
-      label_hash = {}
-      make_cqv(@survey, label_hash, @multi_rule_secondary_hash) # add a secondary rule
-      run_make_cqv_test(@survey, label_hash, @multi_rule_primary_hash).should be_true
-    end
-    it "should reject if it can't map related rule labels to rules" do
-      label_hash = {}
-      run_make_cqv_test(@survey, label_hash, @multi_rule_primary_hash).should be_false
-    end
   end
 end

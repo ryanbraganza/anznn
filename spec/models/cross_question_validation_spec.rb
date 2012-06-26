@@ -8,34 +8,23 @@ describe CrossQuestionValidation do
   describe "Validations" do
     it { should validate_presence_of :question_id }
     it { should validate_presence_of :rule }
+    it { should validate_presence_of :error_message }
     it "should validate that the rule is one of the allowed rules" do
       CrossQuestionValidation::VALID_RULES.each do |value|
         should allow_value(value).for(:rule)
       end
       Factory.build(:cross_question_validation, rule: 'Blahblah').should_not be_valid
     end
-    it "should validate that error is required unless the rule is not a primary" do
-      Factory.build(:cross_question_validation, primary: false, error_message: nil).should be_valid
-      Factory.build(:cross_question_validation, primary: true, error_message: nil).should_not be_valid
-    end
-    it "should validate only one of related question, related question list, multiple rule list is populated" do
-      # 0 0 0 F
-      # 0 0 1 T
-      # 0 1 0 T
-      # 0 1 1 F
-      # 1 0 0 T
-      # 1 0 1 F
-      # 1 1 0 F
-      # 1 1 1 F
+    it "should validate only one of related question, or related question list populated" do
+      # 0 0 F
+      # 0 1 T
+      # 1 0 T
+      # 1 1 F
 
-      Factory.build(:cross_question_validation, related_question_id: nil, related_question_ids: nil, related_rule_ids: nil).should_not be_valid
-      Factory.build(:cross_question_validation, related_question_id: nil, related_question_ids: nil, related_rule_ids: [1]).should be_valid
-      Factory.build(:cross_question_validation, related_question_id: nil, related_question_ids: [1], related_rule_ids: nil).should be_valid
-      Factory.build(:cross_question_validation, related_question_id: nil, related_question_ids: [1], related_rule_ids: [1]).should_not be_valid
-      Factory.build(:cross_question_validation, related_question_id: 1, related_question_ids: nil, related_rule_ids: nil).should be_valid
-      Factory.build(:cross_question_validation, related_question_id: 1, related_question_ids: nil, related_rule_ids: [1]).should_not be_valid
-      Factory.build(:cross_question_validation, related_question_id: 1, related_question_ids: [1], related_rule_ids: nil).should_not be_valid
-      Factory.build(:cross_question_validation, related_question_id: 1, related_question_ids: [1], related_rule_ids: [1]).should_not be_valid
+      Factory.build(:cross_question_validation, related_question_id: nil, related_question_ids: nil).should_not be_valid
+      Factory.build(:cross_question_validation, related_question_id: nil, related_question_ids: [1]).should be_valid
+      Factory.build(:cross_question_validation, related_question_id: 1, related_question_ids: nil).should be_valid
+      Factory.build(:cross_question_validation, related_question_id: 1, related_question_ids: [1]).should_not be_valid
 
     end
   end
