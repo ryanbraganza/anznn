@@ -36,6 +36,10 @@ class Response < ActiveRecord::Base
     results
   end
 
+  def self.count_per_survey_and_year_of_registration(year, registration_type)
+    Response.count(:conditions => ["year_of_registration = ? AND survey_id = ?", year, registration_type])
+  end
+
   def self.existing_years_of_registration
     select("distinct year_of_registration").collect(&:year_of_registration).sort
   end

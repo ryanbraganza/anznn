@@ -99,7 +99,11 @@ class ResponsesController < ApplicationController
   end
 
   def confirm_batch_delete
-
+    #TODO: Validate parameters
+    @year = params[:year_of_registration]
+    registration_type_id = params[:registration_type]
+    @registration_type = Survey.find(registration_type_id)
+    @count = Response.count_per_survey_and_year_of_registration(@year, registration_type_id)
   end
 
   private

@@ -1,4 +1,13 @@
 - title 'Confirm Batch Delete'
 
 .container
-  %h2 WARNING
+  .alert-message.alert
+    %h2 WARNING
+    %p= "You are about to delete all data for year of registration #{@year} for registration type #{@registration_type.name}."
+    %p= "This will affect #{pluralize(@count, 'record')}."
+    %p= "This will delete ALL responses for the chosen year and registration type, and this action CANNOT BE UNDONE."
+    %p= "You must be absolutely sure that you have downloaded the data and stored it somewhere safe before doing this."
+    %br
+    = form_tag confirm_batch_delete_responses_path, method: :put do
+      = link_to "Cancel this action", batch_delete_responses_path, class: "btn primary"
+      = submit_tag "Yes, I'm sure I want to delete and I have downloaded the data", class: "btn danger"

@@ -2,8 +2,6 @@
 - content_for :tabs do
   = render "admin/users/tabs"
 
-- title 'Batch Delete Responses'
-
 .container
   = form_tag confirm_batch_delete_responses_path, method: :put do
     %fieldset
