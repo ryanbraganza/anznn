@@ -20,13 +20,6 @@ FactoryGirl.define do
       operator '=='
     end
 
-    factory :cqv_comparison_constant_days do
-      sequence(:rule) { 'comparison_const_days' }
-      operator ">"
-      constant 14
-      related_question nil
-    end
-
     #Implecations
     factory :cqv_present_implies_constant do
       sequence(:rule) { 'present_implies_constant' }

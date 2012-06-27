@@ -267,10 +267,4 @@ class CrossQuestionValidation < ActiveRecord::Base
     related_answer && !related_answer.raw_answer
   }
 
-  register_checker 'comparison_const_days', lambda { |answer, related_answer, checker_params|
-    break true unless related_answer.date_answer.present? && answer.date_answer.present?
-    delta_days = (related_answer.date_answer - answer.date_answer).to_i.abs
-    const_meets_condition?(delta_days, checker_params[:operator], checker_params[:constant])
-  }
-
 end

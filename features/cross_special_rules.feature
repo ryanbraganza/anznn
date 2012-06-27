@@ -15,7 +15,6 @@ Feature: Cross Question Special Rules
 
 #  DOB must be in year of registration [special_dob] **
 #  Weeks(This, DOB) must be 4<=This<=8 16 A16c USd6wk [comparison_range_weeks] **
-#  Days(This, Linf1) must be >14  11 B11c Date_Linf2 [comparison_const_days] **
 
 #  ** = New Rule
 
@@ -343,44 +342,3 @@ Feature: Cross Question Special Rules
       | Num Q1   | 1      |
     Then I should not see "Err - set_present_implies_present"
 
-
-###################
-#  comparison_const_days
-###################
-
-
-  Scenario: CQV Fail - comparison_const_days - out of range
-  # days between Date_Linf1 and Date_Linf2 >14
-    Given I have the following cross question validations
-      | question | related_question_list | rule                  | error_message               | operator | constant |
-      | Num Q2   | Num Q1, USd6wk        | comparison_const_days | Err - comparison_const_days | >        | 14       |
-    And I am ready to enter responses as data.provider@intersect.org.au
-    When I store the following answers
-      | question | answer   |
-      | Date Q1  | 2012/1/1 |
-      | Date Q2  | 2012/1/2 |
-    Then I should not see "Err - comparison_const_days"
-
-  Scenario: CQV Fail - comparison_const_days - out of range (switched order)
-  # days between Date_Linf1 and Date_Linf2 >14
-    Given I have the following cross question validations
-      | question | related_question_list | rule                  | error_message               | operator | constant |
-      | Num Q2   | Num Q1, USd6wk        | comparison_const_days | Err - comparison_const_days | >        | 14       |
-    And I am ready to enter responses as data.provider@intersect.org.au
-    When I store the following answers
-      | question | answer   |
-      | Date Q1  | 2012/1/2 |
-      | Date Q2  | 2012/1/1 |
-    Then I should not see "Err - comparison_const_days"
-
-  Scenario: CQV Pass - comparison_const_days - in range
-  # days between Date_Linf1 and Date_Linf2 >14
-    Given I have the following cross question validations
-      | question | related_question_list | rule                  | error_message               | operator | constant |
-      | Num Q2   | Num Q1, USd6wk        | comparison_const_days | Err - comparison_const_days | >        | 14       |
-    And I am ready to enter responses as data.provider@intersect.org.au
-    When I store the following answers
-      | question | answer   |
-      | Date Q1  | 2012/2/1 |
-      | Date Q2  | 2012/1/1 |
-    Then I should not see "Err - comparison_const_days"
