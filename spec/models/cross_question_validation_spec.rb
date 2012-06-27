@@ -179,23 +179,6 @@ describe CrossQuestionValidation do
         it("accepts when RHS is specified const and LHS is in expected set") { standard_cqv_test(1, 1, []) }
       end
 
-      describe 'set implies const' do
-        before :each do
-          @error_message = 'q2 was in [2,4,6,8], q1 must be > 0'
-          @q1 = Factory :question, section: @section, question_type: 'Integer'
-          @q2 = Factory :question, section: @section, question_type: 'Integer'
-          Factory :cqv_set_implies_const, question: @q1, related_question: @q2, error_message: @error_message
-          #conditional_set_operator "included"
-          #conditional_set [2,4,6,8]
-          #operator ">"
-          #constant 0
-        end
-        it("handles nils") { standard_cqv_test({}, {}, []) }
-        it("doesn't reject the LHS when RHS not in expected set") { standard_cqv_test(-1, 0, []) }
-        it("rejects when RHS is in specified set and LHS is not expected constant") { standard_cqv_test(0, 2, [@error_message]) }
-        it("accepts when RHS is in specified set and LHS is expected constant") { standard_cqv_test(1, 2, []) }
-      end
-
       describe 'set implies set' do
         before :each do
           @error_message = 'q2  was in [2,4,6,8], q1 was not in specified set [1,3,5,7]'

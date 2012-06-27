@@ -45,17 +45,6 @@ Feature: Cross Question Conditional Validations
       | Num Q2   | 5      |
     Then I should see "NumQ2 > 0, so this must one of 1,3,5,7"
 
-  Scenario: CQV Failure - Set Implies Constant, eg If Qx exists in some set [w,x,y,z] then This must <not be> <0> [17 B17c ROPRx]
-    Given I have the following cross question validations
-      | question | related | rule              | conditional_set_operator | conditional_set | operator | constant | error_message                             |
-      | Num Q1   | Num Q2  | set_implies_const | included                 | [2,4,6,8]       | !=       | 0        | NumQ2 is in [2,4,6,8], so this can't be 0 |
-    And I am ready to enter responses as data.provider@intersect.org.au
-    When I store the following answers
-      | question | answer |
-      | Num Q1   | 0      |
-      | Num Q2   | 2      |
-    Then I should see "NumQ2 is in [2,4,6,8], so this can't be 0"
-
   Scenario: CQV Failure - Set Implies Set, eg If Qx exists in some set [w,x,y,z] then This must be <included in> [a,b,c,d] [17 B17c ROP_VEGF]
     Given I have the following cross question validations
       | question | related | rule            | conditional_set_operator | conditional_set | set_operator | set       | error_message                                             |

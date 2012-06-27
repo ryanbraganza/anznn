@@ -163,12 +163,6 @@ class CrossQuestionValidation < ActiveRecord::Base
     set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
   }
 
-  register_checker 'set_implies_const', lambda { |answer, related_answer, checker_params|
-    break true unless answer.answer_value.present? && related_answer.answer_value.present?
-    break true unless set_meets_condition?(checker_params[:conditional_set], checker_params[:conditional_set_operator], related_answer.comparable_answer)
-    const_meets_condition?(answer.comparable_answer, checker_params[:operator], checker_params[:constant])
-  }
-
   register_checker 'set_implies_set', lambda { |answer, related_answer, checker_params|
     break true unless answer.comparable_answer.present? && related_answer.comparable_answer.present?
     break true unless set_meets_condition?(checker_params[:conditional_set], checker_params[:conditional_set_operator], related_answer.comparable_answer)

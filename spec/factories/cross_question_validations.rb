@@ -50,14 +50,6 @@ FactoryGirl.define do
       set [1, 3, 5, 7]
     end
 
-    factory :cqv_set_implies_const do
-      sequence(:rule) { 'set_implies_const' }
-      conditional_set_operator "included"
-      conditional_set [2, 4, 6, 8]
-      operator ">"
-      constant 0
-    end
-
     factory :cqv_present_implies_present do
       sequence(:rule) { 'present_implies_present' }
       constant nil
