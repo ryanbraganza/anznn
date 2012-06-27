@@ -22,7 +22,7 @@ set :rvm_ruby_string, 'ruby-1.9.3-p194@anznn'
 
 # Deploy using copy for now
 set :scm, 'git'
-set :repository, 'git@github.com:IntersectAustralia/anznn.git'
+set :repository, 'https://github.com/IntersectAustralia/anznn.git'
 set :deploy_via, :copy
 set :copy_exclude, [".git/*"]
 
