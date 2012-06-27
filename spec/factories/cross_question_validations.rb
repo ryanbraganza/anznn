@@ -89,12 +89,6 @@ FactoryGirl.define do
       conditional_constant -1
     end
 
-    factory :cqv_blank_unless_set do
-      sequence(:rule) { 'blank_unless_set' }
-      conditional_set_operator "range"
-      conditional_set [0, 99]
-    end
-
     factory :cqv_special_dual_comparison do
       sequence(:rule) { 'special_dual_comparison' }
       operator "<"

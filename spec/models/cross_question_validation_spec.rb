@@ -327,38 +327,6 @@ describe CrossQuestionValidation do
         it("passes when q2 is -1 and q1 is blank") {} # rule won't be run }
         it("fails when q2 is -1 and q1 is not blank") { standard_cqv_test(123, -1, [@error_message]) }
       end
-
-      describe 'blank unless Qx is within range N..M (inclusive)' do
-        before :each do
-          @error_message = 'q2 was outside 0..99 (inclusive), q1 must be blank'
-          @q1 = Factory :question, section: @section, question_type: 'Integer'
-          @q2 = Factory :question, section: @section, question_type: 'Decimal'
-          Factory :cqv_blank_unless_set, question: @q1, related_question: @q2, error_message: @error_message
-          #conditional_set_operator "range"
-          #conditional_set [0,99]
-        end
-        it("handles nils") { standard_cqv_test({}, {}, []) }
-        it("doesn't reject the LHS when RHS expected") { standard_cqv_test(-1, 0, []) }
-        it("rejects when RHS isn't expected value (lower) and LHS isn't blank") { standard_cqv_test(-1, -1, [@error_message]) }
-        it("rejects when RHS isn't expected value (higher) and LHS isn't blank") { standard_cqv_test(-1, 100, [@error_message]) }
-        it("rejects when RHS is blank value and LHS isn't blank") { standard_cqv_test(-1, {}, [@error_message]) }
-      end
-
-      describe 'blank unless Qx is between N annd M' do
-        before :each do
-          @error_message = 'q2 was not between 0...99 (inclusive), q1 must be blank'
-          @q1 = Factory :question, section: @section, question_type: 'Integer'
-          @q2 = Factory :question, section: @section, question_type: 'Decimal'
-          Factory :cqv_blank_unless_set, question: @q1, related_question: @q2, error_message: @error_message, conditional_set_operator: "range"
-          #conditional_set [0,99]
-        end
-        it("handles nils") { standard_cqv_test({}, {}, []) }
-        it("doesn't reject the LHS when RHS expected") { standard_cqv_test(-1, 1, []) }
-        it("rejects when RHS isn't expected value (lower) and LHS isn't blank") { standard_cqv_test(-1, -1, [@error_message]) }
-        it("rejects when RHS isn't expected value (higher) and LHS isn't blank") { standard_cqv_test(-1, 100, [@error_message]) }
-        it("rejects when RHS is blank value and LHS isn't blank") { standard_cqv_test(-1, {}, [@error_message]) }
-      end
-
     end
 
     describe "comparisons (using dates to represent a complex type that supports <,>,== etc)" do
