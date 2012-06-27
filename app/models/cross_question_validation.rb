@@ -217,18 +217,6 @@ class CrossQuestionValidation < ActiveRecord::Base
     const_meets_condition?(datetime1, checker_params[:operator], datetime2 + offset)
   }
 
-  register_checker 'blank_unless_days_const', lambda { |answer, unused_related_answer, checker_params|
-    related_ids = checker_params[:related_question_ids]
-    date1 = answer.response.get_answer_to(related_ids[0])
-    date2 = answer.response.get_answer_to(related_ids[1])
-
-    break true if [date1, date2].any? { |related_answer| related_answer.nil? or related_answer.date_answer.nil? }
-
-    day_difference = (date2.answer_value - date1.answer_value).to_i
-
-    const_meets_condition?(day_difference, checker_params[:conditional_operator], checker_params[:conditional_constant])
-  }
-
   register_checker 'present_implies_present', lambda { |answer, related_answer, checker_params|
     related_answer && !related_answer.raw_answer
   }
