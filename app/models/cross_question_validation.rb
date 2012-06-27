@@ -3,8 +3,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   cattr_accessor(:valid_rules) { [] }
   cattr_accessor(:rules_with_no_related_question) { %w(self_comparison) }
 
-  RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL = %w(special_dual_comparison)
-  RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present special_dual_comparison blank_unless_present set_gest_wght_implies_present)
+  RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present blank_unless_present set_gest_wght_implies_present)
 
   SAFE_OPERATORS = %w(== <= >= < > !=)
   ALLOWED_SET_OPERATORS = %w(included excluded range)
@@ -59,9 +58,7 @@ class CrossQuestionValidation < ActiveRecord::Base
                       related_question_ids: related_question_ids}
 
     # don't bother checking if the question is unanswered or has an invalid answer
-    if !RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL.include?(rule)
-      return nil if answer.nil? or answer.raw_answer
-    end
+    return nil if answer.nil? or answer.raw_answer
 
     # we have to filter the answers on the response rather than using find, as we want to check through as-yet unsaved answers as part of batch processing
     related_answer = answer.response.get_answer_to(related_question.id) if related_question
@@ -260,16 +257,6 @@ class CrossQuestionValidation < ActiveRecord::Base
       end
     end
     results.include?(true)
-  }
-
-  register_checker 'special_dual_comparison', lambda { |answer, related_answer, checker_params|
-    first = answer.comparable_answer.blank? ? false : const_meets_condition?(answer.comparable_answer,
-                                                                             checker_params[:operator],
-                                                                             checker_params[:constant])
-    second = related_answer.comparable_answer.blank? ? false : const_meets_condition?(related_answer.comparable_answer,
-                                                                                      checker_params[:conditional_operator],
-                                                                                      checker_params[:conditional_constant])
-    (first || second)
   }
 
   register_checker 'self_comparison', lambda { |answer, unused_related_answer, checker_params|

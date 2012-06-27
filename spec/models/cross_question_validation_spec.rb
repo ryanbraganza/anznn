@@ -408,28 +408,6 @@ describe CrossQuestionValidation do
         @response = Factory :response, survey: @survey
       end
 
-      describe 'special_dual_comparison' do
-        before :each do
-          @error_message = 'neither q1 was < 32 or q1  < 1500'
-          @q1 = Factory :question, section: @section, question_type: 'Integer'
-          @q2 = Factory :question, section: @section, question_type: 'Integer'
-          Factory :cqv_special_dual_comparison, question: @q1, related_question: @q2, error_message: @error_message
-          #operator "<"
-          #constant 32
-          #conditional_operator "<"
-          #conditional_constant 1500
-        end
-        it("handles nils - failure") { standard_cqv_test({}, {}, [@error_message]) }
-        it("passes when only one value is entered but valid (a)") { standard_cqv_test(5, {}, []) }
-        it("passes when only one value is entered but valid (b)") { standard_cqv_test({}, 5, []) }
-        it("passes when both are entered but only one value is valid (a)") { standard_cqv_test(5, 2000, []) }
-        it("passes when both are entered but only one value is valid (b)") { standard_cqv_test(50, 5, []) }
-        it("fails when only one value is entered but not valid (a)") { standard_cqv_test(50, {}, [@error_message]) }
-        it("fails when only one value is entered but not valid (b)") { standard_cqv_test({}, 2000, [@error_message]) }
-        it("fails when both are entered and neither are valid (a)") { standard_cqv_test(50, 2000, [@error_message]) }
-        it("fails when both are entered and neither are valid (b)") { standard_cqv_test(50, 2000, [@error_message]) }
-      end
-
       describe 'self_comparison' do
         def self_comparison_check (val, err)
           first = Factory :answer, response: @response, question: @q1, answer_value: val

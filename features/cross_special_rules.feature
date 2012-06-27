@@ -4,11 +4,11 @@ Feature: Cross Question Special Rules
   I want the answers to questions with unusual dependencies to be validated correctly
 
 #  10 B O2_36wk_
-#    if is -1 then: Gest must be <32 or Wght must be <1500 [multi_if_then (comparison, special_dual_comparison**]
+#    if is -1 then: Gest must be <32 or Wght must be <1500
 #    if is -1 then: Gest+Gestdays + weeks(DOB and the latest date of (LastO2|CeaseCPAPDate|CeaseHiFloDate))) >36 [multi_if_then (comparison,special_o2_a)**]
 #       )
 #  10 B HmeO2    -
-#    if is -1 then: Gest must be <32 or Wght must be <1500 [multi_if_then (comparison, special_dual_comparison**]
+#    if is -1 then: Gest must be <32 or Wght must be <1500
 #    if is -1 then: HomeDate must be a date [multi_if_then (comparison, present_implies_present]
 #    if is -1 then:  HomeDate must be the same as LastO2 [multi_if_then (comparison, comparison]
 
