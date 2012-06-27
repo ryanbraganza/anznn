@@ -9,6 +9,24 @@ class SpecialRules
 
   def self.register_additional_rules
     # put special rules here that aren't part of the generic rule set, that way they can easily be removed or replaced later
+    CrossQuestionValidation.rules_with_no_related_question += %w(special_dob
+                                 special_rop_prem_rop_vegf_1
+                                 special_rop_prem_rop_vegf_2
+                                 special_rop_prem_rop
+                                 special_rop_prem_rop_retmaturity
+                                 special_rop_prem_rop_roprx_1
+                                 special_rop_prem_rop_roprx_2
+                                 special_namesurg2
+                                 special_namesurg3
+                                 special_immun
+                                 special_cool_hours
+                                 special_date_of_assess
+                                 special_height
+                                 special_length
+                                 special_cochimplt
+                                 special_o2_a
+                                 special_hmeo2
+                                 special_same_name_linf)
 
     CrossQuestionValidation.register_checker 'special_o2_a', lambda { |answer, unused_related_answer, checker_params|
       raise 'Can only be used on question O2_36wk_' unless answer.question.code == 'O2_36wk_'

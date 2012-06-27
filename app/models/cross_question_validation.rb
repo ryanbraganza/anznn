@@ -1,48 +1,7 @@
 class CrossQuestionValidation < ActiveRecord::Base
 
-
-  RULES_WITH_NO_RELATED_QUESTION = %w(special_dob
-                             self_comparison
-                             special_rop_prem_rop_vegf_1
-                             special_rop_prem_rop_vegf_2
-                             special_rop_prem_rop
-                             special_rop_prem_rop_retmaturity
-                             special_rop_prem_rop_roprx_1
-                             special_rop_prem_rop_roprx_2
-                             special_namesurg2
-                             special_namesurg3
-                             special_immun
-                             special_cool_hours
-                             special_date_of_assess
-                             special_height
-                             special_length
-                             special_cochimplt
-                             special_o2_a
-                             special_hmeo2
-                             special_same_name_linf)
-
-  VALID_RULES =
-      %w(comparison
-         present_implies_constant
-         const_implies_const
-         const_implies_set
-         set_implies_const
-         set_implies_set
-         blank_if_const
-         blank_unless_set
-         blank_unless_days_const
-         blank_unless_present
-         multi_hours_date_to_date
-         multi_compare_datetime_quad
-         present_implies_present
-         const_implies_present
-         set_implies_present
-         const_implies_one_of_const
-         special_dual_comparison
-         special_usd6wk_dob_weeks
-         set_gest_wght_implies_present
-         set_present_implies_present
-         comparison_const_days) + RULES_WITH_NO_RELATED_QUESTION
+  cattr_accessor(:valid_rules) { [] }
+  cattr_accessor(:rules_with_no_related_question) { %w(self_comparison) }
 
   RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL = %w(special_dual_comparison)
   RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present special_dual_comparison blank_unless_present set_gest_wght_implies_present)
@@ -59,7 +18,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   belongs_to :question
   belongs_to :related_question, class_name: 'Question'
 
-  validates_inclusion_of :rule, in: VALID_RULES
+  validates_inclusion_of :rule, in: valid_rules
   validates_inclusion_of :operator, in: SAFE_OPERATORS, allow_blank: true
 
   validates_presence_of :question_id
@@ -73,7 +32,7 @@ class CrossQuestionValidation < ActiveRecord::Base
 
 
   def one_of_related_question_or_list_of_questions
-    return if RULES_WITH_NO_RELATED_QUESTION.include?(rule)
+    return if rules_with_no_related_question.include?(rule)
     unless [related_question_id, related_question_ids].count(&:present?) == 1
       errors[:base] << "invalid cqv - exactly one of related question or list of related questions must be supplied - " +
           "#{related_question_id.inspect},#{related_question_ids.inspect}"
@@ -124,6 +83,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     # The supplied block can assume that no garbage data is stored
     # i.e. that raw_answer is not populated for either answer or related_answer
     rule_checkers[rule] = block
+    valid_rules << rule
   end
 
   private
