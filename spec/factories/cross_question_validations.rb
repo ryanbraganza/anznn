@@ -81,11 +81,5 @@ FactoryGirl.define do
       conditional_constant -1
     end
 
-    factory :cqv_self_comparison do
-      sequence(:rule) { 'self_comparison' }
-      operator "=="
-      constant -1
-    end
-
   end
 end

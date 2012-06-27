@@ -402,31 +402,5 @@ describe CrossQuestionValidation do
         end
       end
     end
-
-    describe "Special rules " do
-      before :each do
-        @response = Factory :response, survey: @survey
-      end
-
-      describe 'self_comparison' do
-        def self_comparison_check (val, err)
-          first = Factory :answer, response: @response, question: @q1, answer_value: val
-          do_cqv_check(first, err)
-        end
-
-        before :each do
-          @error_message = 'didn\'t meet condition'
-          @q1 = Factory :question, section: @section, question_type: 'Integer'
-          Factory :cqv_self_comparison, question: @q1, related_question: @q1, error_message: @error_message
-          #operator "=="
-          #constant -1
-        end
-        it("handles nils - failure") { self_comparison_check({}, [@error_message]) }
-        it("fails when val doesn't meet conditions") { self_comparison_check(50, [@error_message]) }
-        it("passes when val does meet conditions") { self_comparison_check(-1, []) }
-      end
-
-    end
-
   end
 end

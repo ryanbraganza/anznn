@@ -1,7 +1,7 @@
 class CrossQuestionValidation < ActiveRecord::Base
 
   cattr_accessor(:valid_rules) { [] }
-  cattr_accessor(:rules_with_no_related_question) { %w(self_comparison) }
+  cattr_accessor(:rules_with_no_related_question) { [] }
 
   RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present blank_unless_present set_gest_wght_implies_present)
 
@@ -257,10 +257,6 @@ class CrossQuestionValidation < ActiveRecord::Base
       end
     end
     results.include?(true)
-  }
-
-  register_checker 'self_comparison', lambda { |answer, unused_related_answer, checker_params|
-    const_meets_condition?(answer.comparable_answer, checker_params[:operator], checker_params[:constant])
   }
 
   register_checker 'set_gest_wght_implies_present', lambda { |answer, related_answer, checker_params|
