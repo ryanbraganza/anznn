@@ -5,16 +5,20 @@ require 'rvm/capistrano'
 require "delayed/recipes"
 require "bundler/capistrano"
 
+set :whenever_environment, defer { stage }
 set :whenever_command, "bundle exec whenever"
 require 'whenever/capistrano'
 
 set :application, 'anznn'
 set :stages, %w(qa staging production)
 set :default_stage, "qa"
-set :rpms, "openssl openssl-devel curl-devel httpd-devel apr-devel apr-util-devel zlib zlib-devel libxml2 libxml2-devel libxslt libxslt-devel libffi mod_ssl mod_xsendfile mysql-server mysql mysql-devel"
+
+set :build_rpms, %w(gcc gcc-c++ patch readline readline-devel zlib zlib-devel libyaml-devel libffi-devel openssl openssl-devel make bzip2 autoconf automake libtool bison httpd httpd-devel apr-devel apr-util-devel mod_ssl mod_xsendfile  curl curl-devel openssl openssl-devel tzdata libxml2 libxml2-devel libxslt libxslt-devel sqlite-devel git)
+set :project_rpms, %w(openssl openssl-devel curl-devel httpd-devel apr-devel apr-util-devel zlib zlib-devel libxml2 libxml2-devel libxslt libxslt-devel libffi mod_ssl mod_xsendfile mysql-server mysql mysql-devel)
 set :shared_children, shared_children + %w(log_archive)
-set :shell, '/bin/bash'
-set :rvm_ruby_string, 'ruby-1.9.3-p0@anznn'
+set :bash, '/bin/bash'
+set :shell, bash # This is done in two lines to allow rpm_install to refer to bash (as shell just launches cap shell)
+set :rvm_ruby_string, 'ruby-1.9.3-p194@anznn'
 
 # Deploy using copy for now
 set :scm, 'git'
@@ -31,7 +35,7 @@ default_run_options[:pty] = true
 
 namespace :server_setup do
   task :rpm_install, :roles => :app do
-    run "#{try_sudo} yum install -y #{rpms}"
+    run "#{try_sudo} yum install -y #{(build_rpms + project_rpms).uniq.join(' ')}", :shell => bash
   end
   namespace :filesystem do
     task :dir_perms, :roles => :app do
@@ -53,7 +57,8 @@ namespace :server_setup do
   end
   namespace :config do
     task :apache do
-      src = "#{release_path}/config/httpd/#{stage}_rails_#{application}.conf"
+      run "cd #{release_path}/config/httpd && ruby passenger_setup.rb \"#{rvm_ruby_string}\" \"#{current_path}\" \"#{web_server}\" \"#{stage}\""
+      src = "#{release_path}/config/httpd/apache_insertion.conf"
       dest = "/etc/httpd/conf.d/rails_#{application}.conf"
       run "cmp -s #{src} #{dest} > /dev/null; [ $? -ne 0 ] && #{try_sudo} cp #{src} #{dest} && #{try_sudo} /sbin/service httpd graceful; /bin/true"
     end
@@ -71,6 +76,8 @@ namespace :server_setup do
 end
 before 'deploy:setup' do
   server_setup.rpm_install
+  rvm.install_rvm
+  rvm.install_ruby
   server_setup.rvm.trust
   server_setup.gem_install
   server_setup.passenger
@@ -81,6 +88,7 @@ end
 after 'deploy:update' do
   server_setup.logging.rotation
   server_setup.config.apache
+  deploy.copy_templates
   deploy.additional_symlinks
   deploy.restart
   #deploy.generate_user_manual
@@ -144,6 +152,12 @@ namespace :deploy do
     run("cd #{current_path} && rake db:seed", :env => {'RAILS_ENV' => "#{stage}"})
   end
 
+ # Add an initial user
+  desc "Adds an initial user to the app"
+  task :add_initial_user, :roles => :db do
+    run("cd #{current_path} && rake db:add_initial_user", :env => {'RAILS_ENV' => "#{stage}"})
+  end
+
   desc "Full redepoyment, it runs deploy:update and deploy:refresh_db"
   task :full_redeploy do
     update
@@ -170,7 +184,16 @@ namespace :deploy do
     else
       puts "Skipping database nuke"
     end
+
   end
+
+  desc 'Move in custom configuration from local machine'
+  task :copy_templates do
+    transfer :up, "deploy_templates/", "#{current_path}", :recursive => true, :via => :scp
+    run "cd #{current_path}/deploy_templates && cp -r * .."
+    run "cd #{current_path} && rm -r deploy_templates"
+  end
+
 
   task :generate_user_manual do
     run("cd #{current_path} && rm -rf public/manual/*")

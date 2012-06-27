@@ -33,7 +33,7 @@ group :test do
   # Pretty printed test output
   gem 'turn', '~> 0.8.3', :require => false
 end
-    
+
 gem "therubyracer"
 group :development, :test do
   gem "rspec-rails"
@@ -59,6 +59,10 @@ end
 group :test do
   gem "cucumber-rails", require: false
 end
+
+#group :production do
+  gem 'google-analytics-rails'
+#end
 
 gem "haml"
 gem "haml-rails"

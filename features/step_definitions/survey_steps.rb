@@ -11,6 +11,11 @@ Given /^I have a survey with name "([^"]*)"$/ do |name|
   setup_year_of_reg("2001", "2012")
 end
 
+Then /^survey "([^"]*)" should have no responses for year "([^"]*)"$/ do |survey_name, year|
+  survey = Survey.find_by_name(survey_name)
+  Response.count_per_survey_and_year_of_registration(survey.id, year.to_i).should == 0
+end
+
 And /^I have a survey with name "(.*)" with questions from "(.*)" and options from "(.*)"$/ do |survey_name, question_filename, options_filename|
   pathify = ->(path) { Rails.root.join('test_data', path) }
   questions_path = pathify[question_filename]

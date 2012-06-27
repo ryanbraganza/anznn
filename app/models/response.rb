@@ -36,6 +36,14 @@ class Response < ActiveRecord::Base
     results
   end
 
+  def self.count_per_survey_and_year_of_registration(survey_id, year)
+    Response.count(:conditions => ["year_of_registration = ? AND survey_id = ?", year, survey_id])
+  end
+
+  def self.delete_by_survey_and_year_of_registration(survey_id, year)
+    Response.destroy_all(["year_of_registration = ? AND survey_id = ?", year, survey_id])
+  end
+
   def self.existing_years_of_registration
     select("distinct year_of_registration").collect(&:year_of_registration).sort
   end
