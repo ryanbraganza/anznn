@@ -12,7 +12,9 @@ require 'whenever/capistrano'
 set :application, 'anznn'
 set :stages, %w(qa staging production)
 set :default_stage, "qa"
-set :rpms, "openssl openssl-devel curl-devel httpd-devel apr-devel apr-util-devel zlib zlib-devel libxml2 libxml2-devel libxslt libxslt-devel libffi mod_ssl mod_xsendfile mysql-server mysql mysql-devel"
+
+set :build_rpms, %w(gcc gcc-c++ patch readline readline-devel zlib zlib-devel libyaml-devel libffi-devel openssl openssl-devel make bzip2 autoconf automake libtool bison httpd httpd-devel apr-devel apr-util-devel mod_ssl mod_xsendfile  curl curl-devel openssl openssl-devel tzdata libxml2 libxml2-devel libxslt libxslt-devel sqlite-devel git)
+set :project_rpms, %w(openssl openssl-devel curl-devel httpd-devel apr-devel apr-util-devel zlib zlib-devel libxml2 libxml2-devel libxslt libxslt-devel libffi mod_ssl mod_xsendfile mysql-server mysql mysql-devel)
 set :shared_children, shared_children + %w(log_archive)
 set :bash, '/bin/bash'
 set :shell, bash # This is done in two lines to allow rpm_install to refer to bash (as shell just launches cap shell)
@@ -33,8 +35,7 @@ default_run_options[:pty] = true
 
 namespace :server_setup do
   task :rpm_install, :roles => :app do
-    run "#{try_sudo} yum groupinstall -y \"Development Tools\"", :shell => bash
-    run "#{try_sudo} yum install -y #{rpms}", :shell => bash
+    run "#{try_sudo} yum install -y #{(build_rpms + project_rpms).uniq.join(' ')}", :shell => bash
   end
   namespace :filesystem do
     task :dir_perms, :roles => :app do
@@ -184,15 +185,15 @@ namespace :deploy do
       puts "Skipping database nuke"
     end
 
-
-    desc 'Move in custom configuration from local machine'
-    task :copy_templates do
-      transfer :up, "deploy_templates/", "#{current_path}", :recursive => true, :via => :scp
-      run "cd #{current_path}/deploy_templates && cp -r * .."
-      run "cd #{current_path} && rm -r deploy_templates"
-    end
-
   end
+
+  desc 'Move in custom configuration from local machine'
+  task :copy_templates do
+    transfer :up, "deploy_templates/", "#{current_path}", :recursive => true, :via => :scp
+    run "cd #{current_path}/deploy_templates && cp -r * .."
+    run "cd #{current_path} && rm -r deploy_templates"
+  end
+
 
   task :generate_user_manual do
     run("cd #{current_path} && rm -rf public/manual/*")
