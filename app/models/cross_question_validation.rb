@@ -2,6 +2,7 @@ class CrossQuestionValidation < ActiveRecord::Base
 
   cattr_accessor(:valid_rules) { [] }
   cattr_accessor(:rules_with_no_related_question) { [] }
+  cattr_accessor(:rule_checkers) { {} }
 
   RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present blank_unless_present set_gest_wght_implies_present)
 
@@ -38,6 +39,18 @@ class CrossQuestionValidation < ActiveRecord::Base
     end
   end
 
+  def self.register_checker(rule, block)
+    # Call register_checker with the rule 'code' of your check.
+    # Supply a block that takes the answer and related_answer
+    # and returns whether true if the answer meets the rule's criteria
+    # The supplied block can assume that no garbage data is stored
+    # i.e. that raw_answer is not populated for either answer or related_answer
+    rule_checkers[rule] = block
+    valid_rules << rule
+  end
+
+  SpecialRules.register_additional_rules
+
   def self.check(answer)
     cqvs = answer.question.cross_question_validations
     warnings = cqvs.map do |cqv|
@@ -73,20 +86,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     error_message unless rule_checkers[rule].call answer, related_answer, checker_params
   end
 
-  def self.register_checker(rule, block)
-    # Call register_checker with the rule 'code' of your check.
-    # Supply a block that takes the answer and related_answer
-    # and returns whether true if the answer meets the rule's criteria
-    # The supplied block can assume that no garbage data is stored
-    # i.e. that raw_answer is not populated for either answer or related_answer
-    rule_checkers[rule] = block
-    valid_rules << rule
-  end
-
   private
-
-  cattr_accessor(:rule_checkers) { {} }
-
 
   def self.is_operator_safe?(operator)
     SAFE_OPERATORS.include? operator

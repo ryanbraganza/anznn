@@ -9,6 +9,8 @@ class SpecialRules
 
   def self.register_additional_rules
     # put special rules here that aren't part of the generic rule set, that way they can easily be removed or replaced later
+
+    # add to the list of rules with no related question
     CrossQuestionValidation.rules_with_no_related_question += %w(special_dob
                                  special_rop_prem_rop_vegf_1
                                  special_rop_prem_rop_vegf_2
