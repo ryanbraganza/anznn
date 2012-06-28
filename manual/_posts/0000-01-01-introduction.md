@@ -1,7 +1,7 @@
 ---
 layout: post
 category : Getting Started
-title: Data Form Web Entry
+title: Introduction
 group: manual
 ---
 {% include JB/setup %}

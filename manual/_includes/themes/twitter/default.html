@@ -21,11 +21,10 @@
     <div class="navbar">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="{{ HOME_PATH }}">{{ site.title }}</a>
+          <div class="brand">{{ site.title }}</div>
           <ul class="nav">
-            {% assign pages_list = site.pages %}
-            {% assign group = 'navigation' %}
-            {% include JB/pages_list %}
+            <li><a href="/">Home</a></li>
+            <li><a href="/user_manual/index.html">User Manual</a></li>
           </ul>
         </div>
       </div>

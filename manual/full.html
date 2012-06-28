@@ -5,12 +5,9 @@ group: none
 ---
 {% include JB/setup %}
 
-{% for category in site.categories %}
-  {% assign pages_list = category[1] %}
-  {% for node in pages_list %}
-    <h1>{{ node.title }}</h1>
-    {{ node.content }}
-    <hr/>
-  {% endfor %}
+{% for post in site.posts reversed %}
+  <h1>{{ post.title }}</h1>
+  {{ post.content }}
+  <hr/>
 {% endfor %}
 
