@@ -5,6 +5,7 @@
       = tabs_tag(builder: MenuTabBuilder) do |tab|
         %ul.nav
           = tab.home 'Home', root_path
+          = tab.manual 'User Manual', '/user_manual/index.html'
         %ul.nav.secondary-nav
           - if user_signed_in?
             = (tab.admin 'Admin', admin_users_path) if can?(:read, User)
