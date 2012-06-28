@@ -22,4 +22,4 @@ rerun.txt
 /.idea
 
 # Ignore generated user manual
-/public/manual
+/public/user_manual
