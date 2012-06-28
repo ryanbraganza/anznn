@@ -91,7 +91,7 @@ after 'deploy:update' do
   deploy.copy_templates
   deploy.additional_symlinks
   deploy.restart
-  #deploy.generate_user_manual
+  deploy.generate_user_manual
 end
 
 after 'deploy:finalize_update' do
@@ -196,8 +196,8 @@ namespace :deploy do
 
 
   task :generate_user_manual do
-    run("cd #{current_path} && rm -rf public/manual/*")
-    run("cd #{current_path} && jekyll manual public/manual")
+    run "cd #{current_path}; rm -rf public/user_manual/*"
+    run "cd #{current_path}; bundle exec jekyll manual public/user_manual"
   end
 end
 
