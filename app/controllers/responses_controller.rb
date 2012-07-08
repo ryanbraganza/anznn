@@ -37,6 +37,7 @@ class ResponsesController < ApplicationController
     @questions = @section.questions
     @question_id_to_answers = @response.prepare_answers_to_section_with_blanks_created(@section)
     @flag_mandatory = @response.section_started? @section
+    @group_info = calculate_group_info(@section, @questions)
   end
 
   def update
@@ -158,5 +159,15 @@ class ResponsesController < ApplicationController
     else
       redirect_to edit_response_path(@response, section: go_to_section), notice: 'Your answers have been saved'
     end
+  end
+
+  def calculate_group_info(section, questions_in_section)
+    group_names = questions_in_section.collect(&:multi_name).uniq.compact
+    result = {}
+    group_names.each do |g|
+      questions_for_group = questions_in_section.select { |q| q.multi_name == g }
+      result[g] = GroupedQuestionHandler.new(g, questions_for_group, @question_id_to_answers)
+    end
+    result
   end
 end

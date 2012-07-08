@@ -4,8 +4,18 @@
 - classes = ['clearfix']
 - classes << 'warning' if answer.warnings.any?
 - classes << 'fatalwarning' if answer.fatal_warnings.any? || (@flag_mandatory && answer.violates_mandatory)
+- classes << 'hiddenmulti' if q.multiple && @group_info[q.multi_name].hide_group?(q)
+
+- show_add_link = q.multiple && @group_info[q.multi_name].show_add_link?(q)
+
 - data = {description: prep_help(q.description), guide: prep_help(q.guide_for_use), name: q.question, code: q.code}
-%div{id: "container_#{q.id}", class: classes}
+
+- if q.multiple
+  - div_data = { multi_name: q.multi_name, group_number: q.group_number }
+- else
+  - div_data = {}
+
+%div{id: "container_#{q.id}", class: classes, data: div_data}
   = label_tag field_id, class: 'field_trigger', data: data do
     = q.question
     %span.infoicon
@@ -72,3 +82,5 @@
         %span.fatalerror-display This question is mandatory
       - else
         = HelpTextGenerator.new(q).help_text
+  - if show_add_link
+    = link_to "Add another #{q.multi_name}", '', {class: 'add_multi_link'}

@@ -256,7 +256,8 @@ end
 
 Then /^I should see questions$/ do |table|
   expected = table.raw.collect { |r| r[0] }
-  actual = all("form .clearfix label").collect { |element| element.text }
+  actual = all("form .clearfix label").collect { |element| element.text.strip }
+  actual.select!{ |text| !text.blank? }
   actual.should eq(expected)
 end
 

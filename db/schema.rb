@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120626055501) do
+ActiveRecord::Schema.define(:version => 20120704064716) do
 
   create_table "answers", :force => true do |t|
     t.integer "response_id"
@@ -113,12 +113,16 @@ ActiveRecord::Schema.define(:version => 20120626055501) do
     t.string  "code"
     t.text    "description"
     t.text    "guide_for_use"
-    t.decimal "number_min",     :precision => 65, :scale => 15
-    t.decimal "number_max",     :precision => 65, :scale => 15
+    t.decimal "number_min",         :precision => 65, :scale => 15
+    t.decimal "number_max",         :precision => 65, :scale => 15
     t.integer "number_unknown"
     t.integer "string_min"
     t.integer "string_max"
     t.boolean "mandatory"
+    t.boolean "multiple",                                           :default => false
+    t.string  "multi_name"
+    t.integer "group_number"
+    t.integer "order_within_group"
   end
 
   create_table "responses", :force => true do |t|
