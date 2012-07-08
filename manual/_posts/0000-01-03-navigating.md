@@ -12,7 +12,7 @@ Once you are logged in you will see a page with two tabs
 
 Click on the text of the tab to switch between them.
 
---screenshot: main nav elements--
+TODO: screenshot main nav elements
 
 From any page you also have access to the following:
 * **Home** returns you to the home page (which is the data entry forms tab)

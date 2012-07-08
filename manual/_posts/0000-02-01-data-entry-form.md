@@ -7,7 +7,7 @@ group: manual
 ## Starting a new data entry form
 From the 'Data Entry Forms' tab on the home page, click on the 'New Data Entry Form' button. You will be asked to select the registration type, the year of registration and to enter the baby code. Once you have entered these click 'Save' to start the record. If you're unsure how to answer these questions please contact the ANZNN.
 
---ss new record--
+TODO: screenshot  new record
 
 ## Entering data
 Next you will be shown the first page of the data entry form. The data entry form is divided up into sections to make it easier to answer. You're free to answer them when and how you like
@@ -21,7 +21,7 @@ Grey text is also shown under many questions to help you understand the allowed 
 
 Questions that use radio button (see screenshot below for an example) can be answered by clicking either on the radio button itself, or on the text beside it.
 
---ss:help elements, clicking radio buttons--
+TODO: screenshot help elements, clicking radio buttons
 
 
 ### Navigating
@@ -32,15 +32,15 @@ At the bottom there's three buttons
 * *Save and go to next section* will save your answers on the current page and take you to the next section. Use this if you want to work through the questions in order.
 * *Cancel* will discard your changes on the current page and return you to a summary screen.
 
---ss: nav buttons--
---ss: save buttons--
+TODO: screenshot  nav buttons
+TODO: screenshot  save buttons
 
 ### Summary
 At any time, you can view a summary of your progress. Click the first section link 'Summary' to view it. Clicking this will save your current answers.
 
 The summary page shows you your progress on each of the sections, and you can click the 'Edit' link to go directly to any section.
 
---ss sumary--
+TODO: screenshot  sumary
 
 ### Errors and Warnings
 Each time you save a page of answers, they will be validated against the ANZNN data requirements. Anything that has a problem is highlighted in red or orange.
@@ -48,12 +48,12 @@ Each time you save a page of answers, they will be validated against the ANZNN d
 * *Red* means the answer has an error and must be corrected. A message will tell you what the problem is. Any red errors must be corrected before your data can be submitted.
 * *Orange* means the answer has a warning (e.g your answer is outside the usual range for the question). You should check these carefully to ensure you haven't made a mistake. Data entry forms can be submitted with warnings, but only by a user with "Supervisor" privileges. 
 
---ss: errs and warns--
+TODO: screenshot  errs and warns
 
 ## Reviewing Answers
 At any time, you can review all of your current answers, including any errors or warnings. From the summary page, click the 'Review Answers' button. All your answers will be shown by section, with any errors or warnings. This allows you to quickly review everything on one page.
 
---ss review page--
+TODO: screenshot  review page
   
 ## Finishing Up
 ### Coming Back Later
