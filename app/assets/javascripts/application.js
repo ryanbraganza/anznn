@@ -12,6 +12,7 @@
 //= require section_navigation
 //= require ie6
 //= require show_hide_multi_questions
+//= require supplementary_questions_batch
 
 $(window).load(function () {
   $('.row div[class^="span"]:last-child').addClass('last-child');

@@ -63,4 +63,15 @@ class Question < ActiveRecord::Base
     question_type == TYPE_TIME
   end
 
+  def self.group_names_by_survey
+    questions = where(multiple: true).includes(:section).order("sections.section_order, questions.question_order")
+    by_survey = questions.group_by{ |q| q.section.survey_id }
+    by_survey.each do |survey_id, questions|
+      questions.map! { |question| question.multi_name }
+      questions.uniq!
+      questions.sort!
+    end
+    by_survey
+  end
+
 end

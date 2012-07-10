@@ -7,6 +7,7 @@ class BatchFilesController < ApplicationController
   load_and_authorize_resource
 
   expose(:year_of_registration_range) { ConfigurationItem.year_of_registration_range }
+  expose(:group_names_by_survey) { Question.group_names_by_survey }
 
   def new
   end

@@ -101,6 +101,16 @@ When /^the batch files are processed$/ do
   end
 end
 
+Then /^I should see (\d+) file selects?$/ do |expected_count|
+  all("input[type=file]").count.should eq(expected_count.to_i)
+end
+
+Then /^I should see file select "([^"]*)"$/ do |label|
+  field = find_field(label)
+  field[:type].should eq('file')
+end
+
+
 def check_batch_file(survey_name, email, hospital_name)
   file = BatchFile.last
   file.survey.should eq(Survey.find_by_name!(survey_name))
@@ -119,3 +129,6 @@ Given /^there are (\d+) batch uploads$/ do |count|
   end
 end
 
+Then /^I should not see any supplementary file blocks$/ do
+  all(".supplementary_group").count.should eq(0)
+end

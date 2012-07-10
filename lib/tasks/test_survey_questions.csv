@@ -1,19 +1,19 @@
-section,question_order,code,question,question_type,mandatory,number_min,number_max,number_unknown,string_min,string_max,guide_for_use,description
-0,0,BaseInt,Base Integer Qn,Integer,TRUE,,,,,,Question Code: BaseInt,"This is used as a base for comparing Integers. Enter an integer. Related questions are in sections 1,5"
-0,1,BaseDeci,Base Decimal Qn,Decimal,TRUE,,,,,,Question Code: BaseDeci,This is used as a base for comparing Decimals. Enter an integer. Related questions are in section 2
-0,2,BaseDate,Base Date Qn,Date,TRUE,,,,,,Question Code: BaseDate,This is used as a base for comparing Dates. Enter an integer. Related questions are in section 3
-0,3,BaseTime,Base Time Qn,Time,TRUE,,,,,,Question Code: BaseTime,This is used as a base for comparing Times. Enter an integer. Related questions are in section 4
-1,0,IntEQ,Integer Equal,Integer,FALSE,,,,,,Question Code: IntEQ,Description text here
-1,1,IntNE,Integer  Not Equal,Integer,FALSE,,,,,,Question Code: IntNE,Description text here
-1,2,IntGT,Int Greater Than,Integer,FALSE,,,,,,Question Code: IntGT,Description text here
-1,3,IntLT,Int Less Than,Integer,FALSE,,,,,,Question Code: IntLT,Description text here
-1,4,IntGE,Int Greater Than or Equal,Integer,FALSE,,,,,,Question Code: IntGE,Description text here
-1,5,IntLE,Int Less Than or Equal,Integer,FALSE,,,,,,Question Code: IntLE,Description text here
-2,0,DecEQ,Decimal Equal,Decimal,FALSE,,,,,,Question Code: DecEQ,Description text here
-2,1,DecNE,Decimal Not Equal,Decimal,FALSE,,,,,,Question Code: DecNE,Description text here
-2,2,DecGT,Decimal Greater Than,Decimal,FALSE,,,,,,Question Code: DecGT,Description text here
-2,3,DecLT,Decimal Less Than,Decimal,FALSE,,,,,,Question Code: DecLT,Description text here
-2,4,DecGE,Decimal Greater Than or Equal,Decimal,FALSE,,,,,,Question Code: DecGE,Description text here
+section,question_order,code,question,question_type,mandatory,number_min,number_max,number_unknown,string_min,string_max,guide_for_use,description,multiple,multi_name,group_number,order_within_group
+0,0,BaseInt,Base Integer Qn,Integer,TRUE,,,,,,Question Code: BaseInt,"This is used as a base for comparing Integers. Enter an integer. Related questions are in sections 1,5",,,,
+0,1,BaseDeci,Base Decimal Qn,Decimal,TRUE,,,,,,Question Code: BaseDeci,This is used as a base for comparing Decimals. Enter an integer. Related questions are in section 2,,,,
+0,2,BaseDate,Base Date Qn,Date,TRUE,,,,,,Question Code: BaseDate,This is used as a base for comparing Dates. Enter an integer. Related questions are in section 3,,,,
+0,3,BaseTime,Base Time Qn,Time,TRUE,,,,,,Question Code: BaseTime,This is used as a base for comparing Times. Enter an integer. Related questions are in section 4,,,,
+1,0,IntEQ,Integer Equal,Integer,FALSE,,,,,,Question Code: IntEQ,Description text here,,,,
+1,1,IntNE,Integer  Not Equal,Integer,FALSE,,,,,,Question Code: IntNE,Description text here,,,,
+1,2,IntGT,Int Greater Than,Integer,FALSE,,,,,,Question Code: IntGT,Description text here,,,,
+1,3,IntLT,Int Less Than,Integer,FALSE,,,,,,Question Code: IntLT,Description text here,,,,
+1,4,IntGE,Int Greater Than or Equal,Integer,FALSE,,,,,,Question Code: IntGE,Description text here,,,,
+1,5,IntLE,Int Less Than or Equal,Integer,FALSE,,,,,,Question Code: IntLE,Description text here,,,,
+2,0,DecEQ,Decimal Equal,Decimal,FALSE,,,,,,Question Code: DecEQ,Description text here,,,,
+2,1,DecNE,Decimal Not Equal,Decimal,FALSE,,,,,,Question Code: DecNE,Description text here,,,,
+2,2,DecGT,Decimal Greater Than,Decimal,FALSE,,,,,,Question Code: DecGT,Description text here,,,,
+2,3,DecLT,Decimal Less Than,Decimal,FALSE,,,,,,Question Code: DecLT,Description text here,,,,
+2,4,DecGE,Decimal Greater Than or Equal,Decimal,FALSE,,,,,,Question Code: DecGE,Description text here,,,,
 2,5,DecLE,Decimal Less Than or Equal,Decimal,FALSE,,,,,,Question Code: DecLE,Description text here
 3,0,DateEQ,Date Equal,Date,FALSE,,,,,,Question Code: DateEQ,Description text here
 3,1,DateNE,Date Not Equal,Date,FALSE,,,,,,Question Code: DateNE,Description text here
@@ -30,9 +30,23 @@ section,question_order,code,question,question_type,mandatory,number_min,number_m
 5,0,LEByConst,LE By Constant,Integer,FALSE,,,,,,Question Code: LEByConst,This one must be <= (BaseInt + 1)
 6,0,DateImpliesConst,"If BaseDate is a Date, This must be a specified Value",Integer,FALSE,,,,,,Question Code: DateImpliesConst,"if BaseDate is a date, Thi must be -1"
 6,1,ConstImpliesConst,"If BaseInt is a specified Value, Then this must be a specified Value",Integer,FALSE,,,,,,Question Code: ConstImpliesConst,if BaseInt is != 0; This must be > 0
-6,2,ConstImpliesSet,"If BaseInt is a specified Value, Then this must be a member of a specified Set",Integer,FALSE,,,,,,Question Code: ConstImpliesSet,"if BaseInt is !- 0; This must be in [1,3,5,7]"
-6,3,SetImpliesConst,"If BaseInt is a member of a specified Set, Then this must be a specified Value",Integer,FALSE,,,,,,Question Code: SetImpliesConst,"if BaseInt is in [2,4,6,8], this must be >0"
-6,4,SetImpliesSet,"If BaseInt is a member of a specified Set, Then this must be a member of a specified Set",Integer,FALSE,,,,,,Question Code: SetImpliesSet,"if BaseInt is in [2,4,6,8], this must be in [1,3,5,7]"
-6,5,BlankUnlessConst,This must be blank unless BaseInt is a specified Value,Integer,FALSE,,,,,,Question Code: BlankUnlessConst,"if BaseInt is not -1, this must be left blank"
-6,6,BlankUnlessSet,This must be blank unless BaseInt is a between two values (exclusive),Integer,FALSE,,,,,,Question Code: BlankUnlessSet,"if BaseInt is not between 0...99 (exclusive), this must be left blank"
-6,7,BlankUnlessSet2,This must be blank unless BaseInt is a between two values (inclusive),Integer,FALSE,,,,,,Question Code: BlankUnlessSet2,"if BaseInt is not between 0..5 (inclusive), this must be left blank"
+6,2,ConstImpliesSet,"If BaseInt is a specified Value, Then this must be a member of a specified Set",Integer,FALSE,,,,,,Question Code: ConstImpliesSet,"if BaseInt is !- 0; This must be in [1,3,5,7]",,,,
+6,3,SetImpliesConst,"If BaseInt is a member of a specified Set, Then this must be a specified Value",Integer,FALSE,,,,,,Question Code: SetImpliesConst,"if BaseInt is in [2,4,6,8], this must be >0",,,,
+6,4,SetImpliesSet,"If BaseInt is a member of a specified Set, Then this must be a member of a specified Set",Integer,FALSE,,,,,,Question Code: SetImpliesSet,"if BaseInt is in [2,4,6,8], this must be in [1,3,5,7]",,,,
+6,5,BlankUnlessConst,This must be blank unless BaseInt is a specified Value,Integer,FALSE,,,,,,Question Code: BlankUnlessConst,"if BaseInt is not -1, this must be left blank",,,,
+6,6,BlankUnlessSet,This must be blank unless BaseInt is a between two values (exclusive),Integer,FALSE,,,,,,Question Code: BlankUnlessSet,"if BaseInt is not between 0...99 (exclusive), this must be left blank",,,,
+6,7,BlankUnlessSet2,This must be blank unless BaseInt is a between two values (inclusive),Integer,FALSE,,,,,,Question Code: BlankUnlessSet2,"if BaseInt is not between 0..5 (inclusive), this must be left blank",,,,
+7,1,MultiText1,Text multi?,Text,FALSE,,,,,,sample guide,sample desc,TRUE,Multi2,1,1
+7,2,MultiNumber1,Number multi?,Integer,FALSE,,,,,,sample guide,sample desc,TRUE,Multi2,1,2
+7,3,MultiText2,Text multi?,Text,FALSE,,,,,,sample guide,sample desc,TRUE,Multi2,2,1
+7,4,MultiNumber2,Number multi?,Integer,FALSE,,,,,,sample guide,sample desc,TRUE,Multi2,2,2
+7,5,MultiText3,Text multi?,Text,FALSE,,,,,,sample guide,sample desc,TRUE,Multi2,3,1
+7,6,MultiNumber3,Number multi?,Integer,FALSE,,,,,,sample guide,sample desc,TRUE,Multi2,3,2
+7,7,MultiText4,Text multi?,Text,FALSE,,,,,,sample guide,sample desc,TRUE,Multi2,4,1
+7,8,MultiNumber4,Number multi?,Integer,FALSE,,,,,,sample guide,sample desc,TRUE,Multi2,4,2
+7,9,MultiText5,Text multi?,Text,FALSE,,,,,,sample guide,sample desc,TRUE,Multi2,5,1
+7,10,MultiNumber5,Number multi?,Integer,FALSE,,,,,,sample guide,sample desc,TRUE,Multi2,5,2
+7,11,Date1,Date1?,Date,FALSE,,,,,,Date1 guide,Date1 desc,TRUE,Multi1,1,1
+7,12,Time1,Time1?,Time,FALSE,,,,,,Time1 guide,Time1 desc,TRUE,Multi1,1,2
+7,13,Date2,Date2?,Date,FALSE,,,,,,Date2 guide,Date2 desc,TRUE,Multi1,2,1
+7,14,Time2,Time2?,Time,FALSE,,,,,,Time2 guide,Time2 desc,TRUE,Multi1,2,2
