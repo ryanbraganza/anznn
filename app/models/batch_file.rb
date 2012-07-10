@@ -22,6 +22,7 @@ class BatchFile < ActiveRecord::Base
   belongs_to :survey
   belongs_to :user
   belongs_to :hospital
+  has_many :supplementary_files
 
   has_attached_file :file, :styles => {}, :path => :make_file_path
 

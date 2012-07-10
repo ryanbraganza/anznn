@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120704064716) do
+ActiveRecord::Schema.define(:version => 20120710022217) do
 
   create_table "answers", :force => true do |t|
     t.integer "response_id"
@@ -148,6 +148,19 @@ ActiveRecord::Schema.define(:version => 20120704064716) do
     t.integer "section_order"
     t.string  "name"
   end
+
+  create_table "supplementary_files", :force => true do |t|
+    t.string   "multi_name"
+    t.integer  "batch_file_id"
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "supplementary_files", ["batch_file_id"], :name => "index_supplementary_files_on_batch_file_id"
 
   create_table "surveys", :force => true do |t|
     t.datetime "created_at"

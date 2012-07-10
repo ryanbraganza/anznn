@@ -6,6 +6,7 @@ describe BatchFile do
     it { should belong_to(:user) }
     it { should belong_to(:survey) }
     it { should belong_to(:hospital) }
+    it { should have_many(:supplementary_files) }
   end
 
   describe "Validations" do
