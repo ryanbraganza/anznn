@@ -21,15 +21,20 @@
       .input
         = f.file_field :file, class: 'batchupload'
         = required
+
+    - supplementary_counter = 0
     - group_names_by_survey.each do |survey_id, group_names|
       .supplementary_group{id: "supplementary_#{survey_id}"}
         %h3 Supplementary files
         %p If you wish, you can supply the following data as separate tables
         - group_names.each do |group_name|
+          - prefix = "supplementary_files[#{supplementary_counter}]"
+          = hidden_field_tag "#{prefix}[multi_name]", group_name
           .clearfix
-            = f.label "supplementary['#{group_name}']", group_name
+            = label_tag "#{prefix}[file]", group_name
             .input
-              = f.file_field "supplementary['#{group_name}']", class: 'batchupload'
+              = file_field_tag "#{prefix}[file]", class: 'batchupload'
+          - supplementary_counter += 1
 
     .actions
       = f.submit "Upload", class: "btn primary"

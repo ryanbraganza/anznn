@@ -26,6 +26,10 @@ class BatchFilesController < ApplicationController
     @batch_file.user = current_user
     @batch_file.hospital = current_user.hospital
     if @batch_file.save
+      supplementaries = params[:supplementary_files]
+      if supplementaries
+        supplementaries.each_pair { |key, supp_attrs| @batch_file.supplementary_files.create!(supp_attrs) if supp_attrs[:file] }
+      end
       @batch_file.delay.process
       redirect_to batch_files_path, notice: UPLOAD_NOTICE
     else

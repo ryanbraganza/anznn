@@ -132,3 +132,19 @@ end
 Then /^I should not see any supplementary file blocks$/ do
   all(".supplementary_group").count.should eq(0)
 end
+
+Then /^I should have a supplementary file stored for the most recent batch for group "([^"]*)"$/ do |group|
+  batch = BatchFile.last
+  batch.supplementary_files.where(multi_name: group).count.should eq(1)
+  supplementary = batch.supplementary_files.where(multi_name: group).first
+
+  extension = File.extname(supplementary.file_file_name)
+  expected_path = Rails.root.join("tmp/supplementary_#{supplementary.id}#{extension}").to_s
+  supplementary.file.path.should eq(expected_path)
+  File.exist?(expected_path).should be_true
+end
+
+When /^I should have (\d+) supplementary files? for the most recent batch$/ do |expected_count|
+  batch = BatchFile.last
+  batch.supplementary_files.count.should eq(expected_count.to_i)
+end
