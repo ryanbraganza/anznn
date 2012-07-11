@@ -38,7 +38,7 @@ class BatchFile < ActiveRecord::Base
   attr_accessor :responses
 
   scope :failed, where(:status => STATUS_FAILED)
-  scope :older_than, lambda {|date| where("updated_at < ?", date)}
+  scope :older_than, lambda { |date| where("updated_at < ?", date) }
 
   def make_file_path
     # this is a method so that APP_CONFIG has been loaded by the time is executes
@@ -151,6 +151,7 @@ class BatchFile < ActiveRecord::Base
       baby_code.strip! unless baby_code.nil?
       response = Response.new(survey: survey, baby_code: baby_code, user: user, hospital: hospital, year_of_registration: year_of_registration, submitted_status: Response::STATUS_UNSUBMITTED, batch_file: self)
       response.build_answers_from_hash(row.to_hash)
+      add_answers_from_supplementary_files(response, baby_code)
 
       failures = true if (response.fatal_warnings? || !response.valid?)
       warnings = true if response.warnings?
@@ -173,6 +174,13 @@ class BatchFile < ActiveRecord::Base
     save!
     self.responses = responses #this is only ever kept in memory for the sake of reporting, its not an AR association
     true
+  end
+
+  def add_answers_from_supplementary_files(response, baby_code)
+    supplementary_files.each do |supp_file|
+      answers = supp_file.as_denormalised_hash[baby_code]
+      response.build_answers_from_hash(answers) if answers
+    end
   end
 
   def pre_process_file
@@ -206,6 +214,14 @@ class BatchFile < ActiveRecord::Base
     end
 
     @csv_row_count = nil
+
+    supplementary_files.each do |supplementary_file|
+      unless supplementary_file.pre_process
+        set_outcome(STATUS_FAILED, supplementary_file.message)
+        return false
+      end
+    end
+
     true
   end
 
