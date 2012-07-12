@@ -270,7 +270,7 @@ itemnum,reviewed by Kali,comments,question_code,related_question_code,related_qu
 259,Y,,DiedDate,DOB,,comparison,DiedDate must be greater than DOB,>,,,,,,,
 260,Y,,DiedDate,DOA,,comparison,DiedDate must be greater than or equal to DOA,>=,,,,,,,
 261,Fixed,GE: changed to const_implies_set,Autopsy_,Died_,,const_implies_set,"If Died_ is -1, Autopsy must be -1 or 0",,,included,"[-1,0]",==,-1,,
-262,Y,,Died_,Cause_Death,,const_implies_present,"If Died_ is -1, Cause_Death must not be blank",==,-1,,,,,,
+262,Y,,Died_,Cause_Death1,,const_implies_present,"If Died_ is -1, Cause_Death1 must not be blank",==,-1,,,,,,
 263,Fixed,GE: changed to const_implies_set,CongAbnmDeath,Died_,,const_implies_set,"If Died_ is -1, CongAbnmDeath must be -1 or 0",,,included,"[-1,0]",==,-1,,
 264,Y,,T_fer_,T_ferDate1,,const_implies_present,"If T_fer_ is -1, T_ferDate1 must be a date",==,-1,,,,,,
 265,Y,,T_ferDate1,PROMDATE,,comparison,T_ferDate1 must be greater than PROMDATE,>,,,,,,,

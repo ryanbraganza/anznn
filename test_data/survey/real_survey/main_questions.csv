@@ -234,8 +234,17 @@ Eye examination,5,ROP_VEGF,Medical (VEGF inhibition) Therapy for retinopathy of 
 Death,1,Died_,Died,Choice,TRUE,,,,,-1,0,99,,,,The death of a live born baby occurring prior to discharge from hospital
 Death,2,DiedDate,Date of death,Date,FALSE,,,,,,,,,,,Date of death of the baby
 Death,3,Autopsy_,Post mortem,Choice,FALSE,,,,,-1,0,99,,,,A post mortem examination was performed
-Death,4,Cause_Death,Immediate cause of death,Text,FALSE,,,,,,,,0,250,Specific cause of death together with ICD-10 code required,Immediate cause of death described in morbid anatomical terms
-Death,5,CongAbnmDeath,Death due to congenital malformation,Choice,FALSE,,,,,-1,0,99,,,"Must be coded as ""yes"" for Congenital malformation and ""yes"" for Died.",The death of the baby may be directly attributed to a congenital malformation(s).
+Death,4,CauseCode1,ICD-10 code for the cause of death,Text,FALSE,TRUE,Cause of Death,1,1,,,,0,250,ICD-10 code for the cause of death,Immediate cause of death described in morbid anatomical terms
+Death,5,Cause_Death1,Immediate cause of death,Text,FALSE,TRUE,Cause of Death,1,2,,,,0,250,"Cause of death, specify",Immediate cause of death described in morbid anatomical terms
+Death,6,CauseCode2,ICD-10 code for the cause of death,Text,FALSE,TRUE,Cause of Death,2,1,,,,0,250,ICD-10 code for the cause of death,Immediate cause of death described in morbid anatomical terms
+Death,7,Cause_Death2,Immediate cause of death,Text,FALSE,TRUE,Cause of Death,2,2,,,,0,250,"Cause of death, specify",Immediate cause of death described in morbid anatomical terms
+Death,8,CauseCode3,ICD-10 code for the cause of death,Text,FALSE,TRUE,Cause of Death,3,1,,,,0,250,ICD-10 code for the cause of death,Immediate cause of death described in morbid anatomical terms
+Death,9,Cause_Death3,Immediate cause of death,Text,FALSE,TRUE,Cause of Death,3,2,,,,0,250,"Cause of death, specify",Immediate cause of death described in morbid anatomical terms
+Death,10,CauseCode4,ICD-10 code for the cause of death,Text,FALSE,TRUE,Cause of Death,4,1,,,,0,250,ICD-10 code for the cause of death,Immediate cause of death described in morbid anatomical terms
+Death,11,Cause_Death4,Immediate cause of death,Text,FALSE,TRUE,Cause of Death,4,2,,,,0,250,"Cause of death, specify",Immediate cause of death described in morbid anatomical terms
+Death,12,CauseCode5,ICD-10 code for the cause of death,Text,FALSE,TRUE,Cause of Death,5,1,,,,0,250,ICD-10 code for the cause of death,Immediate cause of death described in morbid anatomical terms
+Death,13,Cause_Death5,Immediate cause of death,Text,FALSE,TRUE,Cause of Death,5,2,,,,0,250,"Cause of death, specify",Immediate cause of death described in morbid anatomical terms
+Death,14,CongAbnmDeath,Death due to congenital malformation,Choice,FALSE,,,,,-1,0,99,,,"Must be coded as ""yes"" for Congenital malformation and ""yes"" for Died.",The death of the baby may be directly attributed to a congenital malformation(s).
 Transfers,1,T_fer_,Transferred to another hospital,Choice,TRUE,,,,,-1,0,99,,,,The baby was transferred to another hospital nursery before going home
 Transfers,2,T_ferHosp1,Specify hospital of transfer,Text,FALSE,TRUE,Transfer,1,1,,,,0,50,If the baby is transferred many times please record receiving hospital and date of each transfer. A separate table can be used for all transfers provided appropriate identifiers (BabyCode) are included.,"Specify the name of the hospital to which the baby was transferred. This is the hospital referred to in ""date of transfer""."
 Transfers,3,NursLevel1,Level of transfer unit receiving baby,Choice,FALSE,TRUE,Transfer,1,2,1,3,99,,,"Level I care is for normal healthy term babies, some of whom may need short-term observation during the first few hours of life.
