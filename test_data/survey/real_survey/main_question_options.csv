@@ -242,6 +242,18 @@ CongAbnmDeath,99,Unknown,,2
 T_fer_,0,"No, never transferred",,0
 T_fer_,-1,"Yes, transferred",,1
 T_fer_,99,Unknown,,2
-NursLevel,1,Level I type of care,,0
-NursLevel,2,Level II type of care,,1
-NursLevel,3,Level III type of care,,2
+NursLevel1,1,Level I type of care,,0
+NursLevel1,2,Level II type of care,,1
+NursLevel1,3,Level III type of care,,2
+NursLevel2,1,Level I type of care,,0
+NursLevel2,2,Level II type of care,,1
+NursLevel2,3,Level III type of care,,2
+NursLevel3,1,Level I type of care,,0
+NursLevel3,2,Level II type of care,,1
+NursLevel3,3,Level III type of care,,2
+NursLevel4,1,Level I type of care,,0
+NursLevel4,2,Level II type of care,,1
+NursLevel4,3,Level III type of care,,2
+NursLevel5,1,Level I type of care,,0
+NursLevel5,2,Level II type of care,,1
+NursLevel5,3,Level III type of care,,2
