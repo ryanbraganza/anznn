@@ -54,11 +54,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   def self.check(answer)
     cqvs = answer.question.cross_question_validations
     warnings = cqvs.map do |cqv|
-      #begin
       cqv.check answer
-      #rescue NoMethodError => err
-      #  raise NoMethodError, "#{err.message}, Response: #{answer.response.id}, Question: #{answer.question.code}, Answer: #{answer.comparable_answer}, CQV: #{cqv.id} - #{cqv.rule}", caller
-      #end
     end
     warnings.compact
   end
