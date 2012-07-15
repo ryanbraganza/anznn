@@ -38,6 +38,8 @@ Once the system has finished processing your file, the status will change. The s
 Depending on the outcome of your upload, a summary and/or detail report may be generated. You can access these by clicking the links in the last column of the list. The summary report is in PDF format suitable for printing. The detail report is in CSV format and can be opened with Microsoft Excel or similar software. The reports provide a full breakdown of the validation errors for your file.
 
 ## Submitting files with warnings
-If your file has a status of 'Needs Review', and you have checked to confirm that the data is correct, it can be submitted by a user with 'Supervisor' level access. If you do not have 'Supervisor' access, you will need to ask a supervisor to submit for you. If you are a 'Supervisor', you can submit the file by clicking the 'Force Submit' button for the file you wish to submit.
+If your file has a status of 'Needs Review', and you have checked to confirm that the data is correct, it can be submitted by a user with 'Supervisor' level access. If you do not have 'Supervisor' access, you will need to ask a supervisor to submit for you. If you are a 'Supervisor', you can submit the file by clicking the 'Force Submit' button for the file you wish to submit. It will then take a few minutes to be processed.
 
-TODO: ss of submit with warnings
+![Submitting](/user_manual/assets/images/batch/force.png)
+*Fig 3. Submitting a file with warnings*
+
