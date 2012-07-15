@@ -40,3 +40,9 @@
 .navbar .nav > li > a {
   color: #EEE;
 }
+
+/* give images a border to make the screenshots easier to see */
+img {
+  border: 1px solid;
+  margin: 7px 0 0 0;
+}
