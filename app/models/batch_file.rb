@@ -140,6 +140,7 @@ class BatchFile < ActiveRecord::Base
       save!
       return
     end
+    survey.populate_question_hash(true)
 
     @csv_row_count = 0
     failures = false
