@@ -57,6 +57,9 @@ class ResponsesController < ApplicationController
         end
       end
     end
+    # reload and trigger a save so that status is recomputed afresh - DONT REMOVE THIS
+    @response.reload
+    @response.save!
 
     redirect_after_update(params)
   end

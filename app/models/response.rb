@@ -23,6 +23,7 @@ class Response < ActiveRecord::Base
   validates_uniqueness_of :baby_code, scope: :survey_id
 
   before_validation :strip_whitespace
+  before_save :compute_validation_status
 
   scope :for_survey, lambda { |survey| where(survey_id: survey.id) }
 
@@ -49,8 +50,8 @@ class Response < ActiveRecord::Base
   end
 
   def submit!
-    if ![COMPLETE, COMPLETE_WITH_WARNINGS].include?(status)
-      raise "Can't submit with status #{status}"
+    if ![COMPLETE, COMPLETE_WITH_WARNINGS].include?(validation_status)
+      raise "Can't submit with status #{validation_status}"
     end
     self.submitted_status = STATUS_SUBMITTED
     self.save!
@@ -59,7 +60,7 @@ class Response < ActiveRecord::Base
   def submit_warning
     # This method is role-ignorant.
     # Use cancan to check if a response is not submittable before trying to display this
-    case status
+    case validation_status
       when INCOMPLETE
         "This data entry form is incomplete and can't be submitted."
       when COMPLETE_WITH_WARNINGS
@@ -125,18 +126,6 @@ class Response < ActiveRecord::Base
     end
   end
 
-  def status
-    statii_of_sections = survey.sections.map { |s| status_of_section(s) }
-
-    if statii_of_sections.include? INCOMPLETE
-      INCOMPLETE
-    elsif statii_of_sections.include? COMPLETE_WITH_WARNINGS
-      COMPLETE_WITH_WARNINGS
-    else
-      COMPLETE
-    end
-  end
-
   def fatal_warnings?
     violates_mandatory || answers.collect(&:has_fatal_warning?).any?
   end
@@ -165,6 +154,21 @@ class Response < ActiveRecord::Base
   end
 
   private
+
+  def compute_validation_status
+    # don't recompute if we're already submitted, as the process is slow, and once submitted the validations can't change
+    return if self.submitted_status == STATUS_SUBMITTED
+
+    section_stati = survey.sections.map { |s| status_of_section(s) }
+
+    if section_stati.include? INCOMPLETE
+      self.validation_status = INCOMPLETE
+    elsif section_stati.include? COMPLETE_WITH_WARNINGS
+      self.validation_status = COMPLETE_WITH_WARNINGS
+    else
+      self.validation_status = COMPLETE
+    end
+  end
 
   def answers_to_section(section)
     answers.joins(:question).merge(Question.for_section(section))

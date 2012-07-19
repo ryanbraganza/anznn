@@ -106,9 +106,9 @@ describe Response do
   end
 
   describe "submit" do
-    let(:response) {Factory(:response)}
+    let(:response) { Factory(:response) }
     it "should set the status of the response when complete" do
-      response.stub(:status) { Response::COMPLETE }
+      response.stub(:validation_status) { Response::COMPLETE }
       response.submitted_status.should eq Response::STATUS_UNSUBMITTED
 
       response.submit!
@@ -119,7 +119,7 @@ describe Response do
       response.submitted_status.should eq Response::STATUS_SUBMITTED
     end
     it "should set the status of the response when complete with warnings" do
-      response.stub(:status) { Response::COMPLETE_WITH_WARNINGS }
+      response.stub(:validation_status) { Response::COMPLETE_WITH_WARNINGS }
       response.submitted_status.should eq Response::STATUS_UNSUBMITTED
 
       response.submit!
@@ -130,24 +130,24 @@ describe Response do
       response.submitted_status.should eq Response::STATUS_SUBMITTED
     end
     it "can't submit a response incomplete" do
-      response.stub(:status) { Response::INCOMPLETE }
+      response.stub(:validation_status) { Response::INCOMPLETE }
 
       expect { response.submit! }.should raise_error
     end
   end
 
   describe "submit_warning" do
-    let(:response) {Factory(:response)}
+    let(:response) { Factory(:response) }
     it "dies on complete" do
-      response.stub(:status) { Response::COMPLETE }
+      response.stub(:validation_status) { Response::COMPLETE }
       response.submit_warning.should be_nil
     end
     it "shows a warning for incomplete" do
-      response.stub(:status) { Response::INCOMPLETE }
+      response.stub(:validation_status) { Response::INCOMPLETE }
       response.submit_warning.should eq "This data entry form is incomplete and can't be submitted."
     end
     it "shows a warning for complete with warnings" do
-      response.stub(:status) { Response::COMPLETE_WITH_WARNINGS }
+      response.stub(:validation_status) { Response::COMPLETE_WITH_WARNINGS }
       response.submit_warning.should eq "This data entry form has warnings. Double check them. If you believe them to be correct, contact a supervisor."
     end
   end
@@ -171,39 +171,48 @@ describe Response do
     end
     describe "of a response" do
       it "incomplete when nothing done yet" do
-        @response.status.should eq "Incomplete"
+        @response.validation_status.should eq "Incomplete"
       end
       it "incomplete section 1" do
         Factory(:answer, response: @response, question: @q1, integer_answer: 3)
+        @response.save!
+        @response.reload
 
-        @response.status.should eq "Incomplete"
+        @response.validation_status.should eq "Incomplete"
       end
       it "incomplete section 2" do
         Factory(:answer, response: @response, question: @q7, integer_answer: 16)
+        @response.save!
+        @response.reload
 
-        @response.status.should eq "Incomplete"
+        @response.validation_status.should eq "Incomplete"
       end
       it "Complete with warnings" do
         Factory(:answer, question: @q1, response: @response, integer_answer: 9)
         Factory(:answer, question: @q2, response: @response)
         Factory(:answer, question: @q4, response: @response)
         Factory(:answer, question: @q5, response: @response)
-
-        @response.status.should eq "Complete with warnings"
+        @response.save!
+        @response.reload
+        @response.validation_status.should eq "Complete with warnings"
       end
       it "Complete with no warnings" do
         Factory(:answer, question: @q1, response: @response, integer_answer: 11)
         Factory(:answer, question: @q2, response: @response)
         Factory(:answer, question: @q4, response: @response)
         Factory(:answer, question: @q5, response: @response)
+        @response.save!
+        @response.reload
 
-        @response.status.should eq "Complete"
+        @response.validation_status.should eq "Complete"
       end
       it "should recognise section 2 as incomplete and mark the response as incomplete even if section 1 is complete" do
         Factory(:answer, question: @q1, response: @response, integer_answer: 11)
         Factory(:answer, question: @q2, response: @response)
+        @response.save!
+        @response.reload
 
-        @response.status.should eq "Incomplete"
+        @response.validation_status.should eq "Incomplete"
       end
     end
     describe "of a section" do

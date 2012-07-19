@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120710022217) do
+ActiveRecord::Schema.define(:version => 20120715224407) do
 
   create_table "answers", :force => true do |t|
     t.integer "response_id"
@@ -135,6 +135,7 @@ ActiveRecord::Schema.define(:version => 20120710022217) do
     t.string   "submitted_status"
     t.integer  "batch_file_id"
     t.integer  "year_of_registration"
+    t.string   "validation_status"
   end
 
   create_table "roles", :force => true do |t|

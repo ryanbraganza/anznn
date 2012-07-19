@@ -29,9 +29,12 @@ class Ability
     can :read, Survey
 
     if user.role.name == Role::DATA_PROVIDER_SUPERVISOR
-      can :force_submit, BatchFile do | batch_file |
+      can :force_submit, BatchFile do |batch_file|
         batch_file.force_submittable?
       end
+      can :submit, Response, hospital_id: user.hospital_id, submitted_status: Response::STATUS_UNSUBMITTED, validation_status: [Response::COMPLETE, Response::COMPLETE_WITH_WARNINGS]
+    elsif user.role.name == Role::DATA_PROVIDER
+      can :submit, Response, hospital_id: user.hospital_id, submitted_status: Response::STATUS_UNSUBMITTED, validation_status: Response::COMPLETE
     end
 
     case user.role.name
@@ -56,21 +59,6 @@ class Ability
 
         can :read, BatchFile, hospital_id: user.hospital_id
         can :create, BatchFile, hospital_id: user.hospital_id
-
-        can :submit, Response do |response|
-          if response.hospital_id == user.hospital_id
-            status = response.status
-            if status == Response::COMPLETE
-              true
-            elsif status == Response::COMPLETE_WITH_WARNINGS
-              user.role.name == Role::DATA_PROVIDER_SUPERVISOR
-            else
-              false
-            end
-          else
-            false
-          end
-        end
       else
         raise "Unknown role #{user.role.name}"
     end
