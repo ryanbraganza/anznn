@@ -68,7 +68,7 @@ class Answer < ActiveRecord::Base
         if answer_value.nil?
           "Not answered"
         else
-          qo = question.question_options.where(option_value: self.answer_value).first
+          qo = question.question_options.find { |qo| qo.option_value == self.answer_value }
           qo ? qo.display_value : "Not answered"
         end
       else
