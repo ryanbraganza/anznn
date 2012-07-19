@@ -65,6 +65,11 @@ class ResponsesController < ApplicationController
   end
 
   def review_answers
+    #preload some associations on answers to avoid n+1 selects problem - don't change it unless you know what you're doing
+    @response = Response.find(@response.id, :include => {:answers => {:question => [:cross_question_validations]}})
+    #WARNING: this is a hack to get around the fact that reverse associations are not loaded as one would expect - don't change it
+    @response.answers.each { |a| a.response = @response }
+
     @sections_to_answers = @response.sections_to_answers_with_blanks_created
   end
 

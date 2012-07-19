@@ -71,7 +71,10 @@ class Response < ActiveRecord::Base
   end
 
   def prepare_answers_to_section_with_blanks_created(section)
-    existing_answers = answers_to_section(section).reduce({}) { |hash, answer| hash[answer.question_id] = answer; hash }
+    # filter in memory rather calling answers_to_section method so we can preload all answers once and avoid lots of unnecessary SQL queries
+    answers_to_section = answers.select { |a| a.question.section_id == section.id }
+
+    existing_answers = answers_to_section.reduce({}) { |hash, answer| hash[answer.question_id] = answer; hash }
 
     section.questions.each do |question|
       #if there's no answer object already, build an empty one
