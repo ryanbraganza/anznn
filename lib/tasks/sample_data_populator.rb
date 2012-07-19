@@ -2,7 +2,7 @@ require 'csv'
 require 'csv_survey_operations.rb'
 include CsvSurveyOperations
 
-def populate_data
+def populate_data(big=false)
   puts "Creating sample data in #{ENV["RAILS_ENV"]} environment..."
   load_password
   User.delete_all
@@ -11,28 +11,23 @@ def populate_data
   create_test_users
   puts "Creating surveys..."
   create_surveys
-  #puts "Creating sample responses..."
-  #create_responses
+  if (big)
+    puts "Creating responses..."
+    create_responses
+  end
 end
 
 def create_responses
   Response.delete_all
-  hospitals = Hospital.all
-  hospital_count = hospitals.size
-  survey1 = Survey.first
-  survey2 = Survey.all[1]
+  main = Survey.where(:name => 'ANZNN data form (real)').first
+  followup = Survey.where(:name => 'ANZNN follow-up data form (real)').first
 
-  102.times do |i|
-    status = (i % 2 == 0) ? Response::STATUS_UNSUBMITTED : Response::STATUS_SUBMITTED
-    survey = (i % 3 == 0) ? survey2 : survey1
-    year_of_reg = 2000 + (i % 4)
-    hospital = hospitals[i % 10]
-    Factory(:response,
-            hospital: hospital,
-            submitted_status: status,
-            baby_code: "Baby-#{hospital.abbrev}-#{i}",
-            survey: survey,
-            year_of_registration: year_of_reg)
+  10.times do |i|
+    create_response(main)
+  end
+
+  10.times do |i|
+    create_response(followup)
   end
 end
 
@@ -49,7 +44,7 @@ def create_surveys
 end
 
 def create_survey_from_lib_tasks(name, question_file, options_file, cross_question_validations_file, dir='lib/tasks')
-  path_to = ->(filename){Rails.root.join dir, filename}
+  path_to = ->(filename) { Rails.root.join dir, filename }
   create_survey(name, path_to[question_file], path_to[options_file], path_to[cross_question_validations_file])
 end
 
@@ -119,6 +114,73 @@ def load_password
               "Use capistrano's deploy:populate task to generate one"
   end
 
+end
+
+def create_response(survey)
+  # create one that answers all mandatory questions
+  status = Response::STATUS_UNSUBMITTED
+  year_of_reg = 2007
+  base_date = random_date_in(2007)
+  hospital = random_hospital
+  response = Factory(:response,
+                     hospital: hospital,
+                     submitted_status: status,
+                     baby_code: "Baby-#{hospital.abbrev}-#{rand(10000000)}",
+                     survey: survey,
+                     year_of_registration: year_of_reg)
+  survey.questions.where(:mandatory => true).each do |question|
+    answer = response.answers.build(question_id: question.id)
+    answer_value = case question.question_type
+                     when Question::TYPE_CHOICE
+                       random_choice(question)
+                     when Question::TYPE_DATE
+                       random_date(base_date)
+                     when Question::TYPE_DECIMAL
+                       random_number(question)
+                     when Question::TYPE_INTEGER
+                       random_number(question)
+                     when Question::TYPE_TEXT
+                       random_text(question)
+                     when Question::TYPE_TIME
+                       random_time
+                   end
+    answer.answer_value = answer_value
+    answer.save!
+  end
+end
+
+def random_hospital
+  hospitals = Hospital.all
+  hospital_count = hospitals.size
+  hospitals[rand(hospital_count - 1)]
+end
+
+def random_date_in(year)
+  days = rand(364)
+  Date.new(year, 1, 1) + days.days
+end
+
+def random_choice(question)
+  id = rand(question.question_options.size - 1)
+  question.question_options[id].option_value
+end
+
+def random_date(base_date)
+  base_date + rand(-30..30).days
+end
+
+def random_number(question)
+  end_of_range = question.number_max ? question.number_max : 500
+  start_of_range = question.number_min ? question.number_min : -500
+  rand(start_of_range..end_of_range)
+end
+
+def random_text(question)
+  rand(-999999..999999).to_s
+end
+
+def random_time
+  "#{rand(0..23)}:#{rand(0..59)}"
 end
 
 
