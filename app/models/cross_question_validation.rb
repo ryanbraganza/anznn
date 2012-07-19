@@ -70,11 +70,11 @@ class CrossQuestionValidation < ActiveRecord::Base
     return nil if CrossQuestionValidation.answer_invalid?(answer)
 
     # we have to filter the answers on the response rather than using find, as we want to check through as-yet unsaved answers as part of batch processing
-    related_answer = answer.response.get_answer_to(related_question.id) if related_question
+    related_answer = answer.response.get_answer_to(related_question_id) if related_question_id
 
     # most rules are not run unless the related question has been answered, so unless this is a special rule that runs
     # regardless, first check if a related question is relevant, then check if its answered
-    return nil if related_question && skip_when_related_unanswered?(rule) && CrossQuestionValidation.answer_invalid?(related_answer)
+    return nil if related_question_id && skip_when_related_unanswered?(rule) && CrossQuestionValidation.answer_invalid?(related_answer)
 
     # now actually execute the rule
     error_message unless rule_checkers[rule].call answer, related_answer, checker_params
