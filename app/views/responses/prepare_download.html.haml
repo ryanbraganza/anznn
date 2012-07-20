@@ -13,7 +13,7 @@
     .clearfix
       = label_tag :survey_id, "Registration type"
       .input
-        = select_tag :survey_id, options_from_collection_for_select(Survey.by_name, :id, :name, @survey_id), {class: "large", prompt: "Please select"}
+        = select_tag :survey_id, options_from_collection_for_select(surveys, :id, :name, @survey_id), {class: "large", prompt: "Please select"}
         = required
     .clearfix
       = label_tag :hospital_id, "Hospital"

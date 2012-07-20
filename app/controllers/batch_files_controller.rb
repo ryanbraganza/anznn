@@ -8,6 +8,7 @@ class BatchFilesController < ApplicationController
 
   expose(:year_of_registration_range) { ConfigurationItem.year_of_registration_range }
   expose(:group_names_by_survey) { Question.group_names_by_survey }
+  expose(:surveys) { SURVEYS.values }
 
   def new
   end
