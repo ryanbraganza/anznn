@@ -28,7 +28,7 @@ class SpecialRules
                                  special_cochimplt
                                  special_o2_a
                                  special_hmeo2
-                                 special_same_name_linf)
+                                 special_same_name_inf)
 
     CrossQuestionValidation.register_checker 'special_o2_a', lambda { |answer, unused_related_answer, checker_params|
       raise 'Can only be used on question O2_36wk_' unless answer.question.code == 'O2_36wk_'
@@ -292,19 +292,41 @@ class SpecialRules
     [1, 2].include?(answer.comparable_answer)
   }
 
-  CrossQuestionValidation.register_checker 'special_same_name_linf', lambda { |answer, ununused_related_answer, checker_params|
-    #If Name_Linf2=Name_Linf1, days between Date_Linf1 and Date_Linf2 >14
-    raise 'Can only be used on question Date_Linf2' unless answer.question.code == 'Date_Linf2'
+  CrossQuestionValidation.register_checker 'special_same_name_inf', lambda { |answer, ununused_related_answer, checker_params|
+    #If Name_inf2=Name_inf1, days between Date_inf1 and Date_inf2 >14
 
-    name1 = answer.response.comparable_answer_or_nil_for_question_with_code('Name_Linf1')
-    name2 = answer.response.comparable_answer_or_nil_for_question_with_code('Name_Linf2')
-    date1 = answer.response.comparable_answer_or_nil_for_question_with_code('Date_Linf1')
-    date2 = answer.response.comparable_answer_or_nil_for_question_with_code('Date_Linf2')
+    no_infection_questions = 4
+    /Date_Inf([1-#{no_infection_questions}])/.match(answer.question.code)
+    current_question_number = $1
+    raise "Can only be used on question Date_InfN - This is #{answer.question.code}, N=#{current_question_number}" unless current_question_number
+    current_question_number = current_question_number.to_i
 
-    break true unless name1 && name2 && date1 && date2
-    break true unless name1 == name2
-    delta_days = (date1 - date2).to_i.abs
-    delta_days > 14
+    names = []
+    dates = []
+    current_infection_name = nil
+    no_infection_questions.times do |idx|
+      if idx.eql?(current_question_number-1)
+        current_infection_name = answer.response.comparable_answer_or_nil_for_question_with_code("Name_Inf#{idx+1}")
+      else
+
+        names[idx] = answer.response.comparable_answer_or_nil_for_question_with_code("Name_Inf#{idx+1}")
+        dates[idx] = answer.response.comparable_answer_or_nil_for_question_with_code("Date_Inf#{idx+1}")
+      end
+    end
+
+
+    break true unless current_infection_name
+    break true unless (names.compact.length > 0) && (dates.compact.length > 0)
+    passing = true
+    names.each_with_index do |name, idx|
+      if name.eql?(current_infection_name)
+        delta_days = (dates[idx] - answer.comparable_answer).to_i.abs
+        passing &= delta_days >= 14
+        #raise "#{delta_days.inspect}\n#{name.inspect}\n#{dates[idx].inspect}\n#{conflict.inspect}"
+      end
+    end
+
+    passing
   }
     
   end
