@@ -29,8 +29,6 @@ class Question < ActiveRecord::Base
   validates_numericality_of :string_min, allow_blank: true, only_integer: true
   validates_numericality_of :string_max, allow_blank: true, only_integer: true
 
-  scope :for_section, lambda { |section| where(section_id: section.id) }
-
   def validate_number_range?
     !number_min.nil? || !number_max.nil?
   end
