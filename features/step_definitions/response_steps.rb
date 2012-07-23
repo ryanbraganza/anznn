@@ -41,27 +41,28 @@ end
 Then /^I should see( fatal)? warning "([^"]*)" for question "([^"]*)"$/ do |maybe_fatal, warning, question_label|
   question = question_div(question_label)
 
-  classes = question[:class].split(" ")
-  expected_class = maybe_fatal ? 'fatalwarning' : 'warning'
-  classes.include?(expected_class).should be_true, "Expected question div to have class=#{expected_class}, but found only #{classes}"
-
-  warning_text = question.find(".help-block")
-  warning_text.text.gsub("\n", "").should eq(warning)
+  check_class_on_question(maybe_fatal, question)
+  get_error_warning_messages(question).should eq(warning)
 end
 
 Then /^I should see warnings as follows$/ do |table|
   table.hashes.each do |attrs|
-
     question = question_div(attrs[:question])
-
-    classes = question[:class].split(" ")
-
-    expected_class = attrs[:fatal] ? 'fatalwarning' : 'warning'
-    classes.include?(expected_class).should be_true, "Expected question div to have class=#{expected_class}, but found only #{classes}"
-
-    warning_text = question.find(".help-block")
-    warning_text.text.gsub("\n", "").should eq(attrs[:warning])
+    check_class_on_question(attrs[:fatal], question)
+    get_error_warning_messages(question).should eq(attrs[:warning])
   end
+end
+
+def check_class_on_question(fatal, question_div)
+  classes = question_div[:class].split(" ")
+  expected_class = fatal ? 'fatalwarning' : 'warning'
+  classes.include?(expected_class).should be_true, "Expected question div to have class=#{expected_class}, but found only #{classes}"
+end
+
+def get_error_warning_messages(question_div)
+  help_block = question_div.find(".help-block")
+  warnings = help_block.all('.fatalerror-display, .warning-display')
+  warnings.collect(&:text).join(" ")
 end
 
 Then /^I should see no warnings$/ do
@@ -219,7 +220,7 @@ end
 Then /^I should see questions$/ do |table|
   expected = table.raw.collect { |r| r[0] }
   actual = all("form .clearfix label").collect { |element| element.text.strip }
-  actual.select!{ |text| !text.blank? }
+  actual.select! { |text| !text.blank? }
   actual.should eq(expected)
 end
 

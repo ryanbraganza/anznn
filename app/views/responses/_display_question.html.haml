@@ -80,7 +80,6 @@
           %br/
       - elsif @flag_mandatory and answer.violates_mandatory
         %span.fatalerror-display This question is mandatory
-      - else
-        = HelpTextGenerator.new(q).help_text
+      = HelpTextGenerator.new(q).help_text
   - if show_add_link
     = link_to "Add another #{q.multi_name}", '', {class: 'add_multi_link'}
