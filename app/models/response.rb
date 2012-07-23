@@ -7,7 +7,6 @@ class Response < ActiveRecord::Base
   INCOMPLETE = 'Incomplete'
   COMPLETE_WITH_WARNINGS = 'Complete with warnings'
 
-  belongs_to :survey
   belongs_to :user
   belongs_to :hospital
   belongs_to :batch_file
@@ -29,6 +28,17 @@ class Response < ActiveRecord::Base
 
   scope :unsubmitted, where(submitted_status: STATUS_UNSUBMITTED)
   scope :submitted, where(submitted_status: STATUS_SUBMITTED)
+
+  # Performance Optimisation: we don't load through the association, instead we do a global lookup by ID
+  # to a cached set of surveys that are loaded once in an initializer
+  def survey
+    SURVEYS[survey_id]
+  end
+
+  # as above
+  def survey=(survey)
+    self.survey_id = survey.id
+  end
 
   def self.for_survey_hospital_and_year_of_registration(survey, hospital_id, year_of_registration)
     results = submitted.for_survey(survey).order(:baby_code)
@@ -71,10 +81,7 @@ class Response < ActiveRecord::Base
   end
 
   def prepare_answers_to_section_with_blanks_created(section)
-    # filter in memory rather calling answers_to_section method so we can preload all answers once and avoid lots of unnecessary SQL queries
-    answers_to_section = answers.select { |a| a.question.section_id == section.id }
-
-    existing_answers = answers_to_section.reduce({}) { |hash, answer| hash[answer.question_id] = answer; hash }
+    existing_answers = answers_to_section(section).reduce({}) { |hash, answer| hash[answer.question_id] = answer; hash }
 
     section.questions.each do |question|
       #if there's no answer object already, build an empty one
@@ -99,11 +106,11 @@ class Response < ActiveRecord::Base
   end
 
   def status_of_section(section)
-    answers = answers_to_section(section)
+    answers_to_sec = answers_to_section(section)
 
-    all_mandatory_questions_answered = all_mandatory_passed_for_section(section, answers)
-    any_warnings = answers.map { |a| a.warnings.present? }.any?
-    any_fatal_warnings = answers.map { |a| a.fatal_warnings.present? }.any?
+    all_mandatory_questions_answered = all_mandatory_passed_for_section(section, answers_to_sec)
+    any_warnings = answers_to_sec.map { |a| a.warnings.present? }.any?
+    any_fatal_warnings = answers_to_sec.map { |a| a.fatal_warnings.present? }.any?
 
     if all_mandatory_questions_answered
       if any_fatal_warnings
@@ -174,7 +181,7 @@ class Response < ActiveRecord::Base
   end
 
   def answers_to_section(section)
-    answers.joins(:question).merge(Question.for_section(section))
+    answers.select {|a| a.question.section_id == section.id}
   end
 
   def violates_mandatory
@@ -188,7 +195,7 @@ class Response < ActiveRecord::Base
   end
 
   def all_mandatory_passed_for_section(section, answers_to_section)
-    required_question_ids = section.questions.where(:mandatory => true).collect(&:id)
+    required_question_ids = section.questions.select{|q| q.mandatory }.collect(&:id)
     answered_question_ids = answers_to_section.collect(&:question_id)
     (required_question_ids - answered_question_ids).empty?
   end

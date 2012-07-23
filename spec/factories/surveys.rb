@@ -3,5 +3,8 @@
 FactoryGirl.define do
   factory :survey do
     sequence(:name) { |n| "mysurvey #{n}" }
+    after_create do |survey|
+      StaticModelPreloader.load
+    end
   end
 end

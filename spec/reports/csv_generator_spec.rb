@@ -66,11 +66,15 @@ describe CsvGenerator do
       Factory(:answer, response: response1, question: q_integer, answer_value: '877')
       Factory(:answer, response: response1, question: q_text, answer_value: 'ABc')
       Factory(:answer, response: response1, question: q_time, answer_value: '14:56')
-      
+      response1.reload
+      response1.save!
+
       response2 = Factory(:response, hospital: Factory(:hospital, abbrev: 'BBB'), survey: survey, year_of_registration: 2011, baby_code: 'DEF-567')
       Factory(:answer, response: response2, question: q_integer, answer_value: '99')
       Factory(:answer, response: response2, question: q_text, answer_value: 'ABCdefg Ijkl')
-      
+      response2.reload
+      response2.save!
+
       Response.should_receive(:for_survey_hospital_and_year_of_registration).with(survey, '', '').and_return([response1, response2])
       csv = CsvGenerator.new(survey.id, '', '').csv
       expected = []

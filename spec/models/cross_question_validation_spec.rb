@@ -120,6 +120,7 @@ describe CrossQuestionValidation do
     def build_two_answers(val_first, val_second)
       first = Factory :answer, response: @response, question: @q1, answer_value: val_first
       second = Factory :answer, response: @response, question: @q2, answer_value: val_second
+      @response.reload
       return first, second
     end
 

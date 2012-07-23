@@ -19,7 +19,6 @@ class BatchFile < ActiveRecord::Base
   MESSAGE_UNEXPECTED_ERROR = "Processing failed due to an unexpected error."
   MESSAGE_CSV_STOP_LINE = " Processing stopped on CSV row "
 
-  belongs_to :survey
   belongs_to :user
   belongs_to :hospital
   has_many :supplementary_files
@@ -39,6 +38,17 @@ class BatchFile < ActiveRecord::Base
 
   scope :failed, where(:status => STATUS_FAILED)
   scope :older_than, lambda { |date| where("updated_at < ?", date) }
+
+  # Performance Optimisation: we don't load through the association, instead we do a global lookup by ID
+  # to a cached set of surveys that are loaded once in an initializer
+  def survey
+    SURVEYS[survey_id]
+  end
+
+  # as above
+  def survey=(survey)
+    self.survey_id = survey.id
+  end
 
   def make_file_path
     # this is a method so that APP_CONFIG has been loaded by the time is executes

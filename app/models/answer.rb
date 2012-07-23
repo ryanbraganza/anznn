@@ -14,14 +14,24 @@ class Answer < ActiveRecord::Base
   #Used for invalid / unset question types
   TYPE_ERROR = nil
 
-  belongs_to :question
   belongs_to :response
 
-  validates_presence_of :question
+  validates_presence_of :question_id
   validates_presence_of :response
   validate :mutually_exclusive_columns_are_blank
 
   serialize :raw_answer
+
+  # Performance Optimisation: we don't load through the association, instead we do a global lookup by ID
+  # to a cached set of questions that are loaded once in an initializer
+  def question
+    QUESTIONS[self.question_id]
+  end
+
+  # As above
+  def question=(question)
+    self.question_id = question.id
+  end
 
   def has_warning?
     warnings.present? or fatal_warnings.present?

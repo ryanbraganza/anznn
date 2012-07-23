@@ -72,6 +72,7 @@ module CsvSurveyOperations
         cqv_hashes = read_hashes_from_csv(cross_question_validations_file)
         import_cross_question_validations(survey, cqv_hashes)
       end
+      StaticModelPreloader.load
       survey
     end
   end

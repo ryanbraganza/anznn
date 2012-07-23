@@ -13,6 +13,9 @@ FactoryGirl.define do
     conditional_constant nil
     conditional_set_operator nil
     conditional_set nil
+    after_create do |survey|
+      StaticModelPreloader.load
+    end
 
     #Comparisons
     factory :cqv_comparison do

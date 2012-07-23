@@ -10,5 +10,5 @@ Given /^I have the following cross question validations$/ do |table|
   make_cqvs(Survey.first, hashes)
 
   CrossQuestionValidation.count.should eq table.hashes.count
-
+  refresh_static_cache
 end

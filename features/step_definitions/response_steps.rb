@@ -1,38 +1,8 @@
 include CsvSurveyOperations
 
-Given /^I have a survey with name "([^"]*)" and questions$/ do |name, table|
-  survey = Survey.create!(:name => name)
-  create_questions(survey, table)
-  setup_year_of_reg("2001", "2012")
-end
-
-Given /^I have a survey with name "([^"]*)"$/ do |name|
-  Survey.create!(:name => name)
-  setup_year_of_reg("2001", "2012")
-end
-
 Then /^survey "([^"]*)" should have no responses for year "([^"]*)"$/ do |survey_name, year|
   survey = Survey.find_by_name(survey_name)
   Response.count_per_survey_and_year_of_registration(survey.id, year.to_i).should == 0
-end
-
-And /^I have a survey with name "(.*)" with questions from "(.*)" and options from "(.*)"$/ do |survey_name, question_filename, options_filename|
-  pathify = ->(path) { Rails.root.join('test_data', path) }
-  questions_path = pathify[question_filename]
-  options_path = pathify[options_filename]
-  create_survey(survey_name, questions_path, options_path)
-end
-
-Given /^"([^"]*)" has sections$/ do |survey_name, table|
-  survey = Survey.find_by_name(survey_name)
-  table.hashes.each do |sec_attrs|
-    Factory(:section, sec_attrs.merge(survey: survey))
-  end
-end
-
-Given /^"([^"]*)" has questions$/ do |survey_name, table|
-  survey = Survey.find_by_name(survey_name)
-  create_questions(survey, table)
 end
 
 Given /^"([^"]*)" created a response to the "([^"]*)" survey$/ do |email, survey_name|
@@ -212,14 +182,6 @@ def table_to_questions_and_answers(table)
   end
 end
 
-Given /^question "([^"]*)" has question options$/ do |question_name, table|
-  question = Question.find_by_question(question_name)
-  question.question_options.delete_all
-  table.hashes.each do |qo_attrs|
-    Factory(:question_option, qo_attrs.merge(question: question))
-  end
-end
-
 Then /^I should see choice question "([^"]*)" with options$/ do |question_name, table|
   options_on_page = get_choices_for_question(question_name)
   options_on_page.should eq(table.hashes)
@@ -259,21 +221,6 @@ Then /^I should see questions$/ do |table|
   actual = all("form .clearfix label").collect { |element| element.text.strip }
   actual.select!{ |text| !text.blank? }
   actual.should eq(expected)
-end
-
-def create_questions(survey, table)
-  table.hashes.each do |q_attrs|
-    section_num = q_attrs.delete("section")
-    section_num ||= 0
-    section = survey.sections.find_by_section_order(section_num)
-    section = Factory(:section, survey: survey, section_order: section_num) unless section
-    question = Factory(:question, q_attrs.merge(section: section, code: q_attrs['question']))
-    if question.type_choice?
-      Factory(:question_option, question: question, label: "Apple", option_value: "A")
-      Factory(:question_option, question: question, label: "Bike", option_value: "B")
-      Factory(:question_option, question: question, label: "Cat", option_value: "C")
-    end
-  end
 end
 
 When /^I focus on question "(.*)"$/ do |question_question|
@@ -443,14 +390,6 @@ Then /^I can't review response for survey "([^"]*)" and baby code "([^"]*)"$/ do
   find("div.alert-message.error").should have_content "You tried to access a page you are not authorised to view."
 end
 
-Given /^I have the standard survey setup$/ do
-  question_file = Rails.root.join 'test_data/survey', 'survey_questions.csv'
-  options_file = Rails.root.join 'test_data/survey', 'survey_options.csv'
-  cross_question_validations_file = Rails.root.join 'test_data/survey', 'cross_question_validations.csv'
-  create_survey("MySurvey", question_file, options_file, cross_question_validations_file)
-  setup_year_of_reg("2001", "2012")
-end
-
 def submit_survey_link(baby_code)
   response = Response.find_by_baby_code!(baby_code)
   selector = %Q{form[action="#{submit_response_path response}"] > input.submit_response}
@@ -486,18 +425,6 @@ When /^I am ready to enter responses as (.*)$/ do |email|
   step "I am logged in as \"#{email}\""
   step "\"#{email}\" created a response to the \"MySurvey\" survey"
   step "I am on the edit first response page"
-end
-
-def setup_year_of_reg(from, to)
-  if ConfigurationItem.all.empty?
-  Factory(:configuration_item, name: ConfigurationItem::YEAR_OF_REGISTRATION_START, configuration_value: from)
-  Factory(:configuration_item, name: ConfigurationItem::YEAR_OF_REGISTRATION_END, configuration_value: to)
-end
-end
-
-Given /^I have year of registration range configured as "([^"]*)" to "([^"]*)"$/ do |from, to|
-  ConfigurationItem.delete_all
-  setup_year_of_reg(from, to)
 end
 
 Given /^I fill in the year of registration range with "([^"]*)" and "([^"]*)"$/ do |from, to|

@@ -4,7 +4,7 @@ class ResponsesController < ApplicationController
   load_and_authorize_resource
 
   expose(:year_of_registration_range) { ConfigurationItem.year_of_registration_range }
-  expose(:surveys) { Survey.order(:name) }
+  expose(:surveys) { SURVEYS.values }
   expose(:hospitals) { Hospital.hospitals_by_state }
   expose(:existing_years_of_registration) { Response.existing_years_of_registration }
 
@@ -12,6 +12,8 @@ class ResponsesController < ApplicationController
   end
 
   def show
+    #WARNING: this is a hack to get around the fact that reverse associations are not loaded as one would expect - don't change it
+    @response.answers.each { |a| a.response = @response }
   end
 
   def submit
@@ -24,7 +26,7 @@ class ResponsesController < ApplicationController
     @response.hospital_id = current_user.hospital_id
     @response.submitted_status = Response::STATUS_UNSUBMITTED
     if @response.save
-      redirect_to edit_response_path(@response, section: @response.survey.sections.first.id), notice: 'Data entry form created'
+      redirect_to edit_response_path(@response, section: @response.survey.first_section.id), notice: 'Data entry form created'
     else
       render :new
     end
@@ -32,7 +34,7 @@ class ResponsesController < ApplicationController
 
   def edit
     section_id = params[:section]
-    @section = section_id.blank? ? @response.survey.sections.first : @response.survey.sections.find(section_id)
+    @section = section_id.blank? ? @response.survey.first_section : @response.survey.section_with_id(section_id)
 
     @questions = @section.questions
     @question_id_to_answers = @response.prepare_answers_to_section_with_blanks_created(@section)
@@ -47,7 +49,7 @@ class ResponsesController < ApplicationController
 
     Answer.transaction do
       submitted_answers.each do |q_id, answer_value|
-        answer = Answer.find_by_response_id_and_question_id(@response.id, q_id)
+        answer = @response.get_answer_to(q_id)
         if blank_answer?(answer_value)
           answer.destroy if answer
         else
@@ -65,8 +67,6 @@ class ResponsesController < ApplicationController
   end
 
   def review_answers
-    #preload some associations on answers to avoid n+1 selects problem - don't change it unless you know what you're doing
-    @response = Response.find(@response.id, :include => {:answers => {:question => [:cross_question_validations]}})
     #WARNING: this is a hack to get around the fact that reverse associations are not loaded as one would expect - don't change it
     @response.answers.each { |a| a.response = @response }
 
@@ -103,8 +103,6 @@ class ResponsesController < ApplicationController
 
   def batch_delete
     set_tab :delete_responses, :admin_navigation
-    @years = Response.existing_years_of_registration
-    @surveys = Survey.all
   end
 
   def confirm_batch_delete

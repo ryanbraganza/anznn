@@ -5,5 +5,8 @@ FactoryGirl.define do
     name "Section 1"
     sequence :section_order
     association :survey
+    after_create do |survey|
+      StaticModelPreloader.load
+    end
   end
 end

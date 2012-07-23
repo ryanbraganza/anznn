@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Response do
   describe "Associations" do
-    it { should belong_to :survey }
     it { should belong_to :user }
     it { should belong_to :hospital }
     it { should have_many :answers }
@@ -192,8 +191,8 @@ describe Response do
         Factory(:answer, question: @q2, response: @response)
         Factory(:answer, question: @q4, response: @response)
         Factory(:answer, question: @q5, response: @response)
-        @response.save!
         @response.reload
+        @response.save!
         @response.validation_status.should eq "Complete with warnings"
       end
       it "Complete with no warnings" do
@@ -201,16 +200,16 @@ describe Response do
         Factory(:answer, question: @q2, response: @response)
         Factory(:answer, question: @q4, response: @response)
         Factory(:answer, question: @q5, response: @response)
-        @response.save!
         @response.reload
+        @response.save!
 
         @response.validation_status.should eq "Complete"
       end
       it "should recognise section 2 as incomplete and mark the response as incomplete even if section 1 is complete" do
         Factory(:answer, question: @q1, response: @response, integer_answer: 11)
         Factory(:answer, question: @q2, response: @response)
-        @response.save!
         @response.reload
+        @response.save!
 
         @response.validation_status.should eq "Incomplete"
       end
@@ -226,6 +225,7 @@ describe Response do
 
       it "should be incomplete if at least one question is answered but not all mandatory questions are answered" do
         Factory(:answer, question: @q1, response: @response)
+        @response.reload
 
         @response.section_started?(@section1).should be_true
         @response.status_of_section(@section1).should eq("Incomplete")
@@ -236,6 +236,7 @@ describe Response do
       it "should be complete once all mandatory questions are answered" do
         Factory(:answer, question: @q1, response: @response)
         Factory(:answer, question: @q2, response: @response)
+        @response.reload
 
         @response.section_started?(@section1).should be_true
         @response.status_of_section(@section1).should eq("Complete")
@@ -245,6 +246,7 @@ describe Response do
         Factory(:answer, question: @q4, response: @response)
         Factory(:answer, question: @q5, response: @response)
         Factory(:answer, question: @q7, response: @response, answer_value: 16)
+        @response.reload
 
         @response.section_started?(@section2).should be_true
         @response.status_of_section(@section2).should eq 'Complete with warnings'
@@ -253,6 +255,7 @@ describe Response do
 
       it "should be incomplete if there's any range warnings present and not all mandatory questions are answered" do
         Factory(:answer, question: @q1, response: @response, answer_value: "5")
+        @response.reload
 
         @response.section_started?(@section1).should be_true
         @response.status_of_section(@section1).should eq("Incomplete")
@@ -262,6 +265,7 @@ describe Response do
         Factory(:answer, question: @q4, response: @response)
         Factory(:answer, question: @q5, response: @response)
         Factory(:answer, question: @q7, answer_value: 'abvcasdfsadf', response: @response)
+        @response.reload
 
         @response.section_started?(@section2).should be_true
         @response.status_of_section(@section2).should eq 'Incomplete'
@@ -269,6 +273,7 @@ describe Response do
 
       it "should be incomplete if all mandatory questions are answered and a cross-question validation fails" do
         Factory(:answer, question: @q7, answer_value: 'abvcasdfsadf', response: @response)
+        @response.reload
 
         @response.section_started?(@section2).should be_true
         @response.status_of_section(@section2).should eq 'Incomplete'
@@ -282,6 +287,7 @@ describe Response do
         Factory(:cross_question_validation, rule: 'comparison', operator: '<', question: @q8, related_question: @q8)
         Factory(:answer, question: @q8, answer_value: Date.today, response: @response)
         Factory(:answer, question: @q9, answer_value: -1, response: @response)
+        @response.reload
 
         @response.section_started?(@section3).should be_true
         @response.status_of_section(@section3).should eq 'Incomplete'

@@ -8,7 +8,15 @@ class Survey < ActiveRecord::Base
   validates :name, presence: true, uniqueness: {case_sensitive: false}
 
   def ordered_questions
-    Question.joins(section: :survey).where(sections: {survey_id: id}).order(:section_order, :question_order)
+    questions.sort_by { |q| [q.section.section_order, q.question_order] }
+  end
+
+  def first_section
+    sections.first
+  end
+
+  def section_with_id(section_id)
+    sections.find{ |s| s.id == section_id.to_i}
   end
 
   # find the next section after the section with the given id
