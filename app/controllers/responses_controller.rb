@@ -37,8 +37,8 @@ class ResponsesController < ApplicationController
     @section = section_id.blank? ? @response.survey.first_section : @response.survey.section_with_id(section_id)
 
     @questions = @section.questions
-    @question_id_to_answers = @response.prepare_answers_to_section_with_blanks_created(@section)
     @flag_mandatory = @response.section_started? @section
+    @question_id_to_answers = @response.prepare_answers_to_section_with_blanks_created(@section)
     @group_info = calculate_group_info(@section, @questions)
   end
 
