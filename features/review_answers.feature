@@ -95,7 +95,7 @@ Feature: Review my answers
     And I follow "Review Answers"
     Then I should see answers for section "SectionOne"
       | Text Qn    | abcd\nAnswer should be 8 characters                   |
-      | Decimal Qn | Answer is the wrong format (Expected a decimal value) |
+      | Decimal Qn | Answer is the wrong format (expected a decimal number) |
       | Integer Qn | Not answered\nThis question is mandatory              |
 
   @javascript

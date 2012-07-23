@@ -49,9 +49,9 @@ Feature: Show warnings on survey pages
     And I press "Save"
     Then I should see warnings as follows
       | question   | warning                                               | fatal |
-      | Decimal Q  | Answer is the wrong format (Expected a decimal value) | true  |
-      | Integer Q1 | Answer is the wrong format (Expected an integer)      | true  |
-      | Integer Q2 | Answer is the wrong format (Expected an integer)      | true  |
+      | Decimal Q  | Answer is the wrong format (expected a decimal number) | true  |
+      | Integer Q1 | Answer is the wrong format (expected a number)      | true  |
+      | Integer Q2 | Answer is the wrong format (expected a number)      | true  |
 
   Scenario:  View warnings for invalid data after saving (Incomplete dates/times, invalid dates)
     Given I am on the edit first response page

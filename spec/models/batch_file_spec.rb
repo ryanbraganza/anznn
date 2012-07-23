@@ -506,7 +506,7 @@ describe BatchFile do
         rows.size.should eq(7)
         rows[0].should eq(["BabyCode", "Column Name", "Type", "Value", "Message"])
         rows[1].should eq(['B1', 'Date1', 'Error', '2011-ab-25', 'Answer is invalid (must be a valid date)'])
-        rows[2].should eq(['B1', 'Decimal', 'Error', 'a.77', 'Answer is the wrong format (Expected a decimal value)'])
+        rows[2].should eq(['B1', 'Decimal', 'Error', 'a.77', 'Answer is the wrong format (expected a decimal number)'])
         rows[3].should eq(['B1', 'TextMandatory', 'Error', '', 'This question is mandatory'])
         rows[4].should eq(['B2', 'Integer', 'Warning', '3', 'Answer should be at least 5'])
         rows[5].should eq(['B2', 'Time', 'Error', 'ab:59', 'Answer is invalid (must be a valid time)'])

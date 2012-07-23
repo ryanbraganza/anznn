@@ -198,9 +198,9 @@ class Answer < ActiveRecord::Base
         when TYPE_TIME
           raw_answer.is_a?(String) ? "Answer is invalid (must be a valid time)" : "Answer is incomplete (a field was left blank)"
         when TYPE_DECIMAL
-          "Answer is the wrong format (Expected a decimal value)"
+          "Answer is the wrong format (expected a decimal number)"
         when TYPE_INTEGER
-          "Answer is the wrong format (Expected an integer)"
+          "Answer is the wrong format (expected a number)"
         else
           "Answer contains invalid data"
       end
