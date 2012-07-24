@@ -12,8 +12,8 @@ class ResponsesController < ApplicationController
   end
 
   def show
-    #WARNING: this is a hack to get around the fact that reverse associations are not loaded as one would expect - don't change it
-    @response.answers.each { |a| a.response = @response }
+    #WARNING: this is a performance enhancing hack to get around the fact that reverse associations are not loaded as one would expect - don't change it
+    set_response_value_on_answers(@response)
   end
 
   def submit
@@ -46,7 +46,6 @@ class ResponsesController < ApplicationController
     answers = params[:answers]
     answers ||= {}
     submitted_answers = answers.map { |id, val| [id.to_i, val] }
-
     Answer.transaction do
       submitted_answers.each do |q_id, answer_value|
         answer = @response.get_answer_to(q_id)
@@ -59,16 +58,19 @@ class ResponsesController < ApplicationController
         end
       end
     end
+
     # reload and trigger a save so that status is recomputed afresh - DONT REMOVE THIS
     @response.reload
+     #WARNING: this is a performance enhancing hack to get around the fact that reverse associations are not loaded as one would expect - don't change it
+    set_response_value_on_answers(@response)
     @response.save!
 
     redirect_after_update(params)
   end
 
   def review_answers
-    #WARNING: this is a hack to get around the fact that reverse associations are not loaded as one would expect - don't change it
-    @response.answers.each { |a| a.response = @response }
+    #WARNING: this is a performance enhancing hack to get around the fact that reverse associations are not loaded as one would expect - don't change it
+    set_response_value_on_answers(@response)
 
     @sections_to_answers = @response.sections_to_answers_with_blanks_created
   end
@@ -176,4 +178,9 @@ class ResponsesController < ApplicationController
     end
     result
   end
+
+  def set_response_value_on_answers(response)
+    response.answers.each { |a| a.response = response }
+  end
+
 end
