@@ -42,6 +42,8 @@ def create_responses
   create_response(main, FEW, dp_hospital)
   create_response(followup, FEW, dp_hospital)
 
+  create_batch_files(main)
+  create_batch_files(followup)
 end
 
 def create_surveys
@@ -141,7 +143,7 @@ def create_response(survey, profile, hospital)
              when FEW
                "small"
            end
-  response = Factory(:response,
+  response = Response.create!(:response,
                      hospital: hospital,
                      submitted_status: status,
                      baby_code: "#{prefix}-#{hospital.abbrev}-#{rand(10000000)}",
@@ -176,6 +178,19 @@ def create_response(survey, profile, hospital)
     answer.answer_value = answer_value
     answer.save!
   end
+end
+
+def create_batch_files(survey)
+  create_batch_file(survey, 5)
+  create_batch_file(survey, 10)
+  create_batch_file(survey, 50)
+end
+
+def create_batch_file(survey, count_of_rows)
+  responses = Response.where(survey_id: survey.id).all
+  responses_to_use = responses.sample(count_of_rows)
+
+
 end
 
 def random_hospital(hospitals)
