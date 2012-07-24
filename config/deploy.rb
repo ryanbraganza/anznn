@@ -163,6 +163,7 @@ namespace :deploy do
     update
     rebundle
     refresh_db
+    restart #needed so that survey cache is reloaded
   end
 
   # Helper task which re-creates the database
