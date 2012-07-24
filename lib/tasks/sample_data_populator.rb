@@ -1,6 +1,9 @@
 require 'csv'
 require 'csv_survey_operations.rb'
 include CsvSurveyOperations
+ALL_MANDATORY = 1
+ALL = 2
+FEW = 3
 
 def populate_data(big=false)
   puts "Creating sample data in #{ENV["RAILS_ENV"]} environment..."
@@ -11,10 +14,8 @@ def populate_data(big=false)
   create_test_users
   puts "Creating surveys..."
   create_surveys
-  if (big)
-    puts "Creating responses..."
-    create_responses
-  end
+  puts "Creating responses..."
+  create_responses
 end
 
 def create_responses
@@ -22,13 +23,25 @@ def create_responses
   main = Survey.where(:name => 'ANZNN data form (real)').first
   followup = Survey.where(:name => 'ANZNN follow-up data form (real)').first
 
-  10.times do |i|
-    create_response(main)
-  end
+  hospitals = Hospital.all
+  # remove the one dataprovider is linked to as we'll create those separately
+  dp_hospital = User.find_by_email!('dataprovider@intersect.org.au').hospital
+  hospitals.delete(dp_hospital)
 
-  10.times do |i|
-    create_response(followup)
-  end
+  30.times { create_response(main, ALL_MANDATORY, random_hospital(hospitals)) }
+  30.times { create_response(followup, ALL_MANDATORY, random_hospital(hospitals)) }
+  30.times { create_response(main, ALL, random_hospital(hospitals)) }
+  30.times { create_response(followup, ALL, random_hospital(hospitals)) }
+  10.times { create_response(main, FEW, random_hospital(hospitals)) }
+  10.times { create_response(followup, FEW, random_hospital(hospitals)) }
+
+  create_response(main, ALL_MANDATORY, dp_hospital)
+  create_response(followup, ALL_MANDATORY, dp_hospital)
+  create_response(main, ALL, dp_hospital)
+  create_response(followup, ALL, dp_hospital)
+  create_response(main, FEW, dp_hospital)
+  create_response(followup, FEW, dp_hospital)
+
 end
 
 def create_surveys
@@ -116,19 +129,35 @@ def load_password
 
 end
 
-def create_response(survey)
-  # create one that answers all mandatory questions
+def create_response(survey, profile, hospital)
   status = Response::STATUS_UNSUBMITTED
   year_of_reg = 2007
   base_date = random_date_in(2007)
-  hospital = random_hospital
+  prefix = case profile
+             when ALL
+               "big"
+             when ALL_MANDATORY
+               "med"
+             when FEW
+               "small"
+           end
   response = Factory(:response,
                      hospital: hospital,
                      submitted_status: status,
-                     baby_code: "Baby-#{hospital.abbrev}-#{rand(10000000)}",
+                     baby_code: "#{prefix}-#{hospital.abbrev}-#{rand(10000000)}",
                      survey: survey,
                      year_of_registration: year_of_reg)
-  survey.questions.where(:mandatory => true).each do |question|
+
+
+  questions = case profile
+                when ALL
+                  survey.questions
+                when ALL_MANDATORY
+                  survey.questions.where(:mandatory => true)
+                when FEW
+                  survey.questions.all[1..15]
+              end
+  questions.each do |question|
     answer = response.answers.build(question_id: question.id)
     answer_value = case question.question_type
                      when Question::TYPE_CHOICE
@@ -149,8 +178,7 @@ def create_response(survey)
   end
 end
 
-def random_hospital
-  hospitals = Hospital.all
+def random_hospital(hospitals)
   hospital_count = hospitals.size
   hospitals[rand(hospital_count - 1)]
 end
