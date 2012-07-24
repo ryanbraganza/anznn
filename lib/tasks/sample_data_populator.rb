@@ -28,12 +28,12 @@ def create_responses
   dp_hospital = User.find_by_email!('dataprovider@intersect.org.au').hospital
   hospitals.delete(dp_hospital)
 
-  30.times { create_response(main, ALL_MANDATORY, random_hospital(hospitals)) }
-  30.times { create_response(followup, ALL_MANDATORY, random_hospital(hospitals)) }
-  30.times { create_response(main, ALL, random_hospital(hospitals)) }
-  30.times { create_response(followup, ALL, random_hospital(hospitals)) }
-  10.times { create_response(main, FEW, random_hospital(hospitals)) }
-  10.times { create_response(followup, FEW, random_hospital(hospitals)) }
+  30.times { create_response(main, ALL_MANDATORY, hospitals.sample) }
+  30.times { create_response(followup, ALL_MANDATORY, hospitals.sample) }
+  30.times { create_response(main, ALL, hospitals.sample) }
+  30.times { create_response(followup, ALL, hospitals.sample) }
+  10.times { create_response(main, FEW, hospitals.sample) }
+  10.times { create_response(followup, FEW, hospitals.sample) }
 
   create_response(main, ALL_MANDATORY, dp_hospital)
   create_response(followup, ALL_MANDATORY, dp_hospital)
@@ -143,12 +143,12 @@ def create_response(survey, profile, hospital)
              when FEW
                "small"
            end
-  response = Response.create!(:response,
-                     hospital: hospital,
-                     submitted_status: status,
-                     baby_code: "#{prefix}-#{hospital.abbrev}-#{rand(10000000)}",
-                     survey: survey,
-                     year_of_registration: year_of_reg)
+  response = Response.create!(hospital: hospital,
+                              submitted_status: status,
+                              baby_code: "#{prefix}-#{hospital.abbrev}-#{rand(10000000)}",
+                              survey: survey,
+                              year_of_registration: year_of_reg,
+                              user: User.all.sample)
 
 
   questions = case profile
@@ -193,19 +193,13 @@ def create_batch_file(survey, count_of_rows)
 
 end
 
-def random_hospital(hospitals)
-  hospital_count = hospitals.size
-  hospitals[rand(hospital_count - 1)]
-end
-
 def random_date_in(year)
   days = rand(364)
   Date.new(year, 1, 1) + days.days
 end
 
 def random_choice(question)
-  id = rand(question.question_options.size - 1)
-  question.question_options[id].option_value
+  question.question_options.all.sample.option_value
 end
 
 def random_date(base_date)
