@@ -177,24 +177,24 @@ class SpecialRules
     }
   
     CrossQuestionValidation.register_checker 'special_namesurg2', lambda { |answer, ununused_related_answer, checker_params|
-      #If DateSurg2=DateSurg1, NameSurg2 must not be the same as NameSurg1 (rule is on NameSurg2)
-      raise 'Can only be used on question NameSurg2' unless answer.question.code == 'NameSurg2'
+      #IIf DateSurg2=DateSurg1, Surg_Desc2 must not be the same as Surg_Desc1 (rule on Surg_Desc2)
+      raise 'Can only be used on question Surg_Desc2' unless answer.question.code == 'Surg_Desc2'
   
       datesurg1 = answer.response.comparable_answer_or_nil_for_question_with_code('DateSurg1')
       datesurg2 = answer.response.comparable_answer_or_nil_for_question_with_code('DateSurg2')
       break true unless (datesurg1 && datesurg2 && (datesurg1 == datesurg2))
-      namesurg1 = answer.response.comparable_answer_or_nil_for_question_with_code('NameSurg1')
+      namesurg1 = answer.response.comparable_answer_or_nil_for_question_with_code('Surg_Desc1')
       break true unless namesurg1 == answer.comparable_answer
     }
   
     CrossQuestionValidation.register_checker 'special_namesurg3', lambda { |answer, ununused_related_answer, checker_params|
-      #If DateSurg3=DateSurg2, NameSurg3 must not be the same as NameSurg2 (rule is on NameSurg3)
-      raise 'Can only be used on question NameSurg3' unless answer.question.code == 'NameSurg3'
+      #If DateSurg3=DateSurg2, Surg_Desc3 must not be the same as Surg_Desc2 (rule on Surg_Desc3)
+      raise 'Can only be used on question Surg_Desc3' unless answer.question.code == 'Surg_Desc3'
   
       datesurg2 = answer.response.comparable_answer_or_nil_for_question_with_code('DateSurg2')
       datesurg3 = answer.response.comparable_answer_or_nil_for_question_with_code('DateSurg3')
       break true unless (datesurg2 && datesurg3 && (datesurg2 == datesurg3))
-      namesurg2 = answer.response.comparable_answer_or_nil_for_question_with_code('NameSurg2')
+      namesurg2 = answer.response.comparable_answer_or_nil_for_question_with_code('Surg_Desc2')
       break true unless namesurg2 == answer.comparable_answer
     }
   
@@ -208,8 +208,8 @@ class SpecialRules
     cease_cool_time = answer.response.comparable_answer_or_nil_for_question_with_code('CeaseCoolTime')
     break true unless start_cool_date && start_cool_time && cease_cool_date && cease_cool_time
 
-    datetime1 = aggregate_date_time(start_cool_date, start_cool_time)
-    datetime2 = aggregate_date_time(cease_cool_date, cease_cool_time)
+    datetime1 = CrossQuestionValidation.aggregate_date_time(start_cool_date, start_cool_time)
+    datetime2 = CrossQuestionValidation.aggregate_date_time(cease_cool_date, cease_cool_time)
     hour_difference = (datetime2 - datetime1) / 1.hour
 
     hour_difference <= 72
