@@ -81,5 +81,7 @@
       - elsif @flag_mandatory and answer.violates_mandatory
         %span.fatalerror-display This question is mandatory
       = HelpTextGenerator.new(q).help_text
-  - if show_add_link
-    = link_to "Add another #{q.multi_name}", '', {class: 'add_multi_link'}
+      - if show_add_link
+        %br/
+        %br/
+        = link_to "Add another #{q.multi_name}", '', {class: 'add_multi_link btn'}
