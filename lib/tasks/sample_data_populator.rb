@@ -20,8 +20,8 @@ end
 
 def create_responses
   Response.delete_all
-  main = Survey.where(:name => 'ANZNN data form (real)').first
-  followup = Survey.where(:name => 'ANZNN follow-up data form (real)').first
+  main = Survey.where(:name => 'ANZNN data form').first
+  followup = Survey.where(:name => 'ANZNN follow-up data form').first
 
   hospitals = Hospital.all
   # remove the one dataprovider is linked to as we'll create those separately
@@ -44,6 +44,14 @@ def create_responses
 
   create_batch_files(main)
   create_batch_files(followup)
+
+  # create some submitted ones (this is a bit dodgy since they aren't valid, but its too hard to create valid ones in code)
+  30.times { create_response(main, ALL_MANDATORY, hospitals.sample, true) }
+  30.times { create_response(followup, ALL_MANDATORY, hospitals.sample, true) }
+  30.times { create_response(main, ALL, hospitals.sample, true) }
+  30.times { create_response(followup, ALL, hospitals.sample, true) }
+
+
 end
 
 def create_surveys
@@ -53,9 +61,9 @@ def create_surveys
   Section.delete_all
   Question.delete_all
   QuestionOption.delete_all
-  create_survey_from_lib_tasks("ANZNN data form (real)", "main_questions.csv", "main_question_options.csv", "main_cross_question_validations.csv", 'test_data/survey/real_survey')
-  create_survey_from_lib_tasks("ANZNN follow-up data form (real)", "followup_questions.csv", "followup_question_options.csv", "followup_cross_question_validations.csv", 'test_data/survey/real_survey')
-  create_survey_from_lib_tasks("Test data form", "test_survey_questions.csv", "test_survey_question_options.csv", "test_cross_question_validations.csv")
+  create_survey_from_lib_tasks("ANZNN data form", "main_questions.csv", "main_question_options.csv", "main_cross_question_validations.csv", 'test_data/survey/real_survey')
+  create_survey_from_lib_tasks("ANZNN follow-up data form", "followup_questions.csv", "followup_question_options.csv", "followup_cross_question_validations.csv", 'test_data/survey/real_survey')
+  #create_survey_from_lib_tasks("Test data form", "test_survey_questions.csv", "test_survey_question_options.csv", "test_cross_question_validations.csv")
 end
 
 def create_survey_from_lib_tasks(name, question_file, options_file, cross_question_validations_file, dir='lib/tasks')
@@ -131,7 +139,7 @@ def load_password
 
 end
 
-def create_response(survey, profile, hospital)
+def create_response(survey, profile, hospital, submit=false)
   status = Response::STATUS_UNSUBMITTED
   year_of_reg = 2007
   base_date = random_date_in(2007)
@@ -177,6 +185,10 @@ def create_response(survey, profile, hospital)
                    end
     answer.answer_value = answer_value
     answer.save!
+  end
+  if submit
+    response.submitted_status = Response::STATUS_SUBMITTED
+    response.save!
   end
 end
 
