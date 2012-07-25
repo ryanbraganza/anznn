@@ -15,9 +15,7 @@
   @include formFieldState(#b94a48, #ee5f5b, lighten(#ee5f5b, 30%));
 }
 
-/* Adapted from .pagination - just enough to work for now,
-we need to revisit the nav when we know how many sections they will have
-and therefore whether it will spill over to multiple lines. */
+/* Adapted from .pagination - but modified so it can display over multiple lines */
 .section-nav {
   margin: 0;
 
