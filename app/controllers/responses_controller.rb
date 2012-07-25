@@ -46,6 +46,9 @@ class ResponsesController < ApplicationController
     answers = params[:answers]
     answers ||= {}
     submitted_answers = answers.map { |id, val| [id.to_i, val] }
+     #WARNING: this is a performance enhancing hack to get around the fact that reverse associations are not loaded as one would expect - don't change it
+    set_response_value_on_answers(@response)
+
     Answer.transaction do
       submitted_answers.each do |q_id, answer_value|
         answer = @response.get_answer_to(q_id)
@@ -58,7 +61,6 @@ class ResponsesController < ApplicationController
         end
       end
     end
-
     # reload and trigger a save so that status is recomputed afresh - DONT REMOVE THIS
     @response.reload
      #WARNING: this is a performance enhancing hack to get around the fact that reverse associations are not loaded as one would expect - don't change it
@@ -113,7 +115,7 @@ class ResponsesController < ApplicationController
 
     @errors = validate_batch_delete_form(@year, @registration_type_id)
     if @errors.empty?
-      @registration_type = Survey.find(@registration_type_id)
+      @registration_type = SURVEYS[@registration_type_id.to_i]
       @count = Response.count_per_survey_and_year_of_registration(@registration_type_id, @year)
     else
       batch_delete
