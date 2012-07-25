@@ -5,6 +5,10 @@ Then /^survey "([^"]*)" should have no responses for year "([^"]*)"$/ do |survey
   Response.count_per_survey_and_year_of_registration(survey.id, year.to_i).should == 0
 end
 
+Given /^I should have (\d+) responses$/ do |count|
+  Response.count.should eq(count.to_i)
+end
+
 Given /^"([^"]*)" created a response to the "([^"]*)" survey$/ do |email, survey_name|
   create_response(Survey.find_by_name(survey_name), email)
 end

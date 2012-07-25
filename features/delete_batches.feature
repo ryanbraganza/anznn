@@ -20,15 +20,34 @@ Feature: Delete batches of responses
     And I have a survey with name "Survey B"
     And I have a survey with name "Survey None"
     And I have a range of responses
+    And I should have 111 responses
 
   Scenario: Admin can batch delete respones
     When I follow "Admin"
     And I follow "Delete Responses"
-    And I select "2009" from "Year of Registration"
-    And I select "Survey A" from "Registration Type"
+    And I select "2009" from "Year of registration"
+    And I select "Survey A" from "Registration type"
     And I press "Next"
     Then I should see "WARNING"
     And I should see "This will affect 20 records."
     When I press "confirm_delete"
     Then survey "Survey A" should have no responses for year "2009"
-    And I should see "The records where deleted"
+    And I should have 91 responses
+    And I should see "The records were deleted"
+
+  Scenario: Must select a survey to get a download
+    When I follow "Admin"
+    And I follow "Delete Responses"
+    When I select "2009" from "Year of registration"
+    And I press "Next"
+    Then I should see "Please select a registration type" within the form errors
+    And "2009" should be selected in the "Year of registration" select
+
+  Scenario: Must select a year of registration to get a download
+    When I follow "Admin"
+    And I follow "Delete Responses"
+    When I select "Survey A" from "Registration type"
+    And I press "Next"
+    Then I should see "Please select a year of registration" within the form errors
+    And "Survey A" should be selected in the "Registration type" select
+

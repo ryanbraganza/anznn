@@ -130,7 +130,7 @@ class ResponsesController < ApplicationController
     @errors = validate_batch_delete_form(@year, @registration_type_id)
     if @errors.empty?
       Response.delete_by_survey_and_year_of_registration(@registration_type_id, @year)
-      redirect_to batch_delete_responses_path, :notice => "The records where deleted"
+      redirect_to batch_delete_responses_path, :notice => 'The records were deleted'
     else
       redirect_to batch_delete_responses_path
     end
@@ -138,10 +138,10 @@ class ResponsesController < ApplicationController
 
   private
 
-  def validate_batch_delete_form(year, registration_type_id)
+  def validate_batch_delete_form(year, survey_id)
     errors = []
-    errors << "Year of Registration is required" if year.blank?
-    errors << "Registration Type is required" if registration_type_id.blank?
+    errors << "Please select a year of registration" if year.blank?
+    errors << "Please select a registration type" if survey_id.blank?
     errors
   end
 

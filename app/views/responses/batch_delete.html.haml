@@ -12,13 +12,14 @@
             - @errors.each do |msg|
               %li= msg
       .clearfix
-        = label_tag :registration_type, "Registration Type"
+        = label_tag :registration_type, "Registration type"
         .input
-          = select_tag :registration_type, options_from_collection_for_select(surveys, :id, :name), {class: "large", prompt: "Please select"}
+          = select_tag :registration_type, options_from_collection_for_select(surveys, :id, :name, @registration_type_id), {class: "large", prompt: "Please select"}
+          = required
       .clearfix
-        = label_tag :year_of_registration, "Year of Registration"
+        = label_tag :year_of_registration, "Year of registration"
         .input
-          = select_tag :year_of_registration, options_for_select(existing_years_of_registration), {prompt: "Please select", class: 'large'}
+          = select_tag :year_of_registration, options_for_select(existing_years_of_registration, @year), {prompt: "Please select", class: 'large'}
+          = required
       .actions
         = submit_tag "Next", class: "btn primary"
-
