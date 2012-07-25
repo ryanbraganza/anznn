@@ -44,7 +44,7 @@ class Response < ActiveRecord::Base
     results = submitted.for_survey(survey).order(:baby_code)
     results = results.where(hospital_id: hospital_id) unless hospital_id.blank?
     results = results.where(year_of_registration: year_of_registration) unless year_of_registration.blank?
-    results
+    results.includes([:hospital, :answers])
   end
 
   def self.count_per_survey_and_year_of_registration(survey_id, year)
@@ -189,7 +189,7 @@ class Response < ActiveRecord::Base
   end
 
   def missing_mandatory_question_ids
-    required_question_ids = survey.questions.where(:mandatory => true).collect(&:id)
+    required_question_ids = survey.mandatory_question_ids
     answered_question_ids = answers.collect(&:question_id)
     required_question_ids - answered_question_ids
   end

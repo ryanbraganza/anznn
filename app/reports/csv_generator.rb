@@ -11,7 +11,7 @@ class CsvGenerator
     self.survey = SURVEYS[survey_id.to_i]
     self.question_codes = survey.ordered_questions.collect(&:code)
 
-    self.records = Response.for_survey_hospital_and_year_of_registration(survey, hospital_id, year_of_registration).includes([:hospital, :answers])
+    self.records = Response.for_survey_hospital_and_year_of_registration(survey, hospital_id, year_of_registration)
   end
 
   def csv_filename

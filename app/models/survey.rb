@@ -8,7 +8,8 @@ class Survey < ActiveRecord::Base
   validates :name, presence: true, uniqueness: {case_sensitive: false}
 
   def ordered_questions
-    questions.sort_by { |q| [q.section.section_order, q.question_order] }
+    # retrieve by iterating over sections rather than using has_many questions through, so that we can use our preloaded survey data instead of doing db queries
+    all_questions.sort_by { |q| [q.section.section_order, q.question_order] }
   end
 
   def first_section
@@ -17,6 +18,11 @@ class Survey < ActiveRecord::Base
 
   def section_with_id(section_id)
     sections.find{ |s| s.id == section_id.to_i}
+  end
+
+  def mandatory_question_ids
+    # retrieve by iterating over sections rather than using has_many questions through, so that we can use our preloaded survey data instead of doing db queries
+    all_questions.select {|q| q.mandatory }.collect(&:id)
   end
 
   # find the next section after the section with the given id
@@ -43,12 +49,18 @@ class Survey < ActiveRecord::Base
     @question_map[code.downcase]
   end
 
-  def populate_question_hash(preload_cqvs=false)
+  private
+
+  def all_questions
+    # retrieve by iterating over sections rather than using has_many questions through, so that we can use our preloaded
+    # survey data instead of doing db queries
+    sections.collect(&:questions).flatten
+  end
+
+  def populate_question_hash
     # optimisation used by batch processing - load all the questions once and store them in a hash keyed by question code
-    # sometimes we want to preload cqvs, other times we don't, so the option is available here
     @question_map = {}
-    qs = preload_cqvs ? questions.includes(:cross_question_validations).all : questions.all
-    qs.each do |question|
+    all_questions.each do |question|
       @question_map[question.code.downcase] = question
     end
   end
