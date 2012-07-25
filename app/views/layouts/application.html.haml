@@ -6,7 +6,10 @@
       = render partial: "shared/topbar"
       .container
         = render partial: "shared/alert_bar"
-        %h1.span12= yield :title
+        - if @title_span12
+          %h1.span12= yield :title
+        - else
+          %h1= yield :title
 
         = yield :tabs
 
