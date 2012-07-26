@@ -15,10 +15,10 @@ def populate_data(big=false)
   puts "Creating surveys..."
   create_surveys
   puts "Creating responses..."
-  create_responses
+  create_responses(big)
 end
 
-def create_responses
+def create_responses(big)
   Response.delete_all
   main = Survey.where(:name => 'ANZNN data form').first
   followup = Survey.where(:name => 'ANZNN follow-up data form').first
@@ -28,12 +28,16 @@ def create_responses
   dp_hospital = User.find_by_email!('dataprovider@intersect.org.au').hospital
   hospitals.delete(dp_hospital)
 
-  30.times { create_response(main, ALL_MANDATORY, hospitals.sample) }
-  30.times { create_response(followup, ALL_MANDATORY, hospitals.sample) }
-  30.times { create_response(main, ALL, hospitals.sample) }
-  30.times { create_response(followup, ALL, hospitals.sample) }
-  10.times { create_response(main, FEW, hospitals.sample) }
-  10.times { create_response(followup, FEW, hospitals.sample) }
+  count1 = big ? 100 : 20
+  count2 = big ? 30 : 5
+  count3 = big ? 500 : 50
+
+  count1.times { create_response(main, ALL_MANDATORY, hospitals.sample) }
+  count1.times { create_response(followup, ALL_MANDATORY, hospitals.sample) }
+  count2.times { create_response(main, ALL, hospitals.sample) }
+  count2.times { create_response(followup, ALL, hospitals.sample) }
+  count2.times { create_response(main, FEW, hospitals.sample) }
+  count2.times { create_response(followup, FEW, hospitals.sample) }
 
   create_response(main, ALL_MANDATORY, dp_hospital)
   create_response(followup, ALL_MANDATORY, dp_hospital)
@@ -46,11 +50,10 @@ def create_responses
   create_batch_files(followup)
 
   # create some submitted ones (this is a bit dodgy since they aren't valid, but its too hard to create valid ones in code)
-  30.times { create_response(main, ALL_MANDATORY, hospitals.sample, true) }
-  30.times { create_response(followup, ALL_MANDATORY, hospitals.sample, true) }
-  30.times { create_response(main, ALL, hospitals.sample, true) }
-  30.times { create_response(followup, ALL, hospitals.sample, true) }
-
+  count3.times { create_response(main, ALL_MANDATORY, hospitals.sample, true) }
+  count3.times { create_response(followup, ALL_MANDATORY, hospitals.sample, true) }
+  count3.times { create_response(main, ALL, hospitals.sample, true) }
+  count3.times { create_response(followup, ALL, hospitals.sample, true) }
 
 end
 
@@ -61,6 +64,7 @@ def create_surveys
   Section.delete_all
   Question.delete_all
   QuestionOption.delete_all
+  CrossQuestionValidation.delete_all
   create_survey_from_lib_tasks("ANZNN data form", "main_questions.csv", "main_question_options.csv", "main_cross_question_validations.csv", 'test_data/survey/real_survey')
   create_survey_from_lib_tasks("ANZNN follow-up data form", "followup_questions.csv", "followup_question_options.csv", "followup_cross_question_validations.csv", 'test_data/survey/real_survey')
   #create_survey_from_lib_tasks("Test data form", "test_survey_questions.csv", "test_survey_question_options.csv", "test_cross_question_validations.csv")
@@ -194,14 +198,22 @@ end
 
 def create_batch_files(survey)
   create_batch_file(survey, 5)
-  create_batch_file(survey, 10)
   create_batch_file(survey, 50)
+  create_batch_file(survey, 500)
 end
 
 def create_batch_file(survey, count_of_rows)
+  # this is a useful way to create sample batch files for testing the upload feature
   responses = Response.where(survey_id: survey.id).all
   responses_to_use = responses.sample(count_of_rows)
 
+  csv = CsvGenerator.new(survey.id, nil, nil)
+  csv.records = responses_to_use
+
+  filepath = "#{Rails.root}/tmp/batch-#{survey.name.parameterize}-#{count_of_rows}.csv"
+  File.open(filepath, 'w') do |out|
+    out.puts csv.csv
+  end
 
 end
 
