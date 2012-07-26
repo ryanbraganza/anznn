@@ -10,10 +10,10 @@ FEW = 3
 
 def populate_data(big=false)
   puts "Creating sample data in #{ENV["RAILS_ENV"]} environment..."
-  load_password
-  User.delete_all
 
   if agree 'Create test users?'.red
+    load_password
+    User.delete_all
     puts "Creating test users..."
     create_test_users
   end
