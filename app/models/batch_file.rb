@@ -84,6 +84,8 @@ class BatchFile < ActiveRecord::Base
         end
       rescue ArgumentError
         logger.info("Argument error while reading file")
+        logger.error("Message: #{$!.message}")
+        logger.error $!.backtrace
         # Note: Catching ArgumentError seems a bit odd, but CSV throws it when the file is not UTF-8 which happens if you upload an xls file
         if @csv_row_count.present?
           set_outcome(STATUS_FAILED, MESSAGE_BAD_FORMAT + MESSAGE_CSV_STOP_LINE + @csv_row_count.to_s)
