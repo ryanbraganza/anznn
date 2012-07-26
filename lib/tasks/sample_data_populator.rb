@@ -1,7 +1,5 @@
 require 'csv'
 require 'csv_survey_operations.rb'
-require "highline/import"
-require 'colorize'
 
 include CsvSurveyOperations
 ALL_MANDATORY = 1
@@ -9,20 +7,16 @@ ALL = 2
 FEW = 3
 
 def populate_data(big=false)
-  puts "Creating sample data in #{ENV["RAILS_ENV"]} environment..."
+  puts "Creating sample data in #{Rails.env} environment..."
 
-  if agree 'Create test users?'.red
-    load_password
-    User.delete_all
-    puts "Creating test users..."
-    create_test_users
-  end
+  load_password
+  User.delete_all
+  puts "Creating test users..."
+  create_test_users
+  puts "Creating surveys..."
+  create_surveys
 
-  if agree 'Create surveys?'.red
-    puts "Creating surveys..."
-    create_surveys
-  end
-  if agree 'Create responses?'.red
+  if %w(development qa).include? Rails.env
     puts "Creating responses..."
     create_responses(big)
   end
