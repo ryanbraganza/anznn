@@ -1,5 +1,8 @@
 require 'csv'
 require 'csv_survey_operations.rb'
+require "highline/import"
+require 'colorize'
+
 include CsvSurveyOperations
 ALL_MANDATORY = 1
 ALL = 2
@@ -10,12 +13,20 @@ def populate_data(big=false)
   load_password
   User.delete_all
 
-  puts "Creating test users..."
-  create_test_users
-  puts "Creating surveys..."
-  create_surveys
-  puts "Creating responses..."
-  create_responses(big)
+  if agree 'Create test users?'.red
+    puts "Creating test users..."
+    create_test_users
+  end
+
+  if agree 'Create surveys?'.red
+    puts "Creating surveys..."
+    create_surveys
+  end
+  if agree 'Create responses?'.red
+    puts "Creating responses..."
+    create_responses(big)
+  end
+
 end
 
 def create_responses(big)
@@ -65,6 +76,8 @@ def create_surveys
   Question.delete_all
   QuestionOption.delete_all
   CrossQuestionValidation.delete_all
+  SupplementaryFile.delete_all
+
   create_survey_from_lib_tasks("ANZNN data form", "main_questions.csv", "main_question_options.csv", "main_cross_question_validations.csv", 'test_data/survey/real_survey')
   create_survey_from_lib_tasks("ANZNN follow-up data form", "followup_questions.csv", "followup_question_options.csv", "followup_cross_question_validations.csv", 'test_data/survey/real_survey')
   #create_survey_from_lib_tasks("Test data form", "test_survey_questions.csv", "test_survey_question_options.csv", "test_cross_question_validations.csv")

@@ -87,3 +87,5 @@ gem 'will_paginate-bootstrap'
 gem 'whenever', require: false
 
 gem 'jekyll', :require => false
+
+gem 'highline' # This has (up until now) been implicitly included by capistrano
