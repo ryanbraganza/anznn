@@ -1,0 +1,9 @@
+Common Unicode characters that cause problems in csv files:
+
+• - Bullet (Substitution: *)
+? - Unknown (displays as a "?" but isn't. Substitution: [?])
+‘ - Open smart single quote (Substitution: ')
+’ - Close smart single quote (Substitution: ')
+“ - Open smart double quote (Substitution: '')
+” - Close smart double quote (Substitution: '')
+– - Em Dash (Substitution: -)
