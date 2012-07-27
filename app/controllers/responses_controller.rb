@@ -33,6 +33,8 @@ class ResponsesController < ApplicationController
   end
 
   def edit
+    set_response_value_on_answers(@response)
+
     section_id = params[:section]
     @section = section_id.blank? ? @response.survey.first_section : @response.survey.section_with_id(section_id)
 
