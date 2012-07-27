@@ -271,7 +271,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     # Q = IVH, related = Ventricles
     break true unless set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
     break true unless check_gest_wght(answer)
-    related_answer && !related_answer.raw_answer
+    answered?(related_answer)
   }
 
 end
