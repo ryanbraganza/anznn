@@ -55,14 +55,19 @@
 }
 
 
-// Warning on review answers page
+// Warning on edit/review answers page
 .warning-display {
   color: #c09853;
 }
 
-// Error on review answers page
+// Error on edit/review answers page
 .error-display {
   color: #b94a48;
+}
+
+// Inline help on edit answers page
+.help-display {
+  color: #BFBFBF;
 }
 
 .actions.review {
