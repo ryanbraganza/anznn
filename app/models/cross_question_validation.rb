@@ -90,6 +90,10 @@ class CrossQuestionValidation < ActiveRecord::Base
     answer.nil? || answer.answer_value.nil? || answer.raw_answer
   end
 
+  def self.answered?(answer)
+    answer && !answer.answer_value.nil? && !answer.raw_answer
+  end
+
   def self.is_operator_safe?(operator)
     SAFE_OPERATORS.include? operator
   end
@@ -240,10 +244,10 @@ class CrossQuestionValidation < ActiveRecord::Base
 
     #Conditions (IF)
     break true unless set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
-    break true unless date && !date.raw_answer
+    break true unless answered?(date)
 
     #Requirements (THEN)
-    required_answer.present? && required_answer.raw_answer.blank?
+    answered?(required_answer)
   }
 
   register_checker 'const_implies_one_of_const', lambda { |answer, related_answer, checker_params|
