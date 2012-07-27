@@ -67,14 +67,14 @@ class CrossQuestionValidation < ActiveRecord::Base
                       related_question_ids: related_question_ids}
 
     # don't bother checking if the question is unanswered or has an invalid answer
-    return nil if CrossQuestionValidation.answer_invalid?(answer)
+    return nil if CrossQuestionValidation.unanswered?(answer)
 
     # we have to filter the answers on the response rather than using find, as we want to check through as-yet unsaved answers as part of batch processing
     related_answer = answer.response.get_answer_to(related_question_id) if related_question_id
 
     # most rules are not run unless the related question has been answered, so unless this is a special rule that runs
     # regardless, first check if a related question is relevant, then check if its answered
-    return nil if related_question_id && skip_when_related_unanswered?(rule) && CrossQuestionValidation.answer_invalid?(related_answer)
+    return nil if related_question_id && skip_when_related_unanswered?(rule) && CrossQuestionValidation.unanswered?(related_answer)
 
     # now actually execute the rule
     error_message unless rule_checkers[rule].call answer, related_answer, checker_params
@@ -86,7 +86,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     !RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL.include?(rule)
   end
 
-  def self.answer_invalid?(answer)
+  def self.unanswered?(answer)
     answer.nil? || answer.answer_value.nil? || answer.raw_answer
   end
 
@@ -185,7 +185,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     date2 = answer.response.get_answer_to(related_ids[2])
     time2 = answer.response.get_answer_to(related_ids[3])
 
-    break true if [date1, time1, date2, time2].any? { |related_answer| answer_invalid?(related_answer) }
+    break true if [date1, time1, date2, time2].any? { |related_answer| unanswered?(related_answer) }
 
     offset = sanitise_offset(checker_params)
 
@@ -203,7 +203,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     date2 = answer.response.get_answer_to(related_ids[2])
     time2 = answer.response.get_answer_to(related_ids[3])
 
-    break true if [date1, time1, date2, time2].any? { |answer| answer_invalid?(answer) }
+    break true if [date1, time1, date2, time2].any? { |answer| unanswered?(answer) }
 
     datetime1 = aggregate_date_time(date1.answer_value, time1.answer_value)
     datetime2 = aggregate_date_time(date2.answer_value, time2.answer_value)
@@ -214,21 +214,21 @@ class CrossQuestionValidation < ActiveRecord::Base
 
   # runs even when related is not answered
   register_checker 'present_implies_present', lambda { |answer, related_answer, checker_params|
-    !answer_invalid?(related_answer)
+    !unanswered?(related_answer)
   }
 
   # runs even when related is not answered
   register_checker 'const_implies_present', lambda { |answer, related_answer, checker_params|
     break true unless const_meets_condition?(answer.comparable_answer, checker_params[:operator], checker_params[:constant])
     # we know the answer meets the criteria, so now just check if related has been answered
-    !answer_invalid?(related_answer)
+    !unanswered?(related_answer)
   }
 
   # runs even when related is not answered
   register_checker 'set_implies_present', lambda { |answer, related_answer, checker_params|
     break true unless set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
     # we know the answer meets the criteria, so now just check if related has been answered
-    !answer_invalid?(related_answer)
+    !unanswered?(related_answer)
   }
 
   register_checker 'set_present_implies_present', lambda { |answer, unused_related_answer, checker_params|
@@ -251,7 +251,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     # we know the answer meets the criteria, so now check if any of the related ones have the correct value
     results = checker_params[:related_question_ids].collect do |question_id|
       related_answer = answer.response.get_answer_to(question_id)
-      if !answer_invalid?(related_answer)
+      if !unanswered?(related_answer)
         const_meets_condition?(related_answer.comparable_answer, checker_params[:conditional_operator], checker_params[:conditional_constant])
       else
         false
