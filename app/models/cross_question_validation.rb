@@ -172,14 +172,15 @@ class CrossQuestionValidation < ActiveRecord::Base
 
     related_meets_condition = const_meets_condition?(related_answer.comparable_answer, checker_params[:conditional_operator], checker_params[:conditional_constant])
     break true unless related_meets_condition
-    # now fail if answer is present
-    !answer.comparable_answer.present?
+    # now fail if answer is present, but  answer must be present if we got this far, so just fail
+    false
   }
 
   # runs even when related is not answered
   register_checker 'blank_unless_present', lambda { |answer, related_answer, checker_params|
-    break true unless answer.answer_value.present?
-    related_answer.present? && related_answer.answer_value.present?
+    # E.g. Infection_Type2 must be blank unless Infection_Type1 is present (rule on Infection_Type2)
+    # Inf2 is definitely answered, so fail if Inf1 is not answered
+    answered?(related_answer)
   }
 
   register_checker 'multi_hours_date_to_date', lambda { |answer, unused_related_answer, checker_params|
@@ -218,21 +219,21 @@ class CrossQuestionValidation < ActiveRecord::Base
 
   # runs even when related is not answered
   register_checker 'present_implies_present', lambda { |answer, related_answer, checker_params|
-    !unanswered?(related_answer)
+    answered?(related_answer)
   }
 
   # runs even when related is not answered
   register_checker 'const_implies_present', lambda { |answer, related_answer, checker_params|
     break true unless const_meets_condition?(answer.comparable_answer, checker_params[:operator], checker_params[:constant])
     # we know the answer meets the criteria, so now just check if related has been answered
-    !unanswered?(related_answer)
+    answered?(related_answer)
   }
 
   # runs even when related is not answered
   register_checker 'set_implies_present', lambda { |answer, related_answer, checker_params|
     break true unless set_meets_condition?(checker_params[:set], checker_params[:set_operator], answer.comparable_answer)
     # we know the answer meets the criteria, so now just check if related has been answered
-    !unanswered?(related_answer)
+    answered?(related_answer)
   }
 
   register_checker 'set_present_implies_present', lambda { |answer, unused_related_answer, checker_params|
@@ -255,7 +256,7 @@ class CrossQuestionValidation < ActiveRecord::Base
     # we know the answer meets the criteria, so now check if any of the related ones have the correct value
     results = checker_params[:related_question_ids].collect do |question_id|
       related_answer = answer.response.get_answer_to(question_id)
-      if !unanswered?(related_answer)
+      if answered?(related_answer)
         const_meets_condition?(related_answer.comparable_answer, checker_params[:conditional_operator], checker_params[:conditional_constant])
       else
         false
