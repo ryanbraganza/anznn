@@ -1,6 +1,7 @@
 require 'bundler/capistrano'
 require 'capistrano/ext/multistage'
 require 'capistrano_colors'
+require 'colorize'
 require 'rvm/capistrano'
 require "delayed/recipes"
 require "bundler/capistrano"
