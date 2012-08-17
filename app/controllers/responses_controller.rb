@@ -184,6 +184,7 @@ class ResponsesController < ApplicationController
   end
 
   def set_response_value_on_answers(response)
+    #WARNING: this is a performance enhancing hack to get around the fact that reverse associations are not loaded as one would expect - don't change it
     response.answers.each { |a| a.response = response }
   end
 

@@ -38,6 +38,14 @@ FactoryGirl.define do
       constant 0
     end
 
+    factory :cqv_const_implies_one_of_const do
+      sequence(:rule) { 'const_implies_one_of_const' }
+      conditional_operator "=="
+      conditional_constant -1
+      operator "=="
+      constant -1
+    end
+
     factory :cqv_const_implies_set do
       sequence(:rule) { 'const_implies_set' }
       conditional_operator "!="

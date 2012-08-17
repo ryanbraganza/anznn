@@ -270,20 +270,19 @@ describe CrossQuestionValidation do
           @q1 = Factory :question, section: @section, question_type: 'Choice'
           @q2 = Factory :question, section: @section, question_type: 'Integer'
           @q3 = Factory :question, section: @section, question_type: 'Choice'
-          @cqv1 = Factory :cross_question_validation, question: @q1, related_question: nil, related_question_ids: [@q2.id, @q3.id], error_message: @error_message, operator: '==', constant: 99, conditional_operator: '==', conditional_constant: -1
+          @cqv1 = Factory :cqv_const_implies_one_of_const, question: @q1, related_question: nil, related_question_ids: [@q2.id, @q3.id], error_message: @error_message, operator: '==', constant: 99, conditional_operator: '==', conditional_constant: -1
         end
         it("handles nils") do
-          pending
-          #v1 = 99
-          #v2 = nil
-          #v3 = nil
-          #
-          #first = Factory :answer, response: @response, question: @q1, answer_value: v1
-          #second = Factory :answer, response: @response, question: @q2, answer_value: v2
-          #third = Factory :answer, response: @response, question: @q3, answer_value: v3
-          #
-          #err = @cqv1.check first
-          #err.should eq @error_message
+          v1 = 99
+          v2 = nil
+          v3 = nil
+
+          first = Factory :answer, response: @response, question: @q1, answer_value: v1
+          second = Factory :answer, response: @response, question: @q2, answer_value: v2
+          third = Factory :answer, response: @response, question: @q3, answer_value: v3
+
+          err = @cqv1.check first
+          err.should eq @error_message
         end
       end
     end

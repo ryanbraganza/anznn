@@ -36,7 +36,7 @@ describe CsvSurveyOperations do
     it "should be transactional with a bad cqv file" do
       lambda {
         create_survey('some name', good_question_file, good_options_file, bad_cqv_file)
-        }.should raise_error(ActiveRecord::RecordNotFound)
+      }.should raise_error(ActiveRecord::RecordNotFound)
       counts_should_eq_0 Survey, Question, CrossQuestionValidation, Answer, Response, QuestionOption
 
     end
@@ -44,14 +44,14 @@ describe CsvSurveyOperations do
     it "should be transactional with a bad options file" do
       lambda {
         create_survey('some name', good_question_file, bad_options_file, good_cqv_file)
-        }.should raise_error(ActiveRecord::RecordInvalid)
+      }.should raise_error(ActiveRecord::RecordInvalid)
       counts_should_eq_0 Survey, Question, CrossQuestionValidation, Answer, Response, QuestionOption
 
     end
     it "should be transactional with a bad question file" do
       lambda {
         create_survey('some name', bad_question_file, good_options_file, good_cqv_file)
-        }.should raise_error(ActiveRecord::RecordInvalid)
+      }.should raise_error(ActiveRecord::RecordInvalid)
       counts_should_eq_0 Survey, Question, CrossQuestionValidation, Answer, Response, QuestionOption
     end
 
@@ -63,10 +63,6 @@ describe CsvSurveyOperations do
       counts_should_eq_0 Survey, Question, CrossQuestionValidation, Answer, Response, QuestionOption
     end
 
-  end
-
-  describe "make_cqvs" do
-    pending
   end
 
   describe "make_cqv" do
@@ -93,12 +89,13 @@ describe CsvSurveyOperations do
                              "rule" => "multi_hours_date_to_date",
                              "operator" => "<=",
                              "constant" => "0",
-                             "error_message" => "Err",
+                             "error_message" => @error_message,
                              "question_code" => "q1"}
 
       @multi_rule_secondary_hash = {"rule_label" => "secondary",
                                     "rule" => "comparison",
                                     "operator" => "==",
+                                    "error_message" => @error_message,
                                     "question_code" => "q1",
                                     "related_question_code" => "q2"}
 
@@ -113,5 +110,71 @@ describe CsvSurveyOperations do
       run_make_cqv_test(@survey, new_hash).should be_false
     end
 
+
   end
+
+  describe "make_cqvs" do
+    def run_make_cqvs_test(survey, hashes)
+      count = CrossQuestionValidation.count
+      begin
+        make_cqvs(survey, hashes)
+      rescue
+        count +=0 #stops rubymine whinging
+      end
+      CrossQuestionValidation.count - count
+    end
+
+    before :each do
+      @survey = Factory :survey
+      @section = Factory :section, survey: @survey
+      @error_message = 'q2 was date, q1 was not expected constant (-1)'
+      @q1 = Factory :question, section: @section, question_type: 'Integer', code: "q1"
+      @q2 = Factory :question, section: @section, question_type: 'Integer', code: "q2"
+      @q3 = Factory :question, section: @section, question_type: 'Integer', code: "q3"
+
+      @hashes = []
+
+
+      @hashes << {
+          "related_question_list" => "q2, q3",
+          "rule" => "multi_hours_date_to_date",
+          "operator" => "<=",
+          "constant" => "0",
+          "error_message" => @error_message,
+          "question_code" => "q1"
+      }
+
+      @hashes << {
+          "rule" => "comparison",
+          "operator" => "==",
+          "error_message" => @error_message,
+          "question_code" => "q1",
+          "related_question_code" => "q2"
+      }
+
+      @hashes << {
+          "related_question_list" => "q2, q3",
+          "rule" => "multi_hours_date_to_date",
+          "operator" => "<=",
+          "constant" => "0",
+          "error_message" => @error_message,
+          "question_code" => "q1"
+      }
+
+
+    end
+
+    it "should create CQVs for all rules passed in, assuming they're all valid" do
+      run_make_cqvs_test(@survey, @hashes).should eq 3
+    end
+
+    it 'should stop creating CQVs if one fails' do
+      new_hashes = @hashes.dup
+      new_hashes[1]['related_question_list'] = "q2, q3, q4"
+      run_make_cqvs_test(@survey, new_hashes).should eq 1
+    end
+
+
+  end
+
 end
