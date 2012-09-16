@@ -15,6 +15,7 @@ set :stages, %w(qa staging production)
 set :default_stage, "qa"
 
 set :skip_rpm_install, false
+set :schema_load_after_deploy_update, false
 
 set :build_rpms, %w(gcc gcc-c++ patch readline readline-devel zlib zlib-devel libyaml-devel libffi-devel openssl openssl-devel make bzip2 autoconf automake libtool bison httpd httpd-devel apr-devel apr-util-devel mod_ssl mod_xsendfile  curl curl-devel openssl openssl-devel tzdata libxml2 libxml2-devel libxslt libxslt-devel sqlite-devel git)
 set :project_rpms, %w(openssl openssl-devel curl-devel httpd-devel apr-devel apr-util-devel zlib zlib-devel libxml2 libxml2-devel libxslt libxslt-devel libffi mod_ssl mod_xsendfile mysql-server mysql mysql-devel)
@@ -112,6 +113,7 @@ end
 
 after 'deploy:finalize_update' do
   generate_database_yml
+  run("cd #{release_path} && rake db:schema:load", :env => {'RAILS_ENV' => "#{stage}", 'SKIP_PRELOAD_MODELS' => 'skip'}) if schema_load_after_deploy_update
 end
 
 namespace :deploy do
