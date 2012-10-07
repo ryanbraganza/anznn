@@ -76,6 +76,10 @@ namespace :server_setup do
     task :apache do
       run "cd #{release_path}/config/httpd && ruby passenger_setup.rb \"#{rvm_ruby_string}\" \"#{current_path}\" \"#{web_server}\" \"#{stage}\""
       src = "#{release_path}/config/httpd/apache_insertion.conf"
+
+      custom_path = "#{release_path}/config/httpd/#{stage}_rails_#{application}.conf"
+      src = custom_path if remote_file_exists?(custom_path)
+
       dest = "/etc/httpd/conf.d/rails_#{application}.conf"
       run "cmp -s #{src} #{dest} > /dev/null; [ $? -ne 0 ] && #{try_sudo} cp #{src} #{dest} && #{try_sudo} /sbin/service httpd graceful; /bin/true"
     end
@@ -267,4 +271,9 @@ after "deploy:start",   "delayed_job:start"
 after "deploy:restart" do
   delayed_job.stop
   delayed_job.start
+end
+
+def remote_file_exists?(full_path)
+  # from http://stackoverflow.com/questions/1661586/how-can-you-check-to-see-if-a-file-exists-on-the-remote-server-in-capistrano
+  'true' ==  capture("if [ -e #{full_path} ]; then echo 'true'; fi").strip
 end
