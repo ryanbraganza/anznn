@@ -161,10 +161,12 @@ Then /^I should see the following answers$/ do |table|
   end
 end
 
-When /^I store the following answers$/ do |table|
+When /^I store the following answers(| skipping assertion)$/ do |skip_validation, table|
+  # The "should see the following answers" step expects choice answers in a different format to the input format
+  # Use the skipping assertion variant to skip the assertion
   step 'I answer as follows', table
   step 'press "Save page"'
-  step 'I should see the following answers', table
+  step 'I should see the following answers', table unless skip_validation.present?
 end
 
 def table_to_questions_and_answers(table)

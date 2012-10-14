@@ -1,6 +1,7 @@
 class SpecialRules
   GEST_CODE = 'Gest'
   GEST_DAYS_CODE = 'GestDays'
+  WGHT_CODE = 'Wght'
   DOB_CODE = 'DOB'
   LAST_O2_CODE = 'LastO2'
   CEASE_CPAP_DATE_CODE = 'CeaseCPAPDate'
@@ -28,7 +29,16 @@ class SpecialRules
                                  special_cochimplt
                                  special_o2_a
                                  special_hmeo2
-                                 special_same_name_inf)
+                                 special_same_name_inf
+                                 special_pns)
+    CrossQuestionValidation.register_checker 'special_pns', lambda { |answer, unused_related_answer, unused_checker_params|
+      # It should not be an error_flag if PNS==-1 and (Gest<32 or Wght<1500).
+      # An error_flag if PNS==-1 and (Gest>=32 and Wght>=1500)
+      gest = answer.response.comparable_answer_or_nil_for_question_with_code(GEST_CODE)
+      weight = answer.response.comparable_answer_or_nil_for_question_with_code(WGHT_CODE)
+
+      not answer.comparable_answer == -1 && (gest && gest >= CrossQuestionValidation::GEST_LT) && (weight && weight >= CrossQuestionValidation::WGHT_LT)
+    }
 
     CrossQuestionValidation.register_checker 'special_o2_a', lambda { |answer, unused_related_answer, checker_params|
       raise 'Can only be used on question O2_36wk_' unless answer.question.code == 'O2_36wk_'

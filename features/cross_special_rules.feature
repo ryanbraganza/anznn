@@ -36,8 +36,14 @@ Feature: Cross Question Special Rules
       | USd6wk         | Date          |
       | Date Q1        | Date          |
       | Date Q2        | Date          |
-      | O2_36wk_      | Integer       |
+      | O2_36wk_       | Integer       |
       | HmeO2          | Integer       |
+      | PNS            | Choice        |
+    And question "PNS" has question options
+      | option_value | label                                |
+      | 0            | Parenteral nutrition never initiated |
+      | -1           | Yes, parenteral nutrition initiated  |
+      | 99           | Unknown                              |
 
 
 
@@ -59,12 +65,12 @@ Feature: Cross Question Special Rules
   Scenario: CQV Failure - Special_O2_A - (Gest+Gestdays + weeks(DOB and the latest date of (LastO2|CeaseCPAPDate|CeaseHiFloDate))) >36 when this = -1
     Given I have the following cross question validations
       | question  | related   | rule         | error_message |
-      | O2_36wk_ | O2_36wk_ | special_o2_a | o2a_err       |
+      | O2_36wk_  | O2_36wk_  | special_o2_a | o2a_err       |
 
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question       | answer   |
-      | O2_36wk_      | -1       |
+      | O2_36wk_       | -1       |
       | DOB            | 2012/1/1 |
       | Gest           | 1        |
       | Wght           | 1        |
@@ -77,12 +83,12 @@ Feature: Cross Question Special Rules
   Scenario: CQV Pass - Special_O2_A - Both cases
     Given I have the following cross question validations
       | question  | related   | rule         | error_message |
-      | O2_36wk_ | O2_36wk_ | special_o2_a | o2a_err       |
+      | O2_36wk_  | O2_36wk_ | special_o2_a | o2a_err       |
 
     And I am ready to enter responses as data.provider@intersect.org.au
     When I store the following answers
       | question       | answer   |
-      | O2_36wk_      | -1       |
+      | O2_36wk_       | -1       |
       | DOB            | 2012/1/1 |
       | Wght           | 1499     |
       | Gest           | 31       |
@@ -342,3 +348,63 @@ Feature: Cross Question Special Rules
       | Num Q1   | 1      |
     Then I should not see "Err - set_present_implies_present"
 
+  # special_pns
+  #  From Jishan:
+  #     It should not be an error_flag if PNS==-1 and (Gest<32 or Wght<1500).
+  #     An error_flag if PNS==-1 and (Gest>=32 and Wght>=1500)
+  Scenario: CQV Pass - (PNS != -1, Gest, Wght = anything) & (PNS == -1, Gest<32 ^ Wght < 1500)
+    Given I have the following cross question validations
+      | question | rule        | error_message     |
+      | PNS      | special_pns | Err - special_pns |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    #Store an answer to an unrelated question to trigger errors displayed (Errors are hidden on first load)
+    And I store the following answers
+      | question | answer |
+      | Num Q1   | 1      |
+
+    # PNS not answered
+    # Gest and Wght not answered
+    Then I should not see "Err - special_pns"
+
+    When I store the following answers
+      | question | answer |
+      | Wght     | 1500   |
+      | Gest     | 32     |
+    # PNS not answered
+    Then I should not see "Err - special_pns"
+
+    When I store the following answers skipping assertion
+      | question | answer |
+      | PNS      | -1     |
+      | Wght     | 1500   |
+      | Gest     | 31     |
+    # PNS -1, Wght/Gest not both asserted
+    Then I should not see "Err - special_pns"
+
+    When I store the following answers skipping assertion
+      | question | answer |
+      | PNS      | -1     |
+      | Wght     | 1499   |
+      | Gest     | 32     |
+    # PNS -1, Wght/Gest not both asserted
+    Then I should not see "Err - special_pns"
+
+  Scenario: CQV Fail - PNS == -1, Gest, Wght both >= const
+    Given I have the following cross question validations
+      | question | rule        | error_message     |
+      | PNS      | special_pns | Err - special_pns |
+    And I am ready to enter responses as data.provider@intersect.org.au
+    When I store the following answers skipping assertion
+      | question | answer |
+      | PNS      | -1     |
+      | Wght     | 1500   |
+      | Gest     | 32     |
+    Then I should see "Err - special_pns"
+
+    When I store the following answers skipping assertion
+      | question | answer |
+      | PNS      | -1     |
+      | Wght     | 1501   |
+      | Gest     | 33     |
+    # PNS -1, Wght/Gest both asserted
+    Then I should see "Err - special_pns"
