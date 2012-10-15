@@ -23,6 +23,7 @@ class CrossQuestionValidation < ActiveRecord::Base
 
   validates_presence_of :question_id
   validate :one_of_related_question_or_list_of_questions
+  validate { |cqv| SpecialRules.additional_cqv_validation(cqv) }
   validates_presence_of :rule
   validates_presence_of :error_message
 

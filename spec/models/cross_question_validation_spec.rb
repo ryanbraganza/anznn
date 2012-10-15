@@ -27,6 +27,15 @@ describe CrossQuestionValidation do
       Factory.build(:cross_question_validation, related_question_id: 1, related_question_ids: [1]).should_not be_valid
 
     end
+    it "should validate that a CQV is only applied to question codes that they apply to" do
+      bad_q = Factory.create(:question, code: 'some_rubbish_question_code')
+      SpecialRules::RULE_CODES_REQUIRING_PARTICULAR_QUESTION_CODES.each do |rule_code, required_question_code|
+        good_q = Factory.create(:question, code: required_question_code)
+
+        Factory.build(:cross_question_validation, rule: rule_code , question: bad_q).should_not be_valid
+        Factory.build(:cross_question_validation, rule: rule_code, question: good_q).should be_valid
+      end
+    end
   end
 
   describe "helpers" do

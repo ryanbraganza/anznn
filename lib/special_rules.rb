@@ -8,6 +8,29 @@ class SpecialRules
   CEASE_HI_FLO_DATE_CODE = 'CeaseHiFloDate'
   HOME_DATE_CODE = 'HomeDate'
 
+  RULE_CODES_REQUIRING_PARTICULAR_QUESTION_CODES = {
+    'special_o2_a' => 'O2_36wk_',
+    'special_hmeo2' => 'HmeO2',
+    'special_namesurg2' => 'Surg_Desc2',
+    'special_namesurg3' => 'Surg_Desc3',
+    'special_cool_hours' =>'StartCoolDate',
+    'special_immun' => 'DOB',
+    'special_date_of_assess' => 'DateOfAssess',
+    'special_height' => 'Hght',
+    'special_length' => 'Length',
+    'special_cochimplt' => 'CochImplt',
+  }
+
+  def self.additional_cqv_validation(cqv)
+    if cqv.rule and cqv.question
+      required_question_code = RULE_CODES_REQUIRING_PARTICULAR_QUESTION_CODES[cqv.rule]
+      actual_question_code = cqv.question.code
+      if required_question_code and actual_question_code != required_question_code
+	cqv.errors[:base] << "#{cqv.rule} requires question code #{required_question_code} but got #{actual_question_code}"
+      end
+    end
+  end
+
   def self.register_additional_rules
     # put special rules here that aren't part of the generic rule set, that way they can easily be removed or replaced later
 
