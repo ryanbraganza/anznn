@@ -91,6 +91,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   end
 
   def self.answered?(answer)
+    # true for non-raw answers only
     answer && !answer.answer_value.nil? && !answer.raw_answer
   end
 
@@ -180,7 +181,9 @@ class CrossQuestionValidation < ActiveRecord::Base
   register_checker 'blank_unless_present', lambda { |answer, related_answer, checker_params|
     # E.g. Infection_Type2 must be blank unless Infection_Type1 is present (rule on Infection_Type2)
     # Inf2 is definitely answered, so fail if Inf1 is not answered
-    answered?(related_answer)
+
+    # Note this is NOT the same as answered?(related_answer)
+    related_answer.present? && related_answer.answer_value.present?
   }
 
   register_checker 'multi_hours_date_to_date', lambda { |answer, unused_related_answer, checker_params|
