@@ -78,7 +78,7 @@ describe CsvGenerator do
       Response.should_receive(:for_survey_hospital_and_year_of_registration).with(survey, '', '').and_return([response1, response2])
       csv = CsvGenerator.new(survey.id, '', '').csv
       expected = []
-      expected << %w(RegistrationType YearOfRegistration Hospital BabyCode ChoiceQ TextQ DateQ TimeQ IntegerQ DecimalQ)
+      expected << %w(RegistrationType YearOfRegistration Hospital BabyCODE ChoiceQ TextQ DateQ TimeQ IntegerQ DecimalQ)
       expected << ['Survey One', '2009', 'HRL', 'ABC-123', '1', 'ABc', '2001-02-25', '14:56', '877', '15.5673']
       expected << ['Survey One', '2011', 'BBB', 'DEF-567', '', 'ABCdefg Ijkl', '', '', '99', '']
       CSV.parse(csv).should eq(expected)

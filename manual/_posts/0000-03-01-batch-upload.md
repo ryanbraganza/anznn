@@ -5,7 +5,7 @@ title: Batch Upload
 group: manual
 ---
 ## Batch upload file format
-Batch uploads must be provided as a CSV file. The CSV file should contain a header row and one row for each baby records. You must include a column "BabyCode" which contains a unique code for each record. The other column headers should match the data item codes from the ANZNN data dictionary.
+Batch uploads must be provided as a CSV file. The CSV file should contain a header row and one row for each baby records. You must include a column "BabyCODE" which contains a unique code for each record. The other column headers should match the data item codes from the ANZNN data dictionary.
 
 * Dates should be provided in yyyy-mm-dd format.
 * Times should be provided in hh:mm format (24 hour time).

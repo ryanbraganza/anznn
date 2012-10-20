@@ -13,7 +13,7 @@ describe BatchDetailReportGenerator do
 
     rows = CSV.read("tmp/details.csv")
     rows.size.should eq(3)
-    rows[0].should eq(["BabyCode", "Column Name", "Type", "Value", "Message"])
+    rows[0].should eq(["BabyCODE", "Column Name", "Type", "Value", "Message"])
     rows[1].should eq(['B1', 'C1', 'Err', '2', 'Hello'])
     rows[2].should eq(['B1', 'C2', 'Warn', 'asdf', 'Msg'])
   end

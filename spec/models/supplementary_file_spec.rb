@@ -25,7 +25,7 @@ describe SupplementaryFile do
     it "should reject file without a baby code column" do
       supplementary_file = create_supplementary_file('no_baby_code_column.csv', 'my multi')
       supplementary_file.pre_process.should be_false
-      supplementary_file.message.should eq("The supplementary file you uploaded for 'my multi' did not contain a BabyCode column.")
+      supplementary_file.message.should eq("The supplementary file you uploaded for 'my multi' did not contain a BabyCODE column.")
     end
 
     it "should reject files that are empty" do
@@ -46,14 +46,14 @@ describe SupplementaryFile do
       # this is a bit hard to express, so commenting for clarity.
       # what we're doing is taking a normalised set of answers and rearranging them to be de-normalised to suit the structure we have
       # e.g. a CSV would contain
-      # | BabyCode | SurgeryDate | SurgeryName  |
+      # | BabyCODE | SurgeryDate | SurgeryName  |
       # | B1       | 2012-12-1   | blah1        |
       # | B1       | 2012-12-2   | blah2        |
       # | B2       | 2012-12-1   | blah1        |
       # | B2       | 2012-12-2   | blah2        |
       # | B2       | 2012-12-3   | blah3        |
       # and we want to turn that into something like this
-      # | BabyCode | SurgeryDate1 | SurgeryName1  | SurgeryDate2 | SurgeryName2  | SurgeryDate3 | SurgeryName3 |
+      # | BabyCODE | SurgeryDate1 | SurgeryName1  | SurgeryDate2 | SurgeryName2  | SurgeryDate3 | SurgeryName3 |
       # | B1       | 2012-12-1    | blah1         |2012-12-2     | blah2         |              |              |
       # | B2       | 2012-12-1    | blah1         |2012-12-2     | blah2         |2012-12-3     | blah3        |
 
@@ -63,7 +63,7 @@ describe SupplementaryFile do
 
       denormalised = supp_file.as_denormalised_hash
       #File contents:
-      #BabyCode,Date,Time
+      #BabyCODE,Date,Time
       #B1,2012-12-01,11:45
       #B1,2011-11-01,
       #B2,2011-08-30,01:05

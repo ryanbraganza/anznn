@@ -2,14 +2,14 @@ require 'csv'
 
 class BatchFile < ActiveRecord::Base
 
-  BABY_CODE_COLUMN = "BabyCode"
+  BABY_CODE_COLUMN = "BabyCODE"
   STATUS_FAILED = "Failed"
   STATUS_SUCCESS = "Processed Successfully"
   STATUS_REVIEW = "Needs Review"
   STATUS_IN_PROGRESS = "In Progress"
 
   MESSAGE_WARNINGS = "The file you uploaded has one or more warnings. Please review the reports for details."
-  MESSAGE_NO_BABY_CODE = "The file you uploaded did not contain a BabyCode column."
+  MESSAGE_NO_BABY_CODE = "The file you uploaded did not contain a BabyCODE column."
   MESSAGE_MISSING_BABY_CODES = "The file you uploaded is missing one or more baby codes. Each record must have a baby code."
   MESSAGE_EMPTY = "The file you uploaded did not contain any data."
   MESSAGE_FAILED_VALIDATION = "The file you uploaded did not pass validation. Please review the reports for details."
@@ -131,7 +131,7 @@ class BatchFile < ActiveRecord::Base
         organiser.add_problems(question.code, r.baby_code, ["This question is mandatory"], [], "")
       end
       r.valid? #we have to call this to trigger errors getting populated
-      organiser.add_problems("BabyCode", r.baby_code, r.errors.full_messages, [], r.baby_code) unless r.errors.empty?
+      organiser.add_problems("BabyCODE", r.baby_code, r.errors.full_messages, [], r.baby_code) unless r.errors.empty?
     end
     organiser
   end

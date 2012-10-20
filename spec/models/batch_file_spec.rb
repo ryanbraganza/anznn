@@ -118,7 +118,7 @@ describe BatchFile do
       it "should reject file without a baby code column" do
         batch_file = process_batch_file('no_baby_code_column.csv', survey, user)
         batch_file.status.should eq("Failed")
-        batch_file.message.should eq("The file you uploaded did not contain a BabyCode column. Processing stopped on CSV row 0")
+        batch_file.message.should eq("The file you uploaded did not contain a BabyCODE column. Processing stopped on CSV row 0")
         batch_file.record_count.should be_nil
         batch_file.problem_record_count.should be_nil
         batch_file.summary_report_path.should be_nil
@@ -365,7 +365,7 @@ describe BatchFile do
         csv_file = batch_file.detail_report_path
         rows = CSV.read(csv_file)
         rows.size.should eq(2)
-        rows[0].should eq(['BabyCode', 'Column Name', 'Type', 'Value', 'Message'])
+        rows[0].should eq(['BabyCODE', 'Column Name', 'Type', 'Value', 'Message'])
         rows[1].should eq(['B3', 'Date1', 'Error', '2010-05-29', 'D1 must be >= D2'])
       end
 
@@ -384,7 +384,7 @@ describe BatchFile do
         csv_file = batch_file.detail_report_path
         rows = CSV.read(csv_file)
         rows.size.should eq(2)
-        rows[0].should eq(['BabyCode', 'Column Name', 'Type', 'Value', 'Message'])
+        rows[0].should eq(['BabyCODE', 'Column Name', 'Type', 'Value', 'Message'])
         rows[1].should eq(['B3', 'Date1', 'Error', '2010-05-29', 'D1+T1 must be > D2+T2'])
       end
 
@@ -403,8 +403,8 @@ describe BatchFile do
         csv_file = batch_file.detail_report_path
         rows = CSV.read(csv_file)
         rows.size.should eq(2)
-        rows[0].should eq(["BabyCode", "Column Name", "Type", "Value", "Message"])
-        rows[1].should eq(['B2', 'BabyCode', 'Error', 'B2', 'Baby code B2 has already been used.'])
+        rows[0].should eq(["BabyCODE", "Column Name", "Type", "Value", "Message"])
+        rows[1].should eq(['B2', 'BabyCODE', 'Error', 'B2', 'Baby code B2 has already been used.'])
       end
 
       it "should reject records where the baby code is already in the system even with whitespace padding" do
@@ -422,8 +422,8 @@ describe BatchFile do
         csv_file = batch_file.detail_report_path
         rows = CSV.read(csv_file)
         rows.size.should eq(2)
-        rows[0].should eq(["BabyCode", "Column Name", "Type", "Value", "Message"])
-        rows[1].should eq(['B2', 'BabyCode', 'Error', 'B2', 'Baby code B2 has already been used.'])
+        rows[0].should eq(["BabyCODE", "Column Name", "Type", "Value", "Message"])
+        rows[1].should eq(['B2', 'BabyCODE', 'Error', 'B2', 'Baby code B2 has already been used.'])
       end
 
       it "can detect both duplicate baby code and other errors on the same record" do
@@ -441,8 +441,8 @@ describe BatchFile do
         csv_file = batch_file.detail_report_path
         rows = CSV.read(csv_file)
         rows.size.should eq(3)
-        rows[0].should eq(["BabyCode", "Column Name", "Type", "Value", "Message"])
-        rows[1].should eq(['B2', 'BabyCode', 'Error', 'B2', 'Baby code B2 has already been used.'])
+        rows[0].should eq(["BabyCODE", "Column Name", "Type", "Value", "Message"])
+        rows[1].should eq(['B2', 'BabyCODE', 'Error', 'B2', 'Baby code B2 has already been used.'])
         rows[2].should eq(['B2', 'TextMandatory', 'Error', '', 'This question is mandatory'])
       end
     end
@@ -504,7 +504,7 @@ describe BatchFile do
         csv_file = batch_file.detail_report_path
         rows = CSV.read(csv_file)
         rows.size.should eq(7)
-        rows[0].should eq(["BabyCode", "Column Name", "Type", "Value", "Message"])
+        rows[0].should eq(["BabyCODE", "Column Name", "Type", "Value", "Message"])
         rows[1].should eq(['B1', 'Date1', 'Error', '2011-ab-25', 'Answer is invalid (must be a valid date)'])
         rows[2].should eq(['B1', 'Decimal', 'Error', 'a.77', 'Answer is the wrong format (expected a decimal number)'])
         rows[3].should eq(['B1', 'TextMandatory', 'Error', '', 'This question is mandatory'])

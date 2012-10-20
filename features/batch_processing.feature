@@ -18,7 +18,7 @@ Feature: Processing batch files
     | file                    | message                                                                                                                     |
     | not_csv.xls             | The file you uploaded was not a valid CSV file. Processing stopped on CSV row 0                                             |
     | invalid_csv.csv         | The file you uploaded was not a valid CSV file. Processing stopped on CSV row 2                                             |
-    | no_baby_code_column.csv | The file you uploaded did not contain a BabyCode column. Processing stopped on CSV row 0                                    |
+    | no_baby_code_column.csv | The file you uploaded did not contain a BabyCODE column. Processing stopped on CSV row 0                                    |
     | missing_baby_code.csv   | The file you uploaded is missing one or more baby codes. Each record must have a baby code. Processing stopped on CSV row 2 |
     | blank_rows.csv          | The file you uploaded is missing one or more baby codes. Each record must have a baby code. Processing stopped on CSV row 1 |
     | empty.csv               | The file you uploaded did not contain any data.                                                                             |

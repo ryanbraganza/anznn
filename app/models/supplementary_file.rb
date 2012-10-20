@@ -20,7 +20,7 @@ class SupplementaryFile < ActiveRecord::Base
 
       CSV.foreach(file.path, {headers: true}) do |row|
         unless row.headers.include?(BatchFile::BABY_CODE_COLUMN)
-          self.message = "The supplementary file you uploaded for '#{multi_name}' did not contain a BabyCode column."
+          self.message = "The supplementary file you uploaded for '#{multi_name}' did not contain a BabyCODE column."
           return false
         end
         baby_code = row[BatchFile::BABY_CODE_COLUMN]
@@ -66,7 +66,7 @@ class SupplementaryFile < ActiveRecord::Base
         answer_hash = {}
         rows_for_baby.each_with_index do |row, index|
           answers = row.to_hash
-          answers.delete('BabyCode')
+          answers.delete('BabyCODE')
           answers.each_pair do |key, value|
             answer_hash["#{key}#{index+1}"] = value unless value.blank?
           end
