@@ -13,6 +13,12 @@ describe Response do
     it { should validate_presence_of :user }
     it { should validate_presence_of :survey_id }
     it { should validate_presence_of :year_of_registration }
+    it { should ensure_length_of(:baby_code).is_at_most(30) }
+    it "should reject non-alphanumeric except -_ strings for babycodes" do
+      Factory.build(:response, baby_code: '!').should_not be_valid
+      Factory.build(:response, baby_code: '-').should be_valid
+      Factory.build(:response, baby_code: '_').should be_valid
+    end
 
     it "should validate that submitted_status is one of the allowed types" do
       [Response::STATUS_SUBMITTED, Response::STATUS_UNSUBMITTED].each do |value|
