@@ -162,9 +162,10 @@ def create_response(survey, profile, hospital, submit=false)
              when FEW
                "small"
            end
+  abbrev = hospital.abbrev.gsub(/[^a-z0-9\-_]/i, '_') # see Response::BABY_CODE_REGEX
   response = Response.create!(hospital: hospital,
                               submitted_status: status,
-                              baby_code: "#{prefix}-#{hospital.abbrev}-#{rand(10000000)}",
+                              baby_code: "#{prefix}-#{abbrev}-#{rand(10000000)}",
                               survey: survey,
                               year_of_registration: year_of_reg,
                               user: User.all.sample)

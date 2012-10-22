@@ -7,6 +7,8 @@ class Response < ActiveRecord::Base
   INCOMPLETE = 'Incomplete'
   COMPLETE_WITH_WARNINGS = 'Complete with warnings'
 
+  BABY_CODE_REGEX = /\A[a-z0-9\-_]+\Z/i
+
   belongs_to :user
   belongs_to :hospital
   belongs_to :batch_file
@@ -20,7 +22,7 @@ class Response < ActiveRecord::Base
   validates_presence_of :year_of_registration
   validates_inclusion_of :submitted_status, in: [STATUS_UNSUBMITTED, STATUS_SUBMITTED]
   validates_uniqueness_of :baby_code, scope: :survey_id
-  validates_format_of :baby_code, with: /\A[a-z0-9\-_]+\Z/i
+  validates_format_of :baby_code, with: BABY_CODE_REGEX
   validates_length_of :baby_code, maximum: 30
 
   before_validation :strip_whitespace
