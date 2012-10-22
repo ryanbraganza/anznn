@@ -25,4 +25,9 @@ class GroupedQuestionHandler
     return false unless question.group_number >= self.highest_group_to_show && question.group_number < self.last_group_number
     question.order_within_group == self.last_order_within_group
   end
+
+  def max_multi?(question)
+    # last question-group's last question?
+    question.group_number == self.last_group_number and question.order_within_group == self.last_order_within_group
+  end
 end

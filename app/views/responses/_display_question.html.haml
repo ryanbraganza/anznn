@@ -7,6 +7,7 @@
 - classes << 'hiddenmulti' if q.multiple && @group_info[q.multi_name].hide_group?(q)
 
 - show_add_link = q.multiple && @group_info[q.multi_name].show_add_link?(q)
+- max_multi = q.multiple && @group_info[q.multi_name].max_multi?(q)
 
 - data = {description: prep_help(q.description), guide: prep_help(q.guide_for_use), name: q.question, code: q.code}
 
@@ -86,3 +87,7 @@
     %br/
     %br/
     = link_to "Add another #{q.multi_name}", '', {class: 'add_multi_link btn'}
+  - if max_multi
+    %br/
+    %br/
+    %p= "If you have additional #{q.multi_name.pluralize}, please provide them to ANZNN separately."
