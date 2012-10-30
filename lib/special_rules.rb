@@ -83,7 +83,7 @@ class SpecialRules
       break false unless dob.present?
       break false unless gest.present?
       break false unless gest_days.present?
-      break false unless last_o2.present? || cease_cpap_date.present || cease_hi_flo_date.present?
+      break false unless last_o2.present? || cease_cpap_date.present? || cease_hi_flo_date.present?
   
       dates = [last_o2, cease_cpap_date, cease_hi_flo_date]
       last_date = dates.compact.sort.last
