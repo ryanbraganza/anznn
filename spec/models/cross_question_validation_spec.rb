@@ -9,6 +9,11 @@ describe CrossQuestionValidation do
     it { should validate_presence_of :question_id }
     it { should validate_presence_of :rule }
     it { should validate_presence_of :error_message }
+    context "should check that comparison CQVs have safe operators" do
+      specify { Factory.build(:cross_question_validation, rule: 'comparison', operator: '').should_not be_valid }
+      specify { Factory.build(:cross_question_validation, rule: 'comparison', operator: '>').should be_valid }
+      specify { Factory.build(:cross_question_validation, rule: 'comparison', operator: 'dodgy_operator').should_not be_valid }
+    end
     it "should validate that the rule is one of the allowed rules" do
       CrossQuestionValidation.valid_rules.each do |value|
         should allow_value(value).for(:rule)

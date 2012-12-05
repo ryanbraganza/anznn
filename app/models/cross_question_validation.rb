@@ -26,6 +26,12 @@ class CrossQuestionValidation < ActiveRecord::Base
   validate { |cqv| SpecialRules.additional_cqv_validation(cqv) }
   validates_presence_of :rule
   validates_presence_of :error_message
+  validate do |cqv|
+    # return true/false if it passed/failed 
+    if cqv.rule == 'comparison'
+      cqv.errors[:base] << "#{cqv.operator} not included in #{SAFE_OPERATORS.inspect}" unless SAFE_OPERATORS.include?(cqv.operator)
+    end
+  end
 
   serialize :related_question_ids, Array
   serialize :set, Array
