@@ -1,0 +1,18 @@
+- content_for :tabs do
+  = render 'pages/tabs'
+
+- title 'Submitted Baby Codes'
+- if @baby_codes_by_year_by_form.empty?
+  %p There are no submitted baby codes to show.
+- else
+  - @baby_codes_by_year_by_form.each do |form_name_and_baby_codes_by_year|
+    - form_name = form_name_and_baby_codes_by_year.first
+    - baby_codes_by_year = form_name_and_baby_codes_by_year.last
+    .form
+      %h1.form= form_name
+      - baby_codes_by_year.each do |year, baby_codes|
+        .year
+          %h2.year= year
+          %ul
+            - baby_codes.each do |baby_code|
+              %li= baby_code

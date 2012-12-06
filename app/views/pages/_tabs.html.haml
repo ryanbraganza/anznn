@@ -6,3 +6,5 @@
       = tab.stats 'Stats', stats_responses_path
     - if can?(:download, Response)
       = tab.download 'Download Data', prepare_download_responses_path
+    - if can?(:submitted_baby_codes, Response)
+      = tab.submitted_baby_codes 'Submitted Baby Codes', submitted_baby_codes_responses_path

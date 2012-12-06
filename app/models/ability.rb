@@ -59,6 +59,8 @@ class Ability
 
         can :read, BatchFile, hospital_id: user.hospital_id
         can :create, BatchFile, hospital_id: user.hospital_id
+
+        can :submitted_baby_codes, Response
       else
         raise "Unknown role #{user.role.name}"
     end

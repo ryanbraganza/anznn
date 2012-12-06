@@ -82,6 +82,9 @@ module NavigationHelpers
     when /the download link for the first survey/
       download_responses_path(survey_id: Survey.first.id, hospital_id: "", year_of_registration: "")
 
+    when /the submitted baby codes page/
+        submitted_baby_codes_responses_path
+
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #

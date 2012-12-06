@@ -15,6 +15,7 @@ Anznn::Application.routes.draw do
       get :prepare_download
       get :download
       get :batch_delete
+      get :submitted_baby_codes
       put :confirm_batch_delete
       put :perform_batch_delete
     end
