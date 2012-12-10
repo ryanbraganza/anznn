@@ -316,13 +316,38 @@ describe CrossQuestionValidation do
         end
         it "passes if q2 not answered but q1 is" do
           a1 = Factory :answer, response: @response, question: @q1, answer_value: "7"
-          do_cqv_check(a1, [])
+          do_cqv_check_unanswered_answer(a1, [])
         end
         it("passes if q2 not answered and q1 not answered") {} # rule won't be run
         it("passes if q2 is not -1 and q1 is blank") {} # rule won't be run }
         it("passes if q2 is not -1 and q1 is not blank") { standard_cqv_test(123, 0, []) }
         it("passes when q2 is -1 and q1 is blank") {} # rule won't be run }
         it("fails when q2 is -1 and q1 is not blank") { standard_cqv_test(123, -1, [@error_message]) }
+      end
+    end
+
+    describe "Present Unless " do
+      before :each do
+        @response = Factory :response, survey: @survey
+      end
+
+      describe 'present if constant (q must be present if related q == constant)' do
+        # e.g. If Died_ is 0, DiedDate must be blank (rule is on DiedDate)
+        before :each do
+          @error_message = 'if q2 == -1, q1 must be blank'
+          @q1 = Factory :question, section: @section, question_type: 'Integer'
+          @q2 = Factory :question, section: @section, question_type: 'Integer'
+          Factory :cqv_present_if_const, question: @q1, related_question: @q2, error_message: @error_message, conditional_operator: '==', conditional_constant: -1
+        end
+        it "passes if q2 not answered but q1 is" do
+          a1 = Factory :answer, response: @response, question: @q1, answer_value: "7"
+          do_cqv_check(a1, [])
+        end
+        it("passes if q2 not answered and q1 answered") {} # rule won't be run
+        it("passes if q2 is not -1 and q1 is blank") {standard_cqv_test({}, 0, [])}
+        it("passes if q2 is not -1 and q1 is not blank") {}# rule won't be run
+        it("passes when q2 is -1 and q1 is not blank") {} # rule won't be run
+        it("fails when q2 is -1 and q1 is blank") {standard_cqv_test({}, -1, [@error_message])}
       end
     end
 

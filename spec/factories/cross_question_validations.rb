@@ -85,5 +85,10 @@ FactoryGirl.define do
       conditional_constant -1
     end
 
+    factory :cqv_present_if_const do
+      sequence(:rule) { 'present_if_const' }
+      conditional_operator "=="
+      conditional_constant -1
+    end
   end
 end

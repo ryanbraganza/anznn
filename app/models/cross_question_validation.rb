@@ -5,6 +5,7 @@ class CrossQuestionValidation < ActiveRecord::Base
   cattr_accessor(:rule_checkers) { {} }
 
   RULES_THAT_APPLY_EVEN_WHEN_RELATED_ANSWER_NIL = %w(present_implies_present const_implies_present set_implies_present blank_unless_present set_gest_wght_implies_present)
+  RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL = %w(present_if_const)
 
   SAFE_OPERATORS = %w(== <= >= < > !=)
   ALLOWED_SET_OPERATORS = %w(included excluded range)
@@ -73,8 +74,9 @@ class CrossQuestionValidation < ActiveRecord::Base
                       conditional_set_operator: conditional_set_operator, conditional_set: conditional_set,
                       related_question_ids: related_question_ids}
 
+
     # don't bother checking if the question is unanswered or has an invalid answer
-    return nil if CrossQuestionValidation.unanswered?(answer)
+    return nil if CrossQuestionValidation.unanswered?(answer) && !RULES_THAT_APPLY_EVEN_WHEN_ANSWER_NIL.include?(rule)
 
     # we have to filter the answers on the response rather than using find, as we want to check through as-yet unsaved answers as part of batch processing
     related_answer = answer.response.get_answer_to(related_question_id) if related_question_id
@@ -182,6 +184,14 @@ class CrossQuestionValidation < ActiveRecord::Base
     break true unless related_meets_condition
     # now fail if answer is present, but  answer must be present if we got this far, so just fail
     false
+  }
+
+  register_checker 'present_if_const', lambda { |answer, related_answer, checker_params|
+    # E.g. If Gest < 32, LastO2 must be present
+    related_meets_condition = const_meets_condition?(related_answer.comparable_answer, checker_params[:conditional_operator], checker_params[:conditional_constant])
+    break true unless related_meets_condition
+    # check if answer is answered
+    answered?(answer)
   }
 
   # runs even when related is not answered
